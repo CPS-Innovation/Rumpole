@@ -31,7 +31,7 @@ steps:
     inputs:
       command: "custom"
       workingDir: "rumpole-ui"
-      customCommand: "run-script test"
+      customCommand: "run test:ci"
     displayName: "npm test"
 
   - task: PublishBuildArtifacts@1
