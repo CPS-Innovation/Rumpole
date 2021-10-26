@@ -1,0 +1,24 @@
+{
+    "folders": [
+        {
+            "path": "rumpole-gateway"
+        },
+        {
+            "path": "rumpole-ui"
+        }
+    ],
+    "settings": {
+        "debug.internalConsoleOptions": "neverOpen"
+    },
+    "launch": {
+        "configurations": [],
+        "compounds": [
+          {
+            "name": "Attach to all functions",
+            "configurations": [
+              "Attach to .NET Functions",
+            ]
+          }
+        ]
+      }
+}

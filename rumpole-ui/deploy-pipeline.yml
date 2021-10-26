@@ -1,0 +1,47 @@
+trigger:
+  branches:
+    include:
+      - main
+
+  paths:
+    include:
+      - "rumpole-ui"
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  REACT_APP_BUILD_NUMBER: $(Build.BuildNumber)
+
+steps:
+  - task: Npm@1
+    inputs:
+      command: "install"
+      workingDir: "rumpole-ui"
+    displayName: "npm install"
+
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run-script build"
+    displayName: "npm build"
+
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run test"
+    displayName: "npm test"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/build"
+      ArtifactName: "rumpole-ui-drop"
+      publishLocation: "Container"
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "rumpole-ui/report/test-*.xml"
+      mergeTestResults: true
