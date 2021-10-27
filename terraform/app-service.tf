@@ -33,7 +33,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
 resource "azuread_application" "as_web_rumpole" {
   display_name               = "as-web-${local.resource_name}"
   oauth2_allow_implicit_flow = false
-  identifier_uris            = ["api://${azuread_application.as_web_rumpole.application_id}"]
+  identifier_uris            = ["api://${azurerm_app_service.as_web_rumpole.application_id}"]
   reply_urls = [
     "https://as-web-${local.resource_name}.azurewebsites.net/.auth/login/aad/callback",
   ]
