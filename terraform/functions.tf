@@ -56,7 +56,7 @@ resource "azurerm_function_app" "fa_rumpole" {
 resource "azuread_application" "fa_rumpole" {
   display_name               = "fa-${local.resource_name}-gateway"
   oauth2_allow_implicit_flow = false
-  identifier_uris            = ["https://fa-${local.resource_name}-gateway.azurewebsites.net"]
+  identifier_uris            = ["api://${azuread_application.fa_rumpole.application_id}"]
   reply_urls                 = ["https://fa-${local.resource_name}-gateway.azurewebsites.net/.auth/login/aad/callback"]
 
   # Please note: oauth2_permissions with a user impersonation value is created by default by Terraform
