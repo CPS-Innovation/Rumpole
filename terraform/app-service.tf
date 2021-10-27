@@ -25,7 +25,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
     active_directory {
       client_id         = azuread_application.as_web_rumpole.application_id
       client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
-      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
+      allowed_audiences = ["https://as-web-${local.resource_name}.azurewebsites.net"]
     }
   }
 }
@@ -33,11 +33,11 @@ resource "azurerm_app_service" "as_web_rumpole" {
 resource "azuread_application" "as_web_rumpole" {
   display_name               = "as-web-${local.resource_name}"
   oauth2_allow_implicit_flow = false
-  identifier_uris            = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
+  identifier_uris            = ["https://as-web-${local.resource_name}.azurewebsites.net"]
   reply_urls = [
-    "https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}/.auth/login/aad/callback",
+    "https://as-web-${local.resource_name}.azurewebsites.net/.auth/login/aad/callback",
   ]
-  homepage = "https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"
+  homepage = "https://as-web-${local.resource_name}.azurewebsites.net"
 
   required_resource_access {
     resource_app_id = "00000002-0000-0000-c000-000000000000"
