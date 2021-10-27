@@ -51,6 +51,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     ]
   }
 
+  depends_on = [
+    azurerm_key_vault_secret.kvs_rumpole_fa_client_secret
+  ]
 }
 
 resource "azuread_application" "fa_rumpole" {
