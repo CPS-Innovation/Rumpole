@@ -23,7 +23,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     always_on      = true
     ip_restriction = []
     cors {
-      allowed_origins = [ "https://as-web-${local.resource_name}.azurewebsites.net", var.env == "dev" ? "http://localhost:3000" : "" ]
+      allowed_origins = [ "https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}", var.env == "dev" ? "http://localhost:3000" : "" ]
       support_credentials = true
     }   
   }
@@ -40,7 +40,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     active_directory {
       client_id         = azuread_application.fa_rumpole.application_id
       client_secret     = azuread_application_password.faap_rumpole_app_service.value
-      allowed_audiences = ["https://fa-${local.resource_name}-gateway.azurewebsites.net"]
+      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
     }
   }
 
@@ -51,13 +51,16 @@ resource "azurerm_function_app" "fa_rumpole" {
     ]
   }
 
+  depends_on = [
+    azurerm_key_vault_secret.kvs_rumpole_fa_client_secret
+  ]
 }
 
 resource "azuread_application" "fa_rumpole" {
   display_name               = "fa-${local.resource_name}-gateway"
   oauth2_allow_implicit_flow = false
-  identifier_uris            = ["https://fa-${local.resource_name}-gateway.azurewebsites.net"]
-  reply_urls                 = ["https://fa-${local.resource_name}-gateway.azurewebsites.net/.auth/login/aad/callback"]
+  identifier_uris            = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
+  reply_urls                 = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway/.auth/login/aad/callback"]
 
   # Please note: oauth2_permissions with a user impersonation value is created by default by Terraform
   # Creating another causes a duplication error
