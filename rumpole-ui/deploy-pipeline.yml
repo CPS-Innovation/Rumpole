@@ -16,16 +16,16 @@ variables:
 steps:
   - task: Npm@1
     inputs:
+      command: "install"
+      workingDir: "rumpole-ui"
+    displayName: "npm install"
+
+  - task: Npm@1
+    inputs:
       command: "custom"
       workingDir: "rumpole-ui"
       customCommand: "run prettier:check"
     displayName: "npm prettier:check"
-
-  - task: Npm@1
-    inputs:
-      command: "install"
-      workingDir: "rumpole-ui"
-    displayName: "npm install"
 
   - task: Npm@1
     inputs:
