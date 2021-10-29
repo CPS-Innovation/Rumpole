@@ -34,12 +34,12 @@ steps:
       customCommand: "run build"
     displayName: "npm build"
 
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "run test:ci"
-    displayName: "npm test"
+  # - task: Npm@1
+  #   inputs:
+  #     command: "custom"
+  #     workingDir: "rumpole-ui"
+  #     customCommand: "run test:ci"
+  #   displayName: "npm test"
 
   - task: PublishBuildArtifacts@1
     inputs:
