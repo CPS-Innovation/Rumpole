@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://127.0.0.1:3000",
+  "video": false,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "report/test-results-[hash].xml",
+    "attachments": true
+  }
+}
