@@ -1,0 +1,19 @@
+// import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+// import { UrnSearchResult } from "../types/models/UrnSearchResult";
+
+// // Define our single API slice object
+// export const casesApi = createApi({
+//   reducerPath: "casesApi",
+
+//   baseQuery: fetchBaseQuery({
+//     baseUrl: "https://jsonplaceholder.typicode.com",
+//   }),
+
+//   endpoints: (builder) => ({
+//     getCases: builder.query<UrnSearchResult[], unknown>({
+//       query: () => "/users",
+//     }),
+//   }),
+// });
+
+// export const { useGetCasesQuery } = casesApi;

@@ -6,7 +6,11 @@ type UrnFieldProps = {
   onSubmit: () => void;
 };
 
-export const UrnField: FC<UrnFieldProps> = ({ value, onChange, onSubmit }) => {
+export const SearchUrnField: FC<UrnFieldProps> = ({
+  value,
+  onChange,
+  onSubmit,
+}) => {
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) =>
     event.key === "Enter" && onSubmit();
 

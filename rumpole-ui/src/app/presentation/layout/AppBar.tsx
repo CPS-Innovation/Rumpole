@@ -1,7 +1,7 @@
 import MuiAppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { Spacer } from "../common/Spacer";
 import { Logo } from "./logo/Logo";
 
 const AppBar: React.FC = () => {
@@ -15,9 +15,9 @@ const AppBar: React.FC = () => {
           borderColor: "secondary.main",
         }}
       >
-        <Box sx={{ marginRight: 4 }}>
+        <Spacer sx={{ marginRight: 4 }}>
           <Logo height={55} />
-        </Box>
+        </Spacer>
 
         <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
           Rumpole
