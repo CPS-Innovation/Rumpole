@@ -4,11 +4,10 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../../redux/store";
-import { UrnSearchResult } from "../types/models/UrnSearchResult";
+import { searchUrn } from "../api/gatewayApt";
+import { CaseSearchResult } from "../domain/CaseSearchResult";
 
-const caseAdapter = createEntityAdapter<UrnSearchResult>({
-  selectId: (item) => item.caseId,
-});
+const caseAdapter = createEntityAdapter<CaseSearchResult>();
 
 type CasesState = {
   cases: ReturnType<typeof caseAdapter.getInitialState>;
@@ -18,12 +17,7 @@ type CasesState = {
 
 export const fetchCases = createAsyncThunk(
   "cases/fetchCases",
-  async (urn: string) => {
-    const response = await fetch(
-      `https://jsonplaceholder.typicode.com/users?urn=${urn}`
-    );
-    return (await response.json()) as UrnSearchResult[];
-  }
+  async (urn: string) => await searchUrn(urn)
 );
 
 const initialState: CasesState = {
@@ -52,8 +46,7 @@ export const casesSlice = createSlice({
   },
 });
 
-export const { selectIds, selectById } = caseAdapter.getSelectors<RootState>(
-  (state) => state.cases.cases
-);
+export const { selectIds, selectById, selectAll } =
+  caseAdapter.getSelectors<RootState>((state) => state.cases.cases);
 
 export default casesSlice.reducer;

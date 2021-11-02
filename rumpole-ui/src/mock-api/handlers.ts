@@ -1,22 +1,17 @@
 import { rest } from "msw";
 
-const api = (path: string) =>
-  new URL(path, "https://jsonplaceholder.typicode.com").toString();
+import { searchResults } from "./data/searchResults";
+
+const api = (path: string) => new URL(path, "https://api").toString();
 
 export const handlers = [
-  rest.get(api("/users"), (req, res, ctx) => {
+  rest.get(api("cases/search/*"), (req, res, ctx) => {
+    const urn = req.url.searchParams.get("urn");
+    const lastDigit = Number(urn?.split("").pop());
+
     return res(
       ctx.status(200),
-      ctx.json([
-        {
-          caseId: 1,
-          name: "foo",
-        },
-        {
-          caseId: 7,
-          name: "bar",
-        },
-      ])
+      ctx.json([...searchResults].slice(-1 * lastDigit))
     );
   }),
 ];

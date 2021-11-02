@@ -1,11 +1,14 @@
 import { FC } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-import { Page as UrnSearchPage } from "./features/cases/presentation/urn-search/Page";
+import {
+  Page as UrnSearchPage,
+  path as urnSearchPath,
+} from "./features/cases/presentation/search/Page";
 
 export const Routes: FC = () => (
   <Switch>
-    <Route exact path={"/search/:urn?"}>
+    <Route exact path={urnSearchPath}>
       <UrnSearchPage />
     </Route>
     <Route>

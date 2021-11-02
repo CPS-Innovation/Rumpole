@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme, useTheme } from "@mui/material";
 
 export const theme = createTheme({
   palette: {
@@ -6,3 +6,5 @@ export const theme = createTheme({
     secondary: { main: "#009ca6" },
   },
 });
+
+export const useAppTheme = () => useTheme<typeof theme>();

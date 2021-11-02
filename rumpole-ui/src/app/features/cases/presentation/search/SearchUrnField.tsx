@@ -22,7 +22,7 @@ export const SearchUrnField: FC<UrnFieldProps> = ({
         padding: 15,
         border: "none",
         outline: "none",
-        fontSize: 24,
+        fontSize: 26,
       }}
       autoFocus
       value={value}

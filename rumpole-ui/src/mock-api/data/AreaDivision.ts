@@ -1,0 +1,26 @@
+export const AreaDivision = {
+  Wales: { code: "A", name: "Cymru/Wales" },
+  EastMidlands: { code: "B", name: "East Midlands" },
+  EastOfEngland: { code: "C", name: "East of England" },
+  LondonNorth: { code: "E", name: "London North" },
+  LondonSouth: { code: "F", name: "London South" },
+  MerseryCheshire: { code: "G", name: "Mersey-Cheshire" },
+  NorthEast: { code: "H", name: "North East" },
+  NorthWest: { code: "I", name: "North West" },
+  SouthEast: { code: "J", name: "South East" },
+  SouthWest: { code: "K", name: "South West" },
+  ThamesAndChiltern: { code: "L", name: "Thames and Chiltern" },
+  Wessex: { code: "M", name: "Wessex" },
+  WestMidlands: { code: "N", name: "West Midlands" },
+  YorkshireAndHumberside: { code: "O", name: "Yorkshire and Humberside" },
+  InternationalJusticeAndOrganisedCrimeDivision: {
+    code: "P",
+    name: "International Justice and Organised Crime Division",
+  },
+  SpecialCrimeAndCounterTerrorismDivision: {
+    code: "Q",
+    name: "Special Crime and Counter Terrorism Division",
+  },
+  ProceedsOfCrime: { code: "R", name: "Proceeds of Crime" },
+  SpecialistFraudDivision: { code: "S", name: "Specialist Fraud Division" },
+};
