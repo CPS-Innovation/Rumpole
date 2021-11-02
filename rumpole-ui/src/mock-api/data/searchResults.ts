@@ -49,7 +49,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   {
     id: 18443,
     status: Status.Charged,
-    area: AreaDivision.LondonSouth,
+    area: AreaDivision.EastOfEngland,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",

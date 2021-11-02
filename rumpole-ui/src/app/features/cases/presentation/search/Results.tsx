@@ -9,17 +9,17 @@ type ResultsProps = {
   searchState: SearchState;
 };
 export const Results: FC<ResultsProps> = ({
-  searchState: {
-    filteredData,
-    totalCount,
-    params: { urn },
-  },
+  searchState: { filteredData, totalCount, urn },
 }) => {
+  const isFiltered = filteredData.length !== totalCount;
+
+  const summary = isFiltered
+    ? `Showing ${filteredData.length} of ${totalCount} results for URN: ${urn}`
+    : `${totalCount} result${totalCount > 1 ? "s" : ""} for URN: ${urn}`;
+
   return (
     <>
-      <Header>
-        {totalCount} results for URN: {urn}
-      </Header>
+      <Header>{summary}</Header>
       <Box role="list">
         {filteredData.map((item) => (
           <Result result={item} key={item.id} />

@@ -5,43 +5,43 @@ import { fetchCases, selectAll } from "../redux/casesSlice";
 import { CaseFilterQueryParams } from "../types/CaseFilterQueryParams";
 import { useQueryParams } from "./useQueryParams";
 
-export type StringFilterType = string | undefined;
-export type ArrayFiltertype = string[] | undefined;
+type FilterPropertyNames = keyof Omit<CaseFilterQueryParams, "urn">;
 
-export type FilterDetails<T extends StringFilterType | ArrayFiltertype> = {
-  [key: string]: {
-    name: string;
-    count: number;
-    selected: T;
+export type FilterDetails = {
+  name: FilterPropertyNames;
+  items: {
+    [key: string]: {
+      name: string;
+      count: number;
+      isSelected: boolean;
+    };
   };
+  isActive: boolean;
 };
 
-type Filters = {
-  area: FilterDetails<ArrayFiltertype> | undefined;
-  agency: FilterDetails<ArrayFiltertype> | undefined;
-  status: FilterDetails<StringFilterType> | undefined;
-};
+type Filters = Record<FilterPropertyNames, FilterDetails>;
 
-const buildFilterDetails = <T extends StringFilterType | ArrayFiltertype>(
+const buildFilterDetails = (
+  filterName: FilterPropertyNames,
   state: CaseSearchResult[],
-  getfilterItemKeyAndName: (item: CaseSearchResult) => {
+  getValues: (item: CaseSearchResult) => {
     code: string;
     name: string;
-  },
-  getSelected: () => T
-) => {
-  const result = state.reduce((accumulator, item) => {
-    const { code, name } = getfilterItemKeyAndName(item);
-    const selected = getSelected();
+    isSelected: boolean;
+  }
+): FilterDetails => {
+  const items = state.reduce((accumulator, item) => {
+    const { code, name, isSelected } = getValues(item);
+
     accumulator[code] = {
       name,
       count: (accumulator[code]?.count ?? 0) + 1,
-      selected,
+      isSelected,
     };
-    return accumulator;
-  }, {} as FilterDetails<T>);
 
-  return Object.keys(result).length > 1 ? result : undefined;
+    return accumulator;
+  }, {} as NonNullable<FilterDetails["items"]>);
+  return { name: filterName, items, isActive: Object.keys(items).length > 1 };
 };
 
 export const useSearchState = () => {
@@ -57,39 +57,60 @@ export const useSearchState = () => {
   const totalCount = data.length;
 
   const filters: Filters = {
-    area: buildFilterDetails(
-      data,
-      (item) => ({
-        ...item.area,
-      }),
-      () => params.area
-    ),
-    agency: buildFilterDetails(
-      data,
-      (item) => ({
-        ...item.agency,
-      }),
-      () => params.agency
-    ),
-    status: buildFilterDetails(
-      data,
-      (item) => ({
-        code: item.status.code,
-        name: item.status.description,
-      }),
-      () => params.status
-    ),
+    area: buildFilterDetails("area", data, (item) => ({
+      ...item.area,
+      isSelected:
+        params.area === undefined || params.area.includes(item.area.code),
+    })),
+    agency: buildFilterDetails("agency", data, (item) => ({
+      ...item.agency,
+      isSelected:
+        params.agency === undefined || params.agency.includes(item.agency.code),
+    })),
+    status: buildFilterDetails("status", data, (item) => ({
+      code: item.status.code,
+      name: item.status.description,
+      isSelected:
+        params.status === undefined || params.status === item.status.code,
+    })),
   };
 
   const filteredData = data.filter(
     (item) =>
-      (params.area === undefined || params.area.includes(item.area.code)) &&
-      (params.agency === undefined ||
-        params.agency.includes(item.agency.code)) &&
-      (params.status === undefined || params.status === item.status.code)
+      filters.area.items[item.area.code].isSelected &&
+      filters.agency.items[item.agency.code].isSelected &&
+      filters.status.items[item.status.code].isSelected
   );
 
-  return { totalCount, filters, filteredData, setParams, params };
+  const setUrnParam = (urn: string) => setParams({ urn });
+
+  const setFilterParam = (
+    name: FilterPropertyNames,
+    value: string,
+    isSelected: boolean
+  ) => {
+    const previousValues = Object.entries(filters[name].items)
+      .filter(([_, value]) => value.isSelected)
+      .map(([key]) => key);
+
+    const nextValues = isSelected
+      ? [...previousValues, value]
+      : previousValues.filter((previousValue) => previousValue !== value);
+
+    const isEveryValueSet =
+      nextValues.length === Object.keys(filters[name].items).length;
+
+    setParams({ ...params, [name]: isEveryValueSet ? undefined : nextValues });
+  };
+
+  return {
+    totalCount,
+    filters,
+    filteredData,
+    setUrnParam,
+    setFilterParam,
+    urn: params.urn,
+  };
 };
 
 export type SearchState = ReturnType<typeof useSearchState>;

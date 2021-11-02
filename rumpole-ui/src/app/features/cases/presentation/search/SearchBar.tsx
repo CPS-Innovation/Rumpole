@@ -11,15 +11,15 @@ type SearchBarProps = {
 };
 
 export const SearchBar: FC<SearchBarProps> = ({
-  searchState: { params, setParams },
+  searchState: { urn: initialUrn, setUrnParam },
 }) => {
-  const [urn, setUrn] = useState(params.urn || "");
+  const [urn, setUrn] = useState(initialUrn || "");
   const isValid = isUrnValid(urn);
 
   const handleChange = (val: string) => setUrn(val.toUpperCase());
 
   const handleSubmit = () => {
-    isValid && setParams({ urn });
+    isValid && setUrnParam(urn);
   };
 
   return (
