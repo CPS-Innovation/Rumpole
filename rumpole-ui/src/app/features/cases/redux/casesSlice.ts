@@ -3,14 +3,16 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../../redux/store";
-import { searchUrn } from "../api/gatewayApt";
+
+import { RootState } from "../../../common/redux/store";
+import { searchUrn } from "../api/gatewayApi";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 const caseAdapter = createEntityAdapter<CaseSearchResult>();
 
-type CasesState = {
-  cases: ReturnType<typeof caseAdapter.getInitialState>;
+export type CasesState = {
+  urn: string | undefined;
+  data: ReturnType<typeof caseAdapter.getInitialState>;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | undefined;
 };
@@ -21,7 +23,8 @@ export const fetchCases = createAsyncThunk(
 );
 
 const initialState: CasesState = {
-  cases: caseAdapter.getInitialState(),
+  urn: undefined,
+  data: caseAdapter.getInitialState(),
   status: "idle",
   error: undefined,
 };
@@ -29,15 +32,21 @@ const initialState: CasesState = {
 export const casesSlice = createSlice({
   name: "cases",
   initialState,
-  reducers: {},
+  reducers: {
+    clearCases: (state) => {
+      Object.assign(state, initialState);
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCases.pending, (state) => {
+      .addCase(fetchCases.pending, (state, action) => {
+        state.urn = action.meta.arg;
         state.status = "loading";
+        caseAdapter.setAll(state.data, []);
       })
       .addCase(fetchCases.fulfilled, (state, action) => {
         state.status = "succeeded";
-        caseAdapter.setAll(state.cases, action.payload);
+        caseAdapter.setAll(state.data, action.payload);
       })
       .addCase(fetchCases.rejected, (state, action) => {
         state.status = "failed";
@@ -46,7 +55,10 @@ export const casesSlice = createSlice({
   },
 });
 
-export const { selectIds, selectById, selectAll } =
-  caseAdapter.getSelectors<RootState>((state) => state.cases.cases);
+export const { clearCases } = casesSlice.actions;
+
+export const { selectAll } = caseAdapter.getSelectors<RootState>(
+  (state) => state.cases.data
+);
 
 export default casesSlice.reducer;

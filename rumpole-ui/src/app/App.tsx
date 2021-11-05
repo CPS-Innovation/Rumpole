@@ -1,14 +1,14 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { FC } from "react";
-import { Layout } from "./presentation/layout/Layout";
+import { Layout } from "./common/presentation/layout/Layout";
 import { ThemeProvider } from "@mui/material";
-import { theme } from "./theme/theme";
+import { theme } from "./common/theme/theme";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./Routes";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { store } from "./common/redux/store";
 
-require("./theme/font");
+require("./common/theme/font");
 
 export const App: FC = () => {
   return (

@@ -3,8 +3,7 @@ import ReactDOM from "react-dom";
 import { App } from "./app/App";
 import reportWebVitals from "./reportWebVitals";
 
-// todo: use a REACT_APP_* flag to allow more granular control of which builds/contexts to use mocking
-if (process.env.NODE_ENV === "development") {
+if (process.env.REACT_APP_MOCK_API === "true") {
   const { worker } = require("./mock-api/browser");
   worker.start();
 }

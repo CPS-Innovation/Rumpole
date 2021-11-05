@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import casesReducer from "../features/cases/redux/casesSlice";
+import casesReducer from "../../features/cases/redux/casesSlice";
 
 export const store = configureStore({
   reducer: {

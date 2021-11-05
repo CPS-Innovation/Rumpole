@@ -16,6 +16,7 @@ export const SearchUrnField: FC<UrnFieldProps> = ({
 
   return (
     <input
+      data-testid="input-search-urn"
       style={{
         flexGrow: 1,
         height: "100%",

@@ -33,6 +33,7 @@ export const SearchBar: FC<SearchBarProps> = ({
       />
 
       <Button
+        data-testid="button-search"
         variant="contained"
         color="secondary"
         onClick={handleSubmit}

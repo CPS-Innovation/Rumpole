@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { FC } from "react";
-import { useAppTheme } from "../../../../theme/theme";
+import { useAppTheme } from "../../../../common/theme/theme";
 
 export const Header: FC = ({ children }) => {
   const {

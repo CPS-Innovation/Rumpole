@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { SearchState } from "../../hooks/useSearchState";
-import { FilterMany } from "./FilterMany";
+import { FilterMultiple } from "./FilterMultiple";
+import { FilterSingle } from "./FilterSinlge";
 
 type FiltersProps = {
   searchState: SearchState;
@@ -9,23 +10,37 @@ type FiltersProps = {
 export const Filters: FC<FiltersProps> = ({
   searchState: {
     filters: { area, agency, status },
-    setFilterParam,
+    setFilterSingleParam,
+    setFilterMultipleParam,
+    setFilterMultipleParamAll,
+    loadingStatus,
   },
 }) => {
+  if (loadingStatus !== "succeeded") return null;
+
   return (
     <>
       {area.isActive && (
-        <FilterMany
+        <FilterMultiple
           title="Area"
           filterDetails={area}
-          setFilterParam={setFilterParam}
+          setFilterParam={setFilterMultipleParam}
+          setFilterParamAll={setFilterMultipleParamAll}
+        />
+      )}
+      {status.isActive && (
+        <FilterSingle
+          title="Case Status"
+          filterDetails={status}
+          setFilterParam={setFilterSingleParam}
         />
       )}
       {agency.isActive && (
-        <FilterMany
+        <FilterMultiple
           title="Agency"
           filterDetails={agency}
-          setFilterParam={setFilterParam}
+          setFilterParam={setFilterMultipleParam}
+          setFilterParamAll={setFilterMultipleParamAll}
         />
       )}
     </>
