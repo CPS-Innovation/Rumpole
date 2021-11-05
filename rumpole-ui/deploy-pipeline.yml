@@ -18,7 +18,7 @@ steps:
     inputs:
       command: "custom"
       workingDir: "rumpole-ui"
-      customCommand: "npm ci --omit=dev --ignore-scripts"
+      customCommand: "ci --omit=dev --ignore-scripts"
     displayName: "npm install"
 
   - task: Npm@1
