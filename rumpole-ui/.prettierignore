@@ -3,3 +3,7 @@ node_modules
 # Ignore artifacts:
 build
 coverage
+build-e2e
+coverage-cypress
+report
+.nyc_output
