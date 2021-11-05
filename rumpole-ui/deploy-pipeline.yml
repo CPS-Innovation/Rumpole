@@ -16,8 +16,9 @@ variables:
 steps:
   - task: Npm@1
     inputs:
-      command: "install"
+      command: "custom"
       workingDir: "rumpole-ui"
+      customCommand: "npm ci --omit=dev --ignore-scripts"
     displayName: "npm install"
 
   - task: Npm@1
@@ -34,12 +35,12 @@ steps:
       customCommand: "run build"
     displayName: "npm build"
 
-  # - task: Npm@1
-  #   inputs:
-  #     command: "custom"
-  #     workingDir: "rumpole-ui"
-  #     customCommand: "run test:ci"
-  #   displayName: "npm test"
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run test:ci"
+    displayName: "npm test"
 
   - task: PublishBuildArtifacts@1
     inputs:
