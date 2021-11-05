@@ -42,6 +42,13 @@ steps:
       customCommand: "run test:ci"
     displayName: "npm test"
 
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "redaction-logger-ui"
+      customCommand: "run cy:ci"
+    displayName: "cypress run tests"
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: "rumpole-ui/build"
@@ -53,3 +60,16 @@ steps:
       testResultsFormat: "JUnit"
       testResultsFiles: "rumpole-ui/report/test-*.xml"
       mergeTestResults: true
+
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run cy:report"
+    displayName: "generate cypress html report"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/report"
+      ArtifactName: "rumpole-ui-report"
+      publishLocation: "Container"
