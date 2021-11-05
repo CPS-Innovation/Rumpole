@@ -7,3 +7,5 @@ build-e2e
 coverage-cypress
 report
 .nyc_output
+
+public/mockServiceWorker.js
