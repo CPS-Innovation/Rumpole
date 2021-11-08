@@ -16,9 +16,8 @@ variables:
 steps:
   - task: Npm@1
     inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "ci --omit=dev --ignore-scripts"
+      command: "install"
+      workingDir: "redaction-logger-ui"
     displayName: "npm install"
 
   - task: Npm@1
