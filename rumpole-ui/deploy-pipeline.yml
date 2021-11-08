@@ -17,7 +17,7 @@ steps:
   - task: Npm@1
     inputs:
       command: "install"
-      workingDir: "redaction-logger-ui"
+      workingDir: "rumpole-ui"
     displayName: "npm install"
 
   - task: Npm@1
