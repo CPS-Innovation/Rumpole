@@ -53,7 +53,7 @@
     "prettier:check": "prettier --check .",
     "cy:dev": "start-server-and-test 'env-cmd -f .env.cypress react-scripts -r @cypress/instrument-cra start' http-get://localhost:3000 'env-cmd -f .env.cypress cypress open'",
     "cy:build": "CYPRESS_INSTRUMENT_PRODUCTION=true env-cmd -f .env.cypress react-scripts build && ncp build build-e2e",
-    "cy:ci": "cypress verify && cypress info && start-server-and-test 'serve -l 3000 -s build-e2e' http-get://localhost:3000 'env-cmd -f .env.cypress cypress run'",
+    "cy:ci": "cypress verify && cypress info && start-server-and-test 'serve -l 3000 -s build-e2e' http-get://localhost:3000 'env-cmd -f .env.cypress cypress run --browser firefox'",
     "cy:report": "npx xunit-viewer -r report -o report/index.html"
   },
   "eslintConfig": {
