@@ -1,6 +1,7 @@
 export type CaseSearchResult = {
   id: number;
   urn: string;
+  isCharged: boolean;
   area: {
     code: string;
     name: string;

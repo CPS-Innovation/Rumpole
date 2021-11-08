@@ -9,7 +9,7 @@ type FiltersProps = {
 
 export const Filters: FC<FiltersProps> = ({
   searchState: {
-    filters: { area, agency, status },
+    filters: { area, agency, status, chargedStatus },
     setFilterSingleParam,
     setFilterMultipleParam,
     setFilterMultipleParamAll,
@@ -20,19 +20,19 @@ export const Filters: FC<FiltersProps> = ({
 
   return (
     <>
+      {chargedStatus.isActive && (
+        <FilterSingle
+          title="Charged Status"
+          filterDetails={chargedStatus}
+          setFilterParam={setFilterSingleParam}
+        />
+      )}
       {area.isActive && (
         <FilterMultiple
           title="Area"
           filterDetails={area}
           setFilterParam={setFilterMultipleParam}
           setFilterParamAll={setFilterMultipleParamAll}
-        />
-      )}
-      {status.isActive && (
-        <FilterSingle
-          title="Case Status"
-          filterDetails={status}
-          setFilterParam={setFilterSingleParam}
         />
       )}
       {agency.isActive && (

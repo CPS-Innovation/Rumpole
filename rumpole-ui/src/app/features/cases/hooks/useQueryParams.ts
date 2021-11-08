@@ -1,7 +1,12 @@
 import { useHistory, useLocation } from "react-router-dom";
 import { parse, stringify } from "qs";
 
-export const useQueryParams = <T>() => {
+export type QueryParamsState<T> = {
+  setParams: (params: Partial<T>) => void;
+  params: Partial<T>;
+};
+
+export const useQueryParams = <T>(): QueryParamsState<T> => {
   const { search } = useLocation();
   const { push } = useHistory();
 

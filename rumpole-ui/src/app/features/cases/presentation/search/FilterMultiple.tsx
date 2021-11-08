@@ -31,7 +31,7 @@ export const FilterMultiple: FC<FilterMultipleProps> = ({
       <FormGroup>
         {Object.entries(items).map(([key]) => {
           const item = items[key];
-          const label = `${item.name} (${item.count})`;
+          const label = item.name; //`${item.name} (${item.count})`;
           const isChecked = item.isSelected;
           return (
             <FormControlLabel

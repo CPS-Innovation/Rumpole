@@ -1,16 +1,15 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../common/redux/hooks";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
-import { clearCases, fetchCases, selectAll } from "../redux/casesSlice";
-import { CaseFilterQueryParams } from "../types/CaseFilterQueryParams";
-import { useQueryParams } from "./useQueryParams";
 
-const FILTER_COUNT_VISIBLE_THRESHOLD = 2;
+import { CaseFilterQueryParams } from "./types/CaseFilterQueryParams";
+import { QueryParamsState } from "./useQueryParams";
+import { SearchDataState } from "./useSearchDataState";
 
-type FilterPropertyNames = keyof Omit<CaseFilterQueryParams, "urn">;
+const FILTER_COUNT_VISIBLE_THRESHOLD = 1;
+
+type FilterPropertyName = keyof Omit<CaseFilterQueryParams, "urn">;
 
 export type FilterDetails = {
-  name: FilterPropertyNames;
+  name: FilterPropertyName;
   items: {
     [key: string]: {
       name: string;
@@ -21,23 +20,15 @@ export type FilterDetails = {
   isActive: boolean;
 };
 
-type Filters = Record<FilterPropertyNames, FilterDetails>;
+type Filters = Record<FilterPropertyName, FilterDetails>;
 
 export type SearchState = ReturnType<typeof useSearchState>;
 
-export const useSearchState = () => {
-  const { setParams, params } = useQueryParams<CaseFilterQueryParams>();
-
-  const data = useAppSelector(selectAll);
-  const { status: loadingStatus, urn: reduxUrn } = useAppSelector(
-    (state) => state.cases
-  );
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(params.urn ? fetchCases(params.urn) : clearCases());
-  }, [dispatch, params.urn]);
+export const useSearchState = (
+  { setParams, params }: QueryParamsState<CaseFilterQueryParams>,
+  { data, reduxUrn, loadingStatus }: SearchDataState
+) => {
+  const { urn, ...filterParams } = params;
 
   const totalCount = data.length;
 
@@ -47,9 +38,11 @@ export const useSearchState = () => {
       data,
       sortFn: (a, b) => (a.area.name > b.area.name ? 1 : -1),
       valuesFn: (item) => ({
-        ...item.area,
+        id: item.area.code,
+        name: item.area.name,
         isSelected:
-          params.area === undefined || params.area.includes(item.area.code),
+          filterParams.area === undefined ||
+          filterParams.area.includes(item.area.code),
       }),
     }),
     agency: buildFilterDetails({
@@ -57,27 +50,41 @@ export const useSearchState = () => {
       data,
       sortFn: (a, b) => (a.agency.name > b.agency.name ? 1 : -1),
       valuesFn: (item) => ({
-        ...item.agency,
+        id: item.agency.code,
+        name: item.agency.name,
         isSelected:
-          params.agency === undefined ||
-          params.agency.includes(item.agency.code),
+          filterParams.agency === undefined ||
+          filterParams.agency.includes(item.agency.code),
       }),
     }),
     status: buildFilterDetails({
       filterName: "status",
       data,
       sortFn: (a, b) => {
-        const sortOrderings = ["O", "F", "C", "N"];
+        const sortOrderings = ["O", "F", "C", "N"]; // todo: these will probably need to change
         return sortOrderings.indexOf(a.status.code) >
           sortOrderings.indexOf(b.status.code)
           ? 1
           : -1;
       },
       valuesFn: (item) => ({
-        code: item.status.code,
+        id: item.status.code,
         name: item.status.description,
-        isSelected: params.status === item.status.code,
+        isSelected: filterParams.status === item.status.code,
       }),
+    }),
+    chargedStatus: buildFilterDetails({
+      filterName: "chargedStatus",
+      data,
+      sortFn: (a, b) => (a.isCharged > b.isCharged ? -1 : 1),
+      valuesFn: (item) => {
+        const id = item.isCharged ? "true" : "false";
+        return {
+          id,
+          name: item.isCharged ? "Charged" : "Not Charged",
+          isSelected: filterParams.chargedStatus === id,
+        };
+      },
     }),
   };
 
@@ -86,18 +93,23 @@ export const useSearchState = () => {
       filters.area.items[item.area.code].isSelected &&
       filters.agency.items[item.agency.code].isSelected &&
       (filters.status.items[item.status.code].isSelected ||
-        !Object.values(filters.status.items).some((item) => item.isSelected))
+        !Object.values(filters.status.items).some((item) => item.isSelected)) &&
+      (filters.chargedStatus.items[item.isCharged ? "true" : "false"]
+        .isSelected ||
+        !Object.values(filters.chargedStatus.items).some(
+          (item) => item.isSelected
+        ))
   );
 
   const setUrnParam = (urn: string) => setParams({ urn });
 
   const setFilterSingleParam = (
-    name: FilterPropertyNames,
+    name: FilterPropertyName,
     value: string | undefined
   ) => setParams({ ...params, [name]: value });
 
   const setFilterMultipleParam = (
-    name: FilterPropertyNames,
+    name: FilterPropertyName,
     value: string,
     isSelected: boolean
   ) => {
@@ -118,24 +130,27 @@ export const useSearchState = () => {
     });
   };
 
-  const setFilterMultipleParamAll = (name: FilterPropertyNames) => {
+  const setFilterMultipleParamAll = (name: FilterPropertyName) => {
     setParams({
       ...params,
       [name]: undefined,
     });
   };
 
+  const clearFilters = () => setParams({ urn });
+
   return {
-    loadingStatus: params.urn !== reduxUrn ? "idle" : loadingStatus,
+    urn,
+    loadingStatus: urn !== reduxUrn ? "idle" : loadingStatus,
     totalCount,
     filters,
     filteredData,
-    // todo: this is quite a big footprint of differnt methods to expose, could it be made more concise
+    isFiltered: Object.keys(filterParams).length > 0,
     setUrnParam,
     setFilterSingleParam,
     setFilterMultipleParam,
     setFilterMultipleParamAll,
-    urn: params.urn,
+    clearFilters,
   };
 };
 
@@ -145,21 +160,21 @@ const buildFilterDetails = ({
   sortFn,
   valuesFn,
 }: {
-  filterName: FilterPropertyNames;
+  filterName: FilterPropertyName;
   data: CaseSearchResult[];
   sortFn: (a: CaseSearchResult, b: CaseSearchResult) => number;
   valuesFn: (item: CaseSearchResult) => {
-    code: string;
+    id: string;
     name: string;
     isSelected: boolean;
   };
 }): FilterDetails => {
   const items = data.sort(sortFn).reduce((accumulator, item) => {
-    const { code, name, isSelected } = valuesFn(item);
+    const { id, name, isSelected } = valuesFn(item);
 
-    accumulator[code] = {
+    accumulator[id] = {
       name,
-      count: (accumulator[code]?.count ?? 0) + 1,
+      count: (accumulator[id]?.count ?? 0) + 1,
       isSelected,
     };
 

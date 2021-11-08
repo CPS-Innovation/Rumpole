@@ -9,6 +9,7 @@ type CoreCaseSearchResult = Omit<CaseSearchResult, "urn">;
 export const searchResults: CoreCaseSearchResult[] = [
   {
     id: 13401,
+    isCharged: true,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
@@ -37,6 +38,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 17422,
+    isCharged: true,
     status: Status.Charged,
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
@@ -57,6 +59,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 18443,
+    isCharged: false,
     status: Status.Charged,
     area: AreaDivision.EastOfEngland,
     agency: Agency.MetropolitanPoliceService,
@@ -77,6 +80,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 19994,
+    isCharged: false,
     status: Status.Finalised,
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
@@ -97,6 +101,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 17425,
+    isCharged: true,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
@@ -117,6 +122,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 16756,
+    isCharged: false,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
@@ -137,6 +143,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 14927,
+    isCharged: true,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
@@ -157,6 +164,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 17428,
+    isCharged: false,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
@@ -177,6 +185,7 @@ export const searchResults: CoreCaseSearchResult[] = [
   },
   {
     id: 16549,
+    isCharged: true,
     status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,

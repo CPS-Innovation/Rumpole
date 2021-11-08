@@ -1,6 +1,9 @@
 import { Box, Container, Paper } from "@mui/material";
 import { FC } from "react";
 import { Spacer } from "../../../../common/presentation/components/Spacer";
+import { CaseFilterQueryParams } from "../../hooks/types/CaseFilterQueryParams";
+import { useQueryParams } from "../../hooks/useQueryParams";
+import { useSearchDataState } from "../../hooks/useSearchDataState";
 import { useSearchState } from "../../hooks/useSearchState";
 import { Filters } from "./Filters";
 import { Results } from "./Results";
@@ -10,7 +13,10 @@ import { SearchBar } from "./SearchBar";
 export const path = "/search/";
 
 export const Page: FC = () => {
-  const searchState = useSearchState();
+  const searchFilterState = useQueryParams<CaseFilterQueryParams>();
+  const searchDataState = useSearchDataState(searchFilterState.params.urn);
+
+  const searchState = useSearchState(searchFilterState, searchDataState);
 
   return (
     <>
