@@ -32,7 +32,7 @@ steps:
   - task: Npm@1
     inputs:
       command: "custom"
-      workingDir: "redaction-logger-ui"
+      workingDir: "rumpole-ui"
       customCommand: "run cy:build"
     displayName: "cypress build"
 
