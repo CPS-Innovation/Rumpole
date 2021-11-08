@@ -28,7 +28,6 @@
     "date-fns": "^2.25.0",
     "env-cmd": "^10.1.0",
     "faker": "^5.5.3",
-    "husky": ">=6",
     "istanbul-lib-coverage": "^3.2.0",
     "lint-staged": ">=10",
     "msw": "^0.35.0",
@@ -53,10 +52,9 @@
     "eject": "react-scripts eject",
     "prettier:check": "prettier --check .",
     "cy:dev": "start-server-and-test 'env-cmd -f .env.cypress react-scripts -r @cypress/instrument-cra start' http-get://localhost:3000 'env-cmd -f .env.cypress cypress open'",
-    "cy:build": "CYPRESS_INSTRUMENT_PRODUCTION=true env-cmd -f .env.cypress react-scripts  build && ncp build build-e2e",
+    "cy:build": "CYPRESS_INSTRUMENT_PRODUCTION=true env-cmd -f .env.cypress react-scripts build && ncp build build-e2e",
     "cy:ci": "cypress verify && cypress info && start-server-and-test 'serve -l 3000 -s build-e2e' http-get://localhost:3000 'env-cmd -f .env.cypress cypress run'",
-    "cy:report": "npx xunit-viewer -r report -o report/index.html",
-    "prepare": "husky install"
+    "cy:report": "npx xunit-viewer -r report -o report/index.html"
   },
   "eslintConfig": {
     "extends": [
@@ -75,12 +73,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ],
-    "*.{js,css,md}": "prettier --write"
   },
   "nyc": {
     "report-dir": "coverage-cypress"

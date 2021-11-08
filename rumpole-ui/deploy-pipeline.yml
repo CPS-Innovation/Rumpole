@@ -28,6 +28,14 @@ steps:
       customCommand: "run prettier:check"
     displayName: "npm prettier:check"
 
+  # e2e build must be done before normal prod build otherwise it copies over it
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "redaction-logger-ui"
+      customCommand: "run cy:build"
+    displayName: "cypress build"
+
   - task: Npm@1
     inputs:
       command: "custom"
