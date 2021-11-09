@@ -1,12 +1,23 @@
-import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
-import { Agency } from "./Agency";
-import { AreaDivision } from "./AreaDivision";
-import { Status } from "./Status";
+import { Agency } from "../lookups/Agency";
+import { AreaDivision } from "../lookups/AreaDivision";
+import { Status } from "../lookups/Status";
 import faker from "faker";
+import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
+import { SearchDataSource } from "./types/SearchDataSource";
+const dataSource: SearchDataSource = (urn) => {
+  const lastDigit = Number(urn?.split("").pop());
 
-type CoreCaseSearchResult = Omit<CaseSearchResult, "urn">;
+  const coreResults = lastDigit ? [...searchResults].slice(-1 * lastDigit) : [];
 
-export const searchResults: CoreCaseSearchResult[] = [
+  return coreResults.map((result) => ({
+    ...result,
+    urn,
+  })) as CaseSearchResult[];
+};
+
+export default dataSource;
+
+const searchResults: Omit<CaseSearchResult, "urn">[] = [
   {
     id: 13401,
     isCharged: true,

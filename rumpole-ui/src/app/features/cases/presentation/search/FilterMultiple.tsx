@@ -29,20 +29,19 @@ export const FilterMultiple: FC<FilterMultipleProps> = ({
       <Spacer sx={{ height: 10 }} />
       <InlineButton onClick={handleClick}>All</InlineButton>
       <FormGroup>
-        {Object.entries(items).map(([key]) => {
-          const item = items[key];
-          const label = item.name; //`${item.name} (${item.count})`;
-          const isChecked = item.isSelected;
+        {items.map((item) => {
           return (
             <FormControlLabel
-              key={key}
+              key={item.id}
               control={
                 <Checkbox
-                  checked={isChecked}
-                  onChange={(event) => handleChange(key, event.target.checked)}
+                  checked={item.isSelected}
+                  onChange={(event) =>
+                    handleChange(item.id, event.target.checked)
+                  }
                 />
               }
-              label={label}
+              label={item.name}
             />
           );
         })}

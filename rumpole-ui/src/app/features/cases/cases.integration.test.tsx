@@ -1,13 +1,8 @@
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { searchResults } from "../../../mock-api/data/searchResults";
+import dataSource from "../../../mock-api/data/searchResults.integration";
 import { GATEWAY_BASE_URL } from "../../config";
-import {
-  render as tlRender,
-  fireEvent,
-  waitFor,
-  screen,
-} from "@testing-library/react";
+import { render as tlRender, fireEvent, waitFor } from "@testing-library/react";
 import { Page } from "./presentation/search/Page";
 import { Router } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -20,10 +15,8 @@ const fullPath = (path: string) => new URL(path, GATEWAY_BASE_URL).toString();
 
 const server = setupServer(
   rest.get(fullPath("/cases/search/"), (req, res, ctx) => {
-    const urn = req.url.searchParams.get("urn");
-    if (!(urn && ["12AB1111111", "12AB2222222", "12AB3333333"].includes(urn)))
-      throw new Error();
-    return res(ctx.json(searchResults));
+    const urn = req.url.searchParams.get("urn")!;
+    return res(ctx.json(dataSource(urn)));
   })
 );
 
@@ -36,14 +29,16 @@ const render = (
   ui: RenderParams[0],
   {
     history,
+    preloadedState,
     ...rest
   }: RenderParams[1] & {
     history: MemoryHistory<unknown>;
+    preloadedState?: Parameters<typeof configureStore>[0]["preloadedState"];
   }
 ) => {
   const store = configureStore({
     reducer: { cases: reducer },
-    preloadedState: {},
+    preloadedState: preloadedState || {},
   });
 
   const Wrapper: FC = ({ children }) => (
@@ -71,8 +66,6 @@ describe("Case search", () => {
     // enter a urn ...
     fireEvent.change(urnInput, { target: { value: "12AB1111111" } });
 
-    expect(urnInput.value).toBe("12AB1111111");
-
     /// ... and should be able to click button
     expect(searchBtn.disabled).toBe(false);
     fireEvent.click(searchBtn);
@@ -82,8 +75,7 @@ describe("Case search", () => {
       expect(getByTestId("element-results")).toBeInTheDocument()
     );
 
-    const results = getAllByTestId("element-result");
-    expect(results.length).toBe(9);
+    expect(getAllByTestId("element-result").length).toBe(1);
 
     // can find another urn results
     fireEvent.change(urnInput, { target: { value: "12AB2222222" } });
@@ -96,5 +88,9 @@ describe("Case search", () => {
     fireEvent.click(searchBtn);
     fireEvent.keyDown(urnInput, { key: "Enter" });
     expect(history.location.search).toBe("?urn=12AB3333333");
+
+    await waitFor(() =>
+      expect(getAllByTestId("element-result").length).toBe(2)
+    );
   });
 });

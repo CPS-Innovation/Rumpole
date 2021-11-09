@@ -11,12 +11,12 @@ type FilterPropertyName = keyof Omit<CaseFilterQueryParams, "urn">;
 export type FilterDetails = {
   name: FilterPropertyName;
   items: {
-    [key: string]: {
-      name: string;
-      count: number;
-      isSelected: boolean;
-    };
-  };
+    id: string;
+    name: string;
+    count: number;
+    isSelected: boolean;
+  }[];
+
   isActive: boolean;
 };
 
@@ -90,15 +90,19 @@ export const useSearchState = (
 
   const filteredData = data.filter(
     (item) =>
-      filters.area.items[item.area.code].isSelected &&
-      filters.agency.items[item.agency.code].isSelected &&
-      (filters.status.items[item.status.code].isSelected ||
-        !Object.values(filters.status.items).some((item) => item.isSelected)) &&
-      (filters.chargedStatus.items[item.isCharged ? "true" : "false"]
-        .isSelected ||
-        !Object.values(filters.chargedStatus.items).some(
-          (item) => item.isSelected
-        ))
+      filters.area.items.find((filterItem) => filterItem.id === item.area.code)
+        ?.isSelected &&
+      filters.agency.items.find(
+        (filterItem) => filterItem.id === item.agency.code
+      )?.isSelected &&
+      (filters.status.items.find(
+        (filterItem) => filterItem.id === item.status.code
+      )?.isSelected ||
+        !filters.status.items.some((item) => item.isSelected)) &&
+      (filters.chargedStatus.items.find(
+        (filterItem) => filterItem.id === (item.isCharged ? "true" : "false")
+      )?.isSelected ||
+        !filters.chargedStatus.items.some((item) => item.isSelected))
   );
 
   const setUrnParam = (urn: string) => setParams({ urn });
@@ -113,16 +117,15 @@ export const useSearchState = (
     value: string,
     isSelected: boolean
   ) => {
-    const previousValues = Object.entries(filters[name].items)
-      .filter(([, value]) => value.isSelected)
-      .map(([key]) => key);
+    const previousValues = filters[name].items
+      .filter((item) => item.isSelected)
+      .map((item) => item.id);
 
     const nextValues = isSelected
       ? [...previousValues, value]
       : previousValues.filter((previousValue) => previousValue !== value);
 
-    const isEveryValueSet =
-      nextValues.length === Object.keys(filters[name].items).length;
+    const isEveryValueSet = nextValues.length === filters[name].items.length;
 
     setParams({
       ...params,
@@ -169,20 +172,20 @@ const buildFilterDetails = ({
     isSelected: boolean;
   };
 }): FilterDetails => {
-  const items = data.sort(sortFn).reduce((accumulator, item) => {
+  const items = [...data].sort(sortFn).reduce((accumulator, item) => {
     const { id, name, isSelected } = valuesFn(item);
-
-    accumulator[id] = {
-      name,
-      count: (accumulator[id]?.count ?? 0) + 1,
-      isSelected,
-    };
+    if (!accumulator.some((existingItem) => existingItem.id === id)) {
+      accumulator.push({ id, name, count: 0, isSelected: false });
+    }
+    var thisItem = accumulator[accumulator.length - 1];
+    thisItem.count += 1;
+    thisItem.isSelected = isSelected;
 
     return accumulator;
-  }, {} as NonNullable<FilterDetails["items"]>);
+  }, [] as FilterDetails["items"]);
   return {
     name: filterName,
     items,
-    isActive: Object.keys(items).length >= FILTER_COUNT_VISIBLE_THRESHOLD,
+    isActive: items.length >= FILTER_COUNT_VISIBLE_THRESHOLD,
   };
 };

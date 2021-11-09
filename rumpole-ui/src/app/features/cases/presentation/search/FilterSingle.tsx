@@ -43,15 +43,12 @@ export const FilterSingle: FC<FilterSingleProps> = ({
             checked={!isAnyFilterApplied}
             label={"All"}
           />
-          {Object.entries(items).map(([key]) => {
-            const item = items[key];
-            const label = item.name; //`${item.name} (${item.count})`;
-            const isChecked = item.isSelected;
+          {items.map((item) => {
             return (
               <FormControlLabel
-                key={key}
-                control={<Radio value={key} checked={isChecked} />}
-                label={label}
+                key={item.id}
+                control={<Radio value={item.id} checked={item.isSelected} />}
+                label={item.name}
               />
             );
           })}

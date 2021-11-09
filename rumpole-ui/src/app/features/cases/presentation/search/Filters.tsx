@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { SearchState } from "../../hooks/useSearchState";
 import { FilterMultiple } from "./FilterMultiple";
-import { FilterSingle } from "./FilterSinlge";
+import { FilterSingle } from "./FilterSingle";
 
 type FiltersProps = {
   searchState: SearchState;

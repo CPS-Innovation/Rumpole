@@ -1,18 +1,39 @@
 import { rest } from "msw";
+import demoDataSource from "./data/searchResults.demo";
+import devDataSource from "./data/searchResults.dev";
+import integrationDataSource from "./data/searchResults.integration";
+import cypressDataSource from "./data/searchResults.cypress";
+import { CaseSearchResult } from "../app/features/cases/domain/CaseSearchResult";
+import { SearchDataSource } from "./data/types/SearchDataSource";
 
-import { searchResults } from "./data/searchResults";
+const dataSources: { [key: string]: SearchDataSource } = {
+  demo: demoDataSource,
+  dev: devDataSource,
+  integration: integrationDataSource,
+  cypress: cypressDataSource,
+};
 
-const api = (path: string) =>
+const sources = (process.env.REACT_APP_MOCK_API_SOURCES ?? "").split(",");
+
+const apiPath = (path: string) =>
   new URL(path, process.env.REACT_APP_GATEWAY_BASE_URL).toString();
 
 export const handlers = [
-  rest.get(api("cases/search/*"), (req, res, ctx) => {
-    const urn = req.url.searchParams.get("urn");
-    const lastDigit = Number(urn?.split("").pop());
+  rest.get(apiPath("cases/search/*"), (req, res, ctx) => {
+    const urn = req.url.searchParams.get("urn")!;
 
-    return res(
-      ctx.delay(Math.random() * 2000),
-      ctx.json(lastDigit ? [...searchResults].slice(-1 * lastDigit) : [])
-    );
+    let results: CaseSearchResult[] = [];
+
+    for (const source of sources) {
+      if (dataSources[source]) {
+        const data = dataSources[source](urn);
+        if (data.length) {
+          results = data;
+          break;
+        }
+      }
+    }
+
+    return res(ctx.delay(Math.random() * 2500), ctx.json(results));
   }),
 ];
