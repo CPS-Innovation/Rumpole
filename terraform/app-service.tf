@@ -57,18 +57,18 @@ resource "azuread_application" "as_web_rumpole" {
     }
   }
 
-  required_resource_access {
-    resource_app_id = azuread_application.fa_rumpole.application_id
+  # required_resource_access {
+  #   resource_app_id = azuread_application.fa_rumpole.application_id
 
-    resource_access {
-      id   = tolist(azuread_application.fa_rumpole.oauth2_permissions)[0].id
-      type = "Scope"
-    }
-  }
+  #   resource_access {
+  #     id   = tolist(azuread_application.fa_rumpole.oauth2_permissions)[0].id
+  #     type = "Scope"
+  #   }
+  # }
 
-  depends_on = [
-    azuread_application.fa_rumpole
-  ]
+  # depends_on = [
+  #   azuread_application.fa_rumpole
+  # ]
 }
 
 resource "azuread_application_password" "asap_web_rumpole_app_service" {
