@@ -34,6 +34,7 @@ resource "azuread_application" "as_web_rumpole" {
   display_name               = "as-web-${local.resource_name}"
   oauth2_allow_implicit_flow = false
   identifier_uris            = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
+  owners                     = ["4acc9fb2-3e32-4109-b3d1-5fcd3a253e4e"]
   reply_urls = [
     "https://as-web-${local.resource_name}.azurewebsites.net/.auth/login/aad/callback",
   ]
