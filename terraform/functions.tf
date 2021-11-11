@@ -67,15 +67,15 @@ resource "azuread_application" "fa_rumpole" {
   # Creating another causes a duplication error
 
   required_resource_access {
-    resource_app_id = "00000003-0000-0000-c000-000000000000"
+    resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph
 
     resource_access {
-      id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"
+      id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d" # read user
       type = "Scope"
     }
 
     resource_access {
-      id   = "5f8c59db-677d-491f-a6b8-5f174b11ec1d"
+      id   = "5f8c59db-677d-491f-a6b8-5f174b11ec1d" # read all groups (requires admin consent?)
       type = "Scope"
     }
   }
