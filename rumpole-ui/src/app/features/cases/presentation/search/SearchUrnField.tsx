@@ -29,6 +29,7 @@ export const SearchUrnField: FC<UrnFieldProps> = ({
       value={value}
       onChange={(event) => onChange(event.target.value)}
       onKeyPress={(event) => handleKeyPress(event)}
+      placeholder="Enter a URN"
     />
   );
 };

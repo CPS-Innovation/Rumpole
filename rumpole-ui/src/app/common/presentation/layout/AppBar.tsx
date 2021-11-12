@@ -1,8 +1,10 @@
+import { Box } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { useUserDetails } from "../../../auth/useUserDetails";
+import { BUILD_NUMBER } from "../../../config";
 import { Spacer } from "../components/Spacer";
 import { Logo } from "./logo/Logo";
 
@@ -23,9 +25,9 @@ const AppBar: React.FC = () => {
           borderColor: "secondary.main",
         }}
       >
-        <Spacer sx={{ marginRight: 4 }}>
-          <Logo height={55} />
-        </Spacer>
+        <Logo height={55} />
+
+        <Spacer sx={{ width: 40 }}></Spacer>
 
         <Link
           to="/"
@@ -35,7 +37,17 @@ const AppBar: React.FC = () => {
             Rumpole
           </Typography>
         </Link>
-        <Typography sx={{ alignSelf: "flex-end" }}>{name}</Typography>
+
+        <Box sx={{ alignSelf: "flex-end" }}>
+          <Typography
+            aria-hidden="true"
+            sx={{ color: "primary.main", textAlign: "right" }}
+          >
+            v: {BUILD_NUMBER}
+          </Typography>
+
+          <Typography variant="body1">{name}</Typography>
+        </Box>
       </Toolbar>
     </MuiAppBar>
   );
