@@ -3,7 +3,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
-import { useUserDetails } from "../../../auth/useUserDetails";
+import { useUserDetails } from "../../../auth";
 import { BUILD_NUMBER } from "../../../config";
 import { Spacer } from "../components/Spacer";
 import { Logo } from "./logo/Logo";

@@ -7,7 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./Routes";
 import { Provider } from "react-redux";
 import { store } from "./common/redux/store";
-import { Auth } from "./auth/Auth";
+import { Auth } from "./auth";
 
 require("./common/theme/font");
 
@@ -16,17 +16,15 @@ export const App: FC = () => {
     <>
       <CssBaseline />
       <Auth>
-        {(userDetails) => (
-          <ThemeProvider theme={theme}>
-            <Provider store={store}>
-              <Router>
-                <Layout>
-                  <Routes />
-                </Layout>
-              </Router>
-            </Provider>
-          </ThemeProvider>
-        )}
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <Router>
+              <Layout>
+                <Routes />
+              </Layout>
+            </Router>
+          </Provider>
+        </ThemeProvider>
       </Auth>
     </>
   );
