@@ -7,7 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./Routes";
 import { Provider } from "react-redux";
 import { store } from "./common/redux/store";
-import { MsalAuth } from "./auth/MsalAuth";
+import { Auth } from "./auth/Auth";
 
 require("./common/theme/font");
 
@@ -15,17 +15,19 @@ export const App: FC = () => {
   return (
     <>
       <CssBaseline />
-      <MsalAuth>
-        <ThemeProvider theme={theme}>
-          <Provider store={store}>
-            <Router>
-              <Layout>
-                <Routes />
-              </Layout>
-            </Router>
-          </Provider>
-        </ThemeProvider>
-      </MsalAuth>
+      <Auth>
+        {(userDetails) => (
+          <ThemeProvider theme={theme}>
+            <Provider store={store}>
+              <Router>
+                <Layout>
+                  <Routes />
+                </Layout>
+              </Router>
+            </Provider>
+          </ThemeProvider>
+        )}
+      </Auth>
     </>
   );
 };

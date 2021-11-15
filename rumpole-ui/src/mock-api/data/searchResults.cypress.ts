@@ -13,7 +13,7 @@ export default dataSource;
 
 const searchResults: CaseSearchResult[] = [
   {
-    urn: "12AB1212121",
+    urn: "12AB1111111",
     id: 13401,
     isCharged: true,
     status: Status.Charged,
@@ -43,7 +43,7 @@ const searchResults: CaseSearchResult[] = [
     ],
   },
   {
-    urn: "12AB1212121",
+    urn: "12AB2222222",
     id: 17422,
     isCharged: true,
     status: Status.Charged,
@@ -65,7 +65,7 @@ const searchResults: CaseSearchResult[] = [
     ],
   },
   {
-    urn: "12AB1212122",
+    urn: "12AB2222222",
     id: 18443,
     isCharged: false,
     status: Status.Charged,

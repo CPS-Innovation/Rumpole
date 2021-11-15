@@ -1,4 +1,4 @@
-import { getAccessToken } from "../../../auth/getAccessToken";
+import { getAccessToken } from "../../../auth/msal/getAccessToken";
 import { GATEWAY_BASE_URL } from "../../../config";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
