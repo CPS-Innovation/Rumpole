@@ -7,19 +7,19 @@ import {
 } from "./features/cases/presentation/search/Page";
 
 import {
-  Page as CasePage,
+  CasePageLayout as CasePage,
   path as casePath,
-} from "./features/cases/presentation/case/Page";
+} from "./features/cases/presentation/case/CasePageLayout";
 export const Routes: FC = () => (
   <Switch>
     <Route exact path={urnSearchPath}>
       <UrnSearchPage />
     </Route>
-    <Route exact path={casePath}>
+    <Route path={casePath}>
       <CasePage />
     </Route>
     <Route>
-      <Redirect to={"/search/"} />
+      <Redirect to={urnSearchPath} />
     </Route>
   </Switch>
 );

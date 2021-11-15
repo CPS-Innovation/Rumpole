@@ -10,7 +10,7 @@ import { Results } from "./Results";
 import { ResultsTitle } from "./ResultsTitle";
 import { SearchBar } from "./SearchBar";
 
-export const path = "/search/";
+export const path = "/search";
 
 export const Page: FC = () => {
   const searchFilterState = useQueryParams<CaseFilterQueryParams>();

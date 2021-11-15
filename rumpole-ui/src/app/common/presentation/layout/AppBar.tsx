@@ -2,13 +2,18 @@ import { Box } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { FC } from "react";
 import { Link } from "react-router-dom";
 import { useUserDetails } from "../../../auth";
 import { BUILD_NUMBER } from "../../../config";
 import { Spacer } from "../components/Spacer";
 import { Logo } from "./logo/Logo";
 
-const AppBar: React.FC = () => {
+type AppBarProps = {
+  height: number;
+};
+
+const AppBar: FC<AppBarProps> = ({ height }) => {
   const { name } = useUserDetails();
   return (
     <MuiAppBar
@@ -19,7 +24,7 @@ const AppBar: React.FC = () => {
     >
       <Toolbar
         sx={{
-          height: 90,
+          height: height - 10,
           bgcolor: "primary.main",
           borderBottom: 10,
           borderColor: "secondary.main",
