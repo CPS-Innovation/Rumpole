@@ -73,9 +73,9 @@ describe("useSearchState", () => {
 
   test("returns totalCount", () => {
     mockDataState.data = [
-      { area: {}, agency: {}, status: {} },
-      { area: {}, agency: {}, status: {} },
-      { area: {}, agency: {}, status: {} },
+      { area: {}, agency: {} },
+      { area: {}, agency: {} },
+      { area: {}, agency: {} },
     ] as CaseSearchResult[];
 
     const {
@@ -97,11 +97,10 @@ describe("useSearchState", () => {
               name: "foo",
             },
             agency: {},
-            status: {},
           },
-          { area: { code: "2", name: "bar" }, agency: {}, status: {} },
-          { area: { code: "1", name: "foo" }, agency: {}, status: {} },
-          { area: { code: "3", name: "baz" }, agency: {}, status: {} },
+          { area: { code: "2", name: "bar" }, agency: {} },
+          { area: { code: "1", name: "foo" }, agency: {} },
+          { area: { code: "3", name: "baz" }, agency: {} },
         ] as CaseSearchResult[];
       });
 
@@ -131,9 +130,8 @@ describe("useSearchState", () => {
               name: "foo",
             },
             agency: {},
-            status: {},
           },
-          { area: { code: "1", name: "foo" }, agency: {}, status: {} },
+          { area: { code: "1", name: "foo" }, agency: {} },
         ]);
       });
 
@@ -163,10 +161,9 @@ describe("useSearchState", () => {
               name: "foo",
             },
             agency: {},
-            status: {},
           },
-          { area: { code: "1", name: "foo" }, agency: {}, status: {} },
-          { area: { code: "3", name: "baz" }, agency: {}, status: {} },
+          { area: { code: "1", name: "foo" }, agency: {} },
+          { area: { code: "3", name: "baz" }, agency: {} },
         ]);
       });
 
@@ -223,11 +220,10 @@ describe("useSearchState", () => {
               name: "foo",
             },
             area: {},
-            status: {},
           },
-          { agency: { code: "2", name: "bar" }, area: {}, status: {} },
-          { agency: { code: "1", name: "foo" }, area: {}, status: {} },
-          { agency: { code: "3", name: "baz" }, area: {}, status: {} },
+          { agency: { code: "2", name: "bar" }, area: {} },
+          { agency: { code: "1", name: "foo" }, area: {} },
+          { agency: { code: "3", name: "baz" }, area: {} },
         ] as CaseSearchResult[];
       });
 
@@ -257,9 +253,8 @@ describe("useSearchState", () => {
               name: "foo",
             },
             area: {},
-            status: {},
           },
-          { agency: { code: "1", name: "foo" }, area: {}, status: {} },
+          { agency: { code: "1", name: "foo" }, area: {} },
         ]);
       });
 
@@ -289,10 +284,9 @@ describe("useSearchState", () => {
               name: "foo",
             },
             area: {},
-            status: {},
           },
-          { agency: { code: "1", name: "foo" }, area: {}, status: {} },
-          { agency: { code: "3", name: "baz" }, area: {}, status: {} },
+          { agency: { code: "1", name: "foo" }, area: {} },
+          { agency: { code: "3", name: "baz" }, area: {} },
         ]);
       });
 
@@ -347,12 +341,26 @@ describe("useSearchState", () => {
             id: 1,
             agency: {},
             area: {},
-            status: {},
-            isCharged: false,
+            offences: [{ isNotYetCharged: true }],
           },
-          { id: 2, agency: {}, area: {}, status: {}, isCharged: true },
-          { id: 3, agency: {}, area: {}, status: {}, isCharged: false },
-          { id: 4, agency: {}, area: {}, status: {}, isCharged: true },
+          {
+            id: 2,
+            agency: {},
+            area: {},
+            offences: [{ isNotYetCharged: false }],
+          },
+          {
+            id: 3,
+            agency: {},
+            area: {},
+            offences: [{ isNotYetCharged: true }],
+          },
+          {
+            id: 4,
+            agency: {},
+            area: {},
+            offences: [{ isNotYetCharged: false }],
+          },
         ] as CaseSearchResult[];
       });
 
@@ -374,10 +382,7 @@ describe("useSearchState", () => {
           ],
         });
         expect(isFiltered).toBe(true);
-        expect(filteredData).toEqual([
-          { id: 2, agency: {}, area: {}, status: {}, isCharged: true },
-          { id: 4, agency: {}, area: {}, status: {}, isCharged: true },
-        ]);
+        expect(filteredData.map((item) => item.id)).toEqual([2, 4]);
       });
 
       test("it can filter on not charged cases", () => {
@@ -398,10 +403,7 @@ describe("useSearchState", () => {
           ],
         });
         expect(isFiltered).toBe(true);
-        expect(filteredData).toEqual([
-          { id: 1, agency: {}, area: {}, status: {}, isCharged: false },
-          { id: 3, agency: {}, area: {}, status: {}, isCharged: false },
-        ]);
+        expect(filteredData.map((item) => item.id)).toEqual([1, 3]);
       });
 
       test("it can not filter on charged status", () => {
@@ -427,12 +429,7 @@ describe("useSearchState", () => {
           ],
         });
         expect(isFiltered).toBe(true);
-        expect(filteredData).toEqual([
-          { id: 1, agency: {}, area: {}, status: {}, isCharged: false },
-          { id: 2, agency: {}, area: {}, status: {}, isCharged: true },
-          { id: 3, agency: {}, area: {}, status: {}, isCharged: false },
-          { id: 4, agency: {}, area: {}, status: {}, isCharged: true },
-        ]);
+        expect(filteredData.map((item) => item.id)).toEqual([1, 2, 3, 4]);
       });
     });
   });
@@ -440,9 +437,9 @@ describe("useSearchState", () => {
   describe("setting params", () => {
     beforeEach(() => {
       mockDataState.data = [
-        { agency: { code: "A" }, area: {}, status: {} },
-        { agency: { code: "B" }, area: {}, status: {} },
-        { agency: { code: "C" }, area: {}, status: {} },
+        { agency: { code: "A" }, area: {} },
+        { agency: { code: "B" }, area: {} },
+        { agency: { code: "C" }, area: {} },
       ] as CaseSearchResult[];
     });
 

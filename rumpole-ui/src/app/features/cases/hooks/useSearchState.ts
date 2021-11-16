@@ -171,4 +171,4 @@ const buildFilterDetails = ({
 };
 
 const isCharged = (result: CaseSearchResult) =>
-  result.offences.some((item) => !item.isNotYetCharged);
+  result.offences?.some((item) => !item.isNotYetCharged);
