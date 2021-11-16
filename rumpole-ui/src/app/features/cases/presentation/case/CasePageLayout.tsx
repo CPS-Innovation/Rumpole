@@ -1,19 +1,32 @@
-import { Box, Button } from "@mui/material";
-import { FC, useState } from "react";
+import { Box } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 import { Spacer } from "../../../../common/presentation/components/Spacer";
 import { Content } from "./Content";
 import { Menu } from "./Menu";
-import { DocumentList } from "./DocumentList";
+import { DocList } from "./doclist/DocList";
+import { useLocation } from "react-router";
 
 const TOP_SPACER_HEIGHT = 2;
 const MENU_WIDTH = 150;
 const SUMMARY_EXPANDED_WIDTH = 500;
 const SUMMARY_COLLAPSED_WIDTH = 0;
+const BORDER_WIDTH = 3;
+const grey = "grey.200";
 
 export const path = "/case/:id/:section?";
 
 export const CasePageLayout: FC = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(true);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
+
+  const { key } = useLocation();
+
+  useEffect(() => {
+    // if key changes (a navigation or refresh of the current route)
+    //  open the list again as this is currently the only way to open a closed list.
+    //  todo: is this a good way to do it?
+    setIsSummaryExpanded(true);
+  }, [key]);
+
   return (
     <>
       <Spacer sx={{ height: TOP_SPACER_HEIGHT }} />
@@ -24,9 +37,9 @@ export const CasePageLayout: FC = () => {
           sx={{
             minHeight: "100%",
             width: MENU_WIDTH,
-            borderRightWidth: 3,
+            borderRightWidth: BORDER_WIDTH,
             borderRightStyle: "solid",
-            borderRightColor: "grey.300",
+            borderRightColor: grey,
           }}
         >
           <Menu />
@@ -34,21 +47,26 @@ export const CasePageLayout: FC = () => {
 
         <Box
           sx={{
-            width: isExpanded
+            width: isSummaryExpanded
               ? SUMMARY_EXPANDED_WIDTH
               : SUMMARY_COLLAPSED_WIDTH,
-            borderRightWidth: isExpanded ? 3 : 0,
-            borderRightStyle: "solid",
-            borderRightColor: "grey.300",
+
             transition: "width 0.15s",
             overflowX: "hidden",
+            backgroundColor: grey,
           }}
         >
-          <DocumentList />
+          <Box
+            sx={{
+              opacity: isSummaryExpanded ? 100 : 0,
+              transition: "opacity 0.1s ",
+            }}
+          >
+            <DocList collapse={() => setIsSummaryExpanded(false)} />
+          </Box>
         </Box>
 
         <Box sx={{ flexGrow: 1 }}>
-          <Button onClick={() => setIsExpanded(!isExpanded)}>toggle</Button>
           <Content />
         </Box>
       </Box>

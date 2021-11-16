@@ -6,6 +6,7 @@ import {
 
 import { RootState } from "../../../common/redux/store";
 import { searchUrn } from "../api/gatewayApi";
+import { searchUrn as coreDataSearchUrn } from "../api/coreDataApi";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 const caseAdapter = createEntityAdapter<CaseSearchResult>();
@@ -19,7 +20,7 @@ export type CasesState = {
 
 export const fetchCases = createAsyncThunk(
   "cases/fetchCases",
-  async (urn: string) => await searchUrn(urn)
+  async (urn: string) => await coreDataSearchUrn(urn)
 );
 
 const initialState: CasesState = {

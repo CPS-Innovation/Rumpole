@@ -1,8 +1,10 @@
 import { SvgIconComponent } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { FC } from "react";
 import { generatePath, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
+
+const grey = "grey.200";
 
 type MenuItemProps = {
   label: string;
@@ -26,9 +28,9 @@ export const MenuItem: FC<MenuItemProps> = ({ label, Icon, section }) => {
         textAlign: "center",
         borderBottomWidth: 3,
         borderBottomStyle: "solid",
-        borderBottomColor: "grey.300",
+        borderBottomColor: grey,
         paddingTop: "15px",
-        backgroundColor: section === params.section ? "grey.300" : "none",
+        backgroundColor: section === params.section ? grey : "none",
       }}
     >
       <Link
@@ -37,7 +39,7 @@ export const MenuItem: FC<MenuItemProps> = ({ label, Icon, section }) => {
       >
         <Icon sx={{ fontSize: "4rem", color: "primary.main" }} />
         <br />
-        {label}
+        <Typography variant="body1">{label}</Typography>
       </Link>
     </Box>
   );
