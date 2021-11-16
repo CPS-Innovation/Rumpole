@@ -57,31 +57,15 @@ export const useSearchState = (
           filterParams.agency.includes(item.agency.code),
       }),
     }),
-    status: buildFilterDetails({
-      filterName: "status",
-      data,
-      sortFn: (a, b) => {
-        const sortOrderings = ["O", "F", "C", "N"]; // todo: these will probably need to change
-        return sortOrderings.indexOf(a.status.code) >
-          sortOrderings.indexOf(b.status.code)
-          ? 1
-          : -1;
-      },
-      valuesFn: (item) => ({
-        id: item.status.code,
-        name: item.status.description,
-        isSelected: filterParams.status === item.status.code,
-      }),
-    }),
     chargedStatus: buildFilterDetails({
       filterName: "chargedStatus",
       data,
-      sortFn: (a, b) => (a.isCharged > b.isCharged ? -1 : 1),
+      sortFn: (a, b) => (isCharged(a) > isCharged(b) ? -1 : 1),
       valuesFn: (item) => {
-        const id = item.isCharged ? "true" : "false";
+        const id = isCharged(item) ? "true" : "false";
         return {
           id,
-          name: item.isCharged ? "Charged" : "Not Charged",
+          name: isCharged(item) ? "Charged" : "Not Charged",
           isSelected: filterParams.chargedStatus === id,
         };
       },
@@ -95,12 +79,8 @@ export const useSearchState = (
       filters.agency.items.find(
         (filterItem) => filterItem.id === item.agency.code
       )?.isSelected &&
-      (filters.status.items.find(
-        (filterItem) => filterItem.id === item.status.code
-      )?.isSelected ||
-        !filters.status.items.some((item) => item.isSelected)) &&
       (filters.chargedStatus.items.find(
-        (filterItem) => filterItem.id === (item.isCharged ? "true" : "false")
+        (filterItem) => filterItem.id === (isCharged(item) ? "true" : "false")
       )?.isSelected ||
         !filters.chargedStatus.items.some((item) => item.isSelected))
   );
@@ -189,3 +169,6 @@ const buildFilterDetails = ({
     isActive: items.length >= FILTER_COUNT_VISIBLE_THRESHOLD,
   };
 };
+
+const isCharged = (result: CaseSearchResult) =>
+  result.offences.some((item) => !item.isNotYetCharged);

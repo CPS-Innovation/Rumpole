@@ -13,9 +13,8 @@ type MenuItemProps = {
 };
 
 export const MenuItem: FC<MenuItemProps> = ({ label, Icon, section }) => {
-  const { path, params } = useRouteMatch<{ section: string | undefined }>();
   const theme = useTheme();
-
+  const { path, params } = useRouteMatch<{ section: string | undefined }>();
   const nextPath = generatePath(path, {
     ...params,
     section,
@@ -24,21 +23,27 @@ export const MenuItem: FC<MenuItemProps> = ({ label, Icon, section }) => {
   return (
     <Box
       sx={{
-        height: 150,
-        textAlign: "center",
+        height: 130,
         borderBottomWidth: 3,
         borderBottomStyle: "solid",
         borderBottomColor: grey,
-        paddingTop: "15px",
+
         backgroundColor: section === params.section ? grey : "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Link
         to={nextPath}
-        style={{ textDecoration: "none", color: theme.palette.primary.main }}
+        style={{
+          textDecoration: "none",
+          color: theme.palette.primary.main,
+          textAlign: "center",
+        }}
       >
-        <Icon sx={{ fontSize: "4rem", color: "primary.main" }} />
-        <br />
+        <Icon sx={{ fontSize: "3.5rem", color: "primary.main" }} />
+
         <Typography variant="body1">{label}</Typography>
       </Link>
     </Box>

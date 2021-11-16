@@ -1,38 +1,35 @@
 import { Agency } from "../lookups/Agency";
 import { AreaDivision } from "../lookups/AreaDivision";
-import { Status } from "../lookups/Status";
 import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
 import { SearchDataSource } from "./types/SearchDataSource";
 
 const dataSource: SearchDataSource = (urn) =>
-  searchResults.filter((item) => item.urn === urn);
+  searchResults.filter((item) => item.uniqueReferenceNumber === urn);
 
 export default dataSource;
 
 export const searchResults: CaseSearchResult[] = [
   {
-    urn: "52AB1111111",
+    uniqueReferenceNumber: "52AB1111111",
     id: 13401,
-    isCharged: false,
-    status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Adam",
       surname: "Apple",
+      organisationName: "",
     },
     offences: [],
   },
   {
-    urn: "36AB1111112",
+    uniqueReferenceNumber: "36AB1111112",
     id: 13402,
-    isCharged: true,
-    status: Status.Charged,
     area: AreaDivision.NorthWest,
     agency: Agency.CumbriaConstabulary,
     leadDefendant: {
       firstNames: "Berty",
       surname: "Banana",
+      organisationName: "",
     },
     offences: [
       {
@@ -42,32 +39,31 @@ export const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: "Bladed article",
         longDescription: "Bladed article",
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    urn: "48AB1111113",
+    uniqueReferenceNumber: "48AB1111113",
     id: 13403,
-    isCharged: false,
-    status: Status.Charged,
     area: AreaDivision.NorthWest,
     agency: Agency.LancashireConstabulary,
     leadDefendant: {
       firstNames: "Chad",
       surname: "Carrot",
+      organisationName: "",
     },
     offences: [],
   },
   {
-    urn: "51AB1111114",
+    uniqueReferenceNumber: "51AB1111114",
     id: 13402,
-    isCharged: true,
-    status: Status.Charged,
     area: AreaDivision.MerseryCheshire,
     agency: Agency.MerseysidePolice,
     leadDefendant: {
       firstNames: "Dan",
       surname: "Dill",
+      organisationName: "",
     },
     offences: [
       {
@@ -77,19 +73,19 @@ export const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: "Dangerous driving",
         longDescription: "Dangerous driving",
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    urn: "43AB1111115",
+    uniqueReferenceNumber: "43AB1111115",
     id: 13402,
-    isCharged: true,
-    status: Status.Charged,
     area: AreaDivision.MerseryCheshire,
     agency: Agency.MerseysidePolice,
     leadDefendant: {
       firstNames: "Edward",
       surname: "Egg",
+      organisationName: "",
     },
     offences: [
       {
@@ -99,6 +95,7 @@ export const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: "s.39",
         longDescription: "s.39",
+        isNotYetCharged: true,
       },
     ],
   },

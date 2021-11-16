@@ -1,14 +1,14 @@
 import { Box } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Spacer } from "../../../../common/presentation/components/Spacer";
-import { Content } from "./Content";
-import { Menu } from "./Menu";
+import { Content } from "./content/Content";
+import { Menu } from "./menu/Menu";
 import { DocList } from "./doclist/DocList";
 import { useLocation } from "react-router";
 
 const TOP_SPACER_HEIGHT = 2;
-const MENU_WIDTH = 150;
-const SUMMARY_EXPANDED_WIDTH = 500;
+const MENU_WIDTH = 130;
+const SUMMARY_EXPANDED_WIDTH = 400;
 const SUMMARY_COLLAPSED_WIDTH = 0;
 const BORDER_WIDTH = 3;
 const grey = "grey.200";
@@ -66,7 +66,7 @@ export const CasePageLayout: FC = () => {
           </Box>
         </Box>
 
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, padding: "15px" }}>
           <Content />
         </Box>
       </Box>

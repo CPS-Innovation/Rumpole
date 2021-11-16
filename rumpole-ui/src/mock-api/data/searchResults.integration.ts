@@ -1,27 +1,24 @@
 import { Agency } from "../lookups/Agency";
 import { AreaDivision } from "../lookups/AreaDivision";
-import { Status } from "../lookups/Status";
 import faker from "faker";
-
 import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
 import { SearchDataSource } from "./types/SearchDataSource";
 
 const dataSource: SearchDataSource = (urn) =>
-  searchResults.filter((item) => item.urn === urn);
+  searchResults.filter((item) => item.uniqueReferenceNumber === urn);
 
 export default dataSource;
 
 const searchResults: CaseSearchResult[] = [
   {
-    urn: "12AB1111111",
+    uniqueReferenceNumber: "12AB1111111",
     id: 13401,
-    isCharged: true,
-    status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -31,6 +28,7 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
       {
         earlyDate: "2020-03-01",
@@ -39,19 +37,19 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    urn: "12AB2222222",
+    uniqueReferenceNumber: "12AB2222222",
     id: 17422,
-    isCharged: true,
-    status: Status.Charged,
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -61,32 +59,31 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    urn: "12AB3333333",
+    uniqueReferenceNumber: "12AB3333333",
     id: 18443,
-    isCharged: false,
-    status: Status.Charged,
     area: AreaDivision.LondonNorth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [],
   },
   {
-    urn: "12AB3333333",
+    uniqueReferenceNumber: "12AB3333333",
     id: 18444,
-    isCharged: false,
-    status: Status.Charged,
     area: AreaDivision.LondonSouth,
     agency: Agency.CounterFraudAuthority,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [],
   },

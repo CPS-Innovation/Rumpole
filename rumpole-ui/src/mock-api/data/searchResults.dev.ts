@@ -1,6 +1,5 @@
 import { Agency } from "../lookups/Agency";
 import { AreaDivision } from "../lookups/AreaDivision";
-import { Status } from "../lookups/Status";
 import faker from "faker";
 import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
 import { SearchDataSource } from "./types/SearchDataSource";
@@ -11,22 +10,22 @@ const dataSource: SearchDataSource = (urn) => {
 
   return coreResults.map((result) => ({
     ...result,
-    urn,
+    uniqueReferenceNumber: urn,
   })) as CaseSearchResult[];
 };
 
 export default dataSource;
 
-const searchResults: Omit<CaseSearchResult, "urn">[] = [
+const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   {
     id: 13401,
-    isCharged: true,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -36,6 +35,7 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: false,
       },
       {
         earlyDate: "2020-03-01",
@@ -44,18 +44,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 17422,
-    isCharged: true,
-    status: Status.Charged,
+
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -65,18 +66,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 18443,
-    isCharged: false,
-    status: Status.Charged,
+
     area: AreaDivision.EastOfEngland,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -86,18 +88,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 19994,
-    isCharged: false,
-    status: Status.Finalised,
+
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -107,18 +110,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: false,
       },
     ],
   },
   {
     id: 17425,
-    isCharged: true,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -128,18 +132,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 16756,
-    isCharged: false,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -149,18 +154,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 14927,
-    isCharged: true,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -170,18 +176,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 17428,
-    isCharged: false,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -191,18 +198,19 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },
   {
     id: 16549,
-    isCharged: true,
-    status: Status.Charged,
+
     area: AreaDivision.LondonSouth,
     agency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
+      organisationName: "",
     },
     offences: [
       {
@@ -212,6 +220,7 @@ const searchResults: Omit<CaseSearchResult, "urn">[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
+        isNotYetCharged: true,
       },
     ],
   },

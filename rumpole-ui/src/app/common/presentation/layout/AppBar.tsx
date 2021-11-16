@@ -33,15 +33,13 @@ const AppBar: FC<AppBarProps> = ({ height }) => {
         <Logo height={55} />
 
         <Spacer sx={{ width: 40 }}></Spacer>
-
-        <Link
-          to="/"
-          style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
-        >
-          <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }}>
-            Rumpole
-          </Typography>
-        </Link>
+        <Box sx={{ flexGrow: 1 }}>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Typography variant="h4" component="h1">
+              Rumpole
+            </Typography>
+          </Link>
+        </Box>
 
         <Box sx={{ alignSelf: "flex-end" }}>
           <Typography

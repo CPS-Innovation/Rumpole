@@ -19,8 +19,11 @@ export const ResultsTitle: FC<ResultsTitleProps> = ({
 }) => {
   let summary: string;
 
-  if (loadingStatus !== "succeeded") {
+  if (loadingStatus === "loading") {
     summary = "Please wait...";
+  } else if (loadingStatus === "failed") {
+    summary =
+      "An error occurred whilst trying to retrieve your search.  Please try again.";
   } else if (filteredData.length !== totalCount) {
     summary = `Showing ${filteredData.length} of ${totalCount} result${
       filteredData.length === 1 ? "" : "s"

@@ -20,7 +20,7 @@ export type CasesState = {
 
 export const fetchCases = createAsyncThunk(
   "cases/fetchCases",
-  async (urn: string) => await coreDataSearchUrn(urn)
+  async (urn: string) => await searchUrn(urn)
 );
 
 const initialState: CasesState = {

@@ -4,7 +4,9 @@ import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 const getHeaders = async () =>
   new Headers({
-    Authorization: `Bearer ${await getAccessToken(["User.Read"])}`,
+    Authorization: `Bearer ${await getAccessToken([
+      "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm",
+    ])}`,
   });
 
 export const searchUrn = async (urn: string) => {

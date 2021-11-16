@@ -9,7 +9,7 @@ type FiltersProps = {
 
 export const Filters: FC<FiltersProps> = ({
   searchState: {
-    filters: { area, agency, status, chargedStatus },
+    filters: { area, agency, chargedStatus },
     setFilterSingleParam,
     setFilterMultipleParam,
     setFilterMultipleParamAll,
