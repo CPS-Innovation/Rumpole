@@ -5,6 +5,7 @@
     <RootNamespace>rumpole_gateway</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="0.7.2-preview" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
   </ItemGroup>
   <ItemGroup>
