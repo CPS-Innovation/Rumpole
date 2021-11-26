@@ -23,6 +23,6 @@
     <PackageReference Include="AutoFixture" Version="4.15.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\rumpole-gateway\rumpole-gateway.csproj" />
+    <ProjectReference Include="..\rumpole-gateway\Rumpole-Gateway.csproj" />
   </ItemGroup>
 </Project>
