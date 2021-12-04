@@ -45,19 +45,15 @@ namespace rumpole_gateway.Triggers.Status
                     throw new ArgumentException("Unique Reference Number should be numeric");
                 }
 
-                //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                //dynamic data = JsonConvert.DeserializeObject(requestBody);
-                //urn ??= data?.urn;
-
                 string responseMessage = string.IsNullOrEmpty(urn)
                     ? "Successfully accessed"
                     : $"URN is - {urn}";
-
+                _logger.LogInformation($"Response message :  {responseMessage}");
                 return new OkObjectResult(responseMessage);
             }
             catch (Exception exception)
             {
-                _logger.LogInformation($"Exception - No authorization token supplied.-  {exception}");
+                _logger.LogError($"Exception - No authorization token supplied.-  {exception}");
                 throw new ArgumentException($"Exception - No authorization token supplied.-  {exception}");
             }
             throw new ArgumentException("Query string must contain 'type'.");
