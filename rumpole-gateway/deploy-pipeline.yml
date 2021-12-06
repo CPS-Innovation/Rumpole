@@ -12,7 +12,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  functionName: "RumpoleGateway"
+  functionName: "rumpole-gateway"
   appName: "fa-rumpole-gateway"
   buildConfiguration: "Release"
 

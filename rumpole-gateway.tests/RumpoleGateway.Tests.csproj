@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -23,6 +23,6 @@
     <PackageReference Include="AutoFixture" Version="4.15.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\rumpole-gateway\RumpoleGateway.csproj" />
+    <ProjectReference Include="..\rumpole-gateway\rumpole-gateway.csproj" />
   </ItemGroup>
 </Project>
