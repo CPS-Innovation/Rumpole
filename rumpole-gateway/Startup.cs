@@ -26,24 +26,24 @@ namespace RumpoleGateway
 
             builder.Services.AddSingleton<IConfiguration>(configuration);
 
-            //builder.Services.AddSingleton(serviceProvider =>
-            //{
-            //    var instance = "https://login.microsoftonline.com/";
-            //    var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
-            //    var onBehalfOfTokenClientId = GetValueFromConfig(configuration, "OnBehalfOfTokenClientId");
-            //    var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, "OnBehalfOfTokenClientSecret");
-            //    var appOptions = new ConfidentialClientApplicationOptions
-            //    {
-            //        Instance = instance,
-            //        TenantId = onBehalfOfTokenTenantId,
-            //        ClientId = onBehalfOfTokenClientId,
-            //        ClientSecret = onBehalfOfTokenClientSecret
-            //    };
+            builder.Services.AddSingleton(serviceProvider =>
+            {
+                var instance = "https://login.microsoftonline.com/";
+                var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
+                var onBehalfOfTokenClientId = GetValueFromConfig(configuration, "OnBehalfOfTokenClientId");
+                var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, "OnBehalfOfTokenClientSecret");
+                var appOptions = new ConfidentialClientApplicationOptions
+                {
+                    Instance = instance,
+                    TenantId = onBehalfOfTokenTenantId,
+                    ClientId = onBehalfOfTokenClientId,
+                    ClientSecret = onBehalfOfTokenClientSecret
+                };
 
-            //    var authority = $"{instance}{onBehalfOfTokenTenantId}/";
+                var authority = $"{instance}{onBehalfOfTokenTenantId}/";
 
-            //    return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
-            //});
+                return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
+            });
 
 
         }
