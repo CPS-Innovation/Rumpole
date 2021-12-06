@@ -6,12 +6,13 @@ trigger:
   paths:
     include:
       - "rumpole-gateway/*"
+      - "RumpoleGateway/*"
 
 pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  functionName: "rumpole-gateway"
+  functionName: "RumpoleGateway"
   appName: "fa-rumpole-gateway"
   buildConfiguration: "Release"
 
