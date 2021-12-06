@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using System;
 
-[assembly: FunctionsStartup(typeof(rumpole_gateway.Startup))]
+[assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 
-namespace rumpole_gateway
+namespace RumpoleGateway
 {
     class Startup : FunctionsStartup
     {

@@ -8,7 +8,10 @@
       }
     },
     "logLevel": {
-      "rumpole_gateway.Triggers.Status.Status": "Information"
+      "default": "Information",
+      "Host.Results": "Error",
+      "Function": "Trace",
+      "Host.Aggregator": "Trace"
     }
   }
 }

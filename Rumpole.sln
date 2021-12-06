@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rumpole-Gateway", "rumpole-gateway\Rumpole-Gateway.csproj", "{B7F5B8CC-8E8C-4F4D-A12F-264680BCE2D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RumpoleGateway", "rumpole-gateway\RumpoleGateway.csproj", "{B7F5B8CC-8E8C-4F4D-A12F-264680BCE2D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rumpole-Gateway.tests", "rumpole-gateway.tests\Rumpole-Gateway.tests.csproj", "{2A21F271-E8F1-45C3-BA0B-7FDF40292BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RumpoleGateway.Tests", "rumpole-gateway.tests\RumpoleGateway.Tests.csproj", "{2A21F271-E8F1-45C3-BA0B-7FDF40292BE9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0C62DAA9-FFDE-411D-A165-BBBD187A3DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RumpoleGateway.Domain", "RumpoleGateway.Domain\RumpoleGateway.Domain.csproj", "{1A7D46FB-F9E7-405E-9743-A34FF95EB459}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{2A21F271-E8F1-45C3-BA0B-7FDF40292BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A21F271-E8F1-45C3-BA0B-7FDF40292BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A21F271-E8F1-45C3-BA0B-7FDF40292BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7D46FB-F9E7-405E-9743-A34FF95EB459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D46FB-F9E7-405E-9743-A34FF95EB459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7D46FB-F9E7-405E-9743-A34FF95EB459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7D46FB-F9E7-405E-9743-A34FF95EB459}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
