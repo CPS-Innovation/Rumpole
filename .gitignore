@@ -6,3 +6,5 @@
 /.vs/Rumpole/DesignTimeBuild
 /.vs/Rumpole/v16
 /.vs
+/RumpoleGateway.Domain/obj
+/RumpoleGateway.Domain/bin/Debug/netcoreapp3.1

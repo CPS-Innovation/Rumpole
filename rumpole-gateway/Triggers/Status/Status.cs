@@ -10,7 +10,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace rumpole_gateway.Triggers.Status
+namespace RumpoleGateway.Triggers.Status
 {
     public class Status
     {
@@ -29,7 +29,7 @@ namespace rumpole_gateway.Triggers.Status
         [OpenApiParameter(name: "urn", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **URN** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "status/{urn}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "status/{urn?}")] HttpRequest req,
             string urn)
         {
             try
@@ -42,14 +42,26 @@ namespace rumpole_gateway.Triggers.Status
 
                 if (!int.TryParse(urn, out var uniqueReferenceNumber))
                 {
+                    _logger.LogError($"Exception - urn not supplied");
                     throw new ArgumentException("Unique Reference Number should be numeric");
                 }
 
-                string responseMessage = string.IsNullOrEmpty(urn)
-                    ? "Successfully accessed"
-                    : $"URN is - {urn}";
-                _logger.LogInformation($"Response message :  {responseMessage}");
-                return new OkObjectResult(responseMessage);
+               
+                var response = new Domain.Status.Status();
+                if (string.IsNullOrEmpty(urn))
+                {
+                    response.URN = "0";
+                    response.Message = "Successfully accessed";
+                }
+                else
+                {
+                    response.URN = urn;
+                    response.Message = $"Successfully accessed - URN : {urn}";
+                }
+
+                _logger.LogInformation($"Response message :  {response}");
+
+                return new OkObjectResult(response);
             }
             catch (Exception exception)
             {
