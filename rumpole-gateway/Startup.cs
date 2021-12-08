@@ -25,6 +25,9 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
+
+            builder.Services.AddHttpClient();
+
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddTransient<IUserClient, UserClient>();
 

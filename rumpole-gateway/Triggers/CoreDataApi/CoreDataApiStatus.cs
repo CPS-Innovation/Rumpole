@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using RumpoleGateway.Clients.UserClient;
 using Newtonsoft.Json;
 using RumpoleGateway.Helpers.Extension;
+using System.Net.Http;
 
 namespace RumpoleGateway.Triggers.CoreDataApi
 {
@@ -22,10 +23,13 @@ namespace RumpoleGateway.Triggers.CoreDataApi
 
         private readonly ILogger<CoreDataApiStatus> _logger;
         private readonly IUserClient _userClient;
+        private readonly HttpClient _httpClient;
         public CoreDataApiStatus(ILogger<CoreDataApiStatus> logger,
+                                 IHttpClientFactory httpClientFactory,
                                  IUserClient userClient )
         {
-             _userClient = userClient;
+            _userClient = userClient;
+            _httpClient = httpClientFactory.CreateClient();
             _logger = logger;
         }
 
@@ -43,16 +47,23 @@ namespace RumpoleGateway.Triggers.CoreDataApi
                 throw new UnauthorizedAccessException("No authorization token supplied.");
             }
             var user = await _userClient.GetUser(accessToken.ToJwtString());
+            var response = await _httpClient.GetAsync("https://core-data.dev.cpsdigital.co.uk/status");
+            string result = string.Empty;
 
-            string name = req.Query["name"];
+            if (response.IsSuccessStatusCode)
+            {
+                  result  = await response.Content.ReadAsStringAsync();
+            }
+        
+        string name = req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
             string responseMessage = string.IsNullOrEmpty(name)
-                ? $"Token : {user.UserPrincipalName} "
-                : $"Hello, {name}. your toke {user.UserPrincipalName} ";
+                ? $"Token : {user.UserPrincipalName}  -- {result}"
+                : $"Hello, {name}. your toke {user.UserPrincipalName} -- {result}";
 
             return new OkObjectResult(responseMessage);
         }
