@@ -1,8 +1,9 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
+using RumpoleGateway.Clients.OnBehalfOfTokenClient;
+using RumpoleGateway.Clients.UserClient;
 using System;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
@@ -25,6 +26,7 @@ namespace RumpoleGateway
                 .Build();
 
             builder.Services.AddSingleton<IConfiguration>(configuration);
+            builder.Services.AddTransient<IUserClient, UserClient>();
 
             builder.Services.AddSingleton(serviceProvider =>
             {
@@ -45,6 +47,7 @@ namespace RumpoleGateway
                 return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
             });
 
+            builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
 
         }
 
