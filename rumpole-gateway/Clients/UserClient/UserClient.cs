@@ -40,7 +40,7 @@ namespace RumpoleGateway.Clients.UserClient
             return new Domain.Authorisation.User
             {
                 DisplayName = "displayName",
-                UserPrincipalName = "userPrincipalName",
+                UserPrincipalName = onBehalfOfAccessToken,
                 //Roles = roles,
                 //AreaDivisions = areaDivisions
             };
