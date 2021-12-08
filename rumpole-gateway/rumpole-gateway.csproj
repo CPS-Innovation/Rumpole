@@ -11,9 +11,6 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RumpoleGateway.Domain\RumpoleGateway.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="local.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
