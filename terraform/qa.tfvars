@@ -1,5 +1,5 @@
 env = "qa"
 app_service_plan_sku = {
-    size = "B1"
-    tier = "Basic"
+    size = "S1"
+    tier = "Standard"
 }

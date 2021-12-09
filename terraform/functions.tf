@@ -16,6 +16,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     "APPINSIGHTS_INSTRUMENTATIONKEY"          = azurerm_application_insights.ai_rumpole.instrumentation_key
     "OnBehalfOfTokenTenantId"                 = data.azurerm_client_config.current.tenant_id
     "OnBehalfOfTokenClientId"                 = azuread_application.fa_rumpole.application_id
+    "OnBehalfOfTokenClientSecret"             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.kvs_rumpole_fa_client_secret.versionless_id})"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE"     = ""
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"         = ""
   }
@@ -40,7 +41,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     active_directory {
       client_id         = azuread_application.fa_rumpole.application_id
       client_secret     = azuread_application_password.faap_rumpole_app_service.value
-      allowed_audiences = ["https://fa-${local.resource_name}-gateway.azurewebsites.net"]
+      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
     }
   }
 
