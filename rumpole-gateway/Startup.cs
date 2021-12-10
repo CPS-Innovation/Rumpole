@@ -1,7 +1,11 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using GraphQL.Client.Abstractions;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
+using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.UserClient;
 using System;
@@ -28,8 +32,14 @@ namespace RumpoleGateway
 
             builder.Services.AddHttpClient();
 
+
+            builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
+
+
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddTransient<IUserClient, UserClient>();
+            builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
+
 
             builder.Services.AddSingleton(serviceProvider =>
             {

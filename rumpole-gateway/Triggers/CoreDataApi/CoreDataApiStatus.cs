@@ -14,6 +14,7 @@ using RumpoleGateway.Clients.UserClient;
 using Newtonsoft.Json;
 using RumpoleGateway.Helpers.Extension;
 using System.Net.Http;
+using RumpoleGateway.Clients.CoreDataApi;
 
 namespace RumpoleGateway.Triggers.CoreDataApi
 {
@@ -24,13 +25,17 @@ namespace RumpoleGateway.Triggers.CoreDataApi
         private readonly ILogger<CoreDataApiStatus> _logger;
         private readonly IUserClient _userClient;
         private readonly HttpClient _httpClient;
+        private readonly ICoreDataApiClient _coreDataApiClient;
+
         public CoreDataApiStatus(ILogger<CoreDataApiStatus> logger,
                                  IHttpClientFactory httpClientFactory,
-                                 IUserClient userClient )
+                                 IUserClient userClient,
+                                 ICoreDataApiClient coreDataApiClient)
         {
             _userClient = userClient;
             _httpClient = httpClientFactory.CreateClient();
             _logger = logger;
+            _coreDataApiClient = coreDataApiClient;
         }
 
 
@@ -54,7 +59,9 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             {
                   result  = await response.Content.ReadAsStringAsync();
             }
-        
+
+            var caseInformation = _coreDataApiClient.GetCaseInformationByUrn();
+
         string name = req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
