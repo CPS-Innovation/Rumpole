@@ -6,7 +6,7 @@ variable "resource_name_prefix" {
 }
 
 variable "env" {
-type = string
+  type = string 
 }
 
 variable "app_service_plan_sku" {
@@ -14,4 +14,8 @@ variable "app_service_plan_sku" {
     tier = string
     size = string
   })
+}
+
+variable "core_data_api_url" {
+  type = string
 }

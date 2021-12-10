@@ -1,5 +1,6 @@
 env = "dev"
 app_service_plan_sku = {
-    size = "S1"
-    tier = "Standard"
+    size = "B1"
+    tier = "Basic"
 }
+core_data_api_url = "https://core-data.dev.cpsdigital.co.uk/graphql"
