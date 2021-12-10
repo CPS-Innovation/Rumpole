@@ -19,7 +19,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     "OnBehalfOfTokenClientSecret"             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.kvs_rumpole_fa_client_secret.versionless_id})"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE"     = ""
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"         = ""
-    "CoreDataApiUrl"                          = "https://core-data.dev.cpsdigital.co.uk/graphql"
+    "CoreDataApiUrl"                          = var.core_data_api_url
   }
   site_config {
     always_on      = true
