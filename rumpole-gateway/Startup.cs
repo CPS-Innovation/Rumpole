@@ -1,13 +1,18 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
+using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.UserClient;
+using RumpoleGateway.Domain.Authorisation;
+using RumpoleGateway.Extensions;
+using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using System;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
@@ -33,12 +38,26 @@ namespace RumpoleGateway
             builder.Services.AddHttpClient();
 
 
-            builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
+             builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
+
+
+            //builder.Services.AddScoped<IGraphQLClient>(sp =>
+            //              new GraphQLHttpClient(new GraphQLHttpClientOptions
+            //              {
+            //                  EndPoint = new Uri(GetValueFromConfig(configuration, "CoreDataApiUrl")),
+            //                  HttpMessageHandler = new AuthorizationHandler(sp.GetRequiredService<IOptions<AzureAdConfig>>()),
+
+            //              }, new SystemTextJsonSerializer())
+            //          );
+
+            //builder.Services.AddOptions<AzureAdConfig>()
+            //    .Bind(configuration.GetSection("AzureAd"));
 
 
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddTransient<IUserClient, UserClient>();
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
+            builder.Services.AddSingleton<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
 
 
             builder.Services.AddSingleton(serviceProvider =>

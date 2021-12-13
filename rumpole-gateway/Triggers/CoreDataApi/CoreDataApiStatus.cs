@@ -52,15 +52,17 @@ namespace RumpoleGateway.Triggers.CoreDataApi
                 throw new UnauthorizedAccessException("No authorization token supplied.");
             }
             var user = await _userClient.GetUser(accessToken.ToJwtString());
-            var response = await _httpClient.GetAsync("https://core-data.dev.cpsdigital.co.uk/status");
+
+
+            //var response = await _httpClient.GetAsync("https://core-data.dev.cpsdigital.co.uk/status");
             string result = string.Empty;
 
-            if (response.IsSuccessStatusCode)
-            {
-                  result  = await response.Content.ReadAsStringAsync();
-            }
+            //if (response.IsSuccessStatusCode)
+            //{
+            //      result  = await response.Content.ReadAsStringAsync();
+            //}
 
-            var caseInformation = _coreDataApiClient.GetCaseInformationByUrn();
+            var caseInformation = await _coreDataApiClient.GetCaseInformationByUrn("13WD1234520", user.UserPrincipalName);
 
         string name = req.Query["name"];
 
