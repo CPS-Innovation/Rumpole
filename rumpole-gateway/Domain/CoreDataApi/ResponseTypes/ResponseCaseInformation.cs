@@ -2,6 +2,6 @@
 {
     public class ResponseCaseInformation
     {
-        public CaseInformation CaseInformation { get; set; }
+        public Case Case { get; set; }
     }
 }

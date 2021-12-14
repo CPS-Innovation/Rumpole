@@ -2,7 +2,7 @@
 
 namespace RumpoleGateway.Domain.CoreDataApi
 {
-    public class CaseInformation
+    public class Case
     {
         public int Id { get; set; }
         public string UniqueReferenceNumber { get; set; }

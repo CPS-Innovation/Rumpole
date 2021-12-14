@@ -65,10 +65,11 @@ namespace RumpoleGateway.Clients.CoreDataApi
 
             try
             {
+                var _id = "18846";
                 var query = new GraphQLHttpRequest
                 {
                     //Query = @"
-                    //    query  cases(urn: $urn) {
+                    //    query  case(id: 18846) {
                     //        id
                     //        uniqueReferenceNumber
                     //        caseType
@@ -76,27 +77,23 @@ namespace RumpoleGateway.Clients.CoreDataApi
                     //      }
                     //    }",
                     Query = @"
-                query cases($urn: String!) {
-                  cases(urn: '13WD1234520') {
+                query  {
+                  case(id: 18846)  {
                     id
                     uniqueReferenceNumber
                     caseType
                     appealType
                   }
-                }",
-                    Variables = new { urn = urn }
+                }"
                 };
 
                 var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
-                _logger.LogInformation($" Success - authenticatedRequest : {accessToken}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformation>(authenticatedRequest);
-                _logger.LogInformation($" Success response from Data Core API - {response.Data} ");
-                return "Success - payload " +  response.Data.CaseInformation.ToString();
+                return $"Success - payload : {response.Data.Case.Id} - {response.Data.Case.UniqueReferenceNumber}";
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($" Error -  response from Data Core API -  {ex.ToString()} ");
-                string error = ex.ToString();
+                _logger.LogInformation($" Error -  response from Data Core API -  {ex} ");
                 return $"Error payload - {ex.Message} ";
             }
         }
