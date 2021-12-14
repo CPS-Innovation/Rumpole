@@ -56,7 +56,8 @@ namespace RumpoleGateway.Clients.CoreDataApi
         //        return null;
         //    }
         //}
-        public async Task<CaseInformation> GetCaseInformationByUrn(string urn, string accessToken)
+        //public async Task<CaseInformation> GetCaseInformationByUrn(string urn, string accessToken)
+        public async Task<string> GetCaseInformationByUrn(string urn, string accessToken)
         {
 
 
@@ -90,13 +91,13 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 _logger.LogInformation($" Success - authenticatedRequest : {accessToken}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformation>(authenticatedRequest);
                 _logger.LogInformation($" Success response from Data Core API - {response.Data} ");
-                return response.Data.CaseInformation;
+                return "Success - payload " +  response.Data.CaseInformation.ToString();
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($" Error -  response from Data Core API -  {ex.ToString()} ");
                 string error = ex.ToString();
-                return null;
+                return $"Error payload - {ex.Message} ";
             }
         }
 

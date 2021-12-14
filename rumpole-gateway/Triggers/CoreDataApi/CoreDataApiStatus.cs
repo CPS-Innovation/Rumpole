@@ -71,8 +71,8 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             name = name ?? data?.name;
 
             string responseMessage = string.IsNullOrEmpty(name)
-                ? $"Token : {user.UserPrincipalName}  -- {result}"
-                : $"Hello, {name}. your toke {user.UserPrincipalName} -- {result}";
+                ? $"Token : {user.UserPrincipalName}    -- Data Core API :     {caseInformation}"
+                : $"Hello, {name}. your token {user.UserPrincipalName}   --   {caseInformation}";
 
             return new OkObjectResult(responseMessage);
         }
