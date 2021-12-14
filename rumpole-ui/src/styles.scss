@@ -1,0 +1,22 @@
+$govuk-assets-path: "~govuk-frontend/govuk/assets/";
+@import "~govuk-frontend/govuk/all";
+
+body {
+  margin: 0;
+}
+
+.cps-header__logo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 0;
+}
+
+.cps-header-right-content {
+  text-align: right;
+  margin-right: 0;
+}
+
+.cps-width-container-wide {
+  max-width: 1200px;
+}

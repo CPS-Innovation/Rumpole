@@ -20,17 +20,7 @@ export const Page: FC = () => {
 
   return (
     <>
-      <Paper elevation={2}>
-        <Container
-          sx={{
-            height: 70,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <SearchBar searchState={searchState} />
-        </Container>
-      </Paper>
+      <SearchBar searchState={searchState} />
 
       {searchState.loadingStatus !== "idle" && (
         <Container>

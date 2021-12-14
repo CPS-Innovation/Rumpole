@@ -21,7 +21,7 @@ export const useQueryParams = <T>(): QueryParamsState<T> => {
     const path = stringify(paramsToStringify, {
       addQueryPrefix: true,
       encode: false,
-      // use comma form to allow empty arrays to be indicted in the querystring
+      // use comma form to allow empty arrays to be indicated in the querystring
       //  note: if param "a" is missing, that means all values for "a" should be shown
       arrayFormat: "comma",
     });
