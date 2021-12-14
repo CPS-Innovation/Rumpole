@@ -1,7 +1,10 @@
-﻿namespace RumpoleGateway.Domain.CoreDataApi.ResponseTypes
+﻿using Newtonsoft.Json;
+
+namespace RumpoleGateway.Domain.CoreDataApi.ResponseTypes
 {
     public class ResponseCaseInformation
     {
-        public Case Case { get; set; }
+        [JsonProperty("case")]
+        public CaseDetails CaseDetails { get; set; }
     }
 }

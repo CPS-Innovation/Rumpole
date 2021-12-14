@@ -5,10 +5,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
 {
     public interface ICoreDataApiClient
     {
-        //Task<CaseInformation> GetCaseInformationByUrn(string urn, string accessToken);
-        Task<string> GetCaseInformationByUrn(string urn, string accessToken);
-
-
+        Task<CaseDetails> GetCaseDetailsById(string caseId, string accessToken);
 
     }
 }

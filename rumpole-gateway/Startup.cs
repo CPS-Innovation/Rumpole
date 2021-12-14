@@ -1,17 +1,12 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
-using RumpoleGateway.Clients.UserClient;
-using RumpoleGateway.Domain.Authorisation;
-using RumpoleGateway.Extensions;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using System;
 
@@ -23,13 +18,8 @@ namespace RumpoleGateway
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var localRoot = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot");
-            var azureRoot = $"{Environment.GetEnvironmentVariable("HOME")}/site/wwwroot";
-
-            var actualRoot = localRoot ?? azureRoot;
-
+            
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(actualRoot)
                 .AddEnvironmentVariables()
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
@@ -37,25 +27,8 @@ namespace RumpoleGateway
 
             builder.Services.AddHttpClient();
 
-
-             builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
-
-
-            //builder.Services.AddScoped<IGraphQLClient>(sp =>
-            //              new GraphQLHttpClient(new GraphQLHttpClientOptions
-            //              {
-            //                  EndPoint = new Uri(GetValueFromConfig(configuration, "CoreDataApiUrl")),
-            //                  HttpMessageHandler = new AuthorizationHandler(sp.GetRequiredService<IOptions<AzureAdConfig>>()),
-
-            //              }, new SystemTextJsonSerializer())
-            //          );
-
-            //builder.Services.AddOptions<AzureAdConfig>()
-            //    .Bind(configuration.GetSection("AzureAd"));
-
-
+            builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);
-            builder.Services.AddTransient<IUserClient, UserClient>();
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddSingleton<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
 
