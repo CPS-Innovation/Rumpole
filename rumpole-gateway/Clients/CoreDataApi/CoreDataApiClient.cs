@@ -33,12 +33,14 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 };
 
                 var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
+                _logger.LogInformation($" Token  -   {accessToken} ");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformation>(authenticatedRequest);
+                _logger.LogInformation($" response  -   {response.Data.CaseDetails.UniqueReferenceNumber} ");
                 return response.Data.CaseDetails;
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($" Error -  response from Data Core API -  {ex} ");
+                _logger.LogError($" Error -  response from Data Core API -  {ex} ");
                 return null;
             }
         }
