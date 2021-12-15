@@ -1,4 +1,5 @@
 import * as GDS from "govuk-react-jsx";
+import { LabelProps } from "./Label";
 
 type InputProps = Omit<
   React.DetailedHTMLProps<
@@ -12,7 +13,7 @@ type InputProps = Omit<
   errorMessage?: string;
   formGroup?: { className: string };
   hint?: string;
-  label?: string;
+  label?: LabelProps;
   name?: string;
   id?: string;
   prefix?: string;

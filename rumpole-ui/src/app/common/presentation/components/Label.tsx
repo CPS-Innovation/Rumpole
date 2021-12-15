@@ -1,5 +1,15 @@
 import * as GDS from "govuk-react-jsx";
 
-export const Label: React.FC = ({ children }) => {
-  return <GDS.Label className="govuk-label--s">{children}</GDS.Label>;
+export type LabelProps = React.DetailedHTMLProps<
+  React.LabelHTMLAttributes<HTMLLabelElement>,
+  HTMLLabelElement
+> & {
+  className?: string;
+  htmlFor?: string;
+  children?: React.ReactNode;
+  isPageHeading?: boolean;
+};
+
+export const Label: React.FC<LabelProps> = (props) => {
+  return <GDS.Label {...props}></GDS.Label>;
 };

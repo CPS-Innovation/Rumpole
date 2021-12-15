@@ -1,8 +1,19 @@
-import * as GDS from "govuk-react-jsx";
-export const Layout: React.FC = ({ children }) => {
+import React from "react";
+import { BackLink, SkipLink } from "../components";
+import classes from "./Layout.module.scss";
+
+type LayoutProps = {
+  backLink?: { to: string; label?: React.ReactNode };
+};
+
+// .cps-width-container-wide {
+//   max-width: 1200px;
+//}
+
+export const Layout: React.FC<LayoutProps> = ({ backLink, children }) => {
   return (
     <>
-      <GDS.SkipLink />
+      <SkipLink />
 
       <header
         className="govuk-header "
@@ -10,9 +21,9 @@ export const Layout: React.FC = ({ children }) => {
         data-module="govuk-header"
       >
         <div className="govuk-header__container govuk-width-container">
-          <div className="govuk-header__logo cps-header__logo">
+          <div className={`govuk-header__logo ${classes.logo}`}>
             <a
-              href="#"
+              href="/"
               className="govuk-header__link govuk-header__link--homepage"
             >
               <span className="govuk-header__logotype">
@@ -21,14 +32,13 @@ export const Layout: React.FC = ({ children }) => {
                 </span>
               </span>
             </a>
-            <span className="cps-header-right-content govuk-header__link--homepage">
-              Rumpole
-            </span>
+            <span className="govuk-header__link--homepage">Rumpole</span>
           </div>
         </div>
       </header>
 
       <div className={`govuk-width-container`}>
+        {backLink && <BackLink to={backLink.to}>{backLink.label}</BackLink>}
         <main className={`govuk-main-wrapper`} id="main-content" role="main">
           {children}
         </main>

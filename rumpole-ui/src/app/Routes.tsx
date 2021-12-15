@@ -1,26 +1,29 @@
 import { FC } from "react";
+import { Layout } from "./common/presentation/layout/Layout";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-import {
-  Page as SearchStartPage,
-  path as searchStartPath,
-} from "./features/cases/presentation/search-start";
+import CaseSearch, {
+  path as caseSearchPath,
+} from "./features/cases/presentation/case-search";
 
-import {
-  CasePageLayout as CasePage,
-  path as casePath,
-} from "./features/cases/presentation/case/CasePageLayout";
+import CaseSearchResults, {
+  path as caseSearchResultsPath,
+} from "./features/cases/presentation/case-search-results";
 
 export const Routes: FC = () => (
   <Switch>
-    <Route exact path={searchStartPath}>
-      <SearchStartPage />
+    <Route path={caseSearchPath}>
+      <Layout>
+        <CaseSearch />
+      </Layout>
     </Route>
-    <Route path={casePath}>
-      <CasePage />
+    <Route path={caseSearchResultsPath}>
+      <Layout backLink={{ to: caseSearchPath }}>
+        <CaseSearchResults />
+      </Layout>
     </Route>
     <Route>
-      <Redirect to={searchStartPath} />
+      <Redirect to={caseSearchPath} />
     </Route>
   </Switch>
 );
