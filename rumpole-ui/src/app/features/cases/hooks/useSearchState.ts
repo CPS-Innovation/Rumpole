@@ -1,7 +1,7 @@
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 import { CaseFilterQueryParams } from "./types/CaseFilterQueryParams";
-import { QueryParamsState } from "./useQueryParams";
+import { QueryParamsState } from "../../../common/hooks/useQueryParamsState";
 import { SearchDataState } from "./useSearchDataState";
 
 export type FilterDetails = {
@@ -20,7 +20,6 @@ export const useSearchState = (
   { data, reduxUrn, loadingStatus }: SearchDataState
 ) => {
   const { urn, chargedStatus } = params;
-
   const totalCount = data.length;
 
   const filterItems = [
@@ -35,14 +34,10 @@ export const useSearchState = (
       text: "Not yet charged",
       count: data.filter((item) => !isCharged(item)).length,
     },
-  ]
-    .filter((item) => item.count)
-    .map((item) => ({ ...item, text: `${item.text} (${item.count})` }));
+  ].map((item) => ({ ...item, text: `${item.text} (${item.count})` }));
 
   const filteredData = chargedStatus
-    ? data.filter((item) =>
-        chargedStatus === "true" ? isCharged(item) : !isCharged(item)
-      )
+    ? data.filter((item) => (chargedStatus === "true") === isCharged(item))
     : data;
 
   const setUrnParam = (urn: string) => setParams({ urn });

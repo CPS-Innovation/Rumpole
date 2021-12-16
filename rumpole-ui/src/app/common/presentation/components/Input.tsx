@@ -10,7 +10,15 @@ type InputProps = Omit<
 > & {
   className?: string;
   describedBy?: string;
-  errorMessage?: string;
+  errorMessage?: {
+    className?: string;
+    children: React.ReactNode;
+    visuallyHiddenText?: string;
+    attributes?: React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLSpanElement>,
+      HTMLSpanElement
+    >;
+  };
   formGroup?: { className: string };
   hint?: string;
   label?: LabelProps;

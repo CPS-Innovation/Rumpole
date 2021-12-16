@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useQueryParamsState } from "./useQueryParams";
+import { useQueryParamsState } from "./useQueryParamsState";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 

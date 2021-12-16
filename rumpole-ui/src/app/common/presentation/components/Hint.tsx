@@ -1,10 +1,22 @@
 import * as GDS from "govuk-react-jsx";
 import styles from "./Hint.module.scss";
 
-export const Hint: React.FC = () => {
+type HintProps = {
+  className?: string;
+  attributes?: React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >;
+};
+
+export const Hint: React.FC<HintProps> = ({
+  className,
+  attributes,
+  children,
+}) => {
   return (
-    <GDS.Hint className={styles.root}>
-      Search and review a CPS case in England
+    <GDS.Hint className={`${styles.root} ${className}`} {...attributes}>
+      {children}
     </GDS.Hint>
   );
 };

@@ -1,6 +1,6 @@
 import { useHistory, useLocation } from "react-router-dom";
 import { parse, stringify } from "qs";
-import { path } from "../presentation/case-search-results";
+import { path } from "../../features/cases/presentation/case-search-results";
 
 export type QueryParamsState<T> = {
   setParams: (params: Partial<T>) => void;

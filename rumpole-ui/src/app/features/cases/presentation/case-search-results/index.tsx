@@ -1,41 +1,39 @@
-import { useState, KeyboardEvent } from "react";
 import {
   Button,
+  Hint,
   Input,
   Radios,
 } from "../../../../common/presentation/components";
 import { CaseFilterQueryParams } from "../../hooks/types/CaseFilterQueryParams";
-import { useQueryParamsState } from "../../hooks/useQueryParams";
+import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsState";
 import { useSearchDataState } from "../../hooks/useSearchDataState";
 import { useSearchState } from "../../hooks/useSearchState";
-import { isUrnValid } from "../../logic/isUrnValid";
 import classes from "./index.module.scss";
+import { useSearchField } from "../../hooks/useSearchField";
+import { Link } from "react-router-dom";
 
 export const path = "/case-search-results";
 
 const Page: React.FC = () => {
-  const searchFilterState = useQueryParamsState<CaseFilterQueryParams>();
-  const searchDataState = useSearchDataState(searchFilterState.params.urn);
+  const queryParamsState = useQueryParamsState<CaseFilterQueryParams>();
+  const reduxState = useSearchDataState(queryParamsState.params.urn);
+  const searchState = useSearchState(queryParamsState, reduxState);
+
+  const { handleChange, handleKeyPress, handleSubmit, urn, isError } =
+    useSearchField(searchState);
 
   const {
-    urn: initialUrn,
-    filterItems,
     chargedStatus,
+    filterItems,
     setChargedStatus,
-    setUrnParam,
-  } = useSearchState(searchFilterState, searchDataState);
+    loadingStatus,
+    totalCount,
+    filteredData,
+  } = searchState;
 
-  const [urn, setUrn] = useState(initialUrn || "");
-  const isValid = isUrnValid(urn);
-
-  const handleChange = (val: string) => setUrn(val.toUpperCase());
-
-  const handleSubmit = () => {
-    isValid && setUrnParam(urn);
-  };
-
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) =>
-    event.key === "Enter" && handleSubmit();
+  if (loadingStatus === "loading") {
+    return <h1 className="govuk-heading-xl">Please wait...</h1>;
+  }
 
   return (
     <>
@@ -47,8 +45,11 @@ const Page: React.FC = () => {
             <Input
               onChange={handleChange}
               onKeyPress={handleKeyPress}
-              className="govuk-input "
+              value={urn}
               autoFocus
+              errorMessage={
+                isError ? { children: "Please enter a valid URN" } : undefined
+              }
               label={{
                 className: "govuk-label--s",
                 children: "Search for a case URN",
@@ -56,16 +57,13 @@ const Page: React.FC = () => {
               formGroup={{
                 className: "govuk-!-width-one-half",
               }}
-              value={urn}
             />
-            <Button onClick={handleSubmit} disabled={!isValid}>
-              Search
-            </Button>
+            <Button onClick={handleSubmit}>Search</Button>
           </div>
         </div>
       </div>
 
-      <div className={`govuk-grid-row ${classes.results}`}>
+      <div className={`govuk-grid-row ${classes.resultsAndFilter}`}>
         <div className="govuk-grid-column-one-third">
           <div className={classes.filter}>
             <div className="inner-block">
@@ -84,7 +82,40 @@ const Page: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="govuk-grid-column-two-thirds"></div>
+
+        <div className="govuk-grid-column-two-thirds">
+          <div className={classes.results}>
+            <p className="govuk-body">
+              We've found <b>{totalCount}</b> case
+              {totalCount !== 1 ? "s " : " "}
+              that match {urn}
+            </p>
+            <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+            {filteredData.map((item) => (
+              <div key={item.id} className={classes.result}>
+                <h2 className="govuk-heading-m ">
+                  <Link to={"/case/" + item.id}>
+                    {item.uniqueReferenceNumber}
+                  </Link>
+                  <Hint className={classes.defendantName}>
+                    {item.leadDefendant.surname},{" "}
+                    {item.leadDefendant.firstNames}
+                  </Hint>
+                </h2>
+                <div className="govuk-body">
+                  <div>
+                    <span>Date of offense:</span>
+                    <span>{item.offences[0].earlyDate}</span>
+                  </div>
+                  <div>
+                    <span>Charges:</span>
+                    <span>{item.offences[0].shortDescription}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

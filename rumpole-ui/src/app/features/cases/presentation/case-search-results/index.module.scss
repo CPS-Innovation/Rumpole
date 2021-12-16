@@ -1,3 +1,5 @@
+$border-color: #b1b4b6; //govuk-colour("green");
+
 .search {
   display: flex;
   align-items: flex-end;
@@ -7,25 +9,45 @@
   }
 }
 
-.results {
+.resultsAndFilter {
   margin-top: 20px;
 }
 
 .filter {
-  border: 1px solid #b1b4b6;
+  border: 1px solid $border-color;
 
   :global(.govuk-heading-m) {
-    border-bottom: 1px solid #b1b4b6;
-    padding: 10px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid $border-color;
+    padding: 12px;
+    margin-bottom: 0px;
   }
 
   & :global(.legend) {
-    padding: 0 10px;
-    margin-bottom: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
   }
 
   :global(.govuk-form-group) {
     padding: 0 10px;
   }
+}
+
+.results {
+  margin-top: 10px;
+}
+
+.result {
+  margin-top: 30px;
+  & > div > div {
+    display: flex;
+
+    span:first-of-type {
+      min-width: 160px;
+    }
+  }
+  border-bottom: 1px solid $border-color;
+}
+
+.defendantName {
+  margin: 5px 0;
 }
