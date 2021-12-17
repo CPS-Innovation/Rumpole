@@ -42,7 +42,7 @@ namespace RumpoleGateway.Triggers.CoreDataApi
                 throw new ArgumentException("Case Id not supplied");
             }
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
-
+            
             var caseInformation = await _coreDataApiClient.GetCaseDetailsById(case_id, behalfToken);
 
             return new OkObjectResult(caseInformation);

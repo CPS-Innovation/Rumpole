@@ -29,7 +29,7 @@ namespace RumpoleGateway.Extensions
         public override HttpRequestMessage ToHttpRequestMessage(GraphQLHttpClientOptions options, IGraphQLJsonSerializer serializer)
         {
             var message = base.ToHttpRequestMessage(options, serializer);
-            message.Headers.Add("Authorization", $"Bearer {_accessToken}");
+            message.Headers.Add(Constants.Authentication.Authorization, $"{Constants.Authentication.Bearer} {_accessToken}");
             return message;
         }
     }

@@ -13,7 +13,7 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
         private IConfidentialClientApplication _application;
         private readonly ILogger<OnBehalfOfTokenClient> _log;
 
-        private const string assertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+       // private const string assertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
         //private readonly ICollection<string> scopes = new Collection<string> { "group.read.all" };
         // private readonly ICollection<string> scopes = new Collection<string> { "api://637b9bcb-395d-4bfc-bedc-3302e5744e84/caseconfirmation.readwrite.all" };
         private readonly ICollection<string> scopes = new Collection<string> { "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm" }; //cps-core-data-api-dev  -- scope
@@ -30,7 +30,7 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
 
             try
             {
-                var userAssertion = new UserAssertion(accessToken, assertionType);
+                var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);
                 result = await _application.AcquireTokenOnBehalfOf(scopes, userAssertion).ExecuteAsync();
             }
             catch (MsalException exception)
