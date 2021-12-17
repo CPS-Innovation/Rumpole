@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace rumpole_gateway.tests
+namespace RumpoleGateway.Tests
 {
     public class UnitTest1
     {

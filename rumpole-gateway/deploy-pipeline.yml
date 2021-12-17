@@ -2,9 +2,11 @@ trigger:
   branches:
     include:
       - main
+      - develop
   paths:
     include:
       - "rumpole-gateway/*"
+      - "RumpoleGateway/*"
 
 pool:
   vmImage: "ubuntu-latest"
