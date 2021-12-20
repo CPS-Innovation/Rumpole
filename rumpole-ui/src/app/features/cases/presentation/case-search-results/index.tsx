@@ -10,7 +10,8 @@ import { useSearchDataState } from "../../hooks/useSearchDataState";
 import { useSearchState } from "../../hooks/useSearchState";
 import classes from "./index.module.scss";
 import { useSearchField } from "../../hooks/useSearchField";
-import { Link } from "react-router-dom";
+import { generatePath, Link } from "react-router-dom";
+import { path as casePath } from "../case";
 
 export const path = "/case-search-results";
 
@@ -94,7 +95,7 @@ const Page: React.FC = () => {
             {filteredData.map((item) => (
               <div key={item.id} className={classes.result}>
                 <h2 className="govuk-heading-m ">
-                  <Link to={"/case/" + item.id}>
+                  <Link to={generatePath(casePath, { id: item.id })}>
                     {item.uniqueReferenceNumber}
                   </Link>
                   <Hint className={classes.defendantName}>

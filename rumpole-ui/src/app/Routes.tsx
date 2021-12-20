@@ -10,6 +10,8 @@ import CaseSearchResults, {
   path as caseSearchResultsPath,
 } from "./features/cases/presentation/case-search-results";
 
+import Case, { path as casePath } from "./features/cases/presentation/case";
+
 export const Routes: FC = () => (
   <Switch>
     <Route path={caseSearchPath}>
@@ -20,6 +22,11 @@ export const Routes: FC = () => (
     <Route path={caseSearchResultsPath}>
       <Layout backLink={{ to: caseSearchPath }}>
         <CaseSearchResults />
+      </Layout>
+    </Route>
+    <Route path={casePath}>
+      <Layout backLink={{ to: caseSearchPath }}>
+        <Case />
       </Layout>
     </Route>
     <Route>

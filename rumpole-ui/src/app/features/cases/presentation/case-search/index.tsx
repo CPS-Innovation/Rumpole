@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsState";
 import { CaseFilterQueryParams } from "../../hooks/types/CaseFilterQueryParams";
 import { useSearchDataState } from "../../hooks/useSearchDataState";
@@ -10,7 +10,7 @@ import {
 } from "../../../../common/presentation/components";
 import { useSearchField } from "../../hooks/useSearchField";
 import classes from "./index.module.scss";
-import { handshake } from "../../api/gatewayApi";
+
 export const path = "/case-search";
 
 const Page: React.FC = () => {
@@ -20,10 +20,6 @@ const Page: React.FC = () => {
 
   const { handleChange, handleKeyPress, handleSubmit, urn, isError } =
     useSearchField(searchState);
-
-  useEffect(() => {
-    handshake(18846).then((result) => console.log(result));
-  }, []);
 
   return (
     <div className="govuk-grid-row">
