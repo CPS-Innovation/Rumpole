@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace RumpoleGateway.Domain.CoreDataApi
+namespace RumpoleGateway.Domain.CoreDataApi.CaseDetails
 {
     public class CaseDetails
     {
@@ -15,7 +16,11 @@ namespace RumpoleGateway.Domain.CoreDataApi
 
         [JsonProperty("caseType")]
         public string CaseType { get; set; }
-         
 
+        [JsonProperty("leadDefendant")]
+        public LeadDefendant LeadDefendant { get; set; }
+
+        [JsonProperty("offences")]
+        public List<Offence> Offences { get; set; }
     }
 }

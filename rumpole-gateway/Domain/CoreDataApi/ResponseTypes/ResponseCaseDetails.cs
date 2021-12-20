@@ -2,9 +2,9 @@
 
 namespace RumpoleGateway.Domain.CoreDataApi.ResponseTypes
 {
-    public class ResponseCaseInformation
+    public class ResponseCaseDetails
     {
         [JsonProperty("case")]
-        public CaseDetails CaseDetails { get; set; }
+        public CaseDetails.CaseDetails CaseDetails { get; set; }
     }
 }

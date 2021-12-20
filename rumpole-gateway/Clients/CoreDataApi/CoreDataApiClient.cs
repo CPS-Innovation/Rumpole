@@ -1,7 +1,7 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Domain.CoreDataApi;
+using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Domain.CoreDataApi.ResponseTypes;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using System;
@@ -29,12 +29,31 @@ namespace RumpoleGateway.Clients.CoreDataApi
             {
                 var query = new GraphQLHttpRequest
                 {
-                    Query = "query {case(id: "+ caseId + ")  {id uniqueReferenceNumber caseType  appealType }}"
+                    Query = "query {case(id: " + caseId + ")  {id uniqueReferenceNumber caseType  appealType leadDefendant {firstNames surname organisationName}  offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
+
+                //var query = new GraphQLHttpRequest
+                //{
+                //    Query = @"
+                //        query casesQuery($id: caseUrn!) {
+                //          case(id: $id) {
+                //            id
+                //            uniqueReferenceNumber
+                //            caseType
+                //            appealType
+                //            //accounts {
+                //            //  id
+                //            //  type
+                //            //  description
+                //            //}
+                //          }
+                //        }",
+                //    Variables = new { id = caseId }
+                //};
 
                 var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
                 _logger.LogInformation($" Token  -   {accessToken} ");
-                var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformation>(authenticatedRequest);
+                var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseDetails>(authenticatedRequest);
                 _logger.LogInformation($" response  -   {response.Data.CaseDetails.UniqueReferenceNumber} ");
                 return response.Data.CaseDetails;
             }
