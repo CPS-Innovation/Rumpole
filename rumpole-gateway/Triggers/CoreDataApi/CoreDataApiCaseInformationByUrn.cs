@@ -43,9 +43,13 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             }
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
             
-            var caseInformation = await _coreDataApiClient.GetCaseDetailsById(urn, behalfToken);
-
-            return new OkObjectResult(caseInformation);
+            var caseInformation = await _coreDataApiClient.GetCaseInformatoinByURN(urn, behalfToken);
+            
+            if (caseInformation != null)
+            {
+                return new OkObjectResult(caseInformation);
+            }
+            return new NotFoundObjectResult($"No record found - URN : {urn}");
         }
     }
 }

@@ -14,6 +14,9 @@ namespace RumpoleGateway.Domain.CoreDataApi.CaseDetails
         [JsonProperty("appealType")]
         public string AppealType { get; set; }
 
+        [JsonProperty("caseStatus")]
+        public CaseStatus CaseStatus { get; set; }
+
         [JsonProperty("caseType")]
         public string CaseType { get; set; }
 
