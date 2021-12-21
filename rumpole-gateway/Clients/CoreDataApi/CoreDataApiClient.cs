@@ -30,7 +30,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
             {
                 var query = new GraphQLHttpRequest
                 {
-                    Query = "query {case(id: " + caseId + ")  {id uniqueReferenceNumber caseType  appealType "
+                    Query = "query {case(id: " + caseId + ")  {id uniqueReferenceNumber caseType  appealType caseStatus {code description } "
                             + " leadDefendant {firstNames surname organisationName}  " 
                             + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
@@ -57,7 +57,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 var query = new GraphQLHttpRequest
                 {
                     Query = "query {cases(urn: \""+ urn +"\")  " 
-                             + " {id uniqueReferenceNumber caseType  appealType "
+                             + " {id uniqueReferenceNumber caseType  appealType caseStatus {code description } "
                              + " leadDefendant {firstNames surname organisationName}"
                              + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
