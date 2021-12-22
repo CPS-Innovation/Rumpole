@@ -28,7 +28,9 @@ steps:
     inputs:
       command: "test"
       projects: "$(functionName)*tests/$(functionName)*tests.csproj"
-      displayName: "Run tests"
+      publishTestResults: true
+      arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    displayName: "Run tests"
 
   - task: PublishCodeCoverageResults@1
     inputs:
