@@ -32,7 +32,7 @@ namespace RumpoleGateway.Triggers.Status
             var response = new Domain.Status.Status
             {
                 URN = uniqueReferenceNumber.ToString(),
-                Message = $"Successfully accessed - URN : {uniqueReferenceNumber}"
+                Message = $"Successfully has been accessed - URN : {uniqueReferenceNumber}"
             };
 
             _logger.LogInformation($"Response message :  {response}");
