@@ -28,6 +28,7 @@ steps:
     inputs:
       command: "test"
       projects: "$(functionName)*tests/$(functionName)*tests.csproj"
+      arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
     displayName: "Run tests"
 
   - task: DotNetCoreCLI@2
@@ -39,11 +40,11 @@ steps:
       zipAfterPublish: False
     displayName: "Publish"
 
-  - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'  
-    displayName: 'Install Code coverage tool'  
+  # - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'  
+  #   displayName: 'Install Code coverage tool'  
   
-  - script: 'reportgenerator -reports:$(BuildConfiguration)/**/coverage.cobertura.xml -targetdir:$(BuildConfiguration)/coverlet/reports -reporttypes:"Cobertura"'  
-    displayName: 'Create code coverage results'
+  # - script: 'reportgenerator -reports:$(BuildConfiguration)/**/coverage.cobertura.xml -targetdir:$(BuildConfiguration)/coverlet/reports -reporttypes:"Cobertura"'  
+  #   displayName: 'Create code coverage results'
 
   - task: PublishCodeCoverageResults@1
     inputs:
