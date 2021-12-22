@@ -25,7 +25,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
     active_directory {
       client_id         = azuread_application.as_web_rumpole.application_id
       client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
-      allowed_audiences = ["https://as-web-${local.resource_name}.azurewebsites.net"]
+      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
     }
   }
 }
