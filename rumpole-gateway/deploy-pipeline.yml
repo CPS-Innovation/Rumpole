@@ -39,6 +39,12 @@ steps:
       zipAfterPublish: False
     displayName: "Publish"
 
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '**/*coverage.cobertura.xml'
+    displayName: 'Publish code coverage results'
+
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
