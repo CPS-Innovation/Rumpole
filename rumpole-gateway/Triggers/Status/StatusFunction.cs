@@ -8,14 +8,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace RumpoleGateway.Triggers.Status
 {
-    public class Status
+    public class StatusFunction
     {
-        private readonly ILogger<Status> _logger;
-        public Status(ILogger<Status> logger)
+        private readonly ILogger<StatusFunction> _logger;
+        public StatusFunction(ILogger<StatusFunction> logger)
         {
             _logger = logger;
         }
@@ -26,22 +25,20 @@ namespace RumpoleGateway.Triggers.Status
         [OpenApiSecurity("OpenIdConnect", SecuritySchemeType.OpenIdConnect, Name = "code", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "urn", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **URN** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status/{urn}")] HttpRequest req,
-            string urn)
+        public IActionResult Run( [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status/{urn}")] HttpRequest req,
+                                  string urn)
         {
             try
             {
-                _logger.LogInformation("C# HTTP trigger function processed a request.");
-                if (!req.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                _logger.LogInformation(" Status function processed a request.");
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                 {
-                    throw new UnauthorizedAccessException("No authorization token supplied.");
+                    return new UnauthorizedObjectResult(Constants.Status.Status.AuthenticationFailedMessage);
                 }
 
                 if (!int.TryParse(urn, out var uniqueReferenceNumber))
                 {
-                    _logger.LogError($"Exception - urn not supplied");
-                    throw new ArgumentException("Unique Reference Number should be numeric");
+                    return new BadRequestObjectResult(Constants.Status.Status.URNNotSupplied);
                 }
 
                 var response = new Domain.Status.Status();

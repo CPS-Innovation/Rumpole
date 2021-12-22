@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Triggers.CoreDataApi
 {
-    public class CoreDataApiCaseDetails
+    public class CoreDataApiCaseInformationByUrnFunction
     {
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
+        private readonly ILogger<CoreDataApiCaseDetailsFunction> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
+        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseDetailsFunction> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient)
         {
@@ -26,30 +26,30 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             _coreDataApiClient = coreDataApiClient;
         }
 
-        [FunctionName("CoreDataApiCaseDetails")]
+        [FunctionName("CoreDataApiCaseInformationByUrn")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-details/{case_id}")] HttpRequest req,
-            string case_id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
+            string urn)
         {
             _logger.LogInformation("CoreDataApiCaseDetails - trigger processed a request.");
             if (!req.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
                 throw new UnauthorizedAccessException("No authorization token supplied.");
             }
-            if (string.IsNullOrEmpty(case_id))
+            if (string.IsNullOrEmpty(urn))
             {
-                _logger.LogError($"Exception - case id not supplied");
-                throw new ArgumentException("Case Id not supplied");
+                _logger.LogError($"Exception - urn not supplied");
+                throw new ArgumentException("URN not supplied");
             }
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
             
-            var caseDetails = await _coreDataApiClient.GetCaseDetailsById(case_id, behalfToken);
-
-            if (caseDetails != null)
+            var caseInformation = await _coreDataApiClient.GetCaseInformatoinByURN(urn, behalfToken);
+            
+            if (caseInformation != null)
             {
-                return new OkObjectResult(caseDetails);
+                return new OkObjectResult(caseInformation);
             }
-            return new NotFoundObjectResult($"No record found - Case id : {case_id}");
+            return new NotFoundObjectResult($"No record found - URN : {urn}");
         }
     }
 }
