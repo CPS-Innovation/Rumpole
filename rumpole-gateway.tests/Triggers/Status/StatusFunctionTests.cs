@@ -37,6 +37,23 @@ namespace RumpoleGateway.Tests.Triggers.Status
             Assert.Equal(Constants.Status.Status.URNNotSupplied, results.Value);
         }
 
+        [Fact]
+        public void GetStatusFunction_Should_Return_Response_200_When_Valid_Input_Supplied()
+        {
+            //Arrange
+            var statusFunction = GetStatusFunction();
+            var urn = "1234";
+
+            //Act
+            var results = statusFunction.Run(CreateHttpRequest(), urn) as Microsoft.AspNetCore.Mvc.ObjectResult;
+
+            //Assert
+            var response = results.Value as Domain.Status.Status;
+            Assert.Equal(200, results.StatusCode);
+            Assert.Equal(urn, response.URN);
+        }
+
+        
         #region private methods
         private StatusFunction GetStatusFunction()
         {
