@@ -6,7 +6,7 @@ namespace RumpoleGateway.Helpers.Extension
     {
         public static string ToJwtString(this StringValues values)
         {
-            return values.ToString().Replace("Bearer ", string.Empty);
+            return values.ToString().Replace($"{Constants.Authentication.Bearer} ", string.Empty).Trim();
         }
     }
 }

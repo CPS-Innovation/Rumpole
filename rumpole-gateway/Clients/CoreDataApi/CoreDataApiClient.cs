@@ -1,10 +1,11 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Domain.CoreDataApi;
+using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Domain.CoreDataApi.ResponseTypes;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Clients.CoreDataApi
@@ -29,13 +30,43 @@ namespace RumpoleGateway.Clients.CoreDataApi
             {
                 var query = new GraphQLHttpRequest
                 {
-                    Query = "query {case(id: "+ caseId + ")  {id uniqueReferenceNumber caseType  appealType }}"
+                    Query = "query {case(id: " + caseId + ")  {id uniqueReferenceNumber caseType  appealType caseStatus {code description } "
+                            + " leadDefendant {firstNames surname organisationName}  " 
+                            + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
 
                 var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
-                _logger.LogInformation($" Token  -   {accessToken} ");
-                var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformation>(authenticatedRequest);
-                _logger.LogInformation($" response  -   {response.Data.CaseDetails.UniqueReferenceNumber} ");
+                var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseDetails>(authenticatedRequest);
+                
+                if (response.Data == null || response.Data?.CaseDetails == null) return null;
+
+                return response.Data.CaseDetails;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($" Error -  response from Data Core API -  {ex} ");
+                return null;
+            }
+        }
+
+        public async Task<List<CaseDetails>> GetCaseInformatoinByURN(string urn, string accessToken)
+        {
+            try
+            {
+
+                var query = new GraphQLHttpRequest
+                {
+                    Query = "query {cases(urn: \""+ urn +"\")  " 
+                             + " {id uniqueReferenceNumber caseType  appealType caseStatus {code description } "
+                             + " leadDefendant {firstNames surname organisationName}"
+                             + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
+                };
+
+                var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
+                var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformationByUrn>(authenticatedRequest);
+                
+                if (response.Data == null || response.Data?.CaseDetails?.Count == 0) return null;
+                
                 return response.Data.CaseDetails;
             }
             catch (Exception ex)

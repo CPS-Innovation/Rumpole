@@ -28,7 +28,15 @@ steps:
     inputs:
       command: "test"
       projects: "$(functionName)*tests/$(functionName)*tests.csproj"
+      publishTestResults: true
+      arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
     displayName: "Run tests"
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '**/*coverage.cobertura.xml'
+    displayName: 'Publish code coverage results'
 
   - task: DotNetCoreCLI@2
     inputs:

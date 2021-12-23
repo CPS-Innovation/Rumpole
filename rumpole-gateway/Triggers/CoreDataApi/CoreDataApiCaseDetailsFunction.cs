@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Triggers.CoreDataApi
 {
-    public class CoreDataApiCaseDetails
+    public class CoreDataApiCaseDetailsFunction
     {
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
+        private readonly ILogger<CoreDataApiCaseDetailsFunction> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
+        public CoreDataApiCaseDetailsFunction(ILogger<CoreDataApiCaseDetailsFunction> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient)
         {
@@ -42,10 +42,14 @@ namespace RumpoleGateway.Triggers.CoreDataApi
                 throw new ArgumentException("Case Id not supplied");
             }
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
+            
+            var caseDetails = await _coreDataApiClient.GetCaseDetailsById(case_id, behalfToken);
 
-            var caseInformation = await _coreDataApiClient.GetCaseDetailsById(case_id, behalfToken);
-
-            return new OkObjectResult(caseInformation);
+            if (caseDetails != null)
+            {
+                return new OkObjectResult(caseDetails);
+            }
+            return new NotFoundObjectResult($"No record found - Case id : {case_id}");
         }
     }
 }

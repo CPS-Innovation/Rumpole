@@ -35,7 +35,7 @@ namespace RumpoleGateway
 
             builder.Services.AddSingleton(serviceProvider =>
             {
-                var instance = "https://login.microsoftonline.com/";
+                var instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
                 var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
                 var onBehalfOfTokenClientId = GetValueFromConfig(configuration, "OnBehalfOfTokenClientId");
                 var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, "OnBehalfOfTokenClientSecret");
