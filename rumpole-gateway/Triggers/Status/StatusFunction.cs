@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace RumpoleGateway.Triggers.Status
 {
@@ -19,6 +20,8 @@ namespace RumpoleGateway.Triggers.Status
                                   string urn)
         {
             _logger.LogInformation(" Status function processed a request.");
+            var version = new Version(1, 1, 0, 0);
+
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
                 return new UnauthorizedObjectResult(Constants.Status.Status.AuthenticationFailedMessage);
@@ -32,7 +35,7 @@ namespace RumpoleGateway.Triggers.Status
             var response = new Domain.Status.Status
             {
                 URN = uniqueReferenceNumber.ToString(),
-                Message = $"Successfully has been accessed - URN : {uniqueReferenceNumber}"
+                Message = $"Successfully has been accessed - Version : {version.Major}.{version.Minor}.{version.Build}.{version.Revision}"
             };
 
             _logger.LogInformation($"Response message :  {response}");
