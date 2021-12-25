@@ -20,7 +20,7 @@ namespace RumpoleGateway.Triggers.Status
                                   string urn)
         {
             _logger.LogInformation(" Status function processed a request.");
-            var version = new Version(1, 1, 0, 0);
+            var version = new Version(1, 2, 0, 0);
 
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
