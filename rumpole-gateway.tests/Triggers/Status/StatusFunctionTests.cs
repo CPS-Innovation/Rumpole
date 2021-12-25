@@ -5,7 +5,7 @@ using Xunit;
 
 namespace RumpoleGateway.Tests.Triggers.Status
 {
-    public class StatusFunctionTests: SharedMethods.SharedMethods
+    public class StatusFunctionTests : SharedMethods.SharedMethods
     {
         private readonly ILogger<StatusFunction> _mockLogger = Substitute.For<ILogger<StatusFunction>>();
 
@@ -53,7 +53,7 @@ namespace RumpoleGateway.Tests.Triggers.Status
             Assert.Equal(urn, response.URN);
         }
 
-        
+
         #region private methods
         private StatusFunction GetStatusFunction()
         {
