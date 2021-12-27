@@ -19,17 +19,17 @@ namespace RumpoleGateway.Triggers.Status
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status/{urn}")] HttpRequest req,
                                   string urn)
         {
-            _logger.LogInformation(" Status function processed a request.");
+            _logger.LogInformation(" Status function proceed a request.");
             var version = new Version(1, 2, 0, 0);
 
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                return new UnauthorizedObjectResult(Constants.Status.Status.AuthenticationFailedMessage);
+                return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
             }
 
             if (!int.TryParse(urn, out var uniqueReferenceNumber))
             {
-                return new BadRequestObjectResult(Constants.Status.Status.URNNotSupplied);
+                return new BadRequestObjectResult(Constants.CommonUserMessages.URNNotSupplied);
             }
 
             var response = new Domain.Status.Status

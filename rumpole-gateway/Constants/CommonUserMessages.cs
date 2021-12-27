@@ -1,9 +1,10 @@
-﻿namespace RumpoleGateway.Constants.Status
+﻿namespace RumpoleGateway.Constants
 {
-    public static class Status
+    public static class CommonUserMessages
     {
         public static string AuthenticationFailedMessage = "Authentication failed due to Bearer Token is not supplied";
         public static string URNNotSupplied = "URN is not supplied";
         public static string ExecptionMessage = "Something went wrong";
+        public static string NoRecordFound = "No record found";
     }
 }
