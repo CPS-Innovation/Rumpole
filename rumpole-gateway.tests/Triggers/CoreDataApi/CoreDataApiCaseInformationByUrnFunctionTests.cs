@@ -15,7 +15,7 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
 {
     public class CoreDataApiCaseInformationByUrnFunctionTests: SharedMethods.SharedMethods , IClassFixture<CaseInformationFake>
     {
-        private readonly ILogger<CoreDataApiCaseDetailsFunction> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseDetailsFunction>>();
+        private readonly ILogger<CoreDataApiCaseInformationByUrnFunction> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseInformationByUrnFunction>>();
         private readonly IOnBehalfOfTokenClient _mockOnBehalfOfTokenClient = Substitute.For<IOnBehalfOfTokenClient>();
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly CaseInformationFake _caseInformationFake;

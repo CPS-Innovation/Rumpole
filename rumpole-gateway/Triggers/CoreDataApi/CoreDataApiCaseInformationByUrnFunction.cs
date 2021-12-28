@@ -14,11 +14,11 @@ namespace RumpoleGateway.Triggers.CoreDataApi
 {
     public class CoreDataApiCaseInformationByUrnFunction
     {
-        private readonly ILogger<CoreDataApiCaseDetailsFunction> _logger;
+        private readonly ILogger<CoreDataApiCaseInformationByUrnFunction> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
 
-        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseDetailsFunction> logger,
+        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseInformationByUrnFunction> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient)
         {
@@ -32,7 +32,7 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
             string urn)
         {
-            _logger.LogInformation("CoreDataApiCaseDetails - trigger processed a request.");
+            _logger.LogInformation("CoreDataApiCaseInformationByUrn - trigger processed a request.");
             
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
