@@ -24,12 +24,3 @@ export const searchUrn = async (urn: string) => {
   );
   return (await response.json()) as CaseSearchResult[];
 };
-
-export const handshake = async (caseId: number) => {
-  const headers = await getHeaders();
-  const response = await fetch(getFullPath(`api/case-details/${caseId}`), {
-    headers,
-    method: "GET",
-  });
-  return (await response.json()) as { caseType: string };
-};
