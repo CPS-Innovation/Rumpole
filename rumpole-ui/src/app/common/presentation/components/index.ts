@@ -5,3 +5,4 @@ export { Button } from "./Button";
 export { BackLink } from "./BackLink";
 export { SkipLink } from "./SkipLink";
 export { Radios } from "./Radios";
+export { ErrorSummary } from "./ErrorSummary";

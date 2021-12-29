@@ -17,7 +17,7 @@ export type SearchState = ReturnType<typeof useSearchState>;
 
 export const useSearchState = (
   { setParams, params }: QueryParamsState<CaseFilterQueryParams>,
-  { data, reduxUrn, loadingStatus }: SearchDataState
+  { data, reduxUrn, loadingStatus, error }: SearchDataState
 ) => {
   const { urn, chargedStatus } = params;
   const totalCount = data.length;
@@ -61,6 +61,8 @@ export const useSearchState = (
 
     setUrnParam,
     setChargedStatus,
+
+    error,
   };
 };
 

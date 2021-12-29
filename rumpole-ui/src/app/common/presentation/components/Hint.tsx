@@ -1,18 +1,17 @@
 import * as GDS from "govuk-react-jsx";
 import styles from "./Hint.module.scss";
 
-type HintProps = {
+type HintProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> & {
   className?: string;
-  attributes?: React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >;
 };
 
 export const Hint: React.FC<HintProps> = ({
   className,
-  attributes,
   children,
+  ...attributes
 }) => {
   return (
     <GDS.Hint className={`${styles.root} ${className}`} {...attributes}>

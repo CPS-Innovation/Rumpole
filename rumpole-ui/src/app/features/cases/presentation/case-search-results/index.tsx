@@ -1,5 +1,6 @@
 import {
   Button,
+  ErrorSummary,
   Hint,
   Input,
   Radios,
@@ -30,10 +31,15 @@ const Page: React.FC = () => {
     loadingStatus,
     totalCount,
     filteredData,
+    error,
   } = searchState;
 
-  if (loadingStatus !== "succeeded") {
+  if (loadingStatus === "loading" || loadingStatus === "idle") {
     return <h1 className="govuk-heading-xl">Please wait...</h1>;
+  }
+
+  if (loadingStatus === "failed") {
+    return <ErrorSummary descriptionChildren={error} />;
   }
 
   return (

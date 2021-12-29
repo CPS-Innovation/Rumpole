@@ -1,4 +1,5 @@
 import { getAccessToken } from "../../../auth";
+import { ApiError } from "../../../common/errors/ApiError";
 import { GATEWAY_BASE_URL } from "../../../config";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
@@ -22,5 +23,10 @@ export const searchUrn = async (urn: string) => {
       method: "GET",
     }
   );
+
+  if (!response.ok) {
+    throw new ApiError("Search URN failed", response);
+  }
+
   return (await response.json()) as CaseSearchResult[];
 };
