@@ -15,10 +15,13 @@ const getHeaders = async () =>
 
 export const searchUrn = async (urn: string) => {
   const headers = await getHeaders();
-  const response = await fetch(getFullPath(`/cases/search/?urn=${urn}`), {
-    headers,
-    method: "GET",
-  });
+  const response = await fetch(
+    getFullPath(`/api/case-information-by-urn/${urn}`),
+    {
+      headers,
+      method: "GET",
+    }
+  );
   return (await response.json()) as CaseSearchResult[];
 };
 

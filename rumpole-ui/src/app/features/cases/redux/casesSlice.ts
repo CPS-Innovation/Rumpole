@@ -6,7 +6,6 @@ import {
 
 import { RootState } from "../../../common/redux/store";
 import { searchUrn } from "../api/gatewayApi";
-import { searchUrn as coreDataSearchUrn } from "../api/coreDataApi";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 const caseAdapter = createEntityAdapter<CaseSearchResult>();
