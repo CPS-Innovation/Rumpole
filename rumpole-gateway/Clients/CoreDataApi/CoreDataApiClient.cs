@@ -49,7 +49,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
         }
 
-        public async Task<List<CaseDetails>> GetCaseInformatoinByURN(string urn, string accessToken)
+        public async Task<IList<CaseDetails>> GetCaseInformatoinByURN(string urn, string accessToken)
         {
             try
             {

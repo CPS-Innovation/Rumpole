@@ -25,8 +25,8 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
         public async Task<string> GetAccessToken(string accessToken)
         {
             AuthenticationResult result;
-            // var scopes = new Collection<string> { _configuration["CoreDataApiScope"] };
-            var scopes = new Collection<string> { "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm" };
+             var scopes = new Collection<string> { _configuration["CoreDataApiScope"] };
+           // var scopes = new Collection<string> { "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm" };
             try
             {
                 var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);

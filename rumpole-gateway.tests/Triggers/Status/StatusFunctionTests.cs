@@ -5,12 +5,12 @@ using Xunit;
 
 namespace RumpoleGateway.Tests.Triggers.Status
 {
-    public class StatusFunctionTests: SharedMethods.SharedMethods
+    public class CoreDataApiCaseInformationByUrnFunctionTests: SharedMethods.SharedMethods
     {
         private readonly ILogger<StatusFunction> _mockLogger = Substitute.For<ILogger<StatusFunction>>();
 
         [Fact]
-        public void GetStatusFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
+        public void StatusFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
         {
             //Arrange
             var statusFunction = GetStatusFunction();
@@ -20,11 +20,11 @@ namespace RumpoleGateway.Tests.Triggers.Status
 
             //Assert
             Assert.Equal(401, results.StatusCode);
-            Assert.Equal(Constants.Status.Status.AuthenticationFailedMessage, results.Value);
+            Assert.Equal(Constants.CommonUserMessages.AuthenticationFailedMessage, results.Value);
         }
 
         [Fact]
-        public void GetStatusFunction_Should_Return_Response_400_When_URN_Not_Supplied()
+        public void StatusFunction_Should_Return_Response_400_When_URN_Not_Supplied()
         {
             //Arrange
             var statusFunction = GetStatusFunction();
@@ -34,11 +34,11 @@ namespace RumpoleGateway.Tests.Triggers.Status
 
             //Assert
             Assert.Equal(400, results.StatusCode);
-            Assert.Equal(Constants.Status.Status.URNNotSupplied, results.Value);
+            Assert.Equal(Constants.CommonUserMessages.URNNotSupplied, results.Value);
         }
 
         [Fact]
-        public void GetStatusFunction_Should_Return_Response_200_When_Valid_Input_Supplied()
+        public void StatusFunction_Should_Return_Response_200_When_Valid_Input_Supplied()
         {
             //Arrange
             var statusFunction = GetStatusFunction();
