@@ -32,7 +32,7 @@ const Page: React.FC = () => {
     filteredData,
   } = searchState;
 
-  if (loadingStatus === "loading") {
+  if (loadingStatus !== "succeeded") {
     return <h1 className="govuk-heading-xl">Please wait...</h1>;
   }
 
