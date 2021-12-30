@@ -22,7 +22,7 @@ export const useSearchState = (
   const { urn, chargedStatus } = params;
   const totalCount = data.length;
 
-  const filterItems = [
+  const chargedStatusFilterItems = [
     { value: "", text: "All", count: totalCount },
     {
       value: "true",
@@ -56,7 +56,7 @@ export const useSearchState = (
     urn,
     chargedStatus: chargedStatus || "",
 
-    filterItems,
+    chargedStatusFilterItems,
     filteredData,
 
     setUrnParam,

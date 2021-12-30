@@ -26,7 +26,7 @@ const Page: React.FC = () => {
 
   const {
     chargedStatus,
-    filterItems,
+    chargedStatusFilterItems,
     setChargedStatus,
     loadingStatus,
     totalCount,
@@ -83,7 +83,7 @@ const Page: React.FC = () => {
               <Radios
                 name="chargedStatus"
                 value={chargedStatus}
-                items={filterItems}
+                items={chargedStatusFilterItems}
                 onChange={setChargedStatus}
               />
             </div>

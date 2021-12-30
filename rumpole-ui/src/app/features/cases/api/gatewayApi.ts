@@ -1,6 +1,6 @@
 import { getAccessToken } from "../../../auth";
 import { ApiError } from "../../../common/errors/ApiError";
-import { GATEWAY_BASE_URL } from "../../../config";
+import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../../../config";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
 const getFullPath = (path: string) => {
@@ -9,9 +9,7 @@ const getFullPath = (path: string) => {
 
 const getHeaders = async () =>
   new Headers({
-    Authorization: `Bearer ${await getAccessToken([
-      "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway/user_impersonation",
-    ])}`,
+    Authorization: `Bearer ${await getAccessToken([GATEWAY_SCOPE])}`,
   });
 
 export const searchUrn = async (urn: string) => {
