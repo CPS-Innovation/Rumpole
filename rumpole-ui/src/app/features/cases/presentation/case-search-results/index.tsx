@@ -13,13 +13,18 @@ import classes from "./index.module.scss";
 import { useSearchField } from "../../hooks/useSearchField";
 import { generatePath, Link } from "react-router-dom";
 import { path as casePath } from "../case";
+import {
+  formatDate,
+  CommonDateTimeFormats,
+} from "../../../../common/utils/dates";
 
 export const path = "/case-search-results";
 
 const Page: React.FC = () => {
-  const queryParamsState = useQueryParamsState<CaseFilterQueryParams>();
-  const reduxState = useSearchDataState(queryParamsState.params.urn);
-  const searchState = useSearchState(queryParamsState, reduxState);
+  const { params, setParams, search } =
+    useQueryParamsState<CaseFilterQueryParams>();
+  const reduxState = useSearchDataState(params.urn);
+  const searchState = useSearchState({ params, setParams, search }, reduxState);
 
   const { handleChange, handleKeyPress, handleSubmit, urn, isError } =
     useSearchField(searchState);
@@ -101,7 +106,12 @@ const Page: React.FC = () => {
             {filteredData.map((item) => (
               <div key={item.id} className={classes.result}>
                 <h2 className="govuk-heading-m ">
-                  <Link to={generatePath(casePath, { id: item.id })}>
+                  <Link
+                    to={{
+                      pathname: generatePath(casePath, { id: item.id }),
+                      state: search,
+                    }}
+                  >
                     {item.uniqueReferenceNumber}
                   </Link>
                   <Hint className={classes.defendantName}>
@@ -110,14 +120,33 @@ const Page: React.FC = () => {
                   </Hint>
                 </h2>
                 <div className="govuk-body">
-                  <div>
-                    <span>Date of offense:</span>
-                    <span>{item.offences[0].earlyDate}</span>
-                  </div>
-                  <div>
-                    <span>Charges:</span>
-                    <span>{item.offences[0].shortDescription}</span>
-                  </div>
+                  {item.offences.map((offence) => (
+                    <>
+                      <div>
+                        <span>Status:</span>
+                        <span>
+                          {offence.isNotYetCharged
+                            ? "Not yet charged"
+                            : "Charged"}
+                        </span>
+                      </div>
+                      <div>
+                        <span>Date of offense:</span>
+                        <span>
+                          {formatDate(
+                            offence.earlyDate,
+                            CommonDateTimeFormats.ShortDateTextMonth
+                          )}
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          {offence.isNotYetCharged ? "Proposed" : ""} Charges:
+                        </span>
+                        <span>{offence.shortDescription}</span>
+                      </div>
+                    </>
+                  ))}
                 </div>
               </div>
             ))}

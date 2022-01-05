@@ -5,6 +5,7 @@ import { path } from "../../features/cases/presentation/case-search-results";
 export type QueryParamsState<T> = {
   setParams: (params: Partial<T>) => void;
   params: Partial<T>;
+  search: string;
 };
 
 export const useQueryParamsState = <T>(): QueryParamsState<T> => {
@@ -27,5 +28,6 @@ export const useQueryParamsState = <T>(): QueryParamsState<T> => {
   return {
     setParams,
     params,
+    search,
   };
 };

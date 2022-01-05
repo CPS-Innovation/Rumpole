@@ -4,13 +4,18 @@ import classes from "./Layout.module.scss";
 
 type LayoutProps = {
   backLink?: { to: string; label?: React.ReactNode };
+  isWide?: boolean;
 };
 
-// .cps-width-container-wide {
-//   max-width: 1200px;
-//}
+export const Layout: React.FC<LayoutProps> = ({
+  backLink,
+  isWide,
+  children,
+}) => {
+  const containerCssClass = isWide
+    ? classes["cps-width-container-wide"]
+    : "govuk-width-container";
 
-export const Layout: React.FC<LayoutProps> = ({ backLink, children }) => {
   return (
     <>
       <SkipLink />
@@ -20,7 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({ backLink, children }) => {
         role="banner"
         data-module="govuk-header"
       >
-        <div className="govuk-header__container govuk-width-container">
+        <div className={`govuk-header__container ${containerCssClass}`}>
           <div className={`govuk-header__logo ${classes.logo}`}>
             <a
               href="/"
@@ -37,15 +42,16 @@ export const Layout: React.FC<LayoutProps> = ({ backLink, children }) => {
         </div>
       </header>
 
-      <div className={`govuk-width-container`}>
+      <div className={containerCssClass}>
         {backLink && <BackLink to={backLink.to}>{backLink.label}</BackLink>}
-        <main className={`govuk-main-wrapper`} id="main-content" role="main">
+
+        <main className="govuk-main-wrapper" id="main-content" role="main">
           {children}
         </main>
       </div>
 
       <footer className="govuk-footer " role="contentinfo">
-        <div className="govuk-width-container ">
+        <div className={containerCssClass}>
           <div className="govuk-footer__meta">
             <div className="govuk-footer__meta-item govuk-footer__meta-item--grow">
               <h2 className="govuk-visually-hidden">Support links</h2>
