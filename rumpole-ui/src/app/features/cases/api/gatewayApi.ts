@@ -1,20 +1,30 @@
 import { getAccessToken } from "../../../auth";
-import { GATEWAY_BASE_URL } from "../../../config";
+import { ApiError } from "../../../common/errors/ApiError";
+import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../../../config";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 
-const getFullPath = (path: string) =>
-  new URL(path, GATEWAY_BASE_URL).toString();
+const getFullPath = (path: string) => {
+  return new URL(path, GATEWAY_BASE_URL).toString();
+};
 
 const getHeaders = async () =>
   new Headers({
-    Authorization: `Bearer ${await getAccessToken(["User.Read"])}`,
+    Authorization: `Bearer ${await getAccessToken([GATEWAY_SCOPE])}`,
   });
 
 export const searchUrn = async (urn: string) => {
   const headers = await getHeaders();
-  const response = await fetch(getFullPath(`/cases/search/?urn=${urn}`), {
-    headers,
-    method: "GET",
-  });
+  const response = await fetch(
+    getFullPath(`/api/case-information-by-urn/${urn}`),
+    {
+      headers,
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    throw new ApiError("Search URN failed", response);
+  }
+
   return (await response.json()) as CaseSearchResult[];
 };

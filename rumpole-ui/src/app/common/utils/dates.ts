@@ -1,8 +1,9 @@
 import { format, parseISO } from "date-fns";
 
-export const commonDateTimeFormats = {
-  shortDate: "dd/MM/yyyy",
+export const CommonDateTimeFormats = {
+  ShortDate: "dd/MM/yyyy",
+  ShortDateTextMonth: "dd MMM yyyy",
 };
 
-export const formatISODate = (isoDateString: string, dateTimeFormat: string) =>
+export const formatDate = (isoDateString: string, dateTimeFormat: string) =>
   format(parseISO(isoDateString), dateTimeFormat);

@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
-import { useQueryParams } from "./useQueryParams";
+import { useQueryParamsState } from "./useQueryParamsState";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 
@@ -8,7 +8,7 @@ const history = createMemoryHistory();
 describe("useQueryParams", () => {
   test("reads single params", () => {
     history.push("/my/route?foo=a&bar=b");
-    const { result } = renderHook(() => useQueryParams(), {
+    const { result } = renderHook(() => useQueryParamsState(), {
       wrapper: ({ children }) => <Router history={history}>{children}</Router>,
     });
 
@@ -20,7 +20,7 @@ describe("useQueryParams", () => {
 
   test("reads array params", () => {
     history.push("/my/route?foo=a,b");
-    const { result } = renderHook(() => useQueryParams(), {
+    const { result } = renderHook(() => useQueryParamsState(), {
       wrapper: ({ children }) => <Router history={history}>{children}</Router>,
     });
 
@@ -31,7 +31,7 @@ describe("useQueryParams", () => {
 
   test("reads empty params", () => {
     history.push("/my/route?foo=");
-    const { result } = renderHook(() => useQueryParams(), {
+    const { result } = renderHook(() => useQueryParamsState(), {
       wrapper: ({ children }) => <Router history={history}>{children}</Router>,
     });
 
@@ -42,9 +42,14 @@ describe("useQueryParams", () => {
 
   test("sets single params", () => {
     history.push("/my/route");
-    const { result } = renderHook(() => useQueryParams<{ foo: string }>(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
     act(() => result.current.setParams({ foo: "a" }));
 
@@ -54,7 +59,7 @@ describe("useQueryParams", () => {
   test("sets many single params", () => {
     history.push("/my/route");
     const { result } = renderHook(
-      () => useQueryParams<{ foo: string; bar: string }>(),
+      () => useQueryParamsState<{ foo: string; bar: string }>(),
       {
         wrapper: ({ children }) => (
           <Router history={history}>{children}</Router>
@@ -69,9 +74,14 @@ describe("useQueryParams", () => {
 
   test("sets array params with a single value", () => {
     history.push("/my/route");
-    const { result } = renderHook(() => useQueryParams<{ foo: string[] }>(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string[] }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
     act(() => result.current.setParams({ foo: ["a"] }));
 
@@ -80,9 +90,14 @@ describe("useQueryParams", () => {
 
   test("sets array params with a many values", () => {
     history.push("/my/route");
-    const { result } = renderHook(() => useQueryParams<{ foo: string[] }>(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string[] }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
     act(() => result.current.setParams({ foo: ["a", "b"] }));
 
@@ -91,9 +106,14 @@ describe("useQueryParams", () => {
 
   test("sets array params with no values", () => {
     history.push("/my/route");
-    const { result } = renderHook(() => useQueryParams<{ foo: string[] }>(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string[] }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
     act(() => result.current.setParams({ foo: [] }));
 
