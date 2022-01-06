@@ -21,6 +21,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"         = ""
     "CoreDataApiUrl"                          = var.core_data_api_details.api_url
     "CoreDataApiScope"                        = var.core_data_api_details.api_scope
+    "TestEntry"                               = "test-entry"
   }
   site_config {
     always_on      = true
