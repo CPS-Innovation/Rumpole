@@ -98,9 +98,10 @@ const Page: React.FC = () => {
         <div className="govuk-grid-column-two-thirds">
           <div className={classes.results}>
             <p className="govuk-body">
-              We've found <b>{totalCount}</b> case
+              We've found <b data-testid="txt-result-count">{totalCount}</b>{" "}
+              case
               {totalCount !== 1 ? "s " : " "}
-              that match {urn}
+              that match <span data-testid="txt-result-urn">{urn}</span>
             </p>
             <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
             {filteredData.map((item) => (
@@ -111,6 +112,7 @@ const Page: React.FC = () => {
                       pathname: generatePath(casePath, { id: item.id }),
                       state: search,
                     }}
+                    data-testid={`link-${item.uniqueReferenceNumber}`}
                   >
                     {item.uniqueReferenceNumber}
                   </Link>
@@ -120,8 +122,8 @@ const Page: React.FC = () => {
                   </Hint>
                 </h2>
                 <div className="govuk-body">
-                  {item.offences.map((offence) => (
-                    <>
+                  {item.offences.map((offence, index) => (
+                    <div key={index}>
                       <div>
                         <span>Status:</span>
                         <span>
@@ -145,7 +147,7 @@ const Page: React.FC = () => {
                         </span>
                         <span>{offence.shortDescription}</span>
                       </div>
-                    </>
+                    </div>
                   ))}
                 </div>
               </div>

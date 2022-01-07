@@ -39,7 +39,15 @@ const Page: React.FC = () => {
             autoFocus
             data-testid="input-search-urn"
             errorMessage={
-              isError ? { children: "Please enter a valid URN" } : undefined
+              isError
+                ? {
+                    children: (
+                      <span data-testid="input-search-urn-error">
+                        Please enter a valid URN
+                      </span>
+                    ),
+                  }
+                : undefined
             }
             label={{
               className: "govuk-label--s",

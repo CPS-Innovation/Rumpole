@@ -3,8 +3,8 @@ describe("the app", () => {
     cy.visit("/");
 
     cy.contains("Rumpole");
-    // home route redirects to /search
-    cy.location("pathname").should("equal", "/search");
+    // home route redirects to /case-search
+    cy.location("pathname").should("equal", "/case-search");
   });
 });
 
