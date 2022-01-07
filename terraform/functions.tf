@@ -8,10 +8,11 @@ resource "azurerm_function_app" "fa_rumpole" {
   storage_account_name       = azurerm_storage_account.sacpsrumpole.name
   storage_account_access_key = azurerm_storage_account.sacpsrumpole.primary_access_key
   os_type                    = "linux"
-  version                    = "~3"
+  version                    = "~4"
   app_settings = {
     "AzureWebJobsStorage"                     = azurerm_storage_account.sacpsrumpole.primary_connection_string
     "FUNCTIONS_WORKER_RUNTIME"                = "dotnet"
+    "FUNCTIONS_EXTENSION_VERSION"             = "~4"
     "StorageConnectionAppSetting"             = azurerm_storage_account.sacpsrumpole.primary_connection_string
     "APPINSIGHTS_INSTRUMENTATIONKEY"          = azurerm_application_insights.ai_rumpole.instrumentation_key
     "OnBehalfOfTokenTenantId"                 = data.azurerm_client_config.current.tenant_id
@@ -21,11 +22,11 @@ resource "azurerm_function_app" "fa_rumpole" {
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"         = ""
     "CoreDataApiUrl"                          = var.core_data_api_details.api_url
     "CoreDataApiScope"                        = var.core_data_api_details.api_scope
-    "TestEntry"                               = "test-entry"
   }
   site_config {
     always_on      = true
     ip_restriction = []
+    linuxFxVersion = "DOTNET|6.0"
     cors {
       allowed_origins = [ "https://as-web-${local.resource_name}.azurewebsites.net", var.env == "dev" ? "http://localhost:3000" : "" ]
       support_credentials = true
