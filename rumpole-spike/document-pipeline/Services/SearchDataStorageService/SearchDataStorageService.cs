@@ -1,0 +1,4 @@
+namespace Services.SearchDataStorageService
+{
+
+}
