@@ -1,0 +1,15 @@
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/indexer-spike.deps.json
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/indexer-spike.runtimeconfig.json
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/indexer-spike.runtimeconfig.dev.json
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/indexer-spike.dll
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/ref/indexer-spike.dll
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/bin/Debug/net5.0/indexer-spike.pdb
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.csproj.AssemblyReference.cache
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.GeneratedMSBuildEditorConfig.editorconfig
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.AssemblyInfoInputs.cache
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.AssemblyInfo.cs
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.csproj.CoreCompileInputs.cache
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.dll
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/ref/indexer-spike.dll
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.pdb
+/Users/stef/code/CPS/Rumpole/rumpole-spike/indexer-spike/obj/Debug/net5.0/indexer-spike.genruntimeconfig.cache

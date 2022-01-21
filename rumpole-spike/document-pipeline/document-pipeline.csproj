@@ -5,6 +5,7 @@
     <RootNamespace>document_pipeline</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.23.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
 
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.5.1" />
@@ -14,7 +15,7 @@
     <PackageReference Include="Docnet.Core" Version="2.3.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.0" />
-    <PackageReference Include="Cosmonaut" Version="2.11.3" />
+
 
   </ItemGroup>
   <ItemGroup>

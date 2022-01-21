@@ -13,36 +13,43 @@ using Newtonsoft.Json;
 
 namespace Functions.ProcessDocument
 {
-  public static class ProcessDocumentOrchestration
-  {
-
-
-    [FunctionName("ProcessDocumentOrchestration")]
-    public static async Task<string> RunOrchestrator(
-    [OrchestrationTrigger] IDurableOrchestrationContext context)
+    public static class ProcessDocumentOrchestration
     {
-      var caseDocument = context.GetInput<CmsCaseDocumentDetails>();
+        [FunctionName("ProcessDocumentOrchestration")]
+        public static async Task<string> RunOrchestrator(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
+        {
+            var caseDocument = context.GetInput<CmsCaseDocumentDetails>();
 
-      var arg = new TransformAndSplitArg
-      {
-        CaseId = caseDocument.CaseId,
-        DocumentId = caseDocument.Id,
-        DocumentUrl = caseDocument.Url
-      };
+            var arg = new TransformAndSplitArg
+            {
+                CaseId = caseDocument.CaseId,
+                DocumentId = caseDocument.Id,
+                DocumentUrl = caseDocument.Url
+            };
 
-      var transformToPdfResult = await context.CallActivityAsync<TransformAndSplitResult>("TransformAndSplit", arg);
+            var transformToPdfResult = await context.CallActivityAsync<TransformAndSplitResult>("TransformAndSplit", arg);
 
-      var pngProcessingTasks = new List<Task>();
+            var pngProcessingTasks = new List<Task>();
 
-      foreach (var pngDetails in transformToPdfResult.Pngs)
-      {
-        pngProcessingTasks.Add(context.CallActivityAsync<AnalyzeResults>("ProcessPagePng", pngDetails.SasLinkUrl));
+            for (int i = 0; i < transformToPdfResult.Pngs.Count; i++)
+            {
+                var processPngArg = new ProcessPagePngArgs
+                {
+                    CaseId = arg.CaseId,
+                    DocumentId = arg.DocumentId,
+                    Url = transformToPdfResult.Pngs[i].SasLinkUrl,
+                    PageIndex = i
+                };
 
-      }
+                pngProcessingTasks.Add(context.CallActivityAsync<AnalyzeResults>("ProcessPagePng", processPngArg));
 
-      await Task.WhenAll(pngProcessingTasks);
+            }
 
-      return pngProcessingTasks.Count.ToString();
+
+            await Task.WhenAll(pngProcessingTasks);
+
+            return pngProcessingTasks.Count.ToString();
+        }
     }
-  }
 }
