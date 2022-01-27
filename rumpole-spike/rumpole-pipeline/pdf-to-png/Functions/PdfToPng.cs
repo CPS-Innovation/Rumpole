@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -28,25 +30,39 @@ namespace Functions.ProcessDocument
         }
 
         [FunctionName("pdf-to-png")]
-        public async Task<List<BlobNameAndSasLinkUrl>> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
         {
-            var content = await req.Content.ReadAsStringAsync();
-            var arg = JsonConvert.DeserializeObject<PdfToPngsArg>(content);
-
-            var pdfStream = await _blobStorageService.DownloadAsync(arg.BlobName);
-            var pngStreams = _pngService.GetPngStreams(pdfStream);
-
-            var folderName = $"{arg.CaseId}/pngs/{arg.DocumentId}";
-
-            var pngUploadTasks = pngStreams.Select((pngStream, index) => UploadBlobAsync(pngStream, $"{folderName}/{index}.png", "image/png"));
-
-            var blobDetails = await Task.WhenAll(pngUploadTasks);
-
-            return blobDetails.Select(blobDetails => new BlobNameAndSasLinkUrl
+            try
             {
-                BlobName = blobDetails.Item1,
-                SasLinkUrl = blobDetails.Item2
-            }).ToList();
+                var content = await req.Content.ReadAsStringAsync();
+                var arg = JsonConvert.DeserializeObject<PdfToPngsArg>(content);
+
+                var pdfStream = await _blobStorageService.DownloadAsync(arg.BlobName);
+                var pngStreams = _pngService.GetPngStreams(pdfStream);
+
+                var folderName = $"{arg.CaseId}/pngs/{arg.DocumentId}";
+
+                var pngUploadTasks = pngStreams.Select((pngStream, index) => UploadBlobAsync(pngStream, $"{folderName}/{index}.png", "image/png"));
+
+                var blobDetails = await Task.WhenAll(pngUploadTasks);
+
+                var result = blobDetails.Select(blobDetails => new BlobNameAndSasLinkUrl
+                {
+                    BlobName = blobDetails.Item1,
+                    SasLinkUrl = blobDetails.Item2
+                }).ToList();
+
+                return new OkObjectResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw;
+                // return new ObjectResult(ex.Message)
+                // {
+                //     StatusCode = 500
+                // };
+            }
+
         }
 
         private async Task<(string, string)> UploadBlobAsync(Stream stream, string blobName, string contentType)

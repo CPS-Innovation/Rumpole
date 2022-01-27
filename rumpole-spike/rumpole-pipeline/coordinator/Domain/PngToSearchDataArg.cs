@@ -9,5 +9,7 @@ namespace Domain
         public int PageIndex { get; set; }
 
         public string SasLink { get; set; }
+
+        public string TransactionId { get; set; }
     }
 }

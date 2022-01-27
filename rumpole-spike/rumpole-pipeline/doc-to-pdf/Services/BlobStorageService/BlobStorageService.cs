@@ -23,7 +23,7 @@ namespace Services.BlobStorageService
 
             var sasBuilder = new BlobSasBuilder()
             {
-                BlobContainerName = "rumpole",
+                BlobContainerName = _options.ContainerName,
                 Resource = "c"
             };
 

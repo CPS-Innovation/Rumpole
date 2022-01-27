@@ -15,16 +15,16 @@ namespace Functions
 {
     public class Orchestrator
     {
-        private readonly EndpointOptions endpoints;
+        private readonly EndpointOptions _endpoints;
 
         public Orchestrator(IOptions<EndpointOptions> endpointOptions)
         {
-            this.endpoints = endpointOptions.Value;
+            this._endpoints = endpointOptions.Value;
         }
 
         [FunctionName("Orchestrator_HttpStart")]
         public async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "cases/{caseId}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "cases/{caseId}")] HttpRequestMessage req,
             int caseId,
             [DurableClient] IDurableOrchestrationClient client,
             ILogger log)
@@ -32,35 +32,48 @@ namespace Functions
             string instanceId = await client.StartNewAsync("CaseOrchestration", null, new OrchestratorArg
             {
                 CaseId = caseId,
-                RequestUrl = req.RequestUri.AbsoluteUri
+                TrackerUrl = $"{req.RequestUri.GetLeftPart(UriPartial.Path)}/tracker{req.RequestUri.Query}"
             });
             return client.CreateCheckStatusResponse(req, instanceId);
         }
 
         [FunctionName("CaseOrchestration")]
-        public async Task RunCaseOrchestrator(
+        public async Task<List<TrackerDocument>> RunCaseOrchestrator(
         [OrchestrationTrigger] IDurableOrchestrationContext context, ILogger log)
         {
             var arg = context.GetInput<OrchestratorArg>();
             var caseId = arg.CaseId;
-            var trackerUrl = arg.RequestUrl + "/tracker"; //  todo: not safe if there is a querystring
-            context.SetCustomStatus(trackerUrl);
+            var transactionId = context.InstanceId;
 
             var tracker = GetTracker(context, caseId);
-            await tracker.Initialise();
-            var cmsCaseDocumentDetails = await CallHttpAsync<List<CmsCaseDocumentDetails>>(context, HttpMethod.Get, endpoints.CmsDocumentDetails);
+            await tracker.Initialise(transactionId);
+
+            var cmsCaseDocumentDetails = await CallHttpAsync<List<CmsCaseDocumentDetails>>(context, HttpMethod.Get, _endpoints.CmsDocumentDetails);
             await tracker.Register(cmsCaseDocumentDetails.Select(item => item.Id).ToList());
 
-            var tasks = new List<Task<string>>();
+            var caseDocumentTasks = new List<Task<string>>();
             foreach (var caseDocumentDetails in cmsCaseDocumentDetails)
             {
                 caseDocumentDetails.CaseId = caseId;
-                tasks.Add(context.CallSubOrchestratorAsync<string>("CaseDocumentOrchestration", caseDocumentDetails));
+                caseDocumentDetails.TransactionId = transactionId;
+                caseDocumentTasks.Add(context.CallSubOrchestratorAsync<string>("CaseDocumentOrchestration", caseDocumentDetails));
                 //break;
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(caseDocumentTasks);
+
+            if (_endpoints.SearchIndexerEnabled)
+            {
+                await CallHttpAsync<object>(context, HttpMethod.Post, _endpoints.SearchIndexer, new SearchIndexerArg
+                {
+                    CaseId = caseId,
+                    TransactionId = transactionId
+                });
+            }
+
             tracker.RegisterIsIndexed();
+
+            return await tracker.GetDocuments();
         }
 
         [FunctionName("CaseDocumentOrchestration")]
@@ -70,14 +83,16 @@ namespace Functions
             var caseDocument = context.GetInput<CmsCaseDocumentDetails>();
             var caseId = caseDocument.CaseId;
             var documentId = caseDocument.Id;
+            var transactionId = caseDocument.TransactionId;
 
             var tracker = GetTracker(context, caseId);
 
-            var pdfBlobNameAndSasLinkUrl = await CallHttpAsync<BlobNameAndSasLinkUrl>(context, HttpMethod.Post, endpoints.DocToPdf, new DocToPdfArg
+            var pdfBlobNameAndSasLinkUrl = await CallHttpAsync<BlobNameAndSasLinkUrl>(context, HttpMethod.Post, _endpoints.DocToPdf, new DocToPdfArg
             {
                 CaseId = caseId,
                 DocumentId = documentId,
-                DocumentUrl = caseDocument.Url
+                DocumentUrl = caseDocument.Url,
+                TransactionId = transactionId
             });
             tracker.RegisterPdfUrl(new TrackerPdfArg
             {
@@ -85,11 +100,12 @@ namespace Functions
                 PdfUrl = pdfBlobNameAndSasLinkUrl.SasLinkUrl
             });
 
-            var pngBlobNameAndSasLinkUrls = await CallHttpAsync<List<BlobNameAndSasLinkUrl>>(context, HttpMethod.Post, endpoints.PdfToPng, new PdfToPngsArg
+            var pngBlobNameAndSasLinkUrls = await CallHttpAsync<List<BlobNameAndSasLinkUrl>>(context, HttpMethod.Post, _endpoints.PdfToPng, new PdfToPngsArg
             {
                 CaseId = caseId,
                 DocumentId = documentId,
-                BlobName = pdfBlobNameAndSasLinkUrl.BlobName
+                BlobName = pdfBlobNameAndSasLinkUrl.BlobName,
+                TransactionId = transactionId
             });
             tracker.RegisterPngUrls(new TrackerPngsArg
             {
@@ -101,12 +117,13 @@ namespace Functions
 
             for (int i = 0; i < pngBlobNameAndSasLinkUrls.Count; i++)
             {
-                pngProcessingTasks.Add(CallHttpAsync<PngToSearchDataResponse>(context, HttpMethod.Post, endpoints.PngToSearchData, new PngToSearchDataArg
+                pngProcessingTasks.Add(CallHttpAsync<PngToSearchDataResponse>(context, HttpMethod.Post, _endpoints.PngToSearchData, new PngToSearchDataArg
                 {
                     CaseId = caseId,
                     DocumentId = documentId,
                     SasLink = pngBlobNameAndSasLinkUrls[i].SasLinkUrl,
-                    PageIndex = i
+                    PageIndex = i,
+                    TransactionId = transactionId
                 }));
             }
 
@@ -124,14 +141,6 @@ namespace Functions
                                     }).ToList()
             });
         }
-
-        [FunctionName("CaseIndexerOrchestration")]
-        public async Task RunIndexerOrchestrator(
-                [OrchestrationTrigger] IDurableOrchestrationContext context)
-        {
-
-        }
-
 
         private async Task<T> CallHttpAsync<T>(IDurableOrchestrationContext context, HttpMethod httpMethod, string url, object arg = null)
         {

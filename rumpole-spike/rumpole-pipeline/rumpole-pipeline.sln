@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pdf-to-png", "pdf-to-png\pd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "png-to-search-data", "png-to-search-data\png-to-search-data.csproj", "{5273BD7D-5443-41C1-8AC0-98C847718CD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "search-indexer", "search-indexer\search-indexer.csproj", "{66B6100D-ACB9-4020-968D-604950C2BF36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{5273BD7D-5443-41C1-8AC0-98C847718CD5}.Release|x64.Build.0 = Release|Any CPU
 		{5273BD7D-5443-41C1-8AC0-98C847718CD5}.Release|x86.ActiveCfg = Release|Any CPU
 		{5273BD7D-5443-41C1-8AC0-98C847718CD5}.Release|x86.Build.0 = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|x64.Build.0 = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Debug|x86.Build.0 = Debug|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|x64.ActiveCfg = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|x64.Build.0 = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|x86.ActiveCfg = Release|Any CPU
+		{66B6100D-ACB9-4020-968D-604950C2BF36}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

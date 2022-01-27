@@ -8,4 +8,4 @@ namespace Domain
 
         public string BlobName { get; set; }
     }
-}
+}   

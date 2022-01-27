@@ -3,10 +3,10 @@ using System.IO;
 
 namespace Domain
 {
-  public class BlobNameAndSasLinkUrl
-  {
-    public string BlobName { get; set; }
+    public class BlobNameAndSasLinkUrl
+    {
+        public string BlobName { get; set; }
 
-    public string SasLinkUrl { get; set; }
-  }
+        public string SasLinkUrl { get; set; }
+    }
 }

@@ -1,8 +1,4 @@
 using System;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
@@ -33,7 +29,7 @@ namespace Services.OcrService
             var textHeaders = await _computerVisionClient.ReadAsync(url);
 
             string operationLocation = textHeaders.OperationLocation;
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             const int numberOfCharsInOperationId = 36;
             string operationId = operationLocation.Substring(operationLocation.Length - numberOfCharsInOperationId);
@@ -47,7 +43,7 @@ namespace Services.OcrService
                 if (results.Status == OperationStatusCodes.Running ||
                     results.Status == OperationStatusCodes.NotStarted)
                 {
-                    await Task.Delay(200);
+                    await Task.Delay(500);
                 }
                 else
                 {

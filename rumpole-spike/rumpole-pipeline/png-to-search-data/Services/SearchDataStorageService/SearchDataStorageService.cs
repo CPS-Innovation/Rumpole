@@ -6,52 +6,71 @@ using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using System;
+using Azure.Search.Documents.Indexes;
+using Azure;
+using Azure.Search.Documents;
+using Azure.Core.Serialization;
 
 namespace Services.SearchDataStorageService
 {
     public class SearchDataStorageService
     {
-        private readonly SearchDataStorageOptions _options;
+        private readonly SearchDataStorageOptions _storageOptions;
+        private readonly SearchDataIndexOptions _indexOptions;
         private readonly CosmosClient _cosmosClient;
+        private readonly SearchIndexClient _indexClient;
 
-        public SearchDataStorageService(IOptions<SearchDataStorageOptions> options)
+        public SearchDataStorageService(IOptions<SearchDataStorageOptions> storageOptions, IOptions<SearchDataIndexOptions> indexOptions)
         {
-            _options = options.Value;
-            _cosmosClient = new CosmosClient(_options.EndpointUrl, _options.AuthorizationKey, new CosmosClientOptions()
+            _storageOptions = storageOptions.Value;
+            _indexOptions = indexOptions.Value;
+            _cosmosClient = new CosmosClient(_storageOptions.EndpointUrl, _storageOptions.AuthorizationKey, new CosmosClientOptions()
             {
                 SerializerOptions = new CosmosSerializationOptions()
                 {
                     PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
                 },
-                AllowBulkExecution = true
+                AllowBulkExecution = true,
+                MaxRetryAttemptsOnRateLimitedRequests = 20
             });
+
+            _indexClient = new SearchIndexClient(
+                new Uri(_indexOptions.EndpointUrl),
+                new AzureKeyCredential(_indexOptions.AuthorizationKey),
+                new SearchClientOptions { Serializer = new NewtonsoftJsonObjectSerializer() });
+            Console.WriteLine($"Storage {_storageOptions.Enabled}; Indexed {_indexOptions.Enabled}");
         }
 
-        public async Task StoreResults(AnalyzeResults analyzeresults, int caseId, int documentId, int pageIndex)
+        public async Task StoreResults(AnalyzeResults analyzeresults, int caseId, int documentId, int pageIndex, string transactionId)
         {
-            var container = _cosmosClient.GetContainer(_options.DatabaseName, "lines");
+            var searchLines = analyzeresults.ReadResults.First().Lines.Select((line, index) => new SearchLine
+            {
+                Id = $"{caseId}-{documentId}-{pageIndex}-{index}",
+                CaseId = caseId,
+                DocumentId = documentId,
+                PageIndex = pageIndex,
+                LineIndex = index,
+                Language = line.Language,
+                BoundingBox = line.BoundingBox,
+                Appearance = line.Appearance,
+                Text = line.Text,
+                Words = line.Words,
+                TransactionId = transactionId
+            });
+
+            var container = _cosmosClient.GetContainer(_storageOptions.DatabaseName, _storageOptions.ContainerName);
+            var searchClient = _indexClient.GetSearchClient(_indexOptions.IndexName);
 
             var tasks = new List<Task>();
-
-            var lines = analyzeresults.ReadResults.First().Lines;
-            for (var i = 0; i < lines.Count; i++)
+            if (_storageOptions.Enabled)
             {
-                var line = lines[i];
-                var searchLine = new SearchLine
-                {
-                    Id = $"{caseId}-{documentId}-{pageIndex}-{i}",
-                    CaseId = caseId,
-                    DocumentId = documentId,
-                    PageIndex = pageIndex,
-                    LineIndex = i,
-                    Language = line.Language,
-                    BoundingBox = line.BoundingBox,
-                    Appearance = line.Appearance,
-                    Text = line.Text,
-                    Words = line.Words
-                };
-                tasks.Add(Upsert(container, searchLine, caseId));
+                tasks.AddRange(searchLines.Select(searchLine => Upsert(container, searchLine, caseId)));
             }
+            if (_indexOptions.Enabled)
+            {
+                tasks.Add(searchClient.UploadDocumentsAsync(searchLines));
+            }
+
 
             await Task.WhenAll(tasks);
         }
@@ -65,11 +84,11 @@ namespace Services.SearchDataStorageService
                 AggregateException innerExceptions = itemResponse.Exception.Flatten();
                 if (innerExceptions.InnerExceptions.FirstOrDefault(innerEx => innerEx is CosmosException) is CosmosException cosmosException)
                 {
-                    Console.WriteLine($"Received {cosmosException.StatusCode} ({cosmosException.Message}).");
+                    Console.WriteLine($"CosmosDb - Received {(int)cosmosException.StatusCode}: {cosmosException.StatusCode} ({cosmosException.Message}).");
                 }
                 else
                 {
-                    Console.WriteLine($"Exception {innerExceptions.InnerExceptions.FirstOrDefault()}.");
+                    Console.WriteLine($"CosmosDb - Exception {innerExceptions.InnerExceptions.FirstOrDefault()}.");
                 }
             }
         });

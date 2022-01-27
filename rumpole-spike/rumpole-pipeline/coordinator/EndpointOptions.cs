@@ -4,5 +4,6 @@ public class EndpointOptions
     public string DocToPdf { get; set; }
     public string PdfToPng { get; set; }
     public string PngToSearchData { get; set; }
-    public string SearchDataIndexer { get; set; }
+    public string SearchIndexer { get; set; }
+    public bool SearchIndexerEnabled { get; set; }
 }

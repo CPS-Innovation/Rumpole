@@ -13,7 +13,6 @@ namespace ServerlessPDFConversionDemo
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
             builder.Services.AddOptions<BlobStorageOptions>().Configure<IConfiguration>((setttings, configuration) =>
             {
                 configuration.GetSection("blobStorage").Bind(setttings);

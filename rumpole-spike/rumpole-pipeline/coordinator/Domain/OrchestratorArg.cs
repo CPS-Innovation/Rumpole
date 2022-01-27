@@ -4,6 +4,7 @@ namespace Domain
     {
         public int CaseId { get; set; }
 
-        public string RequestUrl { get; set; }
+        public string TrackerUrl { get; set; }
+
     }
 }

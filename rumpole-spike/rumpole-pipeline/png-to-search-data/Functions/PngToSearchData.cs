@@ -31,9 +31,9 @@ namespace Functions.ProcessDocument
 
             var url = arg.SasLink;
             var pagePngAnalysisResults = await _ocrService.GetOcrResults(url);
-            await _searchDataStorageService.StoreResults(pagePngAnalysisResults, arg.CaseId, arg.DocumentId, arg.PageIndex);
+            await _searchDataStorageService.StoreResults(pagePngAnalysisResults, arg.CaseId, arg.DocumentId, arg.PageIndex, arg.TransactionId);
 
-            var thisPageResult = pagePngAnalysisResults.ReadResults[0];
+            var thisPageResult = pagePngAnalysisResults.ReadResults[0]; // only one page per png
             return new PngToSearchDataResponse
             {
                 PageIndex = arg.PageIndex,

@@ -1,12 +1,8 @@
 namespace Domain
 {
-    public class PdfToPngsArg
+    public class SearchIndexerArg
     {
         public int CaseId { get; set; }
-
-        public int DocumentId { get; set; }
-
-        public string BlobName { get; set; }
 
         public string TransactionId { get; set; }
     }

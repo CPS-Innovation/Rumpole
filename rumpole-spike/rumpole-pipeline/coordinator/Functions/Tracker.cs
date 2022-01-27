@@ -20,6 +20,9 @@ public class Tracker : ITracker
     [JsonProperty("isIndexed")]
     public Boolean IsIndexed { get; set; }
 
+    [JsonProperty("transactionId")]
+    public string TransactionId { get; set; }
+
     [JsonProperty("documents")]
     public List<TrackerDocument> Documents { get; set; }
 
@@ -27,8 +30,9 @@ public class Tracker : ITracker
     public List<Log> Logs { get; set; }
 
     // a `Task` so we can wait for it and be assured we are initialsed and avoid null references
-    public Task Initialise()
+    public Task Initialise(string transactionId)
     {
+        this.TransactionId = transactionId;
         this.Documents = new List<TrackerDocument>();
         this.Logs = new List<Log>();
         this.IsIndexed = false;
@@ -90,6 +94,11 @@ public class Tracker : ITracker
         return Task.FromResult((ITracker)this);
     }
 
+    public Task<List<TrackerDocument>> GetDocuments()
+    {
+        return Task.FromResult(this.Documents);
+    }
+
     private void Log(LogType logType, int? documentId = null)
     {
         this.Logs.Add(new Log
@@ -106,7 +115,7 @@ public class Tracker : ITracker
 
     [FunctionName("Tracker_HttpStart")]
     public static async Task<IActionResult> HttpStart(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "cases/{caseId}/tracker")] HttpRequestMessage req,
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "cases/{caseId}/tracker")] HttpRequestMessage req,
         string caseId,
         [DurableClient] IDurableEntityClient client,
         ILogger log)
@@ -125,13 +134,15 @@ public class Tracker : ITracker
 
 public interface ITracker
 {
-    Task Initialise();
+    Task Initialise(string TransactionId);
     Task Register(List<int> documentIds);
     void RegisterPdfUrl(TrackerPdfArg arg);
     void RegisterPngUrls(TrackerPngsArg arg);
     void RegisterIsProcessedForSearch(TrackerSearchArg trackerSearchArg);
     void RegisterIsIndexed();
     Task<ITracker> Get();
+
+    Task<List<TrackerDocument>> GetDocuments();
 }
 
 public class TrackerPngDimensions
