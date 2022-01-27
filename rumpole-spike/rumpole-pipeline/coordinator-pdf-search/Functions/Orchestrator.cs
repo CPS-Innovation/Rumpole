@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Domain;
@@ -29,11 +30,22 @@ namespace Functions
             [DurableClient] IDurableOrchestrationClient client,
             ILogger log)
         {
-            string instanceId = await client.StartNewAsync("CaseOrchestration", null, new OrchestratorArg
+            var instanceId = caseId.ToString();
+            // Check if an instance with the specified ID already exists or an existing one stopped running(completed/failed/terminated).
+            var existingInstance = await client.GetStatusAsync(instanceId);
+            if (existingInstance == null
+            || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Completed
+            || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Failed
+            || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Terminated)
             {
-                CaseId = caseId,
-                TrackerUrl = $"{req.RequestUri.GetLeftPart(UriPartial.Path)}/tracker{req.RequestUri.Query}"
-            });
+                await client.StartNewAsync("CaseOrchestration", instanceId, new OrchestratorArg
+                {
+                    CaseId = caseId,
+                    TrackerUrl = $"{req.RequestUri.GetLeftPart(UriPartial.Path)}/tracker{req.RequestUri.Query}"
+                });
+
+            }
+
             return client.CreateCheckStatusResponse(req, instanceId);
         }
 
@@ -57,7 +69,7 @@ namespace Functions
                 caseDocumentDetails.CaseId = caseId;
                 caseDocumentDetails.TransactionId = transactionId;
                 caseDocumentTasks.Add(context.CallSubOrchestratorAsync<string>("CaseDocumentOrchestration", caseDocumentDetails));
-                //break;
+                break;
             }
 
             await Task.WhenAll(caseDocumentTasks);

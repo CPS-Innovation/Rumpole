@@ -89,7 +89,7 @@ public class Tracker : ITracker
             doc.PngDetails[i].Dimensions = trackerSearchArg.PngDimensions[i];
         }
 
-        Log(LogType.RegisterIsIndexed, trackerSearchArg.DocumentId);
+        Log(LogType.RegisterIsProcessedForSearch, trackerSearchArg.DocumentId);
     }
 
     public void RegisterIsIndexed()
