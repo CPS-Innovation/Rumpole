@@ -38,11 +38,11 @@ namespace Functions.ProcessDocument
                 var arg = JsonConvert.DeserializeObject<PdfToPngsArg>(content);
 
                 var pdfStream = await _blobStorageService.DownloadAsync(arg.BlobName);
-                var pngStreams = _pngService.GetPngStreams(pdfStream);
+                var pagePngStreams = _pngService.GetPngStreams(pdfStream);
 
                 var folderName = $"{arg.CaseId}/pngs/{arg.DocumentId}";
 
-                var pngUploadTasks = pngStreams.Select((pngStream, index) => UploadBlobAsync(pngStream, $"{folderName}/{index}.png", "image/png"));
+                var pngUploadTasks = pagePngStreams.Select((pngStream, index) => UploadBlobAsync(pngStream, $"{folderName}/{index}.png", "image/png"));
 
                 var blobDetails = await Task.WhenAll(pngUploadTasks);
 
