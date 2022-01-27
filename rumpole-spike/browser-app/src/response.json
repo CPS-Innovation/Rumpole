@@ -1,0 +1,1390 @@
+{
+  "status": "succeeded",
+  "createdDateTime": "2022-01-14T14:22:50Z",
+  "lastUpdatedDateTime": "2022-01-14T14:22:51Z",
+  "analyzeResult": {
+    "version": "3.2.0",
+    "modelVersion": "2021-04-12",
+    "readResults": [
+      {
+        "page": 1,
+        "angle": 0.0821,
+        "width": 1080,
+        "height": 1527,
+        "unit": "pixel",
+        "lines": [
+          {
+            "boundingBox": [376, 74, 700, 74, 700, 100, 376, 99],
+            "text": "RESTRICTED (when complete)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [377, 75, 515, 74, 516, 99, 379, 98],
+                "text": "RESTRICTED",
+                "confidence": 0.988
+              },
+              {
+                "boundingBox": [522, 74, 586, 74, 586, 100, 522, 99],
+                "text": "(when",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [591, 74, 700, 74, 699, 101, 591, 100],
+                "text": "complete)",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [944, 68, 986, 67, 986, 82, 944, 82],
+            "text": "MG20",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [944, 67, 984, 67, 984, 82, 944, 82],
+                "text": "MG20",
+                "confidence": 0.991
+              }
+            ]
+          },
+          {
+            "boundingBox": [250, 142, 826, 142, 826, 169, 250, 170],
+            "text": "FURTHER EVIDENCE / INFORMATION REPORT",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [251, 144, 368, 143, 367, 170, 251, 169],
+                "text": "FURTHER",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [378, 143, 507, 143, 506, 171, 378, 170],
+                "text": "EVIDENCE",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [514, 143, 524, 143, 523, 171, 513, 171],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [529, 143, 707, 143, 706, 170, 528, 171],
+                "text": "INFORMATION",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [716, 143, 823, 143, 822, 169, 715, 170],
+                "text": "REPORT",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [75, 198, 378, 197, 378, 220, 75, 221],
+            "text": "To: Crown Prosecution Service",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 198, 107, 198, 106, 221, 75, 221],
+                "text": "To:",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [111, 198, 176, 198, 176, 221, 111, 221],
+                "text": "Crown",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [181, 198, 298, 198, 298, 221, 180, 221],
+                "text": "Prosecution",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [303, 198, 378, 198, 378, 221, 303, 221],
+                "text": "Service",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [726, 203, 771, 203, 771, 221, 726, 221],
+            "text": "URN",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [726, 203, 763, 203, 763, 221, 726, 221],
+                "text": "URN",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [792, 204, 816, 204, 816, 220, 792, 220],
+            "text": "45",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [792, 204, 811, 204, 811, 220, 792, 220],
+                "text": "45",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [829, 205, 854, 205, 854, 221, 829, 220],
+            "text": "AA",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [829, 205, 851, 205, 851, 221, 829, 220],
+                "text": "AA",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [881, 205, 934, 204, 935, 220, 881, 222],
+            "text": "02098",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [882, 205, 930, 205, 930, 221, 882, 222],
+                "text": "02098",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [76, 244, 137, 244, 137, 265, 76, 264],
+            "text": "Office:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 245, 137, 246, 136, 265, 77, 265],
+                "text": "Office:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [76, 283, 203, 283, 203, 305, 76, 305],
+            "text": "R v MCLOVE",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 284, 87, 284, 88, 304, 77, 304],
+                "text": "R",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [92, 284, 103, 284, 104, 304, 92, 304],
+                "text": "v",
+                "confidence": 0.959
+              },
+              {
+                "boundingBox": [113, 284, 198, 283, 198, 306, 114, 304],
+                "text": "MCLOVE",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [75, 325, 218, 325, 218, 347, 74, 346],
+            "text": "Next court date:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 325, 117, 326, 116, 347, 75, 346],
+                "text": "Next",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [121, 326, 166, 326, 165, 347, 120, 347],
+                "text": "court",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [170, 326, 218, 325, 218, 347, 169, 347],
+                "text": "date:",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [289, 327, 312, 327, 311, 345, 288, 345],
+            "text": "at:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [289, 327, 312, 327, 312, 345, 289, 345],
+                "text": "at:",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [76, 366, 176, 367, 176, 389, 76, 388],
+            "text": "Offence(s):",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 367, 176, 368, 175, 390, 77, 388],
+                "text": "Offence(s):",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [74, 420, 297, 420, 297, 442, 74, 442],
+            "text": "Submitted as indicated",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 420, 173, 421, 172, 441, 76, 442],
+                "text": "Submitted",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [177, 421, 200, 421, 200, 441, 177, 441],
+                "text": "as",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [205, 421, 295, 421, 295, 442, 204, 441],
+                "text": "indicated",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [76, 472, 471, 473, 471, 498, 76, 497],
+            "text": "Bad Character / Dangerous Offender (MG16)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [77, 474, 110, 474, 110, 496, 77, 495],
+                "text": "Bad",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [114, 474, 203, 473, 203, 498, 115, 496],
+                "text": "Character",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [208, 473, 215, 473, 214, 498, 207, 498],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [219, 473, 318, 473, 317, 498, 219, 498],
+                "text": "Dangerous",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [322, 473, 401, 473, 400, 498, 321, 498],
+                "text": "Offender",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [405, 473, 471, 473, 469, 498, 404, 498],
+                "text": "(MG16)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [577, 468, 903, 469, 903, 490, 577, 490],
+            "text": "Outstanding case / revocation order",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [580, 469, 690, 469, 691, 491, 580, 490],
+                "text": "Outstanding",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [694, 469, 736, 470, 736, 491, 695, 491],
+                "text": "case",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [740, 470, 748, 470, 749, 491, 740, 491],
+                "text": "/",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [752, 470, 847, 469, 847, 491, 753, 491],
+                "text": "revocation",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [851, 469, 904, 469, 904, 491, 851, 491],
+                "text": "order",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [584, 492, 761, 493, 761, 514, 584, 513],
+            "text": "details (state below)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [584, 493, 640, 493, 640, 513, 585, 513],
+                "text": "details",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [644, 493, 696, 493, 695, 514, 643, 513],
+                "text": "(state",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [700, 493, 762, 494, 761, 514, 699, 514],
+                "text": "below)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 530, 422, 530, 422, 555, 73, 554],
+            "text": "Case file evidence & information (MG6)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 531, 120, 531, 121, 553, 75, 553],
+                "text": "Case",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [125, 531, 152, 531, 152, 553, 125, 553],
+                "text": "file",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [156, 531, 238, 531, 238, 553, 157, 553],
+                "text": "evidence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [243, 531, 257, 531, 257, 553, 243, 553],
+                "text": "&",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [261, 531, 362, 531, 362, 554, 261, 553],
+                "text": "information",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [367, 531, 423, 530, 422, 555, 366, 554],
+                "text": "(MG6)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [574, 525, 943, 525, 943, 549, 574, 548],
+            "text": "Proceedings / investigations outstanding",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [580, 526, 692, 526, 692, 549, 581, 547],
+                "text": "Proceedings",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [696, 526, 703, 526, 703, 549, 696, 549],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [707, 526, 831, 526, 831, 550, 707, 549],
+                "text": "investigations",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [835, 526, 940, 525, 939, 549, 835, 550],
+                "text": "outstanding",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 581, 266, 582, 266, 606, 73, 605],
+            "text": "CCTV - tapes / discs",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 582, 129, 583, 129, 606, 75, 605],
+                "text": "CCTV",
+                "confidence": 0.988
+              },
+              {
+                "boundingBox": [134, 583, 144, 583, 145, 606, 134, 606],
+                "text": "-",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [149, 583, 200, 584, 200, 606, 149, 606],
+                "text": "tapes",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [205, 584, 212, 584, 212, 606, 204, 606],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [217, 584, 267, 583, 266, 605, 216, 606],
+                "text": "discs",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [574, 576, 928, 576, 928, 601, 574, 600],
+            "text": "Proceeds of Crime Act (POCA) (MG17)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [580, 577, 666, 577, 666, 600, 580, 599],
+                "text": "Proceeds",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [670, 577, 688, 577, 688, 601, 670, 600],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [692, 577, 746, 577, 747, 601, 693, 601],
+                "text": "Crime",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [750, 577, 781, 577, 781, 602, 751, 601],
+                "text": "Act",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [785, 577, 856, 577, 856, 602, 785, 602],
+                "text": "(POCA)",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [860, 577, 928, 577, 929, 602, 860, 602],
+                "text": "(MG17)",
+                "confidence": 0.988
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 634, 473, 634, 473, 658, 73, 658],
+            "text": "Compensation - receipts / estimates (MG19)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 635, 204, 635, 204, 658, 75, 659],
+                "text": "Compensation",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [208, 635, 219, 635, 219, 658, 209, 658],
+                "text": "-",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [224, 635, 295, 635, 295, 658, 224, 658],
+                "text": "receipts",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [300, 635, 306, 635, 306, 658, 300, 658],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [311, 635, 402, 635, 402, 658, 311, 658],
+                "text": "estimates",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [407, 635, 473, 635, 472, 659, 407, 658],
+                "text": "(MG19)",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [582, 628, 860, 628, 859, 652, 582, 651],
+            "text": "Prisoner production copy order",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [583, 629, 656, 629, 656, 651, 583, 650],
+                "text": "Prisoner",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [661, 629, 756, 629, 755, 653, 660, 651],
+                "text": "production",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [760, 629, 803, 629, 803, 653, 760, 653],
+                "text": "copy",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [807, 629, 860, 629, 860, 653, 807, 653],
+                "text": "order",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [75, 679, 437, 679, 437, 704, 75, 703],
+            "text": "Conviction memorandum (certified copy)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 680, 167, 680, 167, 703, 76, 703],
+                "text": "Conviction",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [172, 680, 293, 679, 293, 704, 172, 703],
+                "text": "memorandum",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [301, 680, 379, 680, 378, 704, 300, 704],
+                "text": "(certified",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [384, 680, 436, 680, 435, 704, 383, 704],
+                "text": "copy)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [583, 673, 845, 673, 845, 696, 583, 696],
+            "text": "Record(s) of interview (MG15)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [584, 674, 668, 674, 668, 696, 584, 695],
+                "text": "Record(s)",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [672, 674, 691, 674, 691, 696, 673, 696],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [695, 674, 774, 673, 774, 697, 695, 696],
+                "text": "interview",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [780, 673, 845, 673, 844, 697, 780, 697],
+                "text": "(MG15)",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [75, 724, 424, 724, 424, 749, 75, 749],
+            "text": "Custody record (copy) or updated copy",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 725, 147, 725, 146, 749, 76, 749],
+                "text": "Custody",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [152, 725, 211, 725, 210, 749, 151, 749],
+                "text": "record",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [215, 725, 271, 725, 270, 749, 214, 749],
+                "text": "(copy)",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [276, 725, 295, 725, 294, 749, 275, 749],
+                "text": "or",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [299, 725, 372, 725, 371, 750, 298, 749],
+                "text": "updated",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [377, 725, 424, 725, 422, 750, 376, 750],
+                "text": "copy",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [582, 723, 946, 723, 946, 748, 582, 747],
+            "text": "Recorded interviews (video / tape / DVD)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [583, 725, 667, 725, 667, 747, 583, 746],
+                "text": "Recorded",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [671, 725, 762, 724, 762, 747, 672, 747],
+                "text": "interviews",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [766, 724, 821, 724, 821, 748, 766, 747],
+                "text": "(video",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [825, 724, 833, 724, 833, 748, 826, 748],
+                "text": "/",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [837, 724, 876, 724, 876, 748, 837, 748],
+                "text": "tape",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [881, 724, 889, 724, 889, 748, 881, 748],
+                "text": "/",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [893, 724, 946, 723, 946, 749, 893, 748],
+                "text": "DVD)",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 767, 204, 768, 204, 791, 73, 790],
+            "text": "DVLA printout",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 767, 126, 768, 126, 791, 75, 790],
+                "text": "DVLA",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [131, 768, 205, 769, 203, 791, 131, 791],
+                "text": "printout",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [582, 763, 913, 763, 913, 786, 582, 786],
+            "text": "Special Measures Assessment (MG2)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [583, 765, 647, 764, 646, 786, 583, 786],
+                "text": "Special",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [651, 764, 741, 763, 740, 787, 651, 786],
+                "text": "Measures",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [745, 763, 855, 763, 854, 786, 745, 787],
+                "text": "Assessment",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [859, 763, 913, 763, 912, 786, 858, 786],
+                "text": "(MG2)",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [74, 813, 483, 813, 483, 836, 74, 836],
+            "text": "Defendant previous convictions / cautions etc.",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 813, 166, 814, 167, 837, 75, 837],
+                "text": "Defendant",
+                "confidence": 0.99
+              },
+              {
+                "boundingBox": [171, 814, 248, 814, 248, 836, 171, 837],
+                "text": "previous",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [253, 814, 351, 814, 351, 836, 253, 836],
+                "text": "convictions",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [356, 814, 363, 814, 363, 836, 355, 836],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [368, 814, 444, 814, 443, 837, 368, 836],
+                "text": "cautions",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [448, 814, 483, 814, 481, 837, 447, 837],
+                "text": "etc.",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [580, 806, 794, 806, 794, 831, 580, 829],
+            "text": "TIC schedule(s) (MG18)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [581, 807, 611, 808, 611, 829, 582, 829],
+                "text": "TIC",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [618, 808, 723, 808, 723, 831, 619, 829],
+                "text": "schedule(s)",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [727, 808, 794, 807, 795, 831, 728, 831],
+                "text": "(MG18)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 856, 444, 856, 444, 880, 73, 880],
+            "text": "Disclosure (MG6B / MG6C / MG6D / MG6E)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 858, 167, 857, 168, 880, 75, 880],
+                "text": "Disclosure",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [171, 857, 230, 857, 230, 880, 172, 880],
+                "text": "(MG6B",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [234, 857, 240, 857, 240, 880, 234, 880],
+                "text": "/",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [244, 857, 297, 857, 297, 880, 245, 880],
+                "text": "MG6C",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [301, 857, 308, 857, 308, 880, 301, 880],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [313, 857, 365, 857, 365, 881, 313, 880],
+                "text": "MG6D",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [370, 857, 376, 857, 375, 881, 369, 881],
+                "text": "/",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [380, 857, 443, 856, 442, 881, 379, 881],
+                "text": "MG6E)",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [579, 852, 928, 852, 928, 876, 579, 875],
+            "text": "Witness availability list updated (MG10)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [581, 853, 653, 853, 653, 875, 581, 874],
+                "text": "Witness",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [657, 853, 750, 853, 750, 876, 657, 875],
+                "text": "availability",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [754, 853, 781, 852, 781, 877, 754, 876],
+                "text": "list",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [785, 852, 858, 852, 859, 877, 785, 877],
+                "text": "updated",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [863, 852, 929, 852, 929, 877, 863, 877],
+                "text": "(MG10)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [74, 902, 474, 902, 473, 926, 74, 925],
+            "text": "Drink drive forms roadside / hospital / station",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [75, 903, 120, 903, 121, 925, 76, 924],
+                "text": "Drink",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [124, 903, 169, 903, 170, 925, 126, 925],
+                "text": "drive",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [173, 903, 225, 902, 226, 926, 174, 925],
+                "text": "forms",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [229, 902, 307, 902, 308, 926, 230, 926],
+                "text": "roadside",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [311, 902, 318, 902, 319, 926, 312, 926],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [323, 902, 394, 902, 394, 926, 323, 926],
+                "text": "hospital",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [398, 902, 406, 902, 407, 926, 399, 926],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [411, 902, 470, 902, 471, 926, 411, 926],
+                "text": "station",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [580, 897, 820, 897, 820, 921, 580, 920],
+            "text": "Witness list updated (MG9)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [581, 898, 651, 898, 652, 920, 581, 919],
+                "text": "Witness",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [656, 898, 683, 898, 683, 920, 656, 920],
+                "text": "list",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [687, 898, 761, 898, 761, 921, 687, 920],
+                "text": "updated",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [765, 898, 820, 898, 819, 921, 765, 921],
+                "text": "(MG9)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 929, 171, 926, 172, 947, 74, 949],
+            "text": "procedure",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [75, 929, 166, 927, 165, 948, 75, 950],
+                "text": "procedure",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [76, 970, 301, 971, 301, 994, 76, 993],
+            "text": "Exhibit (copy documents)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 971, 136, 971, 135, 994, 76, 992],
+                "text": "Exhibit",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [140, 971, 190, 971, 189, 994, 140, 994],
+                "text": "(copy",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [194, 971, 302, 971, 300, 994, 193, 994],
+                "text": "documents)",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [578, 964, 932, 964, 932, 988, 578, 987],
+            "text": "Witness previous convictions / cautions",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [580, 965, 651, 965, 652, 987, 581, 986],
+                "text": "Witness",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [655, 965, 734, 965, 734, 988, 656, 987],
+                "text": "previous",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [738, 965, 837, 965, 837, 988, 739, 988],
+                "text": "convictions",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [841, 965, 849, 965, 850, 988, 841, 988],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [854, 965, 932, 965, 932, 987, 854, 988],
+                "text": "cautions",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [75, 1015, 235, 1016, 235, 1037, 75, 1037],
+            "text": "Exhibit list (MG12)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [76, 1016, 135, 1016, 135, 1037, 76, 1037],
+                "text": "Exhibit",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [139, 1016, 165, 1016, 165, 1038, 139, 1038],
+                "text": "list",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [169, 1016, 236, 1016, 235, 1038, 169, 1038],
+                "text": "(MG12)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [578, 1008, 877, 1008, 877, 1033, 578, 1032],
+            "text": "Witness statement (copy) (MG11)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [580, 1010, 654, 1010, 654, 1032, 581, 1031],
+                "text": "Witness",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [658, 1010, 746, 1010, 747, 1033, 658, 1032],
+                "text": "statement",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [751, 1010, 806, 1009, 807, 1034, 751, 1033],
+                "text": "(copy)",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [811, 1009, 876, 1009, 877, 1034, 811, 1034],
+                "text": "(MG11)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [74, 1059, 473, 1059, 473, 1082, 74, 1082],
+            "text": "Forensic Evidence (including MG21 / MG21A)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 1060, 152, 1060, 152, 1082, 74, 1081],
+                "text": "Forensic",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [156, 1060, 239, 1059, 238, 1083, 156, 1082],
+                "text": "Evidence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [243, 1059, 331, 1059, 331, 1083, 243, 1083],
+                "text": "(including",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [336, 1059, 385, 1059, 384, 1083, 335, 1083],
+                "text": "MG21",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [389, 1059, 397, 1059, 396, 1083, 388, 1083],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [401, 1059, 474, 1059, 473, 1082, 400, 1083],
+                "text": "MG21A)",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [579, 1053, 900, 1053, 900, 1078, 579, 1077],
+            "text": "Witness statement (original) (MG11)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [581, 1055, 653, 1055, 654, 1077, 581, 1076],
+                "text": "Witness",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [657, 1055, 746, 1054, 747, 1078, 658, 1077],
+                "text": "statement",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [751, 1054, 829, 1054, 829, 1079, 751, 1078],
+                "text": "(original)",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [833, 1054, 900, 1053, 900, 1079, 833, 1079],
+                "text": "(MG11)",
+                "confidence": 0.991
+              }
+            ]
+          },
+          {
+            "boundingBox": [73, 1104, 465, 1104, 465, 1129, 73, 1127],
+            "text": "Medical report / Surgeon's statement (copy)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [74, 1104, 143, 1104, 143, 1128, 75, 1127],
+                "text": "Medical",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [147, 1104, 201, 1104, 202, 1128, 148, 1128],
+                "text": "report",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [206, 1104, 213, 1104, 214, 1128, 206, 1128],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [218, 1104, 308, 1104, 308, 1129, 218, 1128],
+                "text": "Surgeon's",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [312, 1104, 401, 1105, 401, 1129, 312, 1129],
+                "text": "statement",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [406, 1105, 465, 1105, 464, 1129, 405, 1129],
+                "text": "(copy)",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [581, 1099, 715, 1100, 715, 1123, 581, 1121],
+            "text": "Other - specify",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [582, 1100, 632, 1100, 631, 1122, 582, 1121],
+                "text": "Other",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [636, 1100, 644, 1100, 644, 1123, 635, 1122],
+                "text": "-",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [649, 1100, 715, 1100, 714, 1123, 648, 1123],
+                "text": "specify",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [77, 1159, 732, 1161, 732, 1183, 77, 1182],
+            "text": "Further information / remarks (continued on separate sheets if necessary)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [77, 1160, 140, 1160, 141, 1183, 79, 1183],
+                "text": "Further",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [145, 1160, 245, 1160, 246, 1183, 146, 1183],
+                "text": "information",
+                "confidence": 0.988
+              },
+              {
+                "boundingBox": [250, 1160, 256, 1160, 257, 1183, 251, 1183],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [260, 1160, 334, 1160, 335, 1183, 261, 1183],
+                "text": "remarks",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [339, 1160, 433, 1160, 434, 1184, 339, 1183],
+                "text": "(continued",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [438, 1161, 462, 1161, 462, 1184, 438, 1184],
+                "text": "on",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [467, 1161, 545, 1161, 545, 1184, 467, 1184],
+                "text": "separate",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [549, 1161, 608, 1161, 608, 1184, 549, 1184],
+                "text": "sheets",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [612, 1161, 625, 1161, 624, 1184, 612, 1184],
+                "text": "if",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [629, 1161, 732, 1161, 731, 1184, 629, 1184],
+                "text": "necessary)",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [78, 1198, 432, 1199, 432, 1222, 78, 1221],
+            "text": "VPS for Shelagh McLove now attached",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [79, 1199, 115, 1199, 115, 1222, 79, 1221],
+                "text": "VPS",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [119, 1199, 147, 1199, 147, 1222, 119, 1222],
+                "text": "for",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [152, 1199, 225, 1199, 225, 1222, 151, 1222],
+                "text": "Shelagh",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [229, 1199, 299, 1200, 300, 1222, 229, 1222],
+                "text": "McLove",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [304, 1200, 342, 1200, 342, 1222, 304, 1222],
+                "text": "now",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [348, 1200, 428, 1200, 428, 1222, 348, 1222],
+                "text": "attached",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [79, 1239, 539, 1238, 539, 1262, 79, 1263],
+            "text": "Officer in case: PC Byrne Rank & No. / Job title:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [79, 1240, 135, 1239, 135, 1263, 80, 1262],
+                "text": "Officer",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [139, 1239, 156, 1239, 157, 1263, 140, 1263],
+                "text": "in",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [161, 1239, 218, 1239, 218, 1263, 161, 1263],
+                "text": "case:",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [224, 1239, 252, 1239, 253, 1264, 224, 1263],
+                "text": "PC",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [257, 1239, 314, 1239, 314, 1264, 257, 1264],
+                "text": "Byrne",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [332, 1239, 382, 1239, 382, 1263, 332, 1264],
+                "text": "Rank",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [387, 1239, 399, 1239, 399, 1263, 387, 1263],
+                "text": "&",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [404, 1239, 441, 1239, 441, 1263, 404, 1263],
+                "text": "No.",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [446, 1239, 454, 1239, 454, 1263, 445, 1263],
+                "text": "/",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [459, 1239, 492, 1239, 491, 1262, 458, 1263],
+                "text": "Job",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [496, 1239, 538, 1239, 538, 1261, 496, 1262],
+                "text": "title:",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [669, 1239, 880, 1238, 881, 1261, 669, 1261],
+            "text": "Date submitted: 5/6/20",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [669, 1240, 712, 1240, 712, 1261, 669, 1261],
+                "text": "Date",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [716, 1240, 816, 1240, 816, 1262, 716, 1261],
+                "text": "submitted:",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [820, 1240, 877, 1239, 877, 1262, 820, 1262],
+                "text": "5/6/20",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [100, 1428, 155, 1428, 154, 1444, 100, 1443],
+            "text": "2010/11",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [102, 1428, 155, 1428, 154, 1445, 101, 1444],
+                "text": "2010/11",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [379, 1417, 700, 1419, 700, 1445, 379, 1443],
+            "text": "RESTRICTED (when complete)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [379, 1417, 516, 1418, 515, 1445, 379, 1443],
+                "text": "RESTRICTED",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [521, 1418, 586, 1419, 585, 1445, 521, 1445],
+                "text": "(when",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [591, 1419, 700, 1420, 698, 1446, 590, 1445],
+                "text": "complete)",
+                "confidence": 0.994
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

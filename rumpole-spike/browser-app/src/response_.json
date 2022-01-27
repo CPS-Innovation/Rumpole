@@ -1,0 +1,2298 @@
+{
+  "status": "succeeded",
+  "createdDateTime": "2022-01-12T17:11:30Z",
+  "lastUpdatedDateTime": "2022-01-12T17:11:31Z",
+  "analyzeResult": {
+    "version": "3.2.0",
+    "modelVersion": "2021-04-12",
+    "readResults": [
+      {
+        "page": 1,
+        "angle": 0,
+        "width": 2480,
+        "height": 3508,
+        "unit": "pixel",
+        "lines": [
+          {
+            "boundingBox": [879, 154, 1614, 154, 1614, 212, 878, 208],
+            "text": "RESTRICTED (when complete)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [880, 155, 1191, 155, 1189, 207, 879, 204],
+                "text": "RESTRICTED",
+                "confidence": 0.963
+              },
+              {
+                "boundingBox": [1207, 155, 1355, 155, 1354, 209, 1206, 208],
+                "text": "(when",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1369, 155, 1614, 154, 1613, 213, 1367, 210],
+                "text": "complete)",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [2175, 159, 2267, 163, 2266, 199, 2174, 200],
+            "text": "MG6",
+            "appearance": { "style": { "name": "other", "confidence": 0.821 } },
+            "words": [
+              {
+                "boundingBox": [2184, 159, 2266, 160, 2265, 201, 2184, 200],
+                "text": "MG6",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [663, 406, 1833, 405, 1833, 466, 663, 467],
+            "text": "CASE FILE EVIDENCE and INFORMATION",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [664, 408, 813, 407, 812, 467, 663, 467],
+                "text": "CASE",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [830, 407, 956, 406, 956, 467, 829, 467],
+                "text": "FILE",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [977, 406, 1270, 405, 1269, 467, 976, 467],
+                "text": "EVIDENCE",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1291, 405, 1398, 405, 1397, 467, 1289, 467],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1411, 405, 1820, 405, 1818, 467, 1409, 467],
+                "text": "INFORMATION",
+                "confidence": 0.99
+              }
+            ]
+          },
+          {
+            "boundingBox": [1045, 498, 1435, 498, 1435, 550, 1045, 550],
+            "text": "Not Disclosable",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1048, 501, 1131, 501, 1131, 551, 1048, 550],
+                "text": "Not",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1140, 501, 1426, 499, 1428, 551, 1141, 551],
+                "text": "Disclosable",
+                "confidence": 0.958
+              }
+            ]
+          },
+          {
+            "boundingBox": [240, 596, 508, 595, 508, 641, 240, 642],
+            "text": "R V MCLOVE",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [240, 599, 267, 599, 267, 642, 241, 642],
+                "text": "R",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [276, 599, 301, 598, 301, 642, 276, 642],
+                "text": "V",
+                "confidence": 0.959
+              },
+              {
+                "boundingBox": [319, 598, 498, 595, 497, 642, 318, 642],
+                "text": "MCLOVE",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [1363, 606, 1464, 607, 1463, 646, 1363, 645],
+            "text": "URN",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1363, 606, 1445, 607, 1445, 646, 1363, 645],
+                "text": "URN",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [1550, 600, 1607, 601, 1606, 642, 1550, 641],
+            "text": "45",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1552, 600, 1603, 601, 1603, 642, 1551, 641],
+                "text": "45",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [1710, 609, 1759, 609, 1759, 640, 1709, 640],
+            "text": "aa",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1711, 609, 1751, 609, 1751, 640, 1711, 640],
+                "text": "aa",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [1862, 602, 1964, 600, 1963, 638, 1862, 640],
+            "text": "2098",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1866, 602, 1956, 600, 1957, 638, 1866, 640],
+                "text": "2098",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [2136, 600, 2196, 600, 2197, 640, 2136, 639],
+            "text": "20",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [2141, 600, 2183, 600, 2182, 640, 2140, 640],
+                "text": "20",
+                "confidence": 0.999
+              }
+            ]
+          },
+          {
+            "boundingBox": [492, 689, 2001, 691, 2001, 740, 492, 737],
+            "text": "This document is a communication between the police and CPS only.",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [492, 689, 579, 690, 580, 738, 494, 737],
+                "text": "This",
+                "confidence": 0.99
+              },
+              {
+                "boundingBox": [589, 690, 814, 690, 814, 739, 590, 738],
+                "text": "document",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [823, 690, 867, 690, 868, 739, 824, 739],
+                "text": "is",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [876, 690, 901, 690, 902, 739, 877, 739],
+                "text": "a",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [910, 690, 1253, 690, 1254, 740, 911, 739],
+                "text": "communication",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1263, 690, 1450, 690, 1450, 740, 1264, 740],
+                "text": "between",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1460, 690, 1532, 690, 1532, 741, 1460, 741],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1542, 690, 1678, 691, 1678, 741, 1542, 741],
+                "text": "police",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1688, 691, 1775, 691, 1775, 741, 1688, 741],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1785, 691, 1878, 691, 1878, 741, 1785, 741],
+                "text": "CPS",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1891, 691, 2002, 691, 2001, 741, 1891, 741],
+                "text": "only.",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [244, 796, 1663, 798, 1663, 843, 244, 842],
+            "text": "1. Medical Evidence: (Physical or psychiatric injuries of defendant / victim / witness): No",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [245, 797, 271, 797, 269, 841, 244, 841],
+                "text": "1.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [279, 797, 439, 798, 438, 842, 278, 841],
+                "text": "Medical",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [447, 798, 645, 798, 643, 843, 446, 842],
+                "text": "Evidence:",
+                "confidence": 0.979
+              },
+              {
+                "boundingBox": [653, 798, 792, 799, 791, 843, 652, 843],
+                "text": "(Physical",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [801, 799, 833, 799, 832, 843, 800, 843],
+                "text": "or",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [842, 799, 1001, 799, 1000, 843, 840, 843],
+                "text": "psychiatric",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1010, 799, 1117, 799, 1116, 843, 1009, 843],
+                "text": "injuries",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1126, 799, 1155, 800, 1153, 843, 1124, 843],
+                "text": "of",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1164, 800, 1311, 800, 1310, 843, 1162, 843],
+                "text": "defendant",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [1320, 800, 1329, 800, 1327, 843, 1319, 843],
+                "text": "/",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1338, 800, 1422, 800, 1420, 843, 1336, 843],
+                "text": "victim",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1430, 800, 1445, 800, 1443, 843, 1429, 843],
+                "text": "/",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1453, 800, 1590, 800, 1588, 842, 1452, 843],
+                "text": "witness):",
+                "confidence": 0.958
+              },
+              {
+                "boundingBox": [1598, 800, 1662, 800, 1660, 842, 1597, 842],
+                "text": "No",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [236, 867, 1755, 867, 1755, 917, 236, 917],
+            "text": "If medical evidence is required in this case, what is the target date for obtaining it?",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [238, 870, 261, 870, 259, 915, 236, 915],
+                "text": "If",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [270, 870, 419, 869, 418, 916, 268, 915],
+                "text": "medical",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [428, 869, 592, 868, 591, 917, 427, 916],
+                "text": "evidence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [601, 868, 636, 868, 635, 917, 600, 917],
+                "text": "is",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [645, 868, 800, 868, 800, 917, 644, 917],
+                "text": "required",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [809, 868, 844, 868, 844, 918, 809, 918],
+                "text": "in",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [853, 868, 921, 868, 920, 918, 853, 918],
+                "text": "this",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [929, 868, 1032, 867, 1032, 918, 929, 918],
+                "text": "case,",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1041, 867, 1132, 867, 1132, 918, 1041, 918],
+                "text": "what",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1140, 867, 1173, 867, 1173, 918, 1141, 918],
+                "text": "is",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1181, 867, 1243, 867, 1244, 918, 1182, 918],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1252, 867, 1363, 867, 1364, 918, 1252, 918],
+                "text": "target",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1372, 868, 1454, 868, 1455, 917, 1373, 918],
+                "text": "date",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1463, 868, 1516, 868, 1517, 917, 1464, 917],
+                "text": "for",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1524, 868, 1694, 868, 1696, 916, 1526, 917],
+                "text": "obtaining",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1703, 868, 1754, 868, 1756, 916, 1705, 916],
+                "text": "it?",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [239, 981, 1375, 979, 1375, 1033, 239, 1034],
+            "text": "2. Forensic evidence: (attach copy of MG21 / MG21A): N/A",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [243, 986, 272, 985, 270, 1030, 242, 1029],
+                "text": "2.",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [280, 985, 458, 984, 456, 1032, 279, 1030],
+                "text": "Forensic",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [466, 984, 663, 982, 662, 1034, 465, 1032],
+                "text": "evidence:",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [672, 982, 802, 981, 801, 1034, 671, 1034],
+                "text": "(attach",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [812, 981, 903, 981, 902, 1034, 811, 1034],
+                "text": "copy",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [912, 981, 949, 981, 948, 1034, 911, 1034],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [957, 981, 1072, 980, 1071, 1034, 957, 1034],
+                "text": "MG21",
+                "confidence": 0.988
+              },
+              {
+                "boundingBox": [1080, 980, 1097, 980, 1097, 1034, 1080, 1034],
+                "text": "/",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1106, 980, 1289, 980, 1288, 1033, 1105, 1034],
+                "text": "MG21A):",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1297, 980, 1368, 979, 1368, 1032, 1297, 1033],
+                "text": "N/A",
+                "confidence": 0.993
+              }
+            ]
+          },
+          {
+            "boundingBox": [240, 1057, 1998, 1056, 1998, 1106, 240, 1106],
+            "text": "If forensic evidence has been submitted for examination, what is the target date for the results?",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [240, 1060, 261, 1060, 261, 1101, 240, 1101],
+                "text": "If",
+                "confidence": 0.989
+              },
+              {
+                "boundingBox": [269, 1060, 420, 1059, 420, 1103, 269, 1102],
+                "text": "forensic",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [428, 1059, 598, 1059, 597, 1105, 428, 1103],
+                "text": "evidence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [607, 1059, 677, 1058, 676, 1105, 606, 1105],
+                "text": "has",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [685, 1058, 778, 1058, 778, 1106, 684, 1105],
+                "text": "been",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [790, 1058, 973, 1057, 972, 1107, 789, 1106],
+                "text": "submitted",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [981, 1057, 1035, 1057, 1035, 1107, 981, 1107],
+                "text": "for",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1043, 1057, 1284, 1057, 1283, 1107, 1043, 1107],
+                "text": "examination,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1292, 1057, 1383, 1057, 1382, 1107, 1291, 1107],
+                "text": "what",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1391, 1057, 1424, 1057, 1423, 1107, 1391, 1107],
+                "text": "is",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1432, 1057, 1491, 1057, 1490, 1107, 1431, 1107],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1499, 1057, 1613, 1057, 1612, 1106, 1498, 1107],
+                "text": "target",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1621, 1057, 1704, 1057, 1703, 1106, 1620, 1106],
+                "text": "date",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1712, 1057, 1764, 1057, 1763, 1105, 1711, 1106],
+                "text": "for",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1772, 1057, 1834, 1057, 1833, 1105, 1771, 1105],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1842, 1057, 1995, 1057, 1994, 1104, 1841, 1105],
+                "text": "results?",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [240, 1171, 1382, 1172, 1382, 1222, 240, 1219],
+            "text": "3. Visually recorded evidence (CCTV / Photographs etc.) :",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 1174, 274, 1174, 273, 1216, 241, 1216],
+                "text": "3.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [282, 1174, 443, 1173, 442, 1217, 281, 1216],
+                "text": "Visually",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [452, 1173, 632, 1172, 630, 1219, 450, 1217],
+                "text": "recorded",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [641, 1172, 823, 1172, 822, 1220, 639, 1219],
+                "text": "evidence",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [832, 1172, 960, 1172, 958, 1221, 830, 1220],
+                "text": "(CCTV",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [972, 1172, 988, 1172, 986, 1221, 970, 1221],
+                "text": "/",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [996, 1172, 1256, 1172, 1254, 1223, 994, 1221],
+                "text": "Photographs",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1265, 1172, 1355, 1172, 1353, 1223, 1262, 1223],
+                "text": "etc.)",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1363, 1172, 1383, 1172, 1381, 1223, 1361, 1223],
+                "text": ":",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [240, 1244, 1943, 1243, 1943, 1294, 240, 1295],
+            "text": "a. Has all visually recorded material currently in police possession been viewed and copied?",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [240, 1248, 271, 1248, 274, 1292, 244, 1292],
+                "text": "a.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [280, 1248, 357, 1248, 360, 1293, 283, 1292],
+                "text": "Has",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [366, 1248, 412, 1248, 415, 1293, 369, 1293],
+                "text": "all",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [421, 1248, 559, 1247, 561, 1294, 423, 1293],
+                "text": "visually",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [567, 1247, 734, 1247, 736, 1294, 569, 1294],
+                "text": "recorded",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [743, 1247, 898, 1246, 899, 1295, 744, 1294],
+                "text": "material",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [906, 1246, 1067, 1246, 1068, 1295, 907, 1295],
+                "text": "currently",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1076, 1246, 1111, 1246, 1111, 1295, 1076, 1295],
+                "text": "in",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1119, 1246, 1231, 1245, 1231, 1295, 1119, 1295],
+                "text": "police",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1240, 1245, 1453, 1245, 1452, 1295, 1240, 1295],
+                "text": "possession",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1461, 1245, 1558, 1244, 1557, 1295, 1460, 1295],
+                "text": "been",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1568, 1244, 1699, 1244, 1697, 1295, 1566, 1295],
+                "text": "viewed",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1708, 1244, 1780, 1244, 1778, 1295, 1706, 1295],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1789, 1244, 1942, 1243, 1939, 1294, 1787, 1295],
+                "text": "copied?",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [2074, 1246, 2194, 1245, 2194, 1293, 2071, 1291],
+            "text": ". If No,",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [2071, 1245, 2077, 1245, 2076, 1293, 2071, 1293],
+                "text": ".",
+                "confidence": 0.964
+              },
+              {
+                "boundingBox": [2086, 1245, 2109, 1245, 2108, 1293, 2086, 1293],
+                "text": "If",
+                "confidence": 0.923
+              },
+              {
+                "boundingBox": [2118, 1245, 2193, 1245, 2192, 1293, 2118, 1293],
+                "text": "No,",
+                "confidence": 0.928
+              }
+            ]
+          },
+          {
+            "boundingBox": [286, 1297, 1205, 1294, 1205, 1342, 286, 1343],
+            "text": "give a target date for when this will be completed:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [287, 1300, 362, 1299, 362, 1343, 287, 1343],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [370, 1299, 395, 1299, 395, 1343, 370, 1343],
+                "text": "a",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [404, 1299, 514, 1298, 513, 1342, 404, 1343],
+                "text": "target",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [522, 1298, 606, 1297, 606, 1342, 522, 1342],
+                "text": "date",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [615, 1297, 668, 1297, 668, 1342, 614, 1342],
+                "text": "for",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [676, 1296, 778, 1296, 777, 1342, 676, 1342],
+                "text": "when",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [786, 1296, 856, 1295, 856, 1342, 785, 1342],
+                "text": "this",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [865, 1295, 926, 1295, 926, 1342, 864, 1342],
+                "text": "will",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [935, 1295, 983, 1295, 982, 1342, 934, 1342],
+                "text": "be",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [991, 1295, 1205, 1294, 1204, 1343, 990, 1343],
+                "text": "completed:",
+                "confidence": 0.991
+              }
+            ]
+          },
+          {
+            "boundingBox": [243, 1365, 2193, 1365, 2193, 1416, 242, 1415],
+            "text": "b. If there is additional visual material to be obtained, state what it is and give a target date for obtaining it:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [244, 1368, 272, 1368, 271, 1413, 243, 1412],
+                "text": "b.",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [281, 1368, 307, 1368, 306, 1413, 280, 1413],
+                "text": "If",
+                "confidence": 0.968
+              },
+              {
+                "boundingBox": [315, 1368, 413, 1368, 412, 1413, 314, 1413],
+                "text": "there",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [422, 1368, 456, 1368, 455, 1413, 421, 1413],
+                "text": "is",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [465, 1368, 646, 1368, 646, 1414, 464, 1413],
+                "text": "additional",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [655, 1368, 764, 1368, 764, 1415, 654, 1414],
+                "text": "visual",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [773, 1368, 926, 1367, 925, 1415, 772, 1415],
+                "text": "material",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [934, 1367, 972, 1367, 971, 1415, 934, 1415],
+                "text": "to",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [980, 1367, 1029, 1367, 1029, 1415, 980, 1415],
+                "text": "be",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1038, 1367, 1214, 1367, 1213, 1416, 1037, 1415],
+                "text": "obtained,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1222, 1367, 1312, 1367, 1311, 1416, 1222, 1416],
+                "text": "state",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1320, 1367, 1415, 1367, 1415, 1416, 1320, 1416],
+                "text": "what",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1424, 1367, 1447, 1367, 1447, 1416, 1424, 1416],
+                "text": "it",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1455, 1367, 1490, 1366, 1490, 1417, 1455, 1416],
+                "text": "is",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1499, 1366, 1570, 1366, 1570, 1417, 1498, 1417],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1579, 1366, 1657, 1366, 1657, 1417, 1579, 1417],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1666, 1366, 1691, 1366, 1691, 1417, 1666, 1417],
+                "text": "a",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1700, 1366, 1810, 1366, 1810, 1417, 1700, 1417],
+                "text": "target",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1818, 1366, 1902, 1366, 1902, 1417, 1818, 1417],
+                "text": "date",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [1910, 1366, 1962, 1366, 1962, 1417, 1910, 1417],
+                "text": "for",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1971, 1366, 2144, 1365, 2144, 1417, 1971, 1417],
+                "text": "obtaining",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [2152, 1365, 2193, 1365, 2194, 1417, 2153, 1417],
+                "text": "it:",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [247, 1483, 516, 1485, 516, 1528, 247, 1527],
+            "text": "4. Disclosure:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [249, 1484, 272, 1484, 270, 1528, 248, 1528],
+                "text": "4.",
+                "confidence": 0.952
+              },
+              {
+                "boundingBox": [281, 1484, 514, 1490, 511, 1528, 279, 1528],
+                "text": "Disclosure:",
+                "confidence": 0.987
+              }
+            ]
+          },
+          {
+            "boundingBox": [242, 1557, 2122, 1556, 2122, 1604, 242, 1605],
+            "text": "a. Is there any relevant material that may undermine the prosecution case or assist the defence case?",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 1560, 273, 1560, 275, 1600, 245, 1600],
+                "text": "a.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [281, 1560, 317, 1560, 319, 1600, 283, 1600],
+                "text": "Is",
+                "confidence": 0.931
+              },
+              {
+                "boundingBox": [324, 1560, 425, 1559, 427, 1602, 327, 1601],
+                "text": "there",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [433, 1559, 502, 1559, 504, 1602, 435, 1602],
+                "text": "any",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [510, 1559, 663, 1558, 664, 1604, 512, 1603],
+                "text": "relevant",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [671, 1558, 823, 1558, 824, 1605, 672, 1604],
+                "text": "material",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [831, 1558, 906, 1558, 907, 1605, 832, 1605],
+                "text": "that",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [913, 1558, 993, 1557, 994, 1605, 914, 1605],
+                "text": "may",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1001, 1557, 1202, 1557, 1202, 1605, 1002, 1605],
+                "text": "undermine",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1210, 1557, 1272, 1557, 1272, 1605, 1211, 1605],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1280, 1557, 1499, 1557, 1499, 1605, 1280, 1605],
+                "text": "prosecution",
+                "confidence": 0.989
+              },
+              {
+                "boundingBox": [1507, 1557, 1600, 1557, 1599, 1605, 1507, 1605],
+                "text": "case",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1608, 1557, 1649, 1557, 1649, 1604, 1608, 1604],
+                "text": "or",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1657, 1557, 1768, 1557, 1767, 1603, 1657, 1604],
+                "text": "assist",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1776, 1557, 1835, 1558, 1834, 1603, 1775, 1603],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1843, 1558, 1995, 1558, 1994, 1601, 1842, 1603],
+                "text": "defence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [2006, 1558, 2121, 1558, 2120, 1600, 2005, 1601],
+                "text": "case?",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [236, 1604, 659, 1605, 659, 1652, 236, 1651],
+            "text": "If Yes, provide details:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [236, 1604, 264, 1605, 264, 1652, 237, 1652],
+                "text": "If",
+                "confidence": 0.949
+              },
+              {
+                "boundingBox": [273, 1605, 358, 1607, 358, 1651, 274, 1652],
+                "text": "Yes,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [367, 1607, 505, 1608, 504, 1651, 367, 1651],
+                "text": "provide",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [514, 1608, 659, 1607, 658, 1651, 514, 1651],
+                "text": "details:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 1675, 1065, 1675, 1065, 1727, 241, 1726],
+            "text": "b. Is there any relevant third party material ?*",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 1678, 271, 1678, 271, 1723, 242, 1723],
+                "text": "b.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [280, 1678, 315, 1678, 315, 1724, 280, 1723],
+                "text": "Is",
+                "confidence": 0.882
+              },
+              {
+                "boundingBox": [324, 1678, 425, 1678, 425, 1725, 324, 1724],
+                "text": "there",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [434, 1678, 502, 1678, 501, 1726, 433, 1725],
+                "text": "any",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [511, 1678, 662, 1678, 661, 1727, 510, 1726],
+                "text": "relevant",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [670, 1678, 756, 1678, 756, 1728, 670, 1727],
+                "text": "third",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [765, 1678, 860, 1677, 859, 1728, 765, 1728],
+                "text": "party",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [869, 1677, 1014, 1676, 1013, 1728, 868, 1728],
+                "text": "material",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1023, 1676, 1065, 1676, 1064, 1727, 1022, 1728],
+                "text": "?*",
+                "confidence": 0.979
+              }
+            ]
+          },
+          {
+            "boundingBox": [1150, 1676, 2102, 1676, 2102, 1726, 1150, 1727],
+            "text": "If Yes, give brief details of what it is and who has it:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1151, 1678, 1176, 1678, 1177, 1727, 1152, 1727],
+                "text": "If",
+                "confidence": 0.949
+              },
+              {
+                "boundingBox": [1185, 1678, 1269, 1677, 1270, 1727, 1186, 1727],
+                "text": "Yes,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1279, 1677, 1360, 1677, 1360, 1727, 1280, 1727],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1370, 1677, 1454, 1676, 1453, 1727, 1370, 1727],
+                "text": "brief",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1463, 1676, 1586, 1676, 1585, 1727, 1463, 1727],
+                "text": "details",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1596, 1676, 1631, 1676, 1630, 1727, 1595, 1727],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [1641, 1676, 1732, 1676, 1730, 1727, 1640, 1727],
+                "text": "what",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1741, 1676, 1764, 1676, 1762, 1727, 1739, 1727],
+                "text": "it",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1774, 1676, 1806, 1676, 1804, 1727, 1772, 1727],
+                "text": "is",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1816, 1676, 1887, 1677, 1884, 1727, 1813, 1727],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1896, 1677, 1974, 1677, 1971, 1726, 1894, 1727],
+                "text": "who",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1984, 1677, 2052, 1678, 2048, 1726, 1981, 1726],
+                "text": "has",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [2061, 1678, 2101, 1678, 2097, 1726, 2058, 1726],
+                "text": "it:",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [238, 1747, 2173, 1747, 2173, 1788, 238, 1789],
+            "text": "[*Third party material is that which belongs to people or organisations other than the Prosecution Team, e.g. Social Services, Local",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [238, 1748, 336, 1749, 338, 1790, 241, 1790],
+                "text": "[*Third",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [344, 1749, 418, 1749, 420, 1789, 346, 1790],
+                "text": "party",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [426, 1749, 549, 1749, 551, 1789, 428, 1789],
+                "text": "material",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [557, 1749, 579, 1750, 581, 1789, 559, 1789],
+                "text": "is",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [587, 1750, 644, 1750, 646, 1789, 589, 1789],
+                "text": "that",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [653, 1750, 740, 1750, 742, 1789, 655, 1789],
+                "text": "which",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [748, 1750, 866, 1750, 867, 1789, 750, 1789],
+                "text": "belongs",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [874, 1750, 901, 1750, 903, 1789, 876, 1789],
+                "text": "to",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [909, 1750, 1010, 1750, 1012, 1789, 911, 1789],
+                "text": "people",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1019, 1750, 1051, 1751, 1053, 1789, 1020, 1789],
+                "text": "or",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1060, 1751, 1259, 1751, 1260, 1789, 1061, 1789],
+                "text": "organisations",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1267, 1751, 1344, 1751, 1345, 1789, 1268, 1789],
+                "text": "other",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1352, 1750, 1417, 1750, 1418, 1789, 1353, 1789],
+                "text": "than",
+                "confidence": 0.99
+              },
+              {
+                "boundingBox": [1426, 1750, 1472, 1750, 1473, 1789, 1427, 1789],
+                "text": "the",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1480, 1750, 1660, 1750, 1661, 1789, 1481, 1789],
+                "text": "Prosecution",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1669, 1750, 1764, 1750, 1765, 1789, 1669, 1789],
+                "text": "Team,",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [1772, 1750, 1832, 1749, 1833, 1789, 1773, 1789],
+                "text": "e.g.",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [1841, 1749, 1931, 1749, 1931, 1789, 1841, 1789],
+                "text": "Social",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1939, 1749, 2076, 1748, 2076, 1790, 1939, 1789],
+                "text": "Services,",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [2084, 1748, 2172, 1748, 2172, 1790, 2084, 1790],
+                "text": "Local",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [243, 1788, 1683, 1788, 1683, 1828, 243, 1827],
+            "text": "Authority, owners of CCTV material, forensic experts, police surgeons, GPs, hospital doctors etc.]",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [243, 1789, 381, 1788, 382, 1828, 244, 1828],
+                "text": "Authority,",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [389, 1788, 496, 1788, 497, 1828, 390, 1828],
+                "text": "owners",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [504, 1788, 536, 1788, 536, 1828, 505, 1828],
+                "text": "of",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [543, 1788, 633, 1788, 633, 1828, 544, 1828],
+                "text": "CCTV",
+                "confidence": 0.99
+              },
+              {
+                "boundingBox": [640, 1788, 771, 1788, 772, 1828, 641, 1828],
+                "text": "material,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [779, 1788, 897, 1788, 897, 1828, 780, 1828],
+                "text": "forensic",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [905, 1788, 1025, 1788, 1026, 1828, 905, 1828],
+                "text": "experts,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1033, 1788, 1122, 1789, 1123, 1828, 1034, 1828],
+                "text": "police",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1130, 1789, 1279, 1789, 1280, 1828, 1130, 1828],
+                "text": "surgeons,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1287, 1789, 1360, 1789, 1361, 1828, 1288, 1828],
+                "text": "GPs,",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [1368, 1789, 1486, 1790, 1486, 1828, 1369, 1828],
+                "text": "hospital",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1494, 1790, 1604, 1790, 1604, 1828, 1494, 1828],
+                "text": "doctors",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1612, 1790, 1683, 1791, 1683, 1828, 1612, 1828],
+                "text": "etc.]",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [240, 1894, 745, 1896, 745, 1946, 240, 1942],
+            "text": "5. Victim(s) / Witness(es):",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [240, 1895, 272, 1895, 274, 1941, 243, 1940],
+                "text": "5.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [281, 1895, 458, 1894, 459, 1945, 283, 1941],
+                "text": "Victim(s)",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [467, 1894, 482, 1894, 482, 1945, 467, 1945],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [491, 1894, 745, 1896, 743, 1946, 491, 1945],
+                "text": "Witness(es):",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 1968, 2062, 1968, 2062, 2019, 241, 2019],
+            "text": "a. Are there any outstanding witness statements to be obtained? No. If Yes, give a target date for",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 1974, 272, 1974, 273, 2017, 243, 2017],
+                "text": "a.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [281, 1973, 349, 1973, 350, 2017, 282, 2017],
+                "text": "Are",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [357, 1973, 456, 1972, 457, 2017, 358, 2017],
+                "text": "there",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [465, 1972, 533, 1971, 534, 2017, 466, 2017],
+                "text": "any",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [541, 1971, 763, 1970, 763, 2018, 542, 2017],
+                "text": "outstanding",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [771, 1970, 913, 1969, 914, 2018, 772, 2018],
+                "text": "witness",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [922, 1969, 1129, 1969, 1129, 2018, 922, 2018],
+                "text": "statements",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1137, 1969, 1174, 1969, 1174, 2018, 1137, 2018],
+                "text": "to",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [1183, 1969, 1234, 1969, 1234, 2018, 1183, 2018],
+                "text": "be",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1242, 1969, 1434, 1969, 1434, 2019, 1242, 2018],
+                "text": "obtained?",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1449, 1969, 1526, 1969, 1526, 2019, 1449, 2019],
+                "text": "No.",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1534, 1969, 1568, 1969, 1568, 2019, 1534, 2019],
+                "text": "If",
+                "confidence": 0.949
+              },
+              {
+                "boundingBox": [1577, 1969, 1662, 1969, 1662, 2019, 1577, 2019],
+                "text": "Yes,",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [1671, 1969, 1750, 1969, 1750, 2019, 1670, 2019],
+                "text": "give",
+                "confidence": 0.993
+              },
+              {
+                "boundingBox": [1758, 1969, 1783, 1969, 1783, 2019, 1758, 2019],
+                "text": "a",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1793, 1969, 1903, 1970, 1903, 2020, 1792, 2019],
+                "text": "target",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1912, 1970, 1994, 1970, 1993, 2020, 1911, 2020],
+                "text": "date",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [2002, 1970, 2063, 1971, 2062, 2020, 2002, 2020],
+                "text": "for",
+                "confidence": 0.997
+              }
+            ]
+          },
+          {
+            "boundingBox": [291, 2020, 515, 2020, 515, 2065, 291, 2065],
+            "text": "completion:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [292, 2020, 515, 2022, 514, 2064, 292, 2066],
+                "text": "completion:",
+                "confidence": 0.946
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 2087, 2214, 2085, 2214, 2136, 241, 2137],
+            "text": "b. If this is an anticipated not-guilty plea case, are there are vulnerable/intimidated witnesses? Yes. If 'Yes'",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [241, 2089, 271, 2089, 272, 2136, 242, 2136],
+                "text": "b.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [280, 2089, 305, 2089, 306, 2136, 281, 2136],
+                "text": "If",
+                "confidence": 0.965
+              },
+              {
+                "boundingBox": [314, 2089, 379, 2090, 380, 2137, 315, 2136],
+                "text": "this",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [389, 2090, 426, 2090, 426, 2137, 389, 2137],
+                "text": "is",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [435, 2090, 485, 2090, 485, 2137, 436, 2137],
+                "text": "an",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [494, 2090, 695, 2091, 695, 2137, 494, 2137],
+                "text": "anticipated",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [704, 2091, 877, 2091, 878, 2137, 705, 2137],
+                "text": "not-guilty",
+                "confidence": 0.984
+              },
+              {
+                "boundingBox": [887, 2091, 967, 2091, 967, 2137, 887, 2137],
+                "text": "plea",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [976, 2091, 1079, 2091, 1078, 2137, 976, 2137],
+                "text": "case,",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1088, 2091, 1150, 2091, 1149, 2137, 1088, 2137],
+                "text": "are",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1159, 2091, 1258, 2091, 1258, 2137, 1159, 2137],
+                "text": "there",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1267, 2091, 1329, 2091, 1329, 2137, 1267, 2137],
+                "text": "are",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1338, 2091, 1750, 2089, 1749, 2137, 1338, 2137],
+                "text": "vulnerable/intimidated",
+                "confidence": 0.989
+              },
+              {
+                "boundingBox": [1759, 2089, 1969, 2088, 1968, 2137, 1758, 2137],
+                "text": "witnesses?",
+                "confidence": 0.983
+              },
+              {
+                "boundingBox": [1979, 2088, 2071, 2087, 2070, 2136, 1977, 2137],
+                "text": "Yes.",
+                "confidence": 0.987
+              },
+              {
+                "boundingBox": [2081, 2087, 2112, 2087, 2110, 2136, 2079, 2136],
+                "text": "If",
+                "confidence": 0.942
+              },
+              {
+                "boundingBox": [2121, 2087, 2215, 2086, 2213, 2136, 2120, 2136],
+                "text": "'Yes'",
+                "confidence": 0.802
+              }
+            ]
+          },
+          {
+            "boundingBox": [291, 2139, 1474, 2138, 1475, 2183, 291, 2185],
+            "text": "complete form MG2 Witness Assessment for Special Measures.",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [292, 2140, 456, 2140, 455, 2186, 291, 2186],
+                "text": "complete",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [465, 2139, 545, 2139, 544, 2186, 464, 2186],
+                "text": "form",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [561, 2139, 654, 2139, 653, 2185, 560, 2186],
+                "text": "MG2",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [663, 2139, 815, 2138, 815, 2185, 662, 2185],
+                "text": "Witness",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [824, 2138, 1055, 2138, 1054, 2185, 824, 2185],
+                "text": "Assessment",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1064, 2138, 1118, 2138, 1117, 2185, 1063, 2185],
+                "text": "for",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1127, 2138, 1265, 2138, 1264, 2184, 1126, 2185],
+                "text": "Special",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1274, 2138, 1475, 2139, 1474, 2184, 1273, 2184],
+                "text": "Measures.",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [243, 2199, 1262, 2197, 1262, 2246, 244, 2249],
+            "text": "c. Will a Special Measures meeting* be required? Yes.",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [244, 2200, 269, 2200, 270, 2249, 245, 2249],
+                "text": "c.",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [278, 2200, 349, 2200, 350, 2249, 280, 2249],
+                "text": "Will",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [359, 2200, 385, 2200, 386, 2249, 360, 2249],
+                "text": "a",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [394, 2200, 530, 2200, 530, 2249, 395, 2249],
+                "text": "Special",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [539, 2200, 726, 2200, 726, 2249, 540, 2249],
+                "text": "Measures",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [735, 2200, 903, 2199, 903, 2248, 736, 2249],
+                "text": "meeting*",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [912, 2199, 958, 2199, 958, 2248, 913, 2248],
+                "text": "be",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [967, 2199, 1159, 2198, 1159, 2247, 967, 2248],
+                "text": "required?",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1173, 2198, 1261, 2197, 1261, 2246, 1173, 2247],
+                "text": "Yes.",
+                "confidence": 0.986
+              }
+            ]
+          },
+          {
+            "boundingBox": [1817, 2203, 2256, 2204, 2256, 2245, 1817, 2244],
+            "text": "[*consult with CPS if unsure]",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [1817, 2206, 1950, 2204, 1950, 2245, 1818, 2242],
+                "text": "[*consult",
+                "confidence": 0.959
+              },
+              {
+                "boundingBox": [1957, 2204, 2017, 2204, 2018, 2245, 1957, 2245],
+                "text": "with",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [2024, 2204, 2094, 2204, 2095, 2246, 2025, 2245],
+                "text": "CPS",
+                "confidence": 0.968
+              },
+              {
+                "boundingBox": [2101, 2204, 2122, 2204, 2123, 2246, 2102, 2246],
+                "text": "if",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [2129, 2204, 2254, 2205, 2255, 2245, 2130, 2246],
+                "text": "unsure]",
+                "confidence": 0.995
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 2270, 2031, 2270, 2031, 2321, 241, 2322],
+            "text": "d. If any witnesses have refused to give a statement, give their name and address and state their",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [241, 2273, 270, 2273, 273, 2319, 244, 2319],
+                "text": "d.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [279, 2273, 306, 2273, 309, 2319, 282, 2319],
+                "text": "If",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [315, 2273, 383, 2273, 386, 2320, 318, 2319],
+                "text": "any",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [392, 2273, 579, 2272, 581, 2321, 395, 2320],
+                "text": "witnesses",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [587, 2272, 679, 2271, 682, 2321, 590, 2321],
+                "text": "have",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [688, 2271, 831, 2271, 833, 2322, 691, 2321],
+                "text": "refused",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [839, 2271, 878, 2271, 880, 2322, 842, 2322],
+                "text": "to",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [887, 2271, 967, 2271, 969, 2322, 889, 2322],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [976, 2271, 1002, 2270, 1004, 2322, 978, 2322],
+                "text": "a",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1011, 2270, 1207, 2270, 1209, 2322, 1013, 2322],
+                "text": "statement,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1216, 2270, 1293, 2270, 1295, 2322, 1218, 2322],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1302, 2270, 1388, 2270, 1389, 2322, 1304, 2322],
+                "text": "their",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1397, 2270, 1504, 2270, 1505, 2322, 1398, 2322],
+                "text": "name",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [1513, 2270, 1587, 2270, 1588, 2322, 1514, 2322],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1596, 2270, 1747, 2270, 1748, 2321, 1597, 2322],
+                "text": "address",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1756, 2270, 1827, 2270, 1828, 2321, 1756, 2321],
+                "text": "and",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1836, 2270, 1928, 2271, 1928, 2320, 1836, 2321],
+                "text": "state",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1937, 2271, 2029, 2271, 2030, 2320, 1937, 2320],
+                "text": "their",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [296, 2323, 604, 2323, 604, 2367, 296, 2367],
+            "text": "role/involvement:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [297, 2325, 604, 2323, 604, 2367, 297, 2367],
+                "text": "role/involvement:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [242, 2435, 624, 2435, 624, 2481, 242, 2480],
+            "text": "6. Other offenders:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 2435, 273, 2436, 274, 2480, 243, 2480],
+                "text": "6.",
+                "confidence": 0.972
+              },
+              {
+                "boundingBox": [282, 2436, 396, 2437, 396, 2481, 283, 2481],
+                "text": "Other",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [405, 2437, 624, 2437, 624, 2479, 405, 2481],
+                "text": "offenders:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 2507, 2218, 2507, 2218, 2559, 241, 2559],
+            "text": "In relation to the incident leading to this case file, give the name, address and offence details of any others:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [241, 2512, 272, 2511, 273, 2556, 242, 2555],
+                "text": "In",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [281, 2511, 421, 2511, 421, 2557, 281, 2556],
+                "text": "relation",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [430, 2511, 464, 2510, 465, 2557, 430, 2557],
+                "text": "to",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [473, 2510, 536, 2510, 536, 2557, 473, 2557],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [545, 2510, 691, 2510, 691, 2558, 545, 2557],
+                "text": "incident",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [700, 2510, 838, 2509, 837, 2559, 700, 2558],
+                "text": "leading",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [846, 2509, 883, 2509, 883, 2559, 846, 2559],
+                "text": "to",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [892, 2509, 961, 2509, 961, 2559, 892, 2559],
+                "text": "this",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [970, 2509, 1061, 2508, 1061, 2560, 969, 2559],
+                "text": "case",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1070, 2508, 1139, 2508, 1138, 2560, 1070, 2560],
+                "text": "file,",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [1148, 2508, 1225, 2508, 1224, 2560, 1147, 2560],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1234, 2508, 1297, 2508, 1296, 2560, 1233, 2560],
+                "text": "the",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1305, 2508, 1426, 2508, 1425, 2560, 1305, 2560],
+                "text": "name,",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1434, 2508, 1587, 2508, 1586, 2560, 1434, 2560],
+                "text": "address",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1595, 2508, 1666, 2508, 1665, 2560, 1594, 2560],
+                "text": "and",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [1676, 2508, 1813, 2508, 1812, 2560, 1675, 2560],
+                "text": "offence",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1822, 2508, 1948, 2508, 1947, 2559, 1821, 2560],
+                "text": "details",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1957, 2508, 1994, 2508, 1993, 2559, 1956, 2559],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [2003, 2508, 2072, 2508, 2070, 2559, 2001, 2559],
+                "text": "any",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [2080, 2508, 2219, 2509, 2217, 2558, 2079, 2559],
+                "text": "others:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [242, 2581, 933, 2580, 933, 2630, 242, 2631],
+            "text": "a. Yet to be arrested and interviewed:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [242, 2584, 275, 2584, 276, 2630, 244, 2630],
+                "text": "a.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [284, 2584, 346, 2584, 348, 2630, 285, 2630],
+                "text": "Yet",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [355, 2584, 391, 2583, 393, 2630, 357, 2630],
+                "text": "to",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [400, 2583, 451, 2583, 452, 2630, 402, 2630],
+                "text": "be",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [460, 2583, 618, 2582, 619, 2630, 461, 2630],
+                "text": "arrested",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [627, 2582, 696, 2582, 697, 2630, 628, 2630],
+                "text": "and",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [705, 2581, 933, 2580, 933, 2631, 706, 2630],
+                "text": "interviewed:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [239, 2641, 626, 2645, 626, 2689, 239, 2686],
+            "text": "b. Yet to be charged:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [240, 2641, 275, 2642, 277, 2688, 242, 2687],
+                "text": "b.",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [285, 2643, 348, 2644, 349, 2688, 286, 2688],
+                "text": "Yet",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [357, 2644, 393, 2645, 394, 2689, 358, 2688],
+                "text": "to",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [402, 2645, 451, 2646, 451, 2689, 403, 2689],
+                "text": "be",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [460, 2646, 627, 2647, 625, 2689, 460, 2689],
+                "text": "charged:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [243, 2699, 1924, 2698, 1924, 2755, 243, 2756],
+            "text": "c. Dealt with using another out of court disposal (e.g. caution/reprimand/final warning/PND):",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [244, 2707, 271, 2707, 270, 2750, 243, 2750],
+                "text": "c.",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [279, 2707, 379, 2706, 379, 2751, 279, 2750],
+                "text": "Dealt",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [388, 2706, 465, 2705, 465, 2751, 387, 2751],
+                "text": "with",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [474, 2705, 575, 2704, 575, 2752, 473, 2751],
+                "text": "using",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [587, 2704, 729, 2703, 728, 2753, 587, 2752],
+                "text": "another",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [737, 2703, 801, 2702, 800, 2753, 736, 2753],
+                "text": "out",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [809, 2702, 845, 2702, 845, 2754, 809, 2753],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [854, 2702, 951, 2701, 950, 2754, 853, 2754],
+                "text": "court",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [959, 2701, 1114, 2701, 1114, 2755, 958, 2754],
+                "text": "disposal",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1123, 2700, 1209, 2700, 1208, 2755, 1122, 2755],
+                "text": "(e.g.",
+                "confidence": 0.947
+              },
+              {
+                "boundingBox": [1217, 2700, 1642, 2699, 1641, 2756, 1216, 2755],
+                "text": "caution/reprimand/final",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [1650, 2699, 1923, 2699, 1921, 2756, 1649, 2756],
+                "text": "warning/PND):",
+                "confidence": 0.993
+              }
+            ]
+          },
+          {
+            "boundingBox": [246, 2766, 468, 2763, 468, 2807, 247, 2809],
+            "text": "d. Charged:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [247, 2767, 272, 2767, 273, 2810, 248, 2810],
+                "text": "d.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [280, 2767, 464, 2764, 467, 2807, 282, 2810],
+                "text": "Charged:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [237, 2865, 739, 2867, 739, 2919, 237, 2917],
+            "text": "7. Local / Public interest:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [237, 2867, 267, 2866, 268, 2918, 239, 2918],
+                "text": "7.",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [277, 2866, 391, 2866, 391, 2916, 278, 2917],
+                "text": "Local",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [401, 2866, 411, 2866, 411, 2916, 401, 2916],
+                "text": "/",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [421, 2866, 553, 2867, 552, 2917, 421, 2916],
+                "text": "Public",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [563, 2867, 738, 2871, 736, 2919, 562, 2917],
+                "text": "interest:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [243, 2939, 2185, 2939, 2185, 2991, 243, 2990],
+            "text": "Are there any matters of local/public interest in this case (consider community issues/impact statements /",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [244, 2944, 302, 2943, 300, 2986, 243, 2986],
+                "text": "Are",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [310, 2943, 412, 2943, 411, 2987, 309, 2986],
+                "text": "there",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [420, 2942, 489, 2942, 488, 2988, 419, 2987],
+                "text": "any",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [497, 2942, 640, 2941, 639, 2989, 496, 2988],
+                "text": "matters",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [648, 2941, 687, 2941, 686, 2990, 647, 2989],
+                "text": "of",
+                "confidence": 0.999
+              },
+              {
+                "boundingBox": [695, 2941, 902, 2940, 900, 2991, 694, 2990],
+                "text": "local/public",
+                "confidence": 0.84
+              },
+              {
+                "boundingBox": [910, 2940, 1050, 2940, 1049, 2991, 908, 2991],
+                "text": "interest",
+                "confidence": 0.995
+              },
+              {
+                "boundingBox": [1058, 2940, 1097, 2940, 1096, 2992, 1057, 2991],
+                "text": "in",
+                "confidence": 0.997
+              },
+              {
+                "boundingBox": [1105, 2940, 1171, 2940, 1170, 2992, 1104, 2992],
+                "text": "this",
+                "confidence": 0.991
+              },
+              {
+                "boundingBox": [1180, 2940, 1272, 2939, 1271, 2992, 1178, 2992],
+                "text": "case",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1281, 2939, 1458, 2939, 1456, 2992, 1280, 2992],
+                "text": "(consider",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1466, 2939, 1669, 2940, 1668, 2991, 1464, 2992],
+                "text": "community",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1678, 2940, 1936, 2940, 1935, 2990, 1676, 2991],
+                "text": "issues/impact",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [1945, 2941, 2148, 2941, 2146, 2989, 1943, 2990],
+                "text": "statements",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [2157, 2942, 2181, 2942, 2179, 2988, 2155, 2988],
+                "text": "/",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [241, 2993, 501, 2991, 501, 3035, 241, 3037],
+            "text": "priorities etc)?",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [241, 2994, 396, 2992, 396, 3035, 242, 3038],
+                "text": "priorities",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [405, 2992, 500, 2992, 499, 3036, 404, 3035],
+                "text": "etc)?",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [586, 2992, 959, 2990, 959, 3035, 586, 3037],
+            "text": ". If Yes, give details:",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [587, 2994, 595, 2993, 594, 3038, 586, 3038],
+                "text": ".",
+                "confidence": 0.986
+              },
+              {
+                "boundingBox": [604, 2993, 630, 2993, 630, 3037, 603, 3038],
+                "text": "If",
+                "confidence": 0.947
+              },
+              {
+                "boundingBox": [639, 2993, 724, 2991, 723, 3036, 638, 3037],
+                "text": "Yes,",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [732, 2991, 811, 2991, 811, 3035, 732, 3036],
+                "text": "give",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [820, 2991, 958, 2991, 958, 3036, 820, 3035],
+                "text": "details:",
+                "confidence": 0.994
+              }
+            ]
+          },
+          {
+            "boundingBox": [2097, 3218, 2272, 3216, 2273, 3248, 2097, 3250],
+            "text": "Page 1 of 3",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [2100, 3219, 2174, 3219, 2172, 3250, 2098, 3249],
+                "text": "Page",
+                "confidence": 0.994
+              },
+              {
+                "boundingBox": [2184, 3219, 2202, 3219, 2200, 3250, 2182, 3250],
+                "text": "1",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [2208, 3219, 2244, 3218, 2243, 3249, 2207, 3250],
+                "text": "of",
+                "confidence": 0.998
+              },
+              {
+                "boundingBox": [2250, 3218, 2268, 3217, 2267, 3248, 2249, 3249],
+                "text": "3",
+                "confidence": 0.997
+              }
+            ]
+          },
+          {
+            "boundingBox": [226, 3318, 364, 3319, 363, 3358, 226, 3355],
+            "text": "2010/11",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [230, 3319, 355, 3320, 354, 3358, 231, 3354],
+                "text": "2010/11",
+                "confidence": 0.996
+              }
+            ]
+          },
+          {
+            "boundingBox": [882, 3321, 1617, 3321, 1617, 3376, 882, 3373],
+            "text": "RESTRICTED (when complete)",
+            "appearance": { "style": { "name": "other", "confidence": 0.878 } },
+            "words": [
+              {
+                "boundingBox": [883, 3323, 1190, 3322, 1190, 3373, 883, 3370],
+                "text": "RESTRICTED",
+                "confidence": 0.992
+              },
+              {
+                "boundingBox": [1209, 3322, 1354, 3322, 1353, 3375, 1209, 3373],
+                "text": "(when",
+                "confidence": 0.996
+              },
+              {
+                "boundingBox": [1367, 3322, 1618, 3321, 1617, 3377, 1366, 3375],
+                "text": "complete)",
+                "confidence": 0.994
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

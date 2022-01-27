@@ -1,0 +1,57 @@
+{
+  "Score": 2.17333,
+  "Highlights": null,
+  "Document": {
+    "id": "124-109-0-9999",
+    "caseId": 124,
+    "documentId": 109,
+    "pageIndex": 0,
+    "lineIndex": 35,
+    "language": null,
+    "boundingBox": [75.0, 902.0, 473.0, 902.0, 472.0, 925.0, 75.0, 925.0],
+    "appearance": null,
+    "text": "Stef Drink drive forms roadside / hospital / station",
+    "words": [
+      {
+        "boundingBox": [76.0, 903.0, 121.0, 903.0, 121.0, 924.0, 75.0, 924.0],
+        "text": "Drink",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [125.0, 903.0, 170.0, 902.0, 170.0, 925.0, 125.0, 925.0],
+        "text": "drive",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [174.0, 902.0, 225.0, 902.0, 225.0, 926.0, 174.0, 925.0],
+        "text": "forms",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [230.0, 902.0, 307.0, 902.0, 307.0, 926.0, 229.0, 926.0],
+        "text": "roadside",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [312.0, 902.0, 319.0, 902.0, 318.0, 926.0, 311.0, 926.0],
+        "text": "/",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [323.0, 902.0, 394.0, 902.0, 393.0, 926.0, 322.0, 926.0],
+        "text": "hospital",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [398.0, 902.0, 406.0, 902.0, 406.0, 926.0, 397.0, 926.0],
+        "text": "/",
+        "confidence": 0.0
+      },
+      {
+        "boundingBox": [410.0, 902.0, 471.0, 902.0, 471.0, 926.0, 410.0, 926.0],
+        "text": "station",
+        "confidence": 0.0
+      }
+    ]
+  }
+}

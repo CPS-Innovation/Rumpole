@@ -1,0 +1,23 @@
+{
+  "@odata.context": "https://ss-cps-document-metadata.search.windows.net/indexes('words-index')/$metadata#docs(*)",
+  "value": [
+    {
+      "@search.score": 5.2166343,
+      "id": "1935502b-1710-4e12-9326-ba09866cc400",
+      "Text": "Criminal",
+      "DocumentId": "5cb42dc1-7a30-4699-a02f-ca7cd2b2cc5b",
+      "PageId": "af76615d-2d05-4bf8-ace1-fd096fe42f24",
+      "rid": "XFgEAJtWd47aDQAAAAAAAA==",
+      "BoundingBox": { "X": 405.0, "Y": 284.0, "Width": 108.0, "Height": 30.0 }
+    },
+    {
+      "@search.score": 5.178696,
+      "id": "a065587a-5edc-44da-832a-bce52ae8ae66",
+      "Text": "Criminal",
+      "DocumentId": "5cb42dc1-7a30-4699-a02f-ca7cd2b2cc5b",
+      "PageId": "af76615d-2d05-4bf8-ace1-fd096fe42f24",
+      "rid": "XFgEAJtWd47LDQAAAAAAAA==",
+      "BoundingBox": { "X": 844.0, "Y": 283.0, "Width": 114.0, "Height": 31.0 }
+    }
+  ]
+}

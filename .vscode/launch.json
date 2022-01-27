@@ -21,8 +21,16 @@
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "env": { "CI": "true" },
+      "env": {
+        "CI": "true"
+      },
       "disableOptimisticBPs": true
+    },
+    {
+      "name": "Attach to .NET Functions",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:azureFunctions.pickProcess}"
     }
   ]
 }
