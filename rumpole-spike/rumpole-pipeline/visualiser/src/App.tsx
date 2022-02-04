@@ -43,8 +43,8 @@ function App() {
                     {document.pdfUrl ? yes() : no()} Pngs?:{" "}
                     {document.pngDetails?.every((item) => item.url)
                       ? yes()
-                      : no()}{" "}
-                    Analyzed?:{" "}
+                      : no()}
+                    &nbsp; &nbsp; &nbsp;&nbsp; Analyzed?:
                     {document.pngDetails?.every((item) => item.dimensions)
                       ? yes()
                       : no()}
