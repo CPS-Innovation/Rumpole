@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { Tracker } from "./tracker";
 
+const COORDNINATOR_URL = process.env.REACT_APP_COORDINATOR!;
+const TRACKER_URL = process.env.REACT_APP_TRACKER!;
+
 const call = async () => {
-  var response = await fetch(
-    "http://localhost:7071/api/cases/123/tracker?code=foo"
-  );
+  var response = await fetch(TRACKER_URL);
   return await response.json();
 };
+
+const resolveHttps = (url: string) =>
+  COORDNINATOR_URL.startsWith("https://")
+    ? url.replace("http://", "https://")
+    : url;
 
 export const useTracker = (caseId: string | null) => {
   const [ticks, setTicks] = useState<number>(0);
@@ -17,12 +23,10 @@ export const useTracker = (caseId: string | null) => {
 
   useEffect(() => {
     (async () => {
-      const koResponse = await fetch(
-        "http://localhost:7071/api/cases/123?code=foo"
-      );
+      const koResponse = await fetch(COORDNINATOR_URL);
       const koResponseContent = await koResponse.json();
       const statusQueryCallResponse = await fetch(
-        koResponseContent.statusQueryGetUri
+        resolveHttps(koResponseContent.statusQueryGetUri as string)
       );
 
       const statusQueryContent = await statusQueryCallResponse.json();

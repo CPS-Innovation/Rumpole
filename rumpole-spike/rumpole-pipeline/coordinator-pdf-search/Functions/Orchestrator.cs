@@ -38,12 +38,15 @@ namespace Functions
             || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Failed
             || existingInstance.RuntimeStatus == OrchestrationRuntimeStatus.Terminated)
             {
+                var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+                var force = query.Get("force");
+
                 await client.StartNewAsync("CaseOrchestration", instanceId, new OrchestratorArg
                 {
                     CaseId = caseId,
-                    TrackerUrl = $"{req.RequestUri.GetLeftPart(UriPartial.Path)}/tracker{req.RequestUri.Query}"
+                    TrackerUrl = $"{req.RequestUri.GetLeftPart(UriPartial.Path)}/tracker{req.RequestUri.Query}",
+                    ForceRefresh = force == "true"
                 });
-
             }
 
             return client.CreateCheckStatusResponse(req, instanceId);
@@ -58,6 +61,12 @@ namespace Functions
             var transactionId = context.InstanceId;
 
             var tracker = GetTracker(context, caseId);
+
+            if (!arg.ForceRefresh && await tracker.GetIsAlreadyProcessed())
+            {
+                return await tracker.GetDocuments();
+            }
+
             await tracker.Initialise(transactionId);
 
             var cmsCaseDocumentDetails = await CallHttpAsync<List<CmsCaseDocumentDetails>>(context, HttpMethod.Get, _endpoints.CmsDocumentDetails);
@@ -69,7 +78,7 @@ namespace Functions
                 caseDocumentDetails.CaseId = caseId;
                 caseDocumentDetails.TransactionId = transactionId;
                 caseDocumentTasks.Add(context.CallSubOrchestratorAsync<string>("CaseDocumentOrchestration", caseDocumentDetails));
-                break;
+                //break;
             }
 
             await Task.WhenAll(caseDocumentTasks);

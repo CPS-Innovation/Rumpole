@@ -6,5 +6,6 @@ namespace Domain
 
         public string TrackerUrl { get; set; }
 
+        public bool ForceRefresh { get; set; }
     }
 }

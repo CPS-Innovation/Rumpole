@@ -103,6 +103,11 @@ public class Tracker : ITracker
         return Task.FromResult((ITracker)this);
     }
 
+    public Task<bool> GetIsAlreadyProcessed()
+    {
+        return Task.FromResult(this.IsIndexed);
+    }
+
     public Task<List<TrackerDocument>> GetDocuments()
     {
         return Task.FromResult(this.Documents);
@@ -133,7 +138,7 @@ public class Tracker : ITracker
         var stateResponse = await client.ReadEntityStateAsync<Tracker>(entityId);
         if (!stateResponse.EntityExists)
         {
-            return (ActionResult)new NotFoundObjectResult("No entity with this id");
+            return (ActionResult)new NotFoundObjectResult("No pipeline tracker with this id");
         }
 
         var response = await stateResponse.EntityState.Get();
@@ -150,6 +155,8 @@ public interface ITracker
     void RegisterIsProcessedForSearchAndPngDimensions(TrackerPngArg trackerSearchArg);
     void RegisterIsIndexed();
     Task<ITracker> Get();
+
+    Task<bool> GetIsAlreadyProcessed();
 
     Task<List<TrackerDocument>> GetDocuments();
 }

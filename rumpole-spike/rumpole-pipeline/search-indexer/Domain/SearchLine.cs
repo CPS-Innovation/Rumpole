@@ -12,7 +12,7 @@ namespace Domain
         public int CaseId { get; set; }
 
         [JsonProperty(PropertyName = "documentId")]
-        public int DocumentId { get; set; }
+        public string DocumentId { get; set; }
 
         [JsonProperty(PropertyName = "pageIndex")]
         public int PageIndex { get; set; }

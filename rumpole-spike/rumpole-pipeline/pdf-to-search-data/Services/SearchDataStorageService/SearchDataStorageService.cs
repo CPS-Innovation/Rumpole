@@ -43,25 +43,25 @@ namespace Services.SearchDataStorageService
 
         public async Task StoreResults(AnalyzeResults analyzeresults, int caseId, int documentId, string transactionId)
         {
-            var searchLines = new List<SearchLine>();
+            //var searchLines = new List<SearchLine>();
 
-            foreach (var readResult in analyzeresults.ReadResults)
-            {
-                searchLines.AddRange(readResult.Lines.Select((line, index) => new SearchLine
-                {
-                    Id = $"{caseId}-{documentId}-{readResult.Page}-{index}",
-                    CaseId = caseId,
-                    DocumentId = documentId,
-                    PageIndex = readResult.Page,
-                    LineIndex = index,
-                    Language = line.Language,
-                    BoundingBox = line.BoundingBox,
-                    Appearance = line.Appearance,
-                    Text = line.Text,
-                    Words = line.Words,
-                    TransactionId = transactionId
-                }));
-            }
+            // foreach (var readResult in analyzeresults.ReadResults)
+            // {
+            //     searchLines.AddRange(readResult.Lines.Select((line, index) => new SearchLine
+            //     {
+            //         Id = $"{caseId}-{documentId}-{readResult.Page}-{index}",
+            //         CaseId = caseId,
+            //         DocumentId = documentId,
+            //         PageIndex = readResult.Page,
+            //         LineIndex = index,
+            //         Language = line.Language,
+            //         BoundingBox = line.BoundingBox,
+            //         Appearance = line.Appearance,
+            //         Text = line.Text,
+            //         Words = line.Words,
+            //         TransactionId = transactionId
+            //     }));
+            // }
 
             var container = _cosmosClient.GetContainer(_storageOptions.DatabaseName, _storageOptions.ContainerName);
             var searchClient = _indexClient.GetSearchClient(_indexOptions.IndexName);
@@ -69,12 +69,21 @@ namespace Services.SearchDataStorageService
             var tasks = new List<Task>();
             if (_storageOptions.Enabled)
             {
-                tasks.AddRange(searchLines.Select(searchLine => Upsert(container, searchLine, caseId)));
+                tasks.Add(Upsert(_cosmosClient.GetContainer(_storageOptions.DatabaseName, "documents"), new SearchDocument
+                {
+                    CaseId = caseId,
+                    Id = $"{caseId}-{documentId}",
+                    ModelVersion = analyzeresults.ModelVersion,
+                    Version = analyzeresults.Version,
+                    ReadResults = analyzeresults.ReadResults,
+                    TransactionId = transactionId
+                }, caseId));
+                //tasks.AddRange(searchLines.Select(searchLine => Upsert(container, searchLine, caseId)));
             }
-            if (_indexOptions.Enabled)
-            {
-                tasks.Add(searchClient.UploadDocumentsAsync(searchLines));
-            }
+            // if (_indexOptions.Enabled)
+            // {
+            //     tasks.Add(searchClient.UploadDocumentsAsync(searchLines));
+            // }
 
             await Task.WhenAll(tasks);
         }
