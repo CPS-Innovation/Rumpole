@@ -1,4 +1,7 @@
 env = "dev"
+location = "UK South"
+environment_tag="Development"
+
 app_service_plan_sku = {
     size = "B1"
     tier = "Basic"

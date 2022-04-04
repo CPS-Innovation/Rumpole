@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app/App";
 import reportWebVitals from "./reportWebVitals";
+import "./styles.scss";
 
 if (process.env.REACT_APP_MOCK_API_SOURCES) {
   const { worker } = require("./mock-api/browser");

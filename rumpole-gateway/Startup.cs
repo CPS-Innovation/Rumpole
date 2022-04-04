@@ -1,4 +1,5 @@
-﻿using GraphQL.Client.Abstractions;
+﻿using System;
+using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -8,7 +9,6 @@ using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
-using System;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 

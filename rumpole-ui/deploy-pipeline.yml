@@ -2,7 +2,6 @@ trigger:
   branches:
     include:
       - main
-      - develop
 
   paths:
     include:
@@ -15,6 +14,14 @@ variables:
   REACT_APP_BUILD_NUMBER: $(Build.BuildNumber)
 
 steps:
+  # We want to rely only on the .env.production file, anything in .env is still included
+  #  if not overwritten by .env.production.  For safety, just delete .env
+  - task: DeleteFiles@1
+    displayName: "Remove .env file"
+    inputs:
+      contents: |
+        rumpole-ui/.env
+
   - task: Npm@1
     inputs:
       command: "install"
@@ -28,13 +35,13 @@ steps:
       customCommand: "run prettier:check"
     displayName: "npm prettier:check"
 
-  # e2e build must be done before normal prod build otherwise it copies over it
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "run cy:build"
-    displayName: "cypress build"
+  # # e2e build must be done before normal prod build otherwise it copies over it
+  # - task: Npm@1
+  #   inputs:
+  #     command: "custom"
+  #     workingDir: "rumpole-ui"
+  #     customCommand: "run cy:build"
+  #   displayName: "cypress build"
 
   - task: Npm@1
     inputs:
@@ -43,19 +50,19 @@ steps:
       customCommand: "run build"
     displayName: "npm build"
 
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "run test:ci"
-    displayName: "npm test"
+  # - task: Npm@1
+  #   inputs:
+  #     command: "custom"
+  #     workingDir: "rumpole-ui"
+  #     customCommand: "run test:ci"
+  #   displayName: "npm test"
 
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "run cy:ci"
-    displayName: "cypress run tests"
+  # - task: Npm@1
+  #   inputs:
+  #     command: "custom"
+  #     workingDir: "rumpole-ui"
+  #     customCommand: "run cy:ci"
+  #   displayName: "cypress run tests"
 
   - task: PublishBuildArtifacts@1
     inputs:
@@ -63,21 +70,21 @@ steps:
       ArtifactName: "rumpole-ui-drop"
       publishLocation: "Container"
 
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: "JUnit"
-      testResultsFiles: "rumpole-ui/report/test-*.xml"
-      mergeTestResults: true
+  # - task: PublishTestResults@2
+  #   inputs:
+  #     testResultsFormat: "JUnit"
+  #     testResultsFiles: "rumpole-ui/report/test-*.xml"
+  #     mergeTestResults: true
 
-  - task: Npm@1
-    inputs:
-      command: "custom"
-      workingDir: "rumpole-ui"
-      customCommand: "run cy:report"
-    displayName: "generate cypress html report"
+  # - task: Npm@1
+  #   inputs:
+  #     command: "custom"
+  #     workingDir: "rumpole-ui"
+  #     customCommand: "run cy:report"
+  #   displayName: "generate cypress html report"
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: "rumpole-ui/report"
-      ArtifactName: "rumpole-ui-report"
-      publishLocation: "Container"
+  # - task: PublishBuildArtifacts@1
+  #   inputs:
+  #     PathtoPublish: "rumpole-ui/report"
+  #     ArtifactName: "rumpole-ui-report"
+  #     publishLocation: "Container"

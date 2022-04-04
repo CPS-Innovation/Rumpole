@@ -11,6 +11,9 @@ resource "azurerm_app_service_plan" "asp_rumpole" {
     tier = var.app_service_plan_sku.tier
     size = var.app_service_plan_sku.size
   }
+  tags = {
+    environment = var.environment_tag
+  }
 }
 
 resource "azurerm_monitor_autoscale_setting" "amas_rumpole" {

@@ -32,15 +32,17 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             string case_id)
         {
             _logger.LogInformation("CoreDataApiCaseDetails - trigger processed a request.");
-            if (!req.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+           
+            if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                throw new UnauthorizedAccessException("No authorization token supplied.");
+                return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
             }
+            
             if (string.IsNullOrEmpty(case_id))
             {
-                _logger.LogError($"Exception - case id not supplied");
-                throw new ArgumentException("Case Id not supplied");
+                return new BadRequestObjectResult(Constants.CommonUserMessages.CaseIdNotSupplied);
             }
+
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
             
             var caseDetails = await _coreDataApiClient.GetCaseDetailsById(case_id, behalfToken);
@@ -49,8 +51,8 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             {
                 return new OkObjectResult(caseDetails);
             }
-            return new NotFoundObjectResult($"No record found - Case id : {case_id}");
-        }
+            return new NotFoundObjectResult($"{Constants.CommonUserMessages.NoRecordFound} - Case id : {case_id}");
+            }
     }
 }
 

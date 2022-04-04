@@ -5,5 +5,8 @@ resource "azurerm_application_insights" "ai_rumpole" {
   location            = azurerm_resource_group.rg_rumpole.location
   resource_group_name = azurerm_resource_group.rg_rumpole.name
   application_type    = "web"
-  retention_in_days   = 90
+  retention_in_days   = 30
+  tags = {
+    environment = var.environment_tag
+  }
 }

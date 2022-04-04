@@ -11,4 +11,7 @@ resource "azurerm_storage_account" "sacpsrumpole" {
   network_rules {
     default_action = "Allow"
   }
+  tags = {
+    environment = var.environment_tag
+  }
 }

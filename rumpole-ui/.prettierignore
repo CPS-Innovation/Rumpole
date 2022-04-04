@@ -9,3 +9,4 @@ report
 .nyc_output
 
 public/mockServiceWorker.js
+src/react-pdf-highlighter

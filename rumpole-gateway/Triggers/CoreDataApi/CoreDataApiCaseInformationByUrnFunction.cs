@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -6,18 +9,16 @@ using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Helpers.Extension;
-using System;
-using System.Threading.Tasks;
 
 namespace RumpoleGateway.Triggers.CoreDataApi
 {
     public class CoreDataApiCaseInformationByUrnFunction
     {
-        private readonly ILogger<CoreDataApiCaseDetailsFunction> _logger;
+        private readonly ILogger<CoreDataApiCaseInformationByUrnFunction> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
 
-        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseDetailsFunction> logger,
+        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseInformationByUrnFunction> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient)
         {
@@ -31,25 +32,27 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
             string urn)
         {
-            _logger.LogInformation("CoreDataApiCaseDetails - trigger processed a request.");
-            if (!req.Headers.TryGetValue("Authorization", out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+            _logger.LogInformation("CoreDataApiCaseInformationByUrn - trigger processed a request.");
+            
+            if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                throw new UnauthorizedAccessException("No authorization token supplied.");
+                return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
             }
+
             if (string.IsNullOrEmpty(urn))
             {
-                _logger.LogError($"Exception - urn not supplied");
-                throw new ArgumentException("URN not supplied");
+                return new BadRequestObjectResult(Constants.CommonUserMessages.URNNotSupplied);
             }
+
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
-            
+
             var caseInformation = await _coreDataApiClient.GetCaseInformatoinByURN(urn, behalfToken);
-            
-            if (caseInformation != null)
+
+            if (caseInformation != null && caseInformation.Any())
             {
                 return new OkObjectResult(caseInformation);
             }
-            return new NotFoundObjectResult($"No record found - URN : {urn}");
+            return new NotFoundObjectResult($"{Constants.CommonUserMessages.NoRecordFound} - URN : {urn}");
         }
     }
 }

@@ -1,5 +1,4 @@
 import { MsalProvider } from "@azure/msal-react";
-import { Backdrop } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 
 import { msalInstance } from "./msalInstnce";
@@ -30,6 +29,6 @@ export const Auth: FC = ({ children }) => {
   return isLoggedIn ? (
     <MsalProvider instance={msalInstance}>{children}</MsalProvider>
   ) : (
-    <Backdrop open></Backdrop>
+    <></>
   );
 };

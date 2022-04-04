@@ -6,7 +6,7 @@ import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResu
 import { SearchDataSource } from "./types/SearchDataSource";
 
 const dataSource: SearchDataSource = (urn) =>
-  searchResults.filter((item) => item.uniqueReferenceNumber === urn);
+  searchResults.filter((item) => item.uniqueReferenceNumber.startsWith(urn));
 
 export default dataSource;
 
@@ -43,7 +43,7 @@ const searchResults: CaseSearchResult[] = [
     ],
   },
   {
-    uniqueReferenceNumber: "12AB2222222",
+    uniqueReferenceNumber: "12AB2222222/1",
     id: 17422,
     area: AreaDivision.ThamesAndChiltern,
     agency: Agency.SurreyPolice,
@@ -65,7 +65,7 @@ const searchResults: CaseSearchResult[] = [
     ],
   },
   {
-    uniqueReferenceNumber: "12AB2222222",
+    uniqueReferenceNumber: "12AB2222222/2",
     id: 18443,
     area: AreaDivision.EastOfEngland,
     agency: Agency.MetropolitanPoliceService,

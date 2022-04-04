@@ -6,9 +6,11 @@ export type SearchDataState = ReturnType<typeof useSearchDataState>;
 
 export const useSearchDataState = (urn: string | undefined) => {
   const data = useAppSelector(selectAll);
-  const { status: loadingStatus, urn: reduxUrn } = useAppSelector(
-    (state) => state.cases
-  );
+  const {
+    status: loadingStatus,
+    urn: reduxUrn,
+    error,
+  } = useAppSelector((state) => state.cases);
 
   const dispatch = useAppDispatch();
 
@@ -20,5 +22,6 @@ export const useSearchDataState = (urn: string | undefined) => {
     data,
     reduxUrn,
     loadingStatus,
+    error,
   };
 };
