@@ -4,44 +4,42 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 
 namespace RumpoleGateway.Triggers.Status
 {
-    public class StatusFunction
-    {
-        private readonly ILogger<StatusFunction> _logger;
-        public StatusFunction(ILogger<StatusFunction> logger)
-        {
-            _logger = logger;
-        }
+	public class StatusFunction
+	{
+		private readonly ILogger<StatusFunction> _logger;
+		public StatusFunction(ILogger<StatusFunction> logger)
+		{
+			_logger = logger;
+		}
 
-        [FunctionName("Status")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status/{urn}")] HttpRequest req,
-                                  string urn)
-        {
-            _logger.LogInformation(" Status function proceed a request.");
-            var version = new Version(1, 3, 2, 0);
+		[FunctionName("Status")]
+		public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status")] HttpRequest req)
+		{
+			_logger.LogInformation("Status function start");
 
-            if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-            {
-                return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
-            }
+			var version = Assembly
+				.GetExecutingAssembly()
+				.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+				.InformationalVersion;
 
-            if (!int.TryParse(urn, out var uniqueReferenceNumber))
-            {
-                return new BadRequestObjectResult(Constants.CommonUserMessages.URNNotSupplied);
-            }
+			if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+			{
+				return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
+			}
 
-            var response = new Domain.Status.Status
-            {
-                URN = uniqueReferenceNumber.ToString(),
-                Message = $"Successfully has been accessed - Version : {version.Major}.{version.Minor}.{version.Build}.{version.Revision}"
-            };
+			var response = new Domain.Status.Status
+			{
+				Message = $"Gateway -  Version : {version}"
+			};
 
-            _logger.LogInformation($"Response message :  {response}");
+			_logger.LogInformation($"Status function start");
 
-            return new OkObjectResult(response);
-        }
-    }
+			return new OkObjectResult(response);
+		}
+	}
 }
 

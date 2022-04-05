@@ -3,9 +3,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <RootNamespace>RumpoleGateway</RootNamespace>
+    <InformationalVersion Condition=" '$(BUILD_BUILDNUMBER)' == '' ">dev</InformationalVersion>
+    <InformationalVersion Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</InformationalVersion>
   </PropertyGroup>
   <ItemGroup>
- <PackageReference Include="GraphQL.Client" Version="4.0.2" />
+    <PackageReference Include="GraphQL.Client" Version="4.0.2" />
     <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="4.0.2" />
     <PackageReference Include="GraphQL.Client.Serializer.SystemTextJson" Version="4.0.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
