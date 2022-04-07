@@ -1,22 +1,28 @@
 import { useState, KeyboardEvent } from "react";
 import { isUrnValid } from "../logic/isUrnValid";
-import { SearchState } from "./useSearchState";
+import { CaseFilterQueryParams } from "./types/CaseFilterQueryParams";
 
-export const useSearchField = ({
-  urn: initialUrn,
-  setUrnParam,
-}: SearchState) => {
+export const useSearchInputLogic = ({
+  initialUrn,
+  setParams,
+}: {
+  initialUrn: string | undefined;
+  setParams: (params: Partial<CaseFilterQueryParams>) => void;
+}) => {
   const [urn, setUrn] = useState(initialUrn || "");
   const [isError, setIsError] = useState(false);
 
   const isValid = isUrnValid(urn);
 
-  const handleChange = (val: string) => setUrn(val.toUpperCase());
+  const handleChange = (val: string) => {
+    console.log("handleChange", val);
+    setUrn(val.toUpperCase());
+  };
 
   const handleSubmit = () => {
     setIsError(!isValid);
     if (isValid) {
-      setUrnParam(urn);
+      setParams({ urn });
     }
   };
 

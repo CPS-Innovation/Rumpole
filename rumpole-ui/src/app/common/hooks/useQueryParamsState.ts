@@ -2,9 +2,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import { parse, stringify } from "qs";
 import { path } from "../../features/cases/presentation/case-search-results";
 
-export type QueryParamsState<T> = {
+export type QueryParamsState<T> = Partial<T> & {
   setParams: (params: Partial<T>) => void;
-  params: Partial<T>;
   search: string;
 };
 
@@ -21,13 +20,14 @@ export const useQueryParamsState = <T>(): QueryParamsState<T> => {
     const queryString = stringify(params, {
       addQueryPrefix: true,
       encode: false,
+      arrayFormat: "comma",
     });
-    push(`${path}${queryString}`); //todo: pass path in
+    push(`${path}${queryString}`);
   };
 
   return {
     setParams,
-    params,
     search,
+    ...params,
   };
 };

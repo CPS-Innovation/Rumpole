@@ -1,5 +1,5 @@
 describe("searching for cases", () => {
-  it("can not accept an invalid URN and return an appropriate validation maessge to the user", () => {
+  it("can not accept an invalid URN and return an appropriate validation message to the user", () => {
     cy.visit("/case-search");
     cy.findAllByTestId("input-search-urn-error").should("not.exist");
 

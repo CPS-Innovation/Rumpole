@@ -32,16 +32,22 @@ steps:
     inputs:
       command: "custom"
       workingDir: "rumpole-ui"
-      customCommand: "run prettier:check"
-    displayName: "npm prettier:check"
+      customCommand: "run prettier"
+    displayName: "npm prettier"
 
-  # # e2e build must be done before normal prod build otherwise it copies over it
-  # - task: Npm@1
-  #   inputs:
-  #     command: "custom"
-  #     workingDir: "rumpole-ui"
-  #     customCommand: "run cy:build"
-  #   displayName: "cypress build"
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run test:ci"
+    displayName: "npm test"
+
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run cy:ci"
+    displayName: "cypress run tests"
 
   - task: Npm@1
     inputs:
@@ -50,41 +56,63 @@ steps:
       customCommand: "run build"
     displayName: "npm build"
 
-  # - task: Npm@1
-  #   inputs:
-  #     command: "custom"
-  #     workingDir: "rumpole-ui"
-  #     customCommand: "run test:ci"
-  #   displayName: "npm test"
-
-  # - task: Npm@1
-  #   inputs:
-  #     command: "custom"
-  #     workingDir: "rumpole-ui"
-  #     customCommand: "run cy:ci"
-  #   displayName: "cypress run tests"
-
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: "rumpole-ui/build"
       ArtifactName: "rumpole-ui-drop"
       publishLocation: "Container"
 
-  # - task: PublishTestResults@2
-  #   inputs:
-  #     testResultsFormat: "JUnit"
-  #     testResultsFiles: "rumpole-ui/report/test-*.xml"
-  #     mergeTestResults: true
+  - task: Npm@1
+    inputs:
+      command: "custom"
+      workingDir: "rumpole-ui"
+      customCommand: "run coverage"
+    displayName: "combine unit and cypress coverage"
 
-  # - task: Npm@1
-  #   inputs:
-  #     command: "custom"
-  #     workingDir: "rumpole-ui"
-  #     customCommand: "run cy:report"
-  #   displayName: "generate cypress html report"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/report"
+      ArtifactName: "Unit test report"
+      publishLocation: "Container"
 
-  # - task: PublishBuildArtifacts@1
-  #   inputs:
-  #     PathtoPublish: "rumpole-ui/report"
-  #     ArtifactName: "rumpole-ui-report"
-  #     publishLocation: "Container"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/report-cypress"
+      ArtifactName: "Cypress test report"
+      publishLocation: "Container"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/coverage"
+      ArtifactName: "Unit test coverage report"
+      publishLocation: "Container"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/coverage-cypress"
+      ArtifactName: "Cypress coverage report"
+      publishLocation: "Container"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/coverage-merged"
+      ArtifactName: "Merged coverage report"
+      publishLocation: "Container"
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "rumpole-ui/report/*.xml"
+      testRunTitle: "Unit tests"
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "rumpole-ui/report-cypress/test-*.xml"
+      testRunTitle: "Cypress tests"
+      mergeTestResults: true
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: "Cobertura"
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/rumpole-ui/coverage-merged/cobertura-coverage.xml"

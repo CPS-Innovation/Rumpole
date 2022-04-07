@@ -16,7 +16,9 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/faker": "^5.5.9",
     "@types/jest": "^26.0.15",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/node": "^12.0.0",
+    "@types/pdfjs-dist": "^2.7.4",
     "@types/qs": "^6.9.7",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
@@ -27,40 +29,39 @@
     "faker": "5.5.3",
     "govuk-react-jsx": "^6.2.1",
     "istanbul-lib-coverage": "^3.2.0",
+    "jest-junit": "^13.1.0",
     "lint-staged": ">=10",
+    "lodash.debounce": "^4.0.8",
     "msw": "^0.35.0",
-    "ncp": "^2.0.0",
     "nyc": "^15.1.0",
+    "pdfjs-dist": "2.11.338",
+    "prettier": "2.4.1",
     "qs": "^6.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-rnd": "^10.1.10",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "rimraf": "^3.0.2",
     "sass": "^1.45.0",
     "serve": "^13.0.2",
     "start-server-and-test": "^1.14.0",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
-    "xunit-viewer": "^7.1.5",
-    "@types/lodash.debounce": "^4.0.6",
-    "@types/pdfjs-dist": "^2.7.4",
-    "lodash.debounce": "^4.0.8",
-    "pdfjs-dist": "2.11.338",
-    "react-rnd": "^10.1.10"
+    "xunit-viewer": "^7.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "start:coredata": "sudo HTTPS=true PORT=443 env-cmd -f .env.coredata react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "CI=true react-scripts test",
+    "test:ci": "CI=true react-scripts test --coverage --reporters=default --reporters=jest-junit --coverageReporters=cobertura --coverageReporters=lcov --coverageReporters=json",
     "eject": "react-scripts eject",
-    "prettier:check": "prettier --check .",
-    "cy:dev": "start-server-and-test 'env-cmd -f .env.cypress react-scripts -r @cypress/instrument-cra start' http-get://localhost:3000 'env-cmd -f .env.cypress cypress open'",
-    "cy:build": "CYPRESS_INSTRUMENT_PRODUCTION=true env-cmd -f .env.cypress react-scripts build && ncp build build-e2e",
-    "cy:ci": "cypress verify && cypress info && start-server-and-test 'serve -l 3000 -s build-e2e' http-get://localhost:3000 'env-cmd -f .env.cypress cypress run'",
-    "cy:report": "npx xunit-viewer -r report -o report/index.html"
+    "prettier": "prettier --check .",
+    "cy": "./scripts/cy.sh",
+    "cy:ci": "./scripts/cy:ci.sh",
+    "coverage": "./scripts/combine-coverage.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -81,12 +82,17 @@
     ]
   },
   "nyc": {
-    "report-dir": "coverage-cypress"
+    "report-dir": "coverage-cypress",
+    "reporter": [
+      "lcov",
+      "cobertura",
+      "json"
+    ]
   },
   "msw": {
     "workerDirectory": "public"
   },
-  "devDependencies": {
-    "prettier": "2.4.1"
+  "jest-junit": {
+    "outputDirectory": "report"
   }
 }

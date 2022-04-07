@@ -8,11 +8,18 @@ const history = createMemoryHistory();
 describe("useQueryParams", () => {
   test("reads single params", () => {
     history.push("/my/route?foo=a&bar=b");
-    const { result } = renderHook(() => useQueryParamsState(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string; bar: string }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
-    expect(result.current.params).toEqual({
+    const { foo, bar } = result.current;
+
+    expect({ foo, bar }).toEqual({
       foo: "a",
       bar: "b",
     });
@@ -20,22 +27,36 @@ describe("useQueryParams", () => {
 
   test("reads array params", () => {
     history.push("/my/route?foo=a,b");
-    const { result } = renderHook(() => useQueryParamsState(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string[] }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
-    expect(result.current.params).toEqual({
+    const { foo } = result.current;
+
+    expect({ foo }).toEqual({
       foo: ["a", "b"],
     });
   });
 
   test("reads empty params", () => {
     history.push("/my/route?foo=");
-    const { result } = renderHook(() => useQueryParamsState(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
-    });
+    const { result } = renderHook(
+      () => useQueryParamsState<{ foo: string }>(),
+      {
+        wrapper: ({ children }) => (
+          <Router history={history}>{children}</Router>
+        ),
+      }
+    );
 
-    expect(result.current.params).toEqual({
+    const { foo } = result.current;
+
+    expect({ foo }).toEqual({
       foo: "",
     });
   });
@@ -117,6 +138,6 @@ describe("useQueryParams", () => {
 
     act(() => result.current.setParams({ foo: [] }));
 
-    expect(history.location.search).toBe("?foo=");
+    expect(history.location.search).toBe("");
   });
 });

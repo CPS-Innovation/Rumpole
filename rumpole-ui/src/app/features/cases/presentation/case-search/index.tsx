@@ -1,25 +1,22 @@
 import React from "react";
 import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsState";
 import { CaseFilterQueryParams } from "../../hooks/types/CaseFilterQueryParams";
-import { useSearchDataState } from "../../hooks/useSearchDataState";
-import { useSearchState } from "../../hooks/useSearchState";
 import {
   Button,
   Hint,
   Input,
 } from "../../../../common/presentation/components";
-import { useSearchField } from "../../hooks/useSearchField";
+import { useSearchInputLogic } from "../../hooks/useSearchInputLogic";
 import classes from "./index.module.scss";
 
 export const path = "/case-search";
 
 const Page: React.FC = () => {
-  const queryParamState = useQueryParamsState<CaseFilterQueryParams>();
-  const reduxState = useSearchDataState(queryParamState.params.urn);
-  const searchState = useSearchState(queryParamState, reduxState);
+  const { urn: initialUrn, setParams } =
+    useQueryParamsState<CaseFilterQueryParams>();
 
-  const { handleChange, handleKeyPress, handleSubmit, urn, isError } =
-    useSearchField(searchState);
+  const { handleChange, handleKeyPress, handleSubmit, isError, urn } =
+    useSearchInputLogic({ initialUrn, setParams });
 
   return (
     <div className="govuk-grid-row">

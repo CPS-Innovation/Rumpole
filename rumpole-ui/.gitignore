@@ -23,8 +23,10 @@ yarn-debug.log*
 yarn-error.log*
 
 # cypress
-/build-e2e
+/build-cypress
 /report
+/report-cypress
 /coverage-cypress
 /.nyc_output
 /cypress/screenshots
+/coverage-merged

@@ -3,7 +3,7 @@
   "video": false,
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "report/test-results-[hash].xml",
+    "mochaFile": "report-cypress/test-results-[hash].xml",
     "attachments": true
   }
 }
