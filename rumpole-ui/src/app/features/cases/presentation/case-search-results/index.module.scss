@@ -1,5 +1,4 @@
 $border-color: #b1b4b6; //govuk-colour("green");
-
 .search {
   display: flex;
   align-items: flex-end;
@@ -32,22 +31,19 @@ $border-color: #b1b4b6; //govuk-colour("green");
   }
 }
 
-.results {
-  margin-top: 10px;
-}
-
 .result {
   margin-top: 30px;
-  & > div > div {
-    display: flex;
-
-    span:first-of-type {
-      min-width: 160px;
-    }
-  }
   border-bottom: 1px solid $border-color;
 }
 
 .defendantName {
   margin: 5px 0;
+}
+
+.result-line {
+  display: flex;
+
+  span:first-of-type {
+    min-width: 160px;
+  }
 }

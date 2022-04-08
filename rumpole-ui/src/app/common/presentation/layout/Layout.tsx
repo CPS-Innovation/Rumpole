@@ -40,7 +40,9 @@ export const Layout: React.FC<LayoutProps> = ({
                 </span>
               </span>
             </a>
-            <span className="govuk-header__link--homepage">Rumpole</span>
+            <span className="govuk-header__link--homepage">
+              {/* Rumpole */}
+            </span>
           </div>
         </div>
       </header>

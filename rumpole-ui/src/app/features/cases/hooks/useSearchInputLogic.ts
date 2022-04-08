@@ -15,7 +15,6 @@ export const useSearchInputLogic = ({
   const isValid = isUrnValid(urn);
 
   const handleChange = (val: string) => {
-    console.log("handleChange", val);
     setUrn(val.toUpperCase());
   };
 

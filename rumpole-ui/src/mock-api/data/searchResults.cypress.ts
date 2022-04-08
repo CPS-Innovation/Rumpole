@@ -15,7 +15,7 @@ const searchResults: CaseSearchResult[] = [
     uniqueReferenceNumber: "12AB1111111",
     id: 13401,
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -46,7 +46,7 @@ const searchResults: CaseSearchResult[] = [
     uniqueReferenceNumber: "12AB2222222/1",
     id: 17422,
     area: AreaDivision.ThamesAndChiltern,
-    agency: Agency.SurreyPolice,
+    investigativeAgency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -68,7 +68,7 @@ const searchResults: CaseSearchResult[] = [
     uniqueReferenceNumber: "12AB2222222/2",
     id: 18443,
     area: AreaDivision.EastOfEngland,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",

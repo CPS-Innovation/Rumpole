@@ -13,12 +13,6 @@ describe("search results", () => {
     cy.findByTestId("txt-result-count").contains("2");
     cy.findByTestId("txt-result-urn").contains("12AB2222222");
   });
-
-  it("can filter search results based on case status", () => {});
-
-  it("can bookmark filter results", () => {});
-
-  it.skip("can show multiple offfences against a case");
 });
 
 export {};

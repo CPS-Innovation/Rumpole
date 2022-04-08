@@ -66,62 +66,65 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <div className={`govuk-grid-row ${classes.results}`}>
-        <div className={classes.results}>
-          <p className="govuk-body">
-            We've found <b data-testid="txt-result-count">{totalCount}</b> case
-            {totalCount !== 1 ? "s " : " "}
-            that match <span data-testid="txt-result-urn">{urn}</span>
-          </p>
-          <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-          {data.map((item) => (
-            <div key={item.id} className={classes.result}>
-              <h2 className="govuk-heading-m ">
-                <Link
-                  to={{
-                    pathname: generatePath(casePath, { id: item.id }),
-                    state: search,
-                  }}
-                  data-testid={`link-${item.uniqueReferenceNumber}`}
-                >
-                  {item.uniqueReferenceNumber}
-                </Link>
-                <Hint className={classes.defendantName}>
-                  {item.leadDefendant.surname}, {item.leadDefendant.firstNames}
-                </Hint>
-              </h2>
-              <div className="govuk-body">
-                {item.offences.map((offence, index) => (
-                  <div key={index}>
-                    <div>
-                      <span>Status:</span>
-                      <span>
-                        {offence.isNotYetCharged
-                          ? "Not yet charged"
-                          : "Charged"}
-                      </span>
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <div className={classes.results}>
+            <p className="govuk-body">
+              We've found <b data-testid="txt-result-count">{totalCount}</b>{" "}
+              case
+              {totalCount !== 1 ? "s " : " "}
+              that match <span data-testid="txt-result-urn">{urn}</span>
+            </p>
+            <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+            {data.map((item) => (
+              <div key={item.id} className={classes.result}>
+                <h2 className="govuk-heading-m ">
+                  <Link
+                    to={{
+                      pathname: generatePath(casePath, { id: item.id }),
+                      state: search,
+                    }}
+                    data-testid={`link-${item.uniqueReferenceNumber}`}
+                  >
+                    {item.uniqueReferenceNumber}
+                  </Link>
+                  <Hint className={classes.defendantName}>
+                    {item.leadDefendant.surname},{" "}
+                    {item.leadDefendant.firstNames}
+                  </Hint>
+                </h2>
+                <div className="govuk-body">
+                  {item.offences.map((offence, index) => (
+                    <div key={index}>
+                      <div className={classes["result-line"]}>
+                        <span>Status:</span>
+                        <span>
+                          {offence.isNotYetCharged
+                            ? "Not yet charged"
+                            : "Charged"}
+                        </span>
+                      </div>
+                      <div className={classes["result-line"]}>
+                        <span>Date of offense:</span>
+                        <span>
+                          {formatDate(
+                            offence.earlyDate,
+                            CommonDateTimeFormats.ShortDateTextMonth
+                          )}
+                        </span>
+                      </div>
+                      <div className={classes["result-line"]}>
+                        <span>
+                          {offence.isNotYetCharged ? "Proposed" : ""} Charges:
+                        </span>
+                        <span>{offence.shortDescription}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span>Date of offense:</span>
-                      <span>
-                        {formatDate(
-                          offence.earlyDate,
-                          CommonDateTimeFormats.ShortDateTextMonth
-                        )}
-                      </span>
-                    </div>
-                    <div>
-                      <span>
-                        {offence.isNotYetCharged ? "Proposed" : ""} Charges:
-                      </span>
-                      <span>{offence.shortDescription}</span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </>

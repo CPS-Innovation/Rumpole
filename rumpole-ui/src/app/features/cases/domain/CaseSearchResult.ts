@@ -1,11 +1,11 @@
 export type CaseSearchResult = {
-  uniqueReferenceNumber: string;
   id: number;
+  uniqueReferenceNumber: string;
   area: {
     code: string;
     name: string;
   };
-  agency: {
+  investigativeAgency: {
     code: string;
     name: string;
   };

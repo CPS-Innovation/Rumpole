@@ -5,5 +5,7 @@
   "reporterOptions": {
     "mochaFile": "report-cypress/test-results-[hash].xml",
     "attachments": true
-  }
+  },
+  "viewportHeight": 1000,
+  "viewportWidth": 1500
 }

@@ -3,6 +3,7 @@ import { AreaDivision } from "../lookups/AreaDivision";
 import faker from "faker";
 import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
 import { SearchDataSource } from "./types/SearchDataSource";
+
 const dataSource: SearchDataSource = (urn) => {
   const lastDigit = Number(urn?.split("").pop());
 
@@ -21,7 +22,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 13401,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -52,7 +53,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 17422,
 
     area: AreaDivision.ThamesAndChiltern,
-    agency: Agency.SurreyPolice,
+    investigativeAgency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -74,7 +75,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 18443,
 
     area: AreaDivision.EastOfEngland,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -96,7 +97,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 19994,
 
     area: AreaDivision.ThamesAndChiltern,
-    agency: Agency.SurreyPolice,
+    investigativeAgency: Agency.SurreyPolice,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -118,7 +119,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 17425,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -140,7 +141,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 16756,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -162,7 +163,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 14927,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -184,7 +185,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 17428,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -206,7 +207,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
     id: 16549,
 
     area: AreaDivision.LondonSouth,
-    agency: Agency.MetropolitanPoliceService,
+    investigativeAgency: Agency.MetropolitanPoliceService,
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
