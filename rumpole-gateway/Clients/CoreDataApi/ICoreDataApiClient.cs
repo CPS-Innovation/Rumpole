@@ -8,7 +8,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
     {
         Task<CaseDetails> GetCaseDetailsById(string caseId, string accessToken);
 
-        Task<IList<CaseDetails>> GetCaseInformatoinByURN(string urn, string accessToken);
+        Task<IList<CaseDetails>> GetCaseInformationByURN(string urn, string accessToken);
 
     }
 }

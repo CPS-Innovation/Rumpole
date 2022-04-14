@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -10,15 +10,15 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Helpers.Extension;
 
-namespace RumpoleGateway.Triggers.CoreDataApi
+namespace RumpoleGateway.Functions.CoreDataApi
 {
-    public class CoreDataApiCaseInformationByUrnFunction
+    public class CoreDataApiCaseInformationByUrn
     {
-        private readonly ILogger<CoreDataApiCaseInformationByUrnFunction> _logger;
+        private readonly ILogger<CoreDataApiCaseInformationByUrn> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
 
-        public CoreDataApiCaseInformationByUrnFunction(ILogger<CoreDataApiCaseInformationByUrnFunction> logger,
+        public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient)
         {
@@ -32,27 +32,36 @@ namespace RumpoleGateway.Triggers.CoreDataApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
             string urn)
         {
-            _logger.LogInformation("CoreDataApiCaseInformationByUrn - trigger processed a request.");
-            
+            string errorMsg;
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                return new UnauthorizedObjectResult(Constants.CommonUserMessages.AuthenticationFailedMessage);
+                errorMsg = "Authorization token is not supplied.";
+                return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
             }
 
             if (string.IsNullOrEmpty(urn))
             {
-                return new BadRequestObjectResult(Constants.CommonUserMessages.URNNotSupplied);
+                errorMsg = "URN is not supplied.";
+                return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
             }
 
             var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
 
-            var caseInformation = await _coreDataApiClient.GetCaseInformatoinByURN(urn, behalfToken);
+            var caseInformation = await _coreDataApiClient.GetCaseInformationByURN(urn, behalfToken);
 
             if (caseInformation != null && caseInformation.Any())
             {
                 return new OkObjectResult(caseInformation);
             }
-            return new NotFoundObjectResult($"{Constants.CommonUserMessages.NoRecordFound} - URN : {urn}");
+
+            errorMsg = $"No record found for urn '{urn}'.";
+            return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+        }
+
+        private IActionResult ErrorResponse(IActionResult result, string message)
+        {
+            _logger.LogError(message);
+            return result;
         }
     }
 }

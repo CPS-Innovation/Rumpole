@@ -44,12 +44,12 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
             catch (Exception ex)
             {
-                _logger.LogError($" Error -  response from Data Core API -  {ex} ");
+                _logger.LogError($"Error response from Core Data Api. Exception: {ex}.");
                 return null;
             }
         }
 
-        public async Task<IList<CaseDetails>> GetCaseInformatoinByURN(string urn, string accessToken)
+        public async Task<IList<CaseDetails>> GetCaseInformationByURN(string urn, string accessToken)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
             catch (Exception ex)
             {
-                _logger.LogError($" Error -  response from Data Core API -  {ex} ");
+                _logger.LogError($"Error response from Core Data Api. Exception: {ex}.");
                 return null;
             }
         }

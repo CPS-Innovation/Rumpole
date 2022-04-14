@@ -7,14 +7,14 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Tests.FakeData;
-using RumpoleGateway.Triggers.CoreDataApi;
+using RumpoleGateway.Functions.CoreDataApi;
 using Xunit;
 
-namespace RumpoleGateway.Tests.Triggers.CoreDataApi
+namespace RumpoleGateway.Tests.Functions.CoreDataApi
 {
     public class CoreDataApiCaseDetailsFunctionTests : SharedMethods.SharedMethods , IClassFixture<CaseInformationFake>
     {
-        private readonly ILogger<CoreDataApiCaseDetailsFunction> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseDetailsFunction>>();
+        private readonly ILogger<CoreDataApiCaseDetails> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseDetails>>();
         private readonly IOnBehalfOfTokenClient _mockOnBehalfOfTokenClient = Substitute.For<IOnBehalfOfTokenClient>();
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly CaseInformationFake _caseInformationFake;
@@ -34,7 +34,6 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
 
             //Assert
             Assert.Equal(401, results.StatusCode);
-            Assert.Equal(Constants.CommonUserMessages.AuthenticationFailedMessage, results.Value);
         }
 
         [Fact]
@@ -48,7 +47,6 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
 
             //Assert
             Assert.Equal(400, results.StatusCode);
-            Assert.Equal(Constants.CommonUserMessages.CaseIdNotSupplied, results.Value);
         }
 
         [Fact]
@@ -86,15 +84,9 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
             Assert.Equal(caseId, response.Id);
         }
 
-
-        #region private methods
-        private CoreDataApiCaseDetailsFunction GetCoreDataApiCaseDetailsFunction()
+        private CoreDataApiCaseDetails GetCoreDataApiCaseDetailsFunction()
         {
-            return new CoreDataApiCaseDetailsFunction(_mockLogger,
-                                                               _mockOnBehalfOfTokenClient,
-                                                               _mockCoreDataApiClient) { };
+            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient);
         }
-        #endregion private methods
-
     }
 }

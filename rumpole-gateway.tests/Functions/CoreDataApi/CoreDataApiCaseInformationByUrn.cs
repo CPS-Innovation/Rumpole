@@ -8,19 +8,19 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Tests.FakeData;
-using RumpoleGateway.Triggers.CoreDataApi;
+using RumpoleGateway.Functions.CoreDataApi;
 using Xunit;
 
-namespace RumpoleGateway.Tests.Triggers.CoreDataApi
+namespace RumpoleGateway.Tests.Functions.CoreDataApi
 {
-    public class CoreDataApiCaseInformationByUrnFunctionTests: SharedMethods.SharedMethods , IClassFixture<CaseInformationFake>
+    public class CoreDataApiCaseInformationByUrnTests: SharedMethods.SharedMethods , IClassFixture<CaseInformationFake>
     {
-        private readonly ILogger<CoreDataApiCaseInformationByUrnFunction> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseInformationByUrnFunction>>();
+        private readonly ILogger<CoreDataApiCaseInformationByUrn> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseInformationByUrn>>();
         private readonly IOnBehalfOfTokenClient _mockOnBehalfOfTokenClient = Substitute.For<IOnBehalfOfTokenClient>();
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly CaseInformationFake _caseInformationFake;
 
-        public CoreDataApiCaseInformationByUrnFunctionTests(CaseInformationFake caseInformationFake)
+        public CoreDataApiCaseInformationByUrnTests(CaseInformationFake caseInformationFake)
         {
             _caseInformationFake = caseInformationFake; 
         }
@@ -35,7 +35,6 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
 
             //Assert
             Assert.Equal(401, results.StatusCode);
-            Assert.Equal(Constants.CommonUserMessages.AuthenticationFailedMessage, results.Value);
         }
 
         [Fact]
@@ -49,7 +48,6 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
 
             //Assert
             Assert.Equal(400, results.StatusCode);
-            Assert.Equal(Constants.CommonUserMessages.URNNotSupplied, results.Value);
         }
 
         [Fact]
@@ -75,7 +73,7 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
             //Arrange
             var urn = "10OF1234520";
             var coreDataApiCaseInformationByUrnFunction = GetCoreDataApiCaseInformationByUrnFunction();
-            _mockCoreDataApiClient.GetCaseInformatoinByURN(It.IsAny<string>(), It.IsAny<string>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload());
+            _mockCoreDataApiClient.GetCaseInformationByURN(It.IsAny<string>(), It.IsAny<string>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload());
 
             //Act
             var results = await coreDataApiCaseInformationByUrnFunction.Run(CreateHttpRequest(), urn) as Microsoft.AspNetCore.Mvc.ObjectResult;
@@ -87,15 +85,9 @@ namespace RumpoleGateway.Tests.Triggers.CoreDataApi
             Assert.Equal(urn, response.FirstOrDefault().UniqueReferenceNumber);
         }
 
-
-        #region private methods
-        private CoreDataApiCaseInformationByUrnFunction GetCoreDataApiCaseInformationByUrnFunction()
+        private CoreDataApiCaseInformationByUrn GetCoreDataApiCaseInformationByUrnFunction()
         {
-            return new CoreDataApiCaseInformationByUrnFunction(_mockLogger,
-                                                               _mockOnBehalfOfTokenClient,
-                                                               _mockCoreDataApiClient) { };
+            return new CoreDataApiCaseInformationByUrn(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient);
         }
-        #endregion private methods
-
     }
 }

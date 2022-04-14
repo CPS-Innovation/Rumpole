@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 
-namespace RumpoleGateway.Tests.Triggers.SharedMethods
+namespace RumpoleGateway.Tests.Functions.SharedMethods
 {
 
     public class SharedMethods

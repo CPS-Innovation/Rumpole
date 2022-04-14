@@ -26,7 +26,6 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
         {
             AuthenticationResult result;
              var scopes = new Collection<string> { _configuration["CoreDataApiScope"] };
-           // var scopes = new Collection<string> { "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm" };
             try
             {
                 var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);
@@ -34,12 +33,9 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
             }
             catch (MsalException exception)
             {
-                var baseMessage = "Failed to acquire onBehalfOf token";
-                _logger.LogError(exception, baseMessage);
+                _logger.LogError(exception, "Failed to acquire onBehalfOf token");
 
-                //TODO:
-                throw new Exception();
-               // throw new OnBehalfOfTokenClientException(baseMessage);
+                throw;
             }
 
             return result.AccessToken;
