@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
@@ -17,14 +18,17 @@ namespace RumpoleGateway.Functions.CoreDataApi
         private readonly ILogger<CoreDataApiCaseInformationByUrn> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
+        private readonly IConfiguration _configuration;
 
         public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 ICoreDataApiClient coreDataApiClient)
+                                 ICoreDataApiClient coreDataApiClient,
+                                 IConfiguration configuration)
         {
-            _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _logger = logger;
+            _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
+            _configuration = configuration;
         }
 
         [FunctionName("CoreDataApiCaseInformationByUrn")]
@@ -45,9 +49,9 @@ namespace RumpoleGateway.Functions.CoreDataApi
                 return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
             }
 
-            var behalfToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString());
+            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
-            var caseInformation = await _coreDataApiClient.GetCaseInformationByURN(urn, behalfToken);
+            var caseInformation = await _coreDataApiClient.GetCaseInformationByURN(urn, onBehalfOfAccessToken);
 
             if (caseInformation != null && caseInformation.Any())
             {

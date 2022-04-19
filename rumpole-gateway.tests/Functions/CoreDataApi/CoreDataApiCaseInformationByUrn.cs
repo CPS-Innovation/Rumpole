@@ -10,6 +10,7 @@ using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Tests.FakeData;
 using RumpoleGateway.Functions.CoreDataApi;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
 {
@@ -18,6 +19,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ILogger<CoreDataApiCaseInformationByUrn> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseInformationByUrn>>();
         private readonly IOnBehalfOfTokenClient _mockOnBehalfOfTokenClient = Substitute.For<IOnBehalfOfTokenClient>();
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
+        private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
 
         public CoreDataApiCaseInformationByUrnTests(CaseInformationFake caseInformationFake)
@@ -87,7 +89,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         private CoreDataApiCaseInformationByUrn GetCoreDataApiCaseInformationByUrnFunction()
         {
-            return new CoreDataApiCaseInformationByUrn(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient);
+            return new CoreDataApiCaseInformationByUrn(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration);
         }
     }
 }

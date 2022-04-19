@@ -4,34 +4,34 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
+using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Helpers.Extension;
 using System.Threading.Tasks;
 
-namespace RumpoleGateway.Functions.CoreDataApi
+namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class CoreDataApiCaseDetails
+    public class RumpolePipelineTriggerCoordinator
     {
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
+        private readonly ILogger<RumpolePipelineTriggerCoordinator> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
-        private readonly ICoreDataApiClient _coreDataApiClient;
+        private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
+        public RumpolePipelineTriggerCoordinator(ILogger<RumpolePipelineTriggerCoordinator> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 ICoreDataApiClient coreDataApiClient,
+                                 IPipelineClient pipelineClient,
                                  IConfiguration configuration)
         {
             _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
-            _coreDataApiClient = coreDataApiClient;
+            _pipelineClient = pipelineClient;
             _configuration = configuration;
         }
 
-        [FunctionName("CoreDataApiCaseDetails")]
+        [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-details/{caseId}")] HttpRequest req, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}")] HttpRequest req, string caseId)
         {
             string errorMsg;
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
@@ -46,17 +46,12 @@ namespace RumpoleGateway.Functions.CoreDataApi
                 return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
             }
 
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
+            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
 
-            var caseDetails = await _coreDataApiClient.GetCaseDetailsById(caseId, onBehalfOfAccessToken);
+            var response = await _pipelineClient.TriggerCoordinator(caseId, onBehalfOfAccessToken);
 
-            if (caseDetails != null)
-            {
-                return new OkObjectResult(caseDetails);
-            }
-
-            errorMsg = $"No record found for case id '{caseId}'.";
-            return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+            //TODO test returning http response message works
+            return new OkObjectResult(response);
         }
 
         private IActionResult ErrorResponse(IActionResult result, string message)

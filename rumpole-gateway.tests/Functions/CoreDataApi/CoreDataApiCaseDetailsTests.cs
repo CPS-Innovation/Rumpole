@@ -9,6 +9,7 @@ using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Tests.FakeData;
 using RumpoleGateway.Functions.CoreDataApi;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
 {
@@ -17,6 +18,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ILogger<CoreDataApiCaseDetails> _mockLogger = Substitute.For<ILogger<CoreDataApiCaseDetails>>();
         private readonly IOnBehalfOfTokenClient _mockOnBehalfOfTokenClient = Substitute.For<IOnBehalfOfTokenClient>();
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
+        private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
 
         public CoreDataApiCaseDetailsFunctionTests(CaseInformationFake caseInformationFake)
@@ -36,14 +38,16 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             Assert.Equal(401, results.StatusCode);
         }
 
-        [Fact]
-        public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_400_When_Case_Id_Not_Supplied()
+        [Theory]
+        [InlineData("")]
+        [InlineData("Not an int")]
+        public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_400_When_Case_Id_Is_Invalid(string caseId)
         {
             //Arrange
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
 
             //Act
-            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), string.Empty) as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
             Assert.Equal(400, results.StatusCode);
@@ -86,7 +90,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         private CoreDataApiCaseDetails GetCoreDataApiCaseDetailsFunction()
         {
-            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient);
+            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration);
         }
     }
 }

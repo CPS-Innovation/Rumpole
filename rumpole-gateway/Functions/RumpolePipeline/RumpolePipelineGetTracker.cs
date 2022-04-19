@@ -4,34 +4,34 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
+using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Helpers.Extension;
 using System.Threading.Tasks;
 
-namespace RumpoleGateway.Functions.CoreDataApi
+namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class CoreDataApiCaseDetails
+    public class RumpolePipelineGetTracker
     {
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
+        private readonly ILogger<RumpolePipelineGetTracker> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
-        private readonly ICoreDataApiClient _coreDataApiClient;
+        private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
+        public RumpolePipelineGetTracker(ILogger<RumpolePipelineGetTracker> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 ICoreDataApiClient coreDataApiClient,
+                                 IPipelineClient pipelineClient,
                                  IConfiguration configuration)
         {
             _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
-            _coreDataApiClient = coreDataApiClient;
+            _pipelineClient = pipelineClient;
             _configuration = configuration;
         }
 
-        [FunctionName("CoreDataApiCaseDetails")]
+        [FunctionName("RumpolePipelineGetTracker")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-details/{caseId}")] HttpRequest req, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/tracker")] HttpRequest req, string caseId)
         {
             string errorMsg;
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
@@ -46,17 +46,18 @@ namespace RumpoleGateway.Functions.CoreDataApi
                 return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
             }
 
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
+            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
 
-            var caseDetails = await _coreDataApiClient.GetCaseDetailsById(caseId, onBehalfOfAccessToken);
+            var tracker = await _pipelineClient.GetTracker(caseId, onBehalfOfAccessToken);
 
-            if (caseDetails != null)
+            if(tracker == null)
             {
-                return new OkObjectResult(caseDetails);
+                return new NotFoundObjectResult($"No tracker found for case id '{caseId}'.");
             }
 
-            errorMsg = $"No record found for case id '{caseId}'.";
-            return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+            //TODO test what is returned when error is thrown
+
+            return new OkObjectResult(tracker);
         }
 
         private IActionResult ErrorResponse(IActionResult result, string message)

@@ -11,21 +11,19 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
     {
         private readonly IConfidentialClientApplication _application;
         private readonly ILogger<OnBehalfOfTokenClient> _logger;
-        private readonly IConfiguration _configuration;
      
         public OnBehalfOfTokenClient(IConfidentialClientApplication application, 
-                                     ILogger<OnBehalfOfTokenClient> logger,
-                                     IConfiguration configuration)
+                                     ILogger<OnBehalfOfTokenClient> logger)
         {
             _application = application;
             _logger = logger;
-            _configuration = configuration;
         }
 
-        public async Task<string> GetAccessToken(string accessToken)
+        public async Task<string> GetAccessToken(string accessToken, string scope)
         {
             AuthenticationResult result;
-             var scopes = new Collection<string> { _configuration["CoreDataApiScope"] };
+            var scopes = new Collection<string> { scope };
+
             try
             {
                 var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);

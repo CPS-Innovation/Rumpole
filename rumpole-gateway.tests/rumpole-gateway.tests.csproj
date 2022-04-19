@@ -30,4 +30,12 @@
   <ItemGroup>
     <ProjectReference Include="..\rumpole-gateway\rumpole-gateway.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Functions\RumpolePipeline\" />
+    <None Remove="Clients\RumpolePipeline\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Functions\RumpolePipeline\" />
+    <Folder Include="Clients\RumpolePipeline\" />
+  </ItemGroup>
 </Project>
