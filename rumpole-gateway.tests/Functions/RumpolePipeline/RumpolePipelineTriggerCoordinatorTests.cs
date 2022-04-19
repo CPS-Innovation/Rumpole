@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -52,7 +53,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutToken(), _caseId);
 
-			response.Should().BeOfType<UnauthorizedObjectResult>();
+			response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 		}
 
 		[Fact]
@@ -60,7 +61,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), "Not an integer");
 
-			response.Should().BeOfType<BadRequestObjectResult>();
+			response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 		}
 
 		[Fact]
@@ -68,15 +69,15 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
-			response.Should().BeOfType<OkObjectResult>();
+			response.StatusCode.Should().Be(HttpStatusCode.OK);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsHttpResponseMessage()
 		{
-			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId) as OkObjectResult;
+			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
-			response.Value.Should().Be(_httpResponseMessage);
+			response.Should().Be(_httpResponseMessage);
 		}
 	}
 }

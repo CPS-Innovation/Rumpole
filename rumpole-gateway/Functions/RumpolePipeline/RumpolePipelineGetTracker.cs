@@ -33,17 +33,17 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/tracker")] HttpRequest req, string caseId)
         {
-            string errorMsg;
+            string errorMessage;
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                errorMsg = "Authorization token is not supplied.";
-                return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
+                errorMessage = "Authorization token is not supplied.";
+                return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
             }
 
             if (!int.TryParse(caseId, out var _))
             {
-                errorMsg = "Invalid case id. A 32-bit integer is required.";
-                return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
+                errorMessage = "Invalid case id. A 32-bit integer is required.";
+                return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
             }
 
             var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
@@ -54,8 +54,6 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 return new NotFoundObjectResult($"No tracker found for case id '{caseId}'.");
             }
-
-            //TODO test what is returned when error is thrown
 
             return new OkObjectResult(tracker);
         }

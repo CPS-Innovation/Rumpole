@@ -28,11 +28,11 @@ namespace cms_document_services_document_processor_function.tests.Factories
         }
 
         [Fact]
-        public void Create_SetsHttpMethodToPostOnRequestMessage()
+        public void Create_SetsHttpMethodToGetOnRequestMessage()
         {
             var message = RumpolePipelineRequestFactory.Create(_requestUri, _accessToken);
 
-            message.Method.Should().Be(HttpMethod.Post);
+            message.Method.Should().Be(HttpMethod.Get);
         }
 
         [Fact]

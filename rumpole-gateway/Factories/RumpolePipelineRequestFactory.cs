@@ -7,7 +7,7 @@ namespace RumpoleGateway.Factories
 	{
         public HttpRequestMessage Create(string requestUri, string accessToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
             request.Headers.Authorization = new AuthenticationHeaderValue(Constants.Authentication.Bearer, accessToken);
             return request;
         }

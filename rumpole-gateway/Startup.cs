@@ -38,7 +38,7 @@ namespace RumpoleGateway
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["RumpolePipelineUrl"]);
+                client.BaseAddress = new Uri(configuration["RumpolePipelineCoordinatorBaseUrl"]);
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
 

@@ -7,6 +7,10 @@ using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Helpers.Extension;
+using System.Net;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
@@ -30,34 +34,35 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         }
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
-        public async Task<IActionResult> Run(
+        public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}")] HttpRequest req, string caseId)
         {
-            string errorMsg;
+            string errorMessage;
             if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
             {
-                errorMsg = "Authorization token is not supplied.";
-                return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
+                errorMessage = "Authorization token is not supplied.";
+                return ErrorResponse(HttpStatusCode.Unauthorized, errorMessage);
             }
 
             if (!int.TryParse(caseId, out var _))
             {
-                errorMsg = "Invalid case id. A 32-bit integer is required.";
-                return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
+                errorMessage = "Invalid case id. A 32-bit integer is required.";
+                return ErrorResponse(HttpStatusCode.BadRequest, errorMessage);
             }
 
             var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
 
-            var response = await _pipelineClient.TriggerCoordinator(caseId, onBehalfOfAccessToken);
-
-            //TODO test returning http response message works
-            return new OkObjectResult(response);
+            return await _pipelineClient.TriggerCoordinator(caseId, onBehalfOfAccessToken);
         }
 
-        private IActionResult ErrorResponse(IActionResult result, string message)
+        private HttpResponseMessage ErrorResponse(HttpStatusCode statusCode, string errorMessage)
         {
-            _logger.LogError(message);
-            return result;
+            _logger.LogError(errorMessage);
+
+            return new HttpResponseMessage(statusCode)
+            {
+                Content = new StringContent(errorMessage, Encoding.UTF8, MediaTypeNames.Application.Json)
+            };
         }
     }
 }
