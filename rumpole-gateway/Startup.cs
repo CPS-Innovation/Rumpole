@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
@@ -8,7 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
+using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Factories;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
+using RumpoleGateway.Wrappers;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 
@@ -24,14 +28,19 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-
-            builder.Services.AddHttpClient();
-
             builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
-            builder.Services.AddSingleton<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
+            builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
+            builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
+            builder.Services.AddTransient<IRumpolePipelineRequestFactory, RumpolePipelineRequestFactory>();
+            builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
 
+            builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["RumpolePipelineUrl"]);
+                client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            });
 
             builder.Services.AddSingleton(serviceProvider =>
             {
@@ -51,8 +60,6 @@ namespace RumpoleGateway
 
                 return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
             });
-
-            builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
 
         }
 
