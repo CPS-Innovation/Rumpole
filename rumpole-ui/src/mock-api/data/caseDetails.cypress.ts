@@ -1,17 +1,16 @@
 import faker from "faker";
+import { CaseDetails } from "../../app/features/cases/domain/CaseDetails";
+import { CaseDetailsDataSource } from "./types/CaseDetailsDataSource";
 
-import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
-import { SearchDataSource } from "./types/SearchDataSource";
-
-const dataSource: SearchDataSource = (urn) =>
-  searchResults.filter((item) => item.uniqueReferenceNumber.startsWith(urn));
+const dataSource: CaseDetailsDataSource = (id) =>
+  caseDetails.find((item) => String(item.id) === id);
 
 export default dataSource;
 
-const searchResults: CaseSearchResult[] = [
+const caseDetails: CaseDetails[] = [
   {
-    uniqueReferenceNumber: "12AB1111111",
     id: 13401,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -34,13 +33,13 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
-        isNotYetCharged: false,
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    uniqueReferenceNumber: "12AB2222222/1",
     id: 17422,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -54,13 +53,13 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
-        isNotYetCharged: false,
+        isNotYetCharged: true,
       },
     ],
   },
   {
-    uniqueReferenceNumber: "12AB2222222/2",
     id: 18443,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -74,7 +73,7 @@ const searchResults: CaseSearchResult[] = [
         code: "0",
         shortDescription: faker.lorem.sentence(),
         longDescription: faker.lorem.sentences(),
-        isNotYetCharged: false,
+        isNotYetCharged: true,
       },
     ],
   },

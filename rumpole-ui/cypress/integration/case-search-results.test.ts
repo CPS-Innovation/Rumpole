@@ -2,7 +2,7 @@ describe("search results", () => {
   it("displays search result and summarises returned count and URN", () => {
     cy.visit("/case-search-results?urn=12AB1111111");
 
-    cy.findByTestId("link-12AB1111111");
+    cy.findByTestId("link-12AB1111111", { timeout: 20000 });
     cy.findByTestId("txt-result-count").contains("1");
     cy.findByTestId("txt-result-urn").contains("12AB1111111");
 

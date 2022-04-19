@@ -1,23 +1,16 @@
 import faker from "faker";
-import { CaseSearchResult } from "../../app/features/cases/domain/CaseSearchResult";
-import { SearchDataSource } from "./types/SearchDataSource";
+import { CaseDetails } from "../../app/features/cases/domain/CaseDetails";
+import { CaseDetailsDataSource } from "./types/CaseDetailsDataSource";
 
-const dataSource: SearchDataSource = (urn) => {
-  const lastDigit = Number(urn?.split("").pop());
-
-  const coreResults = lastDigit ? [...searchResults].slice(-1 * lastDigit) : [];
-
-  return coreResults.map((result) => ({
-    ...result,
-    uniqueReferenceNumber: urn,
-  })) as CaseSearchResult[];
-};
+const dataSource: CaseDetailsDataSource = (id) =>
+  caseDetails.find((item) => String(item.id) === id);
 
 export default dataSource;
 
-const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
+const caseDetails: CaseDetails[] = [
   {
     id: 13401,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -46,6 +39,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 17422,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -65,6 +59,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 18443,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -84,6 +79,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 19994,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -103,6 +99,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 17425,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -122,6 +119,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 16756,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -141,6 +139,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 14927,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -160,6 +159,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 17428,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",
@@ -179,6 +179,7 @@ const searchResults: Omit<CaseSearchResult, "uniqueReferenceNumber">[] = [
   },
   {
     id: 16549,
+    uniqueReferenceNumber: "",
     leadDefendant: {
       firstNames: "Steve",
       surname: "Walsh",

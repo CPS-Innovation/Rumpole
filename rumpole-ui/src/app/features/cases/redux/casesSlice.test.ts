@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import { CaseSearchResult } from "../domain/CaseSearchResult";
+import { CaseDetails } from "../domain/CaseDetails";
 import reducer, { CasesState, fetchCases } from "./casesSlice";
 
 describe("casesSlice", () => {
@@ -36,8 +36,8 @@ describe("casesSlice", () => {
       urn: "foo",
     } as CasesState;
 
-    const expectedResult1 = { id: 1 } as CaseSearchResult;
-    const expectedResult2 = { id: 2 } as CaseSearchResult;
+    const expectedResult1 = { id: 1 } as CaseDetails;
+    const expectedResult2 = { id: 2 } as CaseDetails;
     expect(
       reducer(
         prevState,

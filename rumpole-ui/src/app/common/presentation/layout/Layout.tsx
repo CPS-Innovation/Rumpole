@@ -1,18 +1,13 @@
 import React from "react";
 import { useUserDetails } from "../../../auth";
-import { BackLink, SkipLink } from "../components";
+import { SkipLink } from "../components";
 import classes from "./Layout.module.scss";
 
 type LayoutProps = {
-  backLink?: { to: string; label?: React.ReactNode };
   isWide?: boolean;
 };
 
-export const Layout: React.FC<LayoutProps> = ({
-  backLink,
-  isWide,
-  children,
-}) => {
+export const Layout: React.FC<LayoutProps> = ({ isWide, children }) => {
   const containerCssClass = isWide
     ? classes["cps-width-container-wide"]
     : "govuk-width-container";
@@ -47,13 +42,7 @@ export const Layout: React.FC<LayoutProps> = ({
         </div>
       </header>
 
-      <div className={containerCssClass}>
-        {backLink && <BackLink to={backLink.to}>{backLink.label}</BackLink>}
-
-        <main className="govuk-main-wrapper" id="main-content" role="main">
-          {children}
-        </main>
-      </div>
+      <div className={containerCssClass}>{children}</div>
 
       <footer className="govuk-footer " role="contentinfo">
         <div className={containerCssClass}>

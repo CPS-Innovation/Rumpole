@@ -1,8 +1,9 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import * as GDS from "govuk-react-jsx";
 
-type BackLinkProps = {
+export type BackLinkProps = {
   to: string;
+  label?: ReactNode;
 };
 
 export const BackLink: React.FC<BackLinkProps> = (props) => {

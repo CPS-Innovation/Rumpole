@@ -1,26 +1,8 @@
-export type CaseSearchResult = {
-  id: number;
-  uniqueReferenceNumber: string;
-  area: {
-    code: string;
-    name: string;
-  };
-  investigativeAgency: {
-    code: string;
-    name: string;
-  };
-  leadDefendant: {
-    firstNames: string;
-    surname: string;
-    organisationName: string;
-  };
-  offences: {
-    code: string;
-    earlyDate: string;
-    lateDate: string;
-    listOrder: number;
-    shortDescription: string;
-    longDescription: string;
-    isNotYetCharged: boolean;
-  }[];
-};
+import { CaseDetails } from "./CaseDetails";
+
+// At the time of writing the gateway returns the exact same model for
+//  the search as the get-case endpoint. These might diverge eventually,
+//  so lets at least give search results their own type name, but base it
+//  off the CaseDetails model.
+
+export type CaseSearchResult = CaseDetails;

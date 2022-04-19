@@ -28,3 +28,17 @@ export const searchUrn = async (urn: string) => {
 
   return (await response.json()) as CaseSearchResult[];
 };
+
+export const getCaseDetails = async (caseId: string) => {
+  const headers = await getHeaders();
+  const response = await fetch(getFullPath(`/api/case-details/${caseId}`), {
+    headers,
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Search URN failed", response);
+  }
+
+  return (await response.json()) as CaseSearchResult;
+};

@@ -1,4 +1,5 @@
 import * as GDS from "govuk-react-jsx";
+import { PageContentWrapper } from "./PageContentWrapper";
 
 type ErrorSummaryProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -16,5 +17,9 @@ type ErrorSummaryProps = React.DetailedHTMLProps<
 };
 
 export const ErrorSummary: React.FC<ErrorSummaryProps> = (props) => {
-  return <GDS.ErrorSummary {...props} />;
+  return (
+    <PageContentWrapper>
+      <GDS.ErrorSummary {...props} />
+    </PageContentWrapper>
+  );
 };

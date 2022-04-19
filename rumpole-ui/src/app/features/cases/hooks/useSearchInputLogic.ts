@@ -1,13 +1,13 @@
 import { useState, KeyboardEvent } from "react";
 import { isUrnValid } from "../logic/isUrnValid";
-import { CaseFilterQueryParams } from "./types/CaseFilterQueryParams";
+import { CaseSearchQueryParams } from "../types/CaseSearchQueryParams";
 
 export const useSearchInputLogic = ({
   initialUrn,
   setParams,
 }: {
   initialUrn: string | undefined;
-  setParams: (params: Partial<CaseFilterQueryParams>) => void;
+  setParams: (params: Partial<CaseSearchQueryParams>) => void;
 }) => {
   const [urn, setUrn] = useState(initialUrn || "");
   const [isError, setIsError] = useState(false);

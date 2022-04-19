@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../common/redux/hooks";
 import { clearCases, fetchCases, selectAll } from "../redux/casesSlice";
 
-export type SearchReduxState = ReturnType<typeof useSearchReduxState>;
-
 export const useSearchReduxState = (urn: string | undefined) => {
   const data = useAppSelector(selectAll);
   const {
@@ -18,11 +16,13 @@ export const useSearchReduxState = (urn: string | undefined) => {
     dispatch(urn ? fetchCases(urn) : clearCases());
   }, [dispatch, urn]);
 
+  const loadingStatus = urn !== reduxUrn ? "idle" : status;
+
   return {
     totalCount: data.length,
     data,
     reduxUrn,
-    loadingStatus: urn !== reduxUrn ? "idle" : status,
+    loadingStatus,
     error,
   };
 };

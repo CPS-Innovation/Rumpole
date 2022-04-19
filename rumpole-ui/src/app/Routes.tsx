@@ -10,7 +10,9 @@ import CaseSearchResults, {
   path as caseSearchResultsPath,
 } from "./features/cases/presentation/case-search-results";
 
-import Case, { path as casePath } from "./features/cases/presentation/case";
+import Case, {
+  path as casePath,
+} from "./features/cases/presentation/case-details";
 
 export const Routes: FC = () => {
   const { state } = useLocation();
@@ -23,19 +25,18 @@ export const Routes: FC = () => {
         </Layout>
       </Route>
       <Route path={caseSearchResultsPath}>
-        <Layout backLink={{ to: caseSearchPath }}>
-          <CaseSearchResults />
+        <Layout>
+          <CaseSearchResults backLinkProps={{ to: caseSearchPath }} />
         </Layout>
       </Route>
       <Route path={casePath}>
-        <Layout
-          isWide
-          backLink={{
-            to: caseSearchResultsPath + state,
-            label: "Back to URN search",
-          }}
-        >
-          <Case />
+        <Layout isWide>
+          <Case
+            backLinkProps={{
+              to: caseSearchResultsPath + state,
+              label: "Find a case",
+            }}
+          />
         </Layout>
       </Route>
       <Route>
