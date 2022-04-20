@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Wrappers;
@@ -15,49 +14,33 @@ namespace RumpoleGateway.Clients.RumpolePipeline
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IJsonConvertWrapper _jsonConvertWrapper;
-        private readonly ILogger<IPipelineClient> _logger;
 
         public PipelineClient(
             IRumpolePipelineRequestFactory rumpolePipelineRequestFactory,
             HttpClient httpClient,
             IConfiguration configuration,
-            IJsonConvertWrapper jsonConvertWrapper,
-            ILogger<IPipelineClient> logger)
+            IJsonConvertWrapper jsonConvertWrapper)
         {
             _rumpolePipelineRequestFactory = rumpolePipelineRequestFactory;
             _httpClient = httpClient;
            _configuration = configuration;
             _jsonConvertWrapper = jsonConvertWrapper;
-            _logger = logger;
         }
 
-        public async Task<HttpResponseMessage> TriggerCoordinator(string caseId, string accessToken)
+        public async Task<HttpResponseMessage> TriggerCoordinatorAsync(string caseId, string accessToken)
+        {
+            return await GetHttpResponseMessage($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+        }
+
+        public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken)
         {
             HttpResponseMessage response;
             try
             {
-                response = await GetHttpResponseMessage($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+                response = await GetHttpResponseMessage($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError($"Error response when triggering coordinator. Exception: {exception}");
-                throw;
-            }
-
-            return response;
-        }
-
-        public async Task<Tracker> GetTracker(string caseId, string accessToken)
-        {
-            HttpResponseMessage response;
-            try
-            {
-                response = await GetHttpResponseMessage($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineFunctionAppKey"]}", accessToken);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError($"Error response when retrieving tracker. Exception: {exception}");
-
                 if(exception.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;

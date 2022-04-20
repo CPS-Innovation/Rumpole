@@ -4,9 +4,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Helpers.Extension;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
@@ -33,35 +36,54 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/tracker")] HttpRequest req, string caseId)
         {
-            string errorMessage;
-            if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+            try
             {
-                errorMessage = "Authorization token is not supplied.";
-                return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
-            }
+                string errorMessage;
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                {
+                    errorMessage = "Authorization token is not supplied.";
+                    return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
+                }
 
-            if (!int.TryParse(caseId, out var _))
+                if (!int.TryParse(caseId, out var _))
+                {
+                    errorMessage = "Invalid case id. A 32-bit integer is required.";
+                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
+                }
+
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
+
+                var tracker = await _pipelineClient.GetTrackerAsync(caseId, onBehalfOfAccessToken);
+
+                if (tracker == null)
+                {
+                    errorMessage = $"No tracker found for case id '{caseId}'.";
+                    return ErrorResponse(new NotFoundObjectResult(errorMessage), errorMessage);
+                }
+
+                return new OkObjectResult(tracker);
+            }
+            catch(Exception exception)
             {
-                errorMessage = "Invalid case id. A 32-bit integer is required.";
-                return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
+                return exception switch
+                {
+                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred."),
+                    HttpRequestException => InternalServerErrorResponse(exception, "A pipeline client http exception occurred."),
+                    _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
+                };
             }
-
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
-
-            var tracker = await _pipelineClient.GetTracker(caseId, onBehalfOfAccessToken);
-
-            if(tracker == null)
-            {
-                return new NotFoundObjectResult($"No tracker found for case id '{caseId}'.");
-            }
-
-            return new OkObjectResult(tracker);
         }
 
-        private IActionResult ErrorResponse(IActionResult result, string message)
+        private IActionResult ErrorResponse(IActionResult result, string errorMessage)
         {
-            _logger.LogError(message);
+            _logger.LogError(errorMessage);
             return result;
+        }
+
+        private IActionResult InternalServerErrorResponse( Exception exception, string baseErrorMessage)
+        {
+            _logger.LogError(exception, baseErrorMessage);
+            return new StatusCodeResult(500);
         }
     }
 }

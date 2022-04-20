@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Net.Http.Headers;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
@@ -59,6 +62,18 @@ namespace RumpoleGateway
                 var authority = $"{instance}{onBehalfOfTokenTenantId}/";
 
                 return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
+            });
+
+            builder.Services.AddAzureClients(builder =>
+            {
+                builder.AddBlobServiceClient(new Uri(configuration["BlobServiceUrl"]))
+                    .WithCredential(new DefaultAzureCredential());
+            });
+            builder.Services.AddTransient<IBlobStorageClient>(serviceProvider =>
+            {
+                return new BlobStorageClient(
+                    serviceProvider.GetRequiredService<BlobServiceClient>(),
+                    configuration["BlobServiceContainerName"]);
             });
 
         }

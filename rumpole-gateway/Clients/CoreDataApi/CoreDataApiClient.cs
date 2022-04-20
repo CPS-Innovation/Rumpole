@@ -1,6 +1,6 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
-using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Domain.CoreDataApi.ResponseTypes;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
@@ -14,17 +14,14 @@ namespace RumpoleGateway.Clients.CoreDataApi
     {
         private readonly IGraphQLClient _coreDataApiClient;
         private readonly IAuthenticatedGraphQLHttpRequestFactory _authenticatedGraphQLHttpRequestFactory;
-        private readonly ILogger<CoreDataApiClient> _logger;
         public CoreDataApiClient(IGraphQLClient coreDataApiClient,
-            IAuthenticatedGraphQLHttpRequestFactory authenticatedGraphQLHttpRequestFactory,
-            ILogger<CoreDataApiClient> logger)
+            IAuthenticatedGraphQLHttpRequestFactory authenticatedGraphQLHttpRequestFactory)
         {
             _coreDataApiClient = coreDataApiClient;
             _authenticatedGraphQLHttpRequestFactory = authenticatedGraphQLHttpRequestFactory;
-            _logger = logger;
         }
          
-        public async Task<CaseDetails> GetCaseDetailsById(string caseId, string accessToken)
+        public async Task<CaseDetails> GetCaseDetailsByIdAsync(string caseId, string accessToken)
         {
             try
             {
@@ -42,14 +39,14 @@ namespace RumpoleGateway.Clients.CoreDataApi
 
                 return response.Data.CaseDetails;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                _logger.LogError($"Error response from Core Data Api. Exception: {ex}.");
-                return null;
+                //TODO test
+                throw new CoreDataApiException("Error response from Core Data Api.", exception);
             }
         }
 
-        public async Task<IList<CaseDetails>> GetCaseInformationByURN(string urn, string accessToken)
+        public async Task<IList<CaseDetails>> GetCaseInformationByUrnAsync(string urn, string accessToken)
         {
             try
             {
@@ -69,10 +66,10 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 
                 return response.Data.CaseDetails;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                _logger.LogError($"Error response from Core Data Api. Exception: {ex}.");
-                return null;
+                //TODO test
+                throw new CoreDataApiException("Error response from Core Data Api.", exception);
             }
         }
     }

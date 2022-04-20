@@ -6,8 +6,8 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 {
 	public interface IPipelineClient
 	{
-		Task<HttpResponseMessage> TriggerCoordinator(string caseId, string accessToken);
-		Task<Tracker> GetTracker(string caseId, string accessToken);
+		Task<HttpResponseMessage> TriggerCoordinatorAsync(string caseId, string accessToken);
+		Task<Tracker> GetTrackerAsync(string caseId, string accessToken);
 	}
 }
 

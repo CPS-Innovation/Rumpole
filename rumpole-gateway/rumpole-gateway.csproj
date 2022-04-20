@@ -16,6 +16,8 @@
     <PackageReference Include="Microsoft.Identity.Client" Version="4.39.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="local.Designer.cs">
@@ -29,6 +31,8 @@
     <None Remove="Clients\RumpolePipeline\" />
     <None Remove="Domain\RumpolePipeline\" />
     <None Remove="Wrappers\" />
+    <None Remove="Azure.Storage.Blobs" />
+    <None Remove="Microsoft.Extensions.Azure" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -44,7 +48,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Constants\Status\" />
     <Folder Include="Functions\RumpolePipeline\" />
     <Folder Include="Clients\RumpolePipeline\" />
     <Folder Include="Domain\RumpolePipeline\" />

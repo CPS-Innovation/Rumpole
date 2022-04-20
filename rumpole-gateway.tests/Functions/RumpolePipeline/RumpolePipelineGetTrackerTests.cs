@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using Moq;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
@@ -18,6 +21,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private Fixture _fixture;
 		private string _caseId;
 		private string _onBehalfOfAccessToken;
+		private string _rumpolePipelineCoordinatorScope;
 		private Tracker _tracker;
 
 		private Mock<ILogger<RumpolePipelineGetTracker>> _mockLogger;
@@ -32,6 +36,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_fixture = new Fixture();
 			_caseId = _fixture.Create<int>().ToString();
 			_onBehalfOfAccessToken = _fixture.Create<string>();
+			_rumpolePipelineCoordinatorScope = _fixture.Create<string>();
 			_tracker = _fixture.Create<Tracker>();
 
 			_mockLogger = new Mock<ILogger<RumpolePipelineGetTracker>>();
@@ -39,10 +44,11 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockPipelineClient = new Mock<IPipelineClient>();
 			_mockConfiguration = new Mock<IConfiguration>();
 
-			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessToken(It.IsAny<string>(), It.IsAny<string>()))
+			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
 				.ReturnsAsync(_onBehalfOfAccessToken);
-			_mockPipelineClient.Setup(client => client.GetTracker(_caseId, _onBehalfOfAccessToken))
+			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
 				.ReturnsAsync(_tracker);
+			_mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
 
 			RumpolePipelineGetTracker = new RumpolePipelineGetTracker(_mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, _mockConfiguration.Object);
 		}
@@ -66,7 +72,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsNotFoundWhenPipelineClientReturnsNull()
 		{
-			_mockPipelineClient.Setup(client => client.GetTracker(_caseId, _onBehalfOfAccessToken))
+			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
 				.ReturnsAsync(default(Tracker));
 
 			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId);
@@ -88,6 +94,36 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as OkObjectResult;
 
 			response.Value.Should().Be(_tracker);
+		}
+
+		[Fact]
+		public async Task Run_ReturnsInternalServerErrorWhenMsalExceptionOccurs()
+        {
+			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
+				.ThrowsAsync(new MsalException());
+			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
+
+			response.StatusCode.Should().Be(500);
+		}
+
+		[Fact]
+		public async Task Run_ReturnsInternalServerErrorWhenHttpExceptionOccurs()
+		{
+			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
+				.ThrowsAsync(new HttpRequestException());
+			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
+
+			response.StatusCode.Should().Be(500);
+		}
+
+		[Fact]
+		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
+		{
+			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
+				.ThrowsAsync(new Exception());
+			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
+
+			response.StatusCode.Should().Be(500);
 		}
 	}
 }

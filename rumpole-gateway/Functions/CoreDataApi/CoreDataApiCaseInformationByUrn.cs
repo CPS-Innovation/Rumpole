@@ -7,8 +7,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
+using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.CoreDataApi
@@ -36,36 +38,55 @@ namespace RumpoleGateway.Functions.CoreDataApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
             string urn)
         {
-            string errorMsg;
-            if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+            try
             {
-                errorMsg = "Authorization token is not supplied.";
-                return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
-            }
+                string errorMsg;
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                {
+                    errorMsg = "Authorization token is not supplied.";
+                    return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
+                }
 
-            if (string.IsNullOrEmpty(urn))
+                if (string.IsNullOrEmpty(urn))
+                {
+                    errorMsg = "Urn is not supplied.";
+                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
+                }
+
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
+
+                var caseInformation = await _coreDataApiClient.GetCaseInformationByUrnAsync(urn, onBehalfOfAccessToken);
+
+                if (caseInformation != null && caseInformation.Any())
+                {
+                    return new OkObjectResult(caseInformation);
+                }
+
+                errorMsg = $"No record found for urn '{urn}'.";
+                return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+            }
+            catch (Exception exception)
             {
-                errorMsg = "URN is not supplied.";
-                return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
+                //TODO test
+                return exception switch
+                {
+                    MsalException => InternalServerErrorResponse(exception, "An msal exception occurred."),
+                    CoreDataApiException => InternalServerErrorResponse(exception, "A core data api exception occurred."),
+                    _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
+                };
             }
-
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
-
-            var caseInformation = await _coreDataApiClient.GetCaseInformationByURN(urn, onBehalfOfAccessToken);
-
-            if (caseInformation != null && caseInformation.Any())
-            {
-                return new OkObjectResult(caseInformation);
-            }
-
-            errorMsg = $"No record found for urn '{urn}'.";
-            return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
         }
 
         private IActionResult ErrorResponse(IActionResult result, string message)
         {
             _logger.LogError(message);
             return result;
+        }
+
+        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
+        {
+            _logger.LogError(exception, baseErrorMessage);
+            return new StatusCodeResult(500);
         }
     }
 }

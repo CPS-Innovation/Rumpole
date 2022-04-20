@@ -75,7 +75,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             //Arrange
             var urn = "10OF1234520";
             var coreDataApiCaseInformationByUrnFunction = GetCoreDataApiCaseInformationByUrnFunction();
-            _mockCoreDataApiClient.GetCaseInformationByURN(It.IsAny<string>(), It.IsAny<string>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload());
+            _mockCoreDataApiClient.GetCaseInformationByUrnAsync(It.IsAny<string>(), It.IsAny<string>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload());
 
             //Act
             var results = await coreDataApiCaseInformationByUrnFunction.Run(CreateHttpRequest(), urn) as Microsoft.AspNetCore.Mvc.ObjectResult;
