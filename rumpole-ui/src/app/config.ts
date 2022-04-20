@@ -4,4 +4,8 @@ export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID!;
 export const TENANT_ID = process.env.REACT_APP_TENANT_ID!;
 export const BUILD_NUMBER = process.env.REACT_APP_BUILD_NUMBER || "development";
 
-console.log(JSON.stringify(process.env));
+// for support/diagnostics, output our env into console when deployed
+//  but not during test runs, too much noise
+if (process.env.NODE_ENV !== "test") {
+  console.log(JSON.stringify(process.env));
+}

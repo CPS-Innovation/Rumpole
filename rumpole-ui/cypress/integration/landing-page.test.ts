@@ -1,5 +1,4 @@
 describe("the app", () => {
-  beforeEach(() => {});
   it("opens", () => {
     cy.visit("/");
 

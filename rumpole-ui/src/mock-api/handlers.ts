@@ -69,8 +69,6 @@ export const handlers = [
       }
     }
 
-    console.log(result);
-
     return res(ctx.delay(Math.random() * delayFactor), ctx.json(result));
   }),
 ];

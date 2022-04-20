@@ -7,7 +7,7 @@ import {
 } from "../../../../common/presentation/components";
 import { CaseSearchQueryParams } from "../../types/CaseSearchQueryParams";
 import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsState";
-import { useSearchReduxState } from "../../hooks/useSearchReduxState";
+
 import classes from "./index.module.scss";
 import { useSearchInputLogic } from "../../hooks/useSearchInputLogic";
 import { generatePath, Link } from "react-router-dom";
@@ -19,6 +19,8 @@ import {
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
 import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
 import { Wait } from "../../../../common/presentation/components/Wait";
+import { useApi } from "../../../../common/hooks/useApi";
+import { searchUrn } from "../../api/gatewayApi";
 
 export const path = "/case-search-results";
 
@@ -34,16 +36,17 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
   const { handleChange, handleKeyPress, handleSubmit, isError, urn } =
     useSearchInputLogic({ initialUrn, setParams });
 
-  const { totalCount, data, loadingStatus, error } =
-    useSearchReduxState(initialUrn);
-
-  if (loadingStatus === "loading" || loadingStatus === "idle") {
+  const state = useApi(searchUrn, initialUrn!);
+  console.log(state.status);
+  if (state.status === "loading") {
     return <Wait />;
   }
 
-  if (loadingStatus === "failed") {
-    return <ErrorSummary descriptionChildren={error} />;
+  if (state.status === "failed") {
+    return <ErrorSummary descriptionChildren={state.error} />;
   }
+
+  const { data } = state;
 
   return (
     <>
@@ -78,9 +81,9 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
           <div className="govuk-grid-column-two-thirds">
             <div className={classes.results}>
               <p className="govuk-body">
-                We've found <b data-testid="txt-result-count">{totalCount}</b>{" "}
+                We've found <b data-testid="txt-result-count">{data.length}</b>{" "}
                 case
-                {totalCount !== 1 ? "s " : " "}
+                {data.length !== 1 ? "s " : " "}
                 that match{" "}
                 <span data-testid="txt-result-urn">{initialUrn}</span>
               </p>

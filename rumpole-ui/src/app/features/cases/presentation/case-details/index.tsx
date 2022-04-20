@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useApi } from "../../../../common/hooks/useApi";
 import {
   BackLink,
   ErrorSummary,
@@ -6,24 +7,27 @@ import {
 import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
 import { Wait } from "../../../../common/presentation/components/Wait";
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
-import { useCaseDetailsReduxState } from "../../hooks/useCaseDetailsReduxState";
+import { getCaseDetails } from "../../api/gatewayApi";
+
 import classes from "./index.module.scss";
 export const path = "/case-details/:id";
 
 type Props = BackLinkingPageProps & {};
 
 export const Page: React.FC<Props> = ({ backLinkProps }) => {
-  const { id } = useParams<{ id?: string }>();
+  const { id } = useParams<{ id: string }>();
 
-  const { loadingStatus, error, item } = useCaseDetailsReduxState(id);
+  const state = useApi(getCaseDetails, id);
 
-  if (loadingStatus === "loading" || loadingStatus === "idle") {
+  if (state.status === "loading") {
     return <Wait />;
   }
 
-  if (loadingStatus === "failed") {
-    return <ErrorSummary descriptionChildren={error} />;
+  if (state.status === "failed") {
+    return <ErrorSummary descriptionChildren={state.error} />;
   }
+
+  const { data } = state;
 
   return (
     <>
@@ -36,10 +40,10 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
               className={`govuk-heading-m ${classes.defendantName}`}
               data-testid="txt-defendant-name"
             >
-              {item?.leadDefendant.surname}, {item?.leadDefendant.firstNames}
+              {data.leadDefendant.surname}, {data.leadDefendant.firstNames}
             </h1>
             <span className="govuk-caption-m" data-testid="txt-case-urn">
-              {item?.uniqueReferenceNumber}
+              {data.uniqueReferenceNumber}
             </span>
           </div>
           <div className="govuk-grid-column-three-quarters"></div>
