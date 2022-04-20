@@ -89,6 +89,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
 				.ThrowsAsync(new MsalException());
+
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
 			response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
@@ -99,6 +100,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken))
 				.ThrowsAsync(new HttpRequestException());
+
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
 			response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
@@ -109,6 +111,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken))
 				.ThrowsAsync(new Exception());
+
 			var response = await RumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
 			response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
@@ -35,8 +34,8 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		private Mock<IConfiguration> _mockConfiguration;
 		private Mock<IJsonConvertWrapper> _mockJsonConvertWrapper;
 
-		private PipelineClient TriggerCoordinatorPipelineClient;
-		private PipelineClient GetTrackerPipelineClient;
+		private IPipelineClient TriggerCoordinatorPipelineClient;
+		private IPipelineClient GetTrackerPipelineClient;
 
 		public PipelineClientTests()
 		{

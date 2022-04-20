@@ -101,6 +101,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
         {
 			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
 				.ThrowsAsync(new MsalException());
+
 			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
 
 			response.StatusCode.Should().Be(500);
@@ -111,6 +112,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
 				.ThrowsAsync(new HttpRequestException());
+
 			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
 
 			response.StatusCode.Should().Be(500);
@@ -121,6 +123,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
 				.ThrowsAsync(new Exception());
+
 			var response = await RumpolePipelineGetTracker.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
 
 			response.StatusCode.Should().Be(500);

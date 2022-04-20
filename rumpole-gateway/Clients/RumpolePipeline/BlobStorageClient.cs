@@ -23,13 +23,12 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 
             if (!await blobContainerClient.ExistsAsync())
             {
-                throw new RequestFailedException((int)HttpStatusCode.InternalServerError, $"Blob container '{_blobServiceContainerName}' does not exist");
+                throw new RequestFailedException((int)HttpStatusCode.NotFound, $"Blob container '{_blobServiceContainerName}' does not exist");
             }
 
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
-            //TODO test this
-            if(!await blobClient.ExistsAsync())
+            if (!await blobClient.ExistsAsync())
             {
                 return null;
             }

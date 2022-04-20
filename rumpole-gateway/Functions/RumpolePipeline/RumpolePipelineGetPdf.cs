@@ -12,18 +12,18 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 {
     public class RumpolePipelineGetPdf
     {
-        private readonly ILogger<RumpolePipelineGetPdf> _logger;
         private readonly IBlobStorageClient _blobStorageClient;
+        private readonly ILogger<RumpolePipelineGetPdf> _logger;
 
-        public RumpolePipelineGetPdf(ILogger<RumpolePipelineGetPdf> logger, IBlobStorageClient blobStorageClient)
+        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger)
         {
-            _logger = logger;
             _blobStorageClient = blobStorageClient;
+            _logger = logger;
         }
 
         [FunctionName("RumpolePipelineGetPdf")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdfs/{blobName}")] HttpRequest req, string blobName)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdfs/{*blobName}")] HttpRequest req, string blobName)
         {
             try
             {
@@ -40,11 +40,11 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
                 }
 
-                var blobStream = _blobStorageClient.GetDocumentAsync(blobName);
+                var blobStream = await _blobStorageClient.GetDocumentAsync(blobName);
 
                 if(blobStream == null)
                 {
-                    errorMessage = $"No pdf found for blob name '{blobName}'.";
+                    errorMessage = $"No pdf document found for blob name '{blobName}'.";
                     return ErrorResponse(new NotFoundObjectResult(errorMessage), errorMessage);
                 }
 
@@ -55,7 +55,6 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 return exception switch
                 {
                     RequestFailedException => InternalServerErrorResponse(exception, "A blob storage exception occurred."),
-                    //TODO test for realz
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
