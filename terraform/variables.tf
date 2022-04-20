@@ -32,3 +32,7 @@ variable "environment_tag" {
   type        = string
   description = "Environment tag value"
 }
+
+variable "rumpole_pipeline_coordinator_function_app_key" {
+  type        = string
+}

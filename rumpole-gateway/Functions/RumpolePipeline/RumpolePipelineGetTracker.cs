@@ -46,7 +46,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
             }
 
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
+            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
 
             var tracker = await _pipelineClient.GetTracker(caseId, onBehalfOfAccessToken);
 

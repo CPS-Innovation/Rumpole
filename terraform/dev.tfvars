@@ -1,6 +1,7 @@
 env = "dev"
 location = "UK South"
 environment_tag="Development"
+rumpole_pipeline_coordinator_function_app_key="58mN4H3J0zfMJE0NyJBtb4AnzLfED/WtXYWvUvADeDhUcqFxmieLJQ=="
 
 app_service_plan_sku = {
     size = "B1"

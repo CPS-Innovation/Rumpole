@@ -10,18 +10,21 @@ resource "azurerm_function_app" "fa_rumpole" {
   os_type                    = "linux"
   version                    = "~4"
   app_settings = {
-    "AzureWebJobsStorage"                 = azurerm_storage_account.sacpsrumpole.primary_connection_string
-    "FUNCTIONS_WORKER_RUNTIME"            = "dotnet"
-    "FUNCTIONS_EXTENSION_VERSION"         = "~4"
-    "StorageConnectionAppSetting"         = azurerm_storage_account.sacpsrumpole.primary_connection_string
-    "APPINSIGHTS_INSTRUMENTATIONKEY"      = azurerm_application_insights.ai_rumpole.instrumentation_key
-    "OnBehalfOfTokenTenantId"             = data.azurerm_client_config.current.tenant_id
-    "OnBehalfOfTokenClientId"             = azuread_application.fa_rumpole.application_id
-    "OnBehalfOfTokenClientSecret"         = azuread_application_password.faap_rumpole_app_service.value
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = ""
-    "WEBSITE_ENABLE_SYNC_UPDATE_SITE"     = ""
-    "CoreDataApiUrl"                      = var.core_data_api_details.api_url
-    "CoreDataApiScope"                    = var.core_data_api_details.api_scope
+    "AzureWebJobsStorage"                            = azurerm_storage_account.sacpsrumpole.primary_connection_string
+    "FUNCTIONS_WORKER_RUNTIME"                       = "dotnet"
+    "FUNCTIONS_EXTENSION_VERSION"                    = "~4"
+    "StorageConnectionAppSetting"                    = azurerm_storage_account.sacpsrumpole.primary_connection_string
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                 = azurerm_application_insights.ai_rumpole.instrumentation_key
+    "OnBehalfOfTokenTenantId"                        = data.azurerm_client_config.current.tenant_id
+    "OnBehalfOfTokenClientId"                        = azuread_application.fa_rumpole.application_id
+    "OnBehalfOfTokenClientSecret"                    = azuread_application_password.faap_rumpole_app_service.value
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE"            = ""
+    "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                = ""
+    "CoreDataApiUrl"                                 = var.core_data_api_details.api_url
+    "CoreDataApiScope"                               = var.core_data_api_details.api_scope
+    "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline-${env}-coordinator.azurewebsites.net/api/"
+    "RumpolePipelineCoordinatorScope"                = "api://fa-rumpole-pipeline-${env}-coordinator/user_impersonation"
+    "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
   }
   site_config {
     always_on        = true
@@ -86,12 +89,6 @@ resource "azuread_application" "fa_rumpole" {
 
     resource_access {
       id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d" # read user
-      type = "Scope"
-    }
-
-
-    resource_access {
-      id   = "5f8c59db-677d-491f-a6b8-5f174b11ec1d" # read all groups (requires admin consent?)
       type = "Scope"
     }
   }

@@ -1,6 +1,7 @@
 env = "qa"
 location = "UK South"
 environment_tag="QA"
+rumpole_pipeline_coordinator_function_app_key = ""
 
 app_service_plan_sku = {
     size = "B1"

@@ -36,7 +36,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             HttpResponseMessage response;
             try
             {
-                response = await GetHttpResponseMessage($"cases/{caseId}?code={_configuration["RumpolePipelineFunctionAppKey"]}", accessToken);
+                response = await GetHttpResponseMessage($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
             }
             catch (HttpRequestException exception)
             {

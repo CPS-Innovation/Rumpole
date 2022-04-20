@@ -50,7 +50,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 return ErrorResponse(HttpStatusCode.BadRequest, errorMessage);
             }
 
-            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineScope"]);
+            var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessToken(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
 
             return await _pipelineClient.TriggerCoordinator(caseId, onBehalfOfAccessToken);
         }
