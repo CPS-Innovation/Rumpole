@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using NSubstitute;
-using RumpoleGateway.Triggers.Status;
 using Xunit;
 
-namespace RumpoleGateway.Tests.Triggers.Status
+namespace RumpoleGateway.Tests.Functions.Status
 {
 	public class CoreDataApiCaseInformationByUrnFunctionTests : SharedMethods.SharedMethods
 	{
-		private readonly ILogger<StatusFunction> _mockLogger = Substitute.For<ILogger<StatusFunction>>();
+		private readonly ILogger<RumpoleGateway.Functions.Status.Status> _mockLogger = Substitute.For<ILogger<RumpoleGateway.Functions.Status.Status>>();
 
 		[Fact]
 		public void StatusFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
@@ -20,7 +19,6 @@ namespace RumpoleGateway.Tests.Triggers.Status
 
 			//Assert
 			Assert.Equal(401, results.StatusCode);
-			Assert.Equal(Constants.CommonUserMessages.AuthenticationFailedMessage, results.Value);
 		}
 
 		[Fact]
@@ -33,17 +31,13 @@ namespace RumpoleGateway.Tests.Triggers.Status
 			var results = statusFunction.Run(CreateHttpRequest()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
 			//Assert
-			var response = results.Value as Domain.Status.Status;
 			Assert.Equal(200, results.StatusCode);
 		}
 
-
-		#region private methods
-		private StatusFunction GetStatusFunction()
+		private RumpoleGateway.Functions.Status.Status GetStatusFunction()
 		{
-			return new StatusFunction(_mockLogger) { };
+			return new RumpoleGateway.Functions.Status.Status(_mockLogger);
 		}
-		#endregion private methods
 
 	}
 }

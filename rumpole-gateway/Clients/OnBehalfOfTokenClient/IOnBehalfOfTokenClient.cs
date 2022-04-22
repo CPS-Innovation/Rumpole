@@ -4,6 +4,6 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
 {
     public interface IOnBehalfOfTokenClient
     {
-        Task<string> GetAccessToken(string accessToken);
+        Task<string> GetAccessTokenAsync(string accessToken, string scope);
     }
 }

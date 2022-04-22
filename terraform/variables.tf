@@ -32,3 +32,16 @@ variable "environment_tag" {
   type        = string
   description = "Environment tag value"
 }
+
+# TODO get rid of this as it will change every time coordinator is rebuilt
+variable "rumpole_pipeline_coordinator_function_app_key" {
+  type        = string
+}
+
+# TODO get rid of this as it will change every time coordinator is rebuilt
+variable "coordinator_scope_details" {
+  type = object({
+    app_registration_application_id = string
+    user_impersonation_scope_id = string
+  })
+}
