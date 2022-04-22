@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
+using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Factories;
@@ -38,6 +39,7 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IRumpolePipelineRequestFactory, RumpolePipelineRequestFactory>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
+            builder.Services.AddTransient<IDocumentExtractionClient, DocumentExtractionClientStub>();
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {
