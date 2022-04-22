@@ -22,10 +22,10 @@ resource "azurerm_function_app" "fa_rumpole" {
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                = ""
     "CoreDataApiUrl"                                 = var.core_data_api_details.api_url
     "CoreDataApiScope"                               = var.core_data_api_details.api_scope
-    "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline-${env}-coordinator.azurewebsites.net/api/"
-    "RumpolePipelineCoordinatorScope"                = "api://fa-rumpole-pipeline-${env}-coordinator/user_impersonation"
+    "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline${local.env_name_suffix}-coordinator.azurewebsites.net/api/"
+    "RumpolePipelineCoordinatorScope"                = "api://fa-rumpole-pipeline${local.env_name_suffix}-coordinator/user_impersonation"
     "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
-    "BlobServiceUrl"                                 = "https://sacps${env}rumpolepipeline.blob.core.windows.net/"
+    "BlobServiceUrl"                                 = "https://sacps${var.env != "prod" ? var.env : ""}rumpolepipeline.blob.core.windows.net/"
     "BlobServiceContainerName"                       = "documents"
   }
   site_config {

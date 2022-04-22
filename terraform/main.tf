@@ -32,5 +32,6 @@ data "azuread_service_principal" "terraform_service_principal" {
 data "azurerm_subscription" "current" {}
 
 locals {
+  env_name_suffix = "${var.environment.alias != "prod" ? "-${var.environment.alias}" : ""}"
   resource_name = var.env != "prod" ? "${var.resource_name_prefix}-${var.env}" : var.resource_name_prefix
 }
