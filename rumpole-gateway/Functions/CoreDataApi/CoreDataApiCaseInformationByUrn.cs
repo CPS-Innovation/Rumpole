@@ -62,12 +62,11 @@ namespace RumpoleGateway.Functions.CoreDataApi
                     return new OkObjectResult(caseInformation);
                 }
 
-                errorMsg = $"No record found for urn '{urn}'.";
+                errorMsg = $"No data found for urn '{urn}'.";
                 return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
             }
             catch (Exception exception)
             {
-                //TODO test
                 return exception switch
                 {
                     MsalException => InternalServerErrorResponse(exception, "An msal exception occurred."),

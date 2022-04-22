@@ -41,7 +41,6 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
             catch (Exception exception)
             {
-                //TODO test
                 throw new CoreDataApiException("Error response from Core Data Api.", exception);
             }
         }
@@ -68,7 +67,6 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
             catch (Exception exception)
             {
-                //TODO test
                 throw new CoreDataApiException("Error response from Core Data Api.", exception);
             }
         }

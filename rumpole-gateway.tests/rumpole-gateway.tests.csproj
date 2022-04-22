@@ -33,9 +33,11 @@
   <ItemGroup>
     <None Remove="Functions\RumpolePipeline\" />
     <None Remove="Clients\RumpolePipeline\" />
+    <None Remove="Functions\DocumentExtraction\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions\RumpolePipeline\" />
     <Folder Include="Clients\RumpolePipeline\" />
+    <Folder Include="Functions\DocumentExtraction\" />
   </ItemGroup>
 </Project>
