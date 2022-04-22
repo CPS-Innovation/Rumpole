@@ -96,10 +96,10 @@ resource "azuread_application" "fa_rumpole" {
   }
 
   required_resource_access {
-    resource_app_id = azuread_application.fa_redaction_log_reporting.application_id
+    resource_app_id = var.coordinator_scope_details.app_registration_application_id
 
     resource_access {
-      id   = tolist(azuread_application.fa_redaction_log_reporting.oauth2_permissions)[0].id
+      id   = var.coordinator_scope_details.user_impersonation_scope_id
       type = "Scope"
     }
   }
