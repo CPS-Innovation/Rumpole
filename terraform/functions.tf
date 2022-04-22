@@ -25,6 +25,8 @@ resource "azurerm_function_app" "fa_rumpole" {
     "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline-${env}-coordinator.azurewebsites.net/api/"
     "RumpolePipelineCoordinatorScope"                = "api://fa-rumpole-pipeline-${env}-coordinator/user_impersonation"
     "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
+    "BlobServiceUrl"                                 = "https://sacps${env}rumpolepipeline.blob.core.windows.net/"
+    "BlobServiceContainerName"                       = "documents"
   }
   site_config {
     always_on        = true
@@ -93,12 +95,20 @@ resource "azuread_application" "fa_rumpole" {
     }
   }
 
+  required_resource_access {
+    resource_app_id = azuread_application.fa_redaction_log_reporting.application_id
+
+    resource_access {
+      id   = tolist(azuread_application.fa_redaction_log_reporting.oauth2_permissions)[0].id
+      type = "Scope"
+    }
+  }
+
   web {
     redirect_uris = ["https://fa-${local.resource_name}-gateway.azurewebsites.net/.auth/login/aad/callback"]
 
     implicit_grant {
-      access_token_issuance_enabled = false
-      // id_token_issuance_enabled     = false
+       id_token_issuance_enabled     = true
     }
   }
 
