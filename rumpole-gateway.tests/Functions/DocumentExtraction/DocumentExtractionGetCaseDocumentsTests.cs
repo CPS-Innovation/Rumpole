@@ -18,7 +18,6 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		private string _caseId;
 		private Case _case;
 
-
         private Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
 		private Mock<ILogger<DocumentExtractionGetCaseDocuments>> _mockLogger;
 
