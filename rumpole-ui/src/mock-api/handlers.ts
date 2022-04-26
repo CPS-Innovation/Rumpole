@@ -4,13 +4,18 @@ import cypressSearchDataSource from "./data/searchResults.cypress";
 import devCaseDetailsDataSource from "./data/caseDetails.dev";
 import cypressDetailsDataSource from "./data/caseDetails.cypress";
 
+import devDocumentsDataSource from "./data/documents.dev";
+
 import { CaseSearchResult } from "../app/features/cases/domain/CaseSearchResult";
 import { SearchDataSource } from "./data/types/SearchDataSource";
 import {
   CaseDetailsDataSource,
   lastRequestedUrnCache,
 } from "./data/types/CaseDetailsDataSource";
+import { DocumentsDataSource } from "./data/types/DocumentsDataSource";
+
 import { CaseDetails } from "../app/features/cases/domain/CaseDetails";
+import { CaseDocument } from "../app/features/cases/domain/CaseDocument";
 
 const searchDataSources: { [key: string]: SearchDataSource } = {
   dev: devSearchDataSource,
@@ -20,6 +25,10 @@ const searchDataSources: { [key: string]: SearchDataSource } = {
 const caseDetailsDataSources: { [key: string]: CaseDetailsDataSource } = {
   dev: devCaseDetailsDataSource,
   cypress: cypressDetailsDataSource,
+};
+
+const documentsDataSources: { [key: string]: DocumentsDataSource } = {
+  dev: devDocumentsDataSource,
 };
 
 const activeSourceNames = (process.env.REACT_APP_MOCK_API_SOURCES ?? "").split(
@@ -51,8 +60,8 @@ export const handlers = [
     return res(ctx.delay(Math.random() * delayFactor), ctx.json(results));
   }),
 
-  rest.get(apiPath("api/case-details/*"), (req, res, ctx) => {
-    const id = req.url.pathname.split("/").pop()!;
+  rest.get(apiPath("api/case-details/:id"), (req, res, ctx) => {
+    const { id } = req.params;
 
     let result: CaseDetails | undefined = undefined;
 
@@ -64,6 +73,24 @@ export const handlers = [
             ...data,
             uniqueReferenceNumber: lastRequestedUrnCache.urn || "99ZZ9999999",
           };
+          break;
+        }
+      }
+    }
+
+    return res(ctx.delay(Math.random() * delayFactor), ctx.json(result));
+  }),
+
+  rest.get(apiPath("api/case-details/:id/documents"), (req, res, ctx) => {
+    const { id } = req.params;
+
+    let result: CaseDocument[] = [];
+
+    for (const source of activeSourceNames) {
+      if (documentsDataSources[source]) {
+        const data = documentsDataSources[source](id);
+        if (data) {
+          result = data;
           break;
         }
       }

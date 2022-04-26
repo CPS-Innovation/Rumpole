@@ -9,7 +9,7 @@ $border-color: #b1b4b6; //govuk-colour("green");
 }
 
 .results {
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 .filter {
@@ -40,10 +40,15 @@ $border-color: #b1b4b6; //govuk-colour("green");
   margin: 5px 0;
 }
 
-.result-line {
+.result-offence + .result-offence {
+  margin-top: 25px;
+}
+
+.result-offence-line {
   display: flex;
 
   span:first-of-type {
     min-width: 160px;
+    margin-right: 48px;
   }
 }

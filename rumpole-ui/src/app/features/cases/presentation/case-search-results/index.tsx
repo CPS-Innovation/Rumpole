@@ -21,6 +21,7 @@ import { PageContentWrapper } from "../../../../common/presentation/components/P
 import { Wait } from "../../../../common/presentation/components/Wait";
 import { useApi } from "../../../../common/hooks/useApi";
 import { searchUrn } from "../../api/gatewayApi";
+import { Placeholder } from "../../../../common/presentation/components/Placeholder";
 
 export const path = "/case-search-results";
 
@@ -81,10 +82,10 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
           <div className="govuk-grid-column-two-thirds">
             <div className={classes.results}>
               <p className="govuk-body">
-                We've found <b data-testid="txt-result-count">{data.length}</b>{" "}
-                case
-                {data.length !== 1 ? "s " : " "}
-                that match{" "}
+                We've found <b data-testid="txt-result-count">{data.length}</b>
+                {data.length !== 1
+                  ? " cases that match "
+                  : " case that matches "}
                 <span data-testid="txt-result-urn">{initialUrn}</span>
               </p>
               <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
@@ -97,6 +98,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                         state: search,
                       }}
                       data-testid={`link-${item.uniqueReferenceNumber}`}
+                      className="govuk-link"
                     >
                       {item.uniqueReferenceNumber}
                     </Link>
@@ -104,11 +106,17 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       {item.leadDefendant.surname},{" "}
                       {item.leadDefendant.firstNames}
                     </Hint>
+                    <Placeholder
+                      height={30}
+                      width={200}
+                      marginTop={-15}
+                      marginBottom={0}
+                    />
                   </h2>
                   <div className="govuk-body">
                     {item.offences.map((offence, index) => (
-                      <div key={index}>
-                        <div className={classes["result-line"]}>
+                      <div key={index} className={classes["result-offence"]}>
+                        <div className={classes["result-offence-line"]}>
                           <span>Status:</span>
                           <span>
                             {offence.isNotYetCharged
@@ -116,7 +124,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                               : "Charged"}
                           </span>
                         </div>
-                        <div className={classes["result-line"]}>
+                        <div className={classes["result-offence-line"]}>
                           <span>Date of offense:</span>
                           <span>
                             {formatDate(
@@ -125,7 +133,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                             )}
                           </span>
                         </div>
-                        <div className={classes["result-line"]}>
+                        <div className={classes["result-offence-line"]}>
                           <span>
                             {offence.isNotYetCharged ? "Proposed" : ""} Charges:
                           </span>

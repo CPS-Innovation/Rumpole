@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Result<T> =
+export type UseApiResult<T> =
   | {
       data: T;
       status: "succeeded";
@@ -20,7 +20,7 @@ type UseApiParams = <T extends (...args: any[]) => Promise<any>>(
   param2?: Parameters<T>[2],
   param3?: Parameters<T>[3],
   param4?: Parameters<T>[4]
-) => Result<Awaited<ReturnType<typeof del>>>;
+) => UseApiResult<Awaited<ReturnType<typeof del>>>;
 
 /*
   If there is an api method `getFoo(id: number, name: string) => Promise<Model>` then `useApi` is called thus:
