@@ -30,7 +30,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 
 		private HttpClient _getTrackerHttpClient;
 		private HttpClient _triggerCoordinatorHttpClient;
-		private Mock<IRumpolePipelineRequestFactory> _mockRequestFactory;
+		private Mock<IPipelineClientRequestFactory> _mockRequestFactory;
 		private Mock<IConfiguration> _mockConfiguration;
 		private Mock<IJsonConvertWrapper> _mockJsonConvertWrapper;
 
@@ -63,7 +63,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 				.ReturnsAsync(_getTrackerHttpResponseMessage);
 			_getTrackerHttpClient = new HttpClient(mockTrackerHttpMessageHandler.Object) { BaseAddress = new Uri("https://testUrl") };
 
-			_mockRequestFactory = new Mock<IRumpolePipelineRequestFactory>();
+			_mockRequestFactory = new Mock<IPipelineClientRequestFactory>();
 			_mockConfiguration = new Mock<IConfiguration>();
 			_mockJsonConvertWrapper = new Mock<IJsonConvertWrapper>();
 
@@ -80,11 +80,9 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		}
 
 		[Fact]
-		public async Task TriggerCoordinator_ReturnsHttpResponseMessage()
+		public async Task TriggerCoordinator_TriggersCoordinatorSuccessfully()
         {
-			var response = await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken);
-
-			response.Should().Be(_triggerCoordinatorHttpResponseMessage);
+			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken);
         }
 
 		[Fact]

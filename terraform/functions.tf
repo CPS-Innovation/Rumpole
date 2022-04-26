@@ -27,6 +27,7 @@ resource "azurerm_function_app" "fa_rumpole" {
     "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
     "BlobServiceUrl"                                 = "https://sacps${var.env != "prod" ? var.env : ""}rumpolepipeline.blob.core.windows.net/"
     "BlobServiceContainerName"                       = "documents"
+    "StubBlobStorageConnectionString"                = var.stub_blob_storage_connection_string
   }
   site_config {
     always_on        = true

@@ -2,7 +2,7 @@
 
 namespace RumpoleGateway.Factories
 {
-	public interface IRumpolePipelineRequestFactory
+	public interface IPipelineClientRequestFactory
 	{
 		HttpRequestMessage Create(string requestUri, string accessToken);
 	}

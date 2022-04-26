@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
@@ -6,12 +7,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Factories;
 using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
@@ -22,40 +22,45 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
+        private readonly ITriggerCoordinatorResponseFactory _triggerCoordinatorResponseFactory;
 
         public RumpolePipelineTriggerCoordinator(ILogger<RumpolePipelineTriggerCoordinator> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  IPipelineClient pipelineClient,
-                                 IConfiguration configuration)
+                                 IConfiguration configuration,
+                                 ITriggerCoordinatorResponseFactory triggerCoordinatorResponseFactory)
         {
             _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _pipelineClient = pipelineClient;
             _configuration = configuration;
+            _triggerCoordinatorResponseFactory = triggerCoordinatorResponseFactory;
         }
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
-        public async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}")] HttpRequest req, string caseId)
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseId}")] HttpRequest request, string caseId)
         {
             try
             {
                 string errorMessage;
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                if (!request.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                 {
                     errorMessage = "Authorization token is not supplied.";
-                    return ErrorResponse(HttpStatusCode.Unauthorized, errorMessage);
+                    return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
                 }
 
                 if (!int.TryParse(caseId, out var _))
                 {
                     errorMessage = "Invalid case id. A 32-bit integer is required.";
-                    return ErrorResponse(HttpStatusCode.BadRequest, errorMessage);
+                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
                 }
 
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
 
-                return await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken);
+                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken);
+
+                return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(request));
             }
             catch (Exception exception)
             {
@@ -68,21 +73,16 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             }
         }
 
-        private HttpResponseMessage ErrorResponse(HttpStatusCode statusCode, string errorMessage)
+        private IActionResult ErrorResponse(IActionResult result, string errorMessage)
         {
             _logger.LogError(errorMessage);
-
-            return new HttpResponseMessage(statusCode)
-            {
-                Content = new StringContent(errorMessage, Encoding.UTF8, MediaTypeNames.Application.Json)
-            };
+            return result;
         }
 
-        private HttpResponseMessage InternalServerErrorResponse(Exception exception, string errorMessage)
+        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
         {
-            _logger.LogError(exception, errorMessage);
-
-            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            _logger.LogError(exception, baseErrorMessage);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

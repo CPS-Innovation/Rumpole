@@ -35,7 +35,7 @@ variable "environment_tag" {
 
 # TODO get rid of this as it will change every time coordinator is rebuilt
 variable "rumpole_pipeline_coordinator_function_app_key" {
-  type        = string
+  type = string
 }
 
 # TODO get rid of this as it will change every time coordinator is rebuilt
@@ -44,4 +44,8 @@ variable "coordinator_scope_details" {
     app_registration_application_id = string
     user_impersonation_scope_id = string
   })
+}
+
+variable "stub_blob_storage_connection_string" {
+  type = string
 }

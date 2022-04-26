@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 
 namespace RumpoleGateway.Factories
 {
-	public class RumpolePipelineRequestFactory : IRumpolePipelineRequestFactory
+	public class PipelineClientRequestFactory : IPipelineClientRequestFactory
 	{
         public HttpRequestMessage Create(string requestUri, string accessToken)
         {

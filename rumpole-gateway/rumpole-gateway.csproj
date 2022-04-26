@@ -36,6 +36,7 @@
     <None Remove="Functions\DocumentExtraction\" />
     <None Remove="Clients\DocumentExtraction\" />
     <None Remove="Domain\DocumentExtraction\" />
+    <None Remove="Mappers\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -58,5 +59,6 @@
     <Folder Include="Functions\DocumentExtraction\" />
     <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Domain\DocumentExtraction\" />
+    <Folder Include="Mappers\" />
   </ItemGroup>
 </Project>
