@@ -10,26 +10,26 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 {
     public class PipelineClient : IPipelineClient
     {
-        private readonly IRumpolePipelineRequestFactory _rumpolePipelineRequestFactory;
+        private readonly IPipelineClientRequestFactory _pipelineClientRequestFactory;
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IJsonConvertWrapper _jsonConvertWrapper;
 
         public PipelineClient(
-            IRumpolePipelineRequestFactory rumpolePipelineRequestFactory,
+            IPipelineClientRequestFactory pipelineClientRequestFactory,
             HttpClient httpClient,
             IConfiguration configuration,
             IJsonConvertWrapper jsonConvertWrapper)
         {
-            _rumpolePipelineRequestFactory = rumpolePipelineRequestFactory;
+            _pipelineClientRequestFactory = pipelineClientRequestFactory;
             _httpClient = httpClient;
            _configuration = configuration;
             _jsonConvertWrapper = jsonConvertWrapper;
         }
 
-        public async Task<HttpResponseMessage> TriggerCoordinatorAsync(string caseId, string accessToken)
+        public async Task TriggerCoordinatorAsync(string caseId, string accessToken)
         {
-            return await GetHttpResponseMessage($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+            await SendRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
         }
 
         public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken)
@@ -37,7 +37,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             HttpResponseMessage response;
             try
             {
-                response = await GetHttpResponseMessage($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+                response = await SendRequestAsync($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
             }
             catch (HttpRequestException exception)
             {
@@ -53,9 +53,9 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             return _jsonConvertWrapper.DeserializeObject<Tracker>(stringContent);
         }
 
-        private async Task<HttpResponseMessage> GetHttpResponseMessage(string requestUri, string accessToken)
+        private async Task<HttpResponseMessage> SendRequestAsync(string requestUri, string accessToken)
         {
-            var request = _rumpolePipelineRequestFactory.Create(requestUri, accessToken);
+            var request = _pipelineClientRequestFactory.Create(requestUri, accessToken);
             var response = await _httpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();

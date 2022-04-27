@@ -16,6 +16,7 @@ using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
+using RumpoleGateway.Mappers;
 using RumpoleGateway.Wrappers;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
@@ -37,9 +38,10 @@ namespace RumpoleGateway
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
-            builder.Services.AddTransient<IRumpolePipelineRequestFactory, RumpolePipelineRequestFactory>();
+            builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
-            builder.Services.AddTransient<IDocumentExtractionClient, DocumentExtractionClientStub>();
+            builder.Services.AddTransient<ITriggerCoordinatorResponseFactory, TriggerCoordinatorResponseFactory>();
+            builder.Services.AddTransient<ITrackerUrlMapper, TrackerUrlMapper>();
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {
@@ -76,6 +78,11 @@ namespace RumpoleGateway
                 return new BlobStorageClient(
                     serviceProvider.GetRequiredService<BlobServiceClient>(),
                     configuration["BlobServiceContainerName"]);
+            });
+            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
+            {
+                return new DocumentExtractionClientStub(
+                    configuration["StubBlobStorageConnectionString"]);
             });
 
         }
