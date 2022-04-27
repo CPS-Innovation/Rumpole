@@ -51,18 +51,20 @@ export const getCaseDetails = async (caseId: string) => {
 };
 
 export const getCaseDocuments = async (caseId: string) => {
-  const headers = await getHeaders();
-  const response = await fetch(
-    getFullPath(`/api/case-details/${caseId}/documents`),
-    {
-      headers,
-      method: "GET",
-    }
-  );
+  return [];
+  // const headers = await getHeaders();
+  // const response = await fetch(
+  //   getFullPath(`/api/case-details/${caseId}/documents`),
+  //   {
+  //     headers,
+  //     method: "GET",
+  //   }
+  // );
 
-  if (!response.ok) {
-    throw new ApiError("Get Case Documents failed", response);
-  }
+  // if (!response.ok) {
+  //   throw new ApiError("Get Case Documents failed", response);
 
-  return (await response.json()) as CaseDocument[];
+  // }
+
+  // return (await response.json()) as CaseDocument[];
 };

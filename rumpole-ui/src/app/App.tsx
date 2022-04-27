@@ -2,15 +2,18 @@ import { FC } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./Routes";
 import { Auth } from "./auth";
+import ErrorBoundary from "./common/presentation/components/ErrorBoundary";
 
 export const App: FC = () => {
   return (
     <>
-      <Auth>
-        <Router>
-          <Routes />
-        </Router>
-      </Auth>
+      <ErrorBoundary>
+        <Auth>
+          <Router>
+            <Routes />
+          </Router>
+        </Auth>
+      </ErrorBoundary>
     </>
   );
 };
