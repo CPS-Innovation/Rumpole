@@ -55,7 +55,7 @@ namespace RumpoleGateway.Functions.CoreDataApi
                     return new OkObjectResult(document);
                 }
 
-                errorMsg = $"No document found for document id '{documentId}'.";
+                errorMsg = $"No document found for file name '{fileName}'."; // TODO change this to document id when hooked up to CDE
                 return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
             }
             catch(Exception exception)
