@@ -36,11 +36,7 @@ describe("accordion documentsmapper", () => {
             code: "MG11",
             name: "MG11 File",
           },
-<<<<<<< HEAD
           createdDate: "2020-01-01",
-=======
-          isoDate: "2020-01-01",
->>>>>>> main
         },
         {
           documentId: "2",
@@ -49,11 +45,7 @@ describe("accordion documentsmapper", () => {
             code: "MG12",
             name: "MG12 File",
           },
-<<<<<<< HEAD
           createdDate: "2020-01-02",
-=======
-          isoDate: "2020-01-02",
->>>>>>> main
         },
       ],
     };
