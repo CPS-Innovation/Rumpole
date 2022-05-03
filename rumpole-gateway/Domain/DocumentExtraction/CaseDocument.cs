@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace RumpoleGateway.Domain.DocumentExtraction
 {
@@ -9,6 +10,9 @@ namespace RumpoleGateway.Domain.DocumentExtraction
 
 		[JsonProperty("fileName")]
 		public string FileName { get; set; }
+
+		[JsonProperty("createdDate")]
+		public DateTime CreatedDate { get; set; }
 
 		[JsonProperty("cmsDocType")]
 		public CmsDocType CmsDocType { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using RumpoleGateway.Domain.DocumentExtraction;
@@ -50,6 +51,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG12",
                         FileName = "MG12.doc",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG12",
@@ -60,6 +62,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "stmt Shelagh McLove MG11",
                         FileName = "stmt Shelagh McLove MG11.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -70,6 +73,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG00",
                         FileName = "MG00.doc",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG00",
@@ -80,6 +84,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "stmt JONES 1989 1 JUNE mg11",
                         FileName = "stmt JONES 1989 1 JUNE mg11.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -90,6 +95,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG20 10 JUNE",
                         FileName = "MG20 10 JUNE.doc",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG20",
@@ -100,6 +106,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "UNUSED 1 - STORM LOG 1881 01.6.20 - EDITED 2020-11-23 MCLOVE",
                         FileName = "UNUSED 1 - STORM LOG 1881 01.6.20 - EDITED 2020-11-23 MCLOVE.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -110,6 +117,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "Shelagh McLove VPS mg11",
                         FileName = "Shelagh McLove VPS mg11.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -120,6 +128,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "UNUSED 6 - DA CHECKLIST MCLOVE",
                         FileName = "UNUSED 6 - DA CHECKLIST MCLOVE.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG6",
@@ -130,6 +139,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG0",
                         FileName = "MG0.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -140,6 +150,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG06 3 June",
                         FileName = "MG06 3 June.doc",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG06",
@@ -150,6 +161,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "SDC items to be Disclosed (1-6) MCLOVE",
                         FileName = "SDC items to be Disclosed (1-6) MCLOVE.doc",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -160,6 +172,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "stmt BLAYNEE 2034 1 JUNE mg11",
                         FileName = "stmt BLAYNEE 2034 1 JUNE mg11.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -170,6 +183,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                        DocumentId = "PRE CONS D",
                         FileName = "PRE CONS D.docx",
+                        CreatedDate = DateTime.Parse("09-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG00",
@@ -180,6 +194,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG05 MCLOVE",
                         FileName = "MG05 MCLOVE.doc",
+                        CreatedDate = DateTime.Parse("11-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG05",
@@ -190,6 +205,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG20 5 JUNE",
                         FileName = "MG20 5 JUNE.doc",
+                        CreatedDate = DateTime.Parse("11-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG20",
@@ -200,6 +216,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG02 SHELAGH MCLOVE",
                         FileName = "MG02 SHELAGH MCLOVE.doc",
+                        CreatedDate = DateTime.Parse("11-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG02",
@@ -210,6 +227,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MG06 10 june",
                         FileName = "MG06 10 june.doc",
+                        CreatedDate = DateTime.Parse("13-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG06",
@@ -220,6 +238,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "stmt Lucy Doyle MG11",
                         FileName = "stmt Lucy Doyle MG11.docx",
+                        CreatedDate = DateTime.Parse("13-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG11",
@@ -230,6 +249,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "MCLOVE MG3",
                         FileName = "MCLOVE MG3.docx",
+                        CreatedDate = DateTime.Parse("13-feb-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG3",
@@ -251,6 +271,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "docCDE",
                         FileName = "docCDE.doc",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -261,6 +282,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "docxCDE",
                         FileName = "docxCDE.docx",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -271,6 +293,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "docmCDE",
                         FileName = "docmCDE.docm",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -281,6 +304,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "xlsxCDE",
                         FileName = "xlsxCDE.xlsx",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -291,6 +315,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "xlsCDE",
                         FileName = "xlsCDE.xls",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -301,6 +326,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "pptCDE",
                         FileName = "pptCDE.ppt",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -311,6 +337,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "pptxCDE",
                         FileName = "pptxCDE.pptx",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -321,6 +348,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "htmlCDE",
                         FileName = "htmlCDE.html",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -331,6 +359,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "msgCDE",
                         FileName = "msgCDE.msg",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -341,6 +370,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "vsdCDE",
                         FileName = "vsdCDE.vsd",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -351,6 +381,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "bmpCDE",
                         FileName = "bmpCDE.bmp",
+                        CreatedDate = DateTime.Parse("09-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -361,6 +392,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "gifCDE",
                         FileName = "gifCDE.gif",
+                        CreatedDate = DateTime.Parse("11-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -371,6 +403,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "jpgCDE",
                         FileName = "jpgCDE.jpg",
+                        CreatedDate = DateTime.Parse("11-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -381,6 +414,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "pngCDE",
                         FileName = "pngCDE.png",
+                        CreatedDate = DateTime.Parse("11-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -391,6 +425,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "tiffCDE",
                         FileName = "tiffCDE.tiff",
+                        CreatedDate = DateTime.Parse("13-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -401,6 +436,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "rtfCDE",
                         FileName = "rtfCDE.rtf",
+                        CreatedDate = DateTime.Parse("13-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
@@ -411,6 +447,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                     {
                         DocumentId = "txtCDE",
                         FileName = "txtCDE.txt",
+                        CreatedDate = DateTime.Parse("13-jun-2022"),
                         CmsDocType = new CmsDocType
                         {
                             Code = "MG0",
