@@ -6,6 +6,7 @@ coverage
 build-cypress
 coverage-cypress
 report
+report-cypress
 .nyc_output
 
 public/mockServiceWorker.js

@@ -51,7 +51,7 @@ export const documentsMapper = (
         resultItem.docs.push({
           docId: caseDocument.documentId,
           docLabel: caseDocument.fileName,
-          docDate: caseDocument.isoDate,
+          docDate: caseDocument.createdDate,
         } as AccordionDocument);
 
         // ... and no need to apply any more tests to this document
@@ -62,7 +62,7 @@ export const documentsMapper = (
 
   const visibleResults = results.filter(
     (item) =>
-      // a sectin is shown if it contains something...
+      // a section is shown if it contains at least one document...
       item.docs.length ||
       // ... or is set to be visible even if empty
       sectionTestersInPresentationOrder.some(

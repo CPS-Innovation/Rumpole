@@ -59,13 +59,13 @@ export const getCaseDocuments = async (caseId: string) => {
 
   if (!response.ok) {
     if (response.status === 404) {
-      // if there are no docs then the gatewy returns 404, we don't need tthis to be a failure
+      // if there are no docs then the gatewy returns 404, we don't need this to be a failure
       return [];
     }
     throw new ApiError("Get Case Documents failed", response);
   }
 
-  const apiReponse: {caseDocuments: CaseDocument[]} = await response.json();
+  const apiReponse: { caseDocuments: CaseDocument[] } = await response.json();
 
-  return apiReponse.caseDocuments ;
+  return apiReponse.caseDocuments;
 };
