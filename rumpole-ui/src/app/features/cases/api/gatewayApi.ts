@@ -51,20 +51,21 @@ export const getCaseDetails = async (caseId: string) => {
 };
 
 export const getCaseDocuments = async (caseId: string) => {
-  return [];
-  // const headers = await getHeaders();
-  // const response = await fetch(
-  //   getFullPath(`/api/case-details/${caseId}/documents`),
-  //   {
-  //     headers,
-  //     method: "GET",
-  //   }
-  // );
+  const headers = await getHeaders();
+  const response = await fetch(getFullPath(`/api/case-documents/${caseId}`), {
+    headers,
+    method: "GET",
+  });
 
-  // if (!response.ok) {
-  //   throw new ApiError("Get Case Documents failed", response);
+  if (!response.ok) {
+    if (response.status === 404) {
+      // if there are no docs then the gatewy returns 404, we don't need tthis to be a failure
+      return [];
+    }
+    throw new ApiError("Get Case Documents failed", response);
+  }
 
-  // }
+  const apiReponse: {caseDocuments: CaseDocument[]} = await response.json();
 
-  // return (await response.json()) as CaseDocument[];
+  return apiReponse.caseDocuments ;
 };

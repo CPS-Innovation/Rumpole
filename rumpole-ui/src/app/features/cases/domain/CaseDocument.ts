@@ -1,6 +1,9 @@
 export type CaseDocument = {
-  id: string;
-  name: string;
+  documentId: string;
+  fileName: string;
   isoDate: string;
-  category: string;
+  cmsDocType: {
+    code: string;
+    name: string;
+  };
 };

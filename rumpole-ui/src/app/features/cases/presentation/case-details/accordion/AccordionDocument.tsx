@@ -15,7 +15,7 @@ export const AccordionDocument: React.FC<Props> = ({ docLabel, docDate }) => {
         <a href="">{docLabel}</a>
       </td>
       <td className="govuk-table__cell govuk-body-s dateWidthCPS">
-        {formatDate(docDate, CommonDateTimeFormats.ShortDateTextMonth)}
+        {docDate && formatDate(docDate, CommonDateTimeFormats.ShortDateTextMonth)}
       </td>
     </tr>
   );

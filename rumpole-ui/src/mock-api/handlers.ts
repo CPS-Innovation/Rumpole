@@ -81,7 +81,7 @@ export const handlers = [
     return res(ctx.delay(Math.random() * delayFactor), ctx.json(result));
   }),
 
-  rest.get(apiPath("api/case-details/:id/documents"), (req, res, ctx) => {
+  rest.get(apiPath("api/case-details/case-documents/:id"), (req, res, ctx) => {
     const { id } = req.params;
 
     let result: CaseDocument[] = [];

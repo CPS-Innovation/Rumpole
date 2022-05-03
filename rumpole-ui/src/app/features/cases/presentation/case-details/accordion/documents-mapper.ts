@@ -4,20 +4,21 @@ import { AccordionDocument, Section } from "./types";
 
 const sectionTestersInPresentationOrder: {
   sectionId: string;
+  showIfEmpty: boolean;
   test: (caseDocument: CaseDocument) => boolean;
 }[] = [
   // todo: when we know, write the `test` logic to identify which document goes in which section
-  { sectionId: "Reviews", test: () => false },
-  { sectionId: "Case overview", test: () => false },
-  { sectionId: "Statements", test: () => false },
-  { sectionId: "Exhibits", test: () => false },
-  { sectionId: "Forensics", test: () => false },
-  { sectionId: "Unused materials", test: () => false },
-  { sectionId: "Defendant", test: () => false },
-  { sectionId: "Court preparation", test: () => false },
-  { sectionId: "Communications", test: () => false },
+  { sectionId: "Reviews", showIfEmpty: true, test: () => false },
+  { sectionId: "Case overview", showIfEmpty: true, test: () => false },
+  { sectionId: "Statements", showIfEmpty: true, test: () => false },
+  { sectionId: "Exhibits", showIfEmpty: true, test: () => false },
+  { sectionId: "Forensics", showIfEmpty: true, test: () => false },
+  { sectionId: "Unused materials", showIfEmpty: true, test: () => false },
+  { sectionId: "Defendant", showIfEmpty: true, test: () => false },
+  { sectionId: "Court preparation", showIfEmpty: true, test: () => false },
+  { sectionId: "Communications", showIfEmpty: true, test: () => false },
   // have unknown last so it can scoop up any unmatched documents
-  { sectionId: "Unknown", test: () => true },
+  { sectionId: "Uncategorised", showIfEmpty: false, test: () => true },
 ];
 
 export const documentsMapper = (
@@ -48,8 +49,8 @@ export const documentsMapper = (
 
         // ... add to the section results ...
         resultItem.docs.push({
-          docId: caseDocument.id,
-          docLabel: caseDocument.name,
+          docId: caseDocument.documentId,
+          docLabel: caseDocument.fileName,
           docDate: caseDocument.isoDate,
         } as AccordionDocument);
 
@@ -59,5 +60,17 @@ export const documentsMapper = (
     }
   }
 
-  return results;
+  const visibleResults = results.filter(
+    (item) =>
+      // a sectin is shown if it contains something...
+      item.docs.length ||
+      // ... or is set to be visible even if empty
+      sectionTestersInPresentationOrder.some(
+        (sectionDefinition) =>
+          sectionDefinition.sectionId === item.sectionId &&
+          sectionDefinition.showIfEmpty
+      )
+  );
+
+  return visibleResults;
 };
