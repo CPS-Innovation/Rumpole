@@ -20,10 +20,12 @@ import { BackLinkingPageProps } from "../../../../common/presentation/types/Back
 import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
 import { Wait } from "../../../../common/presentation/components/Wait";
 import { useApi } from "../../../../common/hooks/useApi";
-import { searchUrn } from "../../api/gatewayApi";
+import { searchUrn } from "../../api/gateway-api";
 import { Placeholder } from "../../../../common/presentation/components/Placeholder";
 
 export const path = "/case-search-results";
+
+const validationFailMessage = "Please enter a valid URN";
 
 type Props = BackLinkingPageProps & {};
 
@@ -44,7 +46,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
   }
 
   if (state.status === "failed") {
-    return <ErrorSummary descriptionChildren={state.error} />;
+    throw state.error;
   }
 
   const { data } = state;
@@ -55,16 +57,39 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
       <PageContentWrapper>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-full">
+            {isError && (
+              <ErrorSummary
+                errorList={[
+                  {
+                    reactListKey: "1",
+                    children: validationFailMessage,
+                    href: "#urn",
+                    "data-testid": "link-validation-urn",
+                  },
+                ]}
+              />
+            )}
             <h1 className="govuk-heading-xl">Find a case</h1>
 
             <div className={classes.search}>
               <Input
+                id="urn"
+                name="urn"
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
                 value={urn}
                 autoFocus
+                data-testid="input-search-urn"
                 errorMessage={
-                  isError ? { children: "Please enter a valid URN" } : undefined
+                  isError
+                    ? {
+                        children: (
+                          <span data-testid="input-search-urn-error">
+                            {validationFailMessage}
+                          </span>
+                        ),
+                      }
+                    : undefined
                 }
                 label={{
                   className: "govuk-label--s",
@@ -74,7 +99,9 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                   className: "govuk-!-width-one-half",
                 }}
               />
-              <Button onClick={handleSubmit}>Search</Button>
+              <Button onClick={handleSubmit} data-testid="button-search">
+                Search
+              </Button>
             </div>
           </div>
         </div>

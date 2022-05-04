@@ -7,7 +7,7 @@ const dataSource: DocumentsDataSource = (id: string) => ({
 
 export default dataSource;
 
-export const documents: CaseDocument[] = [
+const documents: CaseDocument[] = [
   {
     documentId: "1",
     fileName: "MCLOVE MG3",

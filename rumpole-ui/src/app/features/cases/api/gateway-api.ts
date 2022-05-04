@@ -21,16 +21,19 @@ const getHeaders = async () => {
 
 export const searchUrn = async (urn: string) => {
   const headers = await getHeaders();
-  const response = await fetch(
-    getFullPath(`/api/case-information-by-urn/${urn}`),
-    {
-      headers,
-      method: "GET",
-    }
-  );
+  const path = getFullPath(`/api/case-information-by-urn/${urn}`);
+  const response = await fetch(path, {
+    headers,
+    method: "GET",
+  });
 
   if (!response.ok) {
-    throw new ApiError("Search URN failed", response);
+    // special case: the gateway returns 404 if no results
+    //  but we are happy to just return empty data
+    if (response.status === 404) {
+      return [];
+    }
+    throw new ApiError("Search URN failed", path, response);
   }
 
   return (await response.json()) as CaseSearchResult[];
@@ -38,13 +41,14 @@ export const searchUrn = async (urn: string) => {
 
 export const getCaseDetails = async (caseId: string) => {
   const headers = await getHeaders();
-  const response = await fetch(getFullPath(`/api/case-details/${caseId}`), {
+  const path = getFullPath(`/api/case-details/${caseId}`);
+  const response = await fetch(path, {
     headers,
     method: "GET",
   });
 
   if (!response.ok) {
-    throw new ApiError("Get Case Details failed", response);
+    throw new ApiError("Get Case Details failed", path, response);
   }
 
   return (await response.json()) as CaseSearchResult;
@@ -52,17 +56,14 @@ export const getCaseDetails = async (caseId: string) => {
 
 export const getCaseDocuments = async (caseId: string) => {
   const headers = await getHeaders();
-  const response = await fetch(getFullPath(`/api/case-documents/${caseId}`), {
+  const path = getFullPath(`/api/case-documents/${caseId}`);
+  const response = await fetch(path, {
     headers,
     method: "GET",
   });
 
   if (!response.ok) {
-    if (response.status === 404) {
-      // if there are no docs then the gatewy returns 404, we don't need this to be a failure
-      return [];
-    }
-    throw new ApiError("Get Case Documents failed", response);
+    throw new ApiError("Get Case Documents failed", path, response);
   }
 
   const apiReponse: { caseDocuments: CaseDocument[] } = await response.json();

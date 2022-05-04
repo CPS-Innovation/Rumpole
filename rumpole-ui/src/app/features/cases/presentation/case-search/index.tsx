@@ -3,6 +3,7 @@ import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsStat
 import { CaseSearchQueryParams } from "../../types/CaseSearchQueryParams";
 import {
   Button,
+  ErrorSummary,
   Hint,
   Input,
 } from "../../../../common/presentation/components";
@@ -11,6 +12,8 @@ import classes from "./index.module.scss";
 import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
 
 export const path = "/case-search";
+
+const validationFailMessage = "Please enter a valid URN";
 
 const Page: React.FC = () => {
   const { urn: initialUrn, setParams } =
@@ -23,6 +26,19 @@ const Page: React.FC = () => {
     <PageContentWrapper>
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
+          {isError && (
+            <ErrorSummary
+              errorList={[
+                {
+                  reactListKey: "1",
+                  children: validationFailMessage,
+                  href: "#urn",
+                  "data-testid": "link-validation-urn",
+                },
+              ]}
+            />
+          )}
+
           <h1 className="govuk-heading-xl">
             Find a case
             <Hint className={classes.hint}>
@@ -32,6 +48,8 @@ const Page: React.FC = () => {
 
           <div className="govuk-form-group">
             <Input
+              id="urn"
+              name="urn"
               onChange={handleChange}
               onKeyPress={handleKeyPress}
               value={urn}
@@ -42,7 +60,7 @@ const Page: React.FC = () => {
                   ? {
                       children: (
                         <span data-testid="input-search-urn-error">
-                          Please enter a valid URN
+                          {validationFailMessage}
                         </span>
                       ),
                     }

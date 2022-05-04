@@ -1,6 +1,7 @@
 import * as GDS from "govuk-react-jsx";
-import React from "react";
+import React, { ReactNode } from "react";
 import { PageContentWrapper } from "./PageContentWrapper";
+import styles from "./ErrorSummary.module.scss";
 
 type ErrorSummaryProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -9,12 +10,12 @@ type ErrorSummaryProps = React.DetailedHTMLProps<
   className?: string;
   titleChildren?: string;
   descriptionChildren?: React.ReactNode;
-  errorList?: React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
-  > & {
+  errorList?: {
+    children: ReactNode;
     reactListKey: string;
-  };
+    href: string;
+    "data-testid"?: string;
+  }[];
 };
 
 export const ErrorSummary: React.FC<ErrorSummaryProps> = (props) => {
@@ -27,7 +28,7 @@ export const ErrorSummary: React.FC<ErrorSummaryProps> = (props) => {
 
   return (
     <PageContentWrapper>
-      <GDS.ErrorSummary {...resolvedProps} />
+      <GDS.ErrorSummary {...resolvedProps} className={styles.ErrorSummary} />
     </PageContentWrapper>
   );
 };

@@ -1,15 +1,12 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useApi } from "../../../../common/hooks/useApi";
-import {
-  BackLink,
-  ErrorSummary,
-} from "../../../../common/presentation/components";
+import { BackLink } from "../../../../common/presentation/components";
 import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
 import { Placeholder } from "../../../../common/presentation/components/Placeholder";
 import { Wait } from "../../../../common/presentation/components/Wait";
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
-import { getCaseDetails, getCaseDocuments } from "../../api/gatewayApi";
+import { getCaseDetails, getCaseDocuments } from "../../api/gateway-api";
 import { Accordion } from "./accordion/Accordion";
 import { documentsMapper } from "./accordion/documents-mapper";
 
@@ -37,13 +34,11 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
   }
 
   if (state.status === "failed") {
-    // if main call fails, then show error
-    return <ErrorSummary descriptionChildren={state.error} />;
+    throw state.error;
   }
 
   if (documentsState.status === "failed") {
-    // if docs call fails, then also show error
-    return <ErrorSummary descriptionChildren={documentsState.error} />;
+    throw documentsState.error;
   }
 
   const { data } = state;

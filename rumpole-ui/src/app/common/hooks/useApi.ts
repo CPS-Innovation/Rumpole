@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ApiError } from "../errors/ApiError";
 
 export type UseApiResult<T> =
   | {
@@ -8,6 +9,7 @@ export type UseApiResult<T> =
   | {
       error: any;
       status: "failed";
+      httpStatusCode: number | undefined;
     }
   | {
       status: "loading";
@@ -56,6 +58,7 @@ export const useApi: UseApiParams = (del, p0, p1, p2, p3, p4) => {
         setResult({
           status: "failed",
           error,
+          httpStatusCode: error instanceof ApiError ? error.code : undefined,
         })
       );
   }, [del, p0, p1, p2, p3, p4]);

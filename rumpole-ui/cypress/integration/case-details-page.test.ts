@@ -16,6 +16,19 @@ describe("case details page", () => {
       cy.location("pathname").should("eq", "/case-search-results");
       cy.location("search").should("eq", "?urn=12AB1111111");
     });
+
+    it("shows the unhandled error page if an unexpected error occurrs with the api", () => {
+      cy.visitPageAndbreakApiRoute(
+        "/case-search-results?urn=12AB1111111",
+        "api/case-details/:id",
+        500
+      );
+
+      cy.findByTestId("link-12AB1111111").click();
+
+      // we are showing the error page
+      cy.findByTestId("txt-error-page-heading");
+    });
   });
 
   describe("case details", () => {

@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { Layout } from "../layout/Layout";
 import { PageContentWrapper } from "./PageContentWrapper";
 
@@ -8,16 +9,18 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  error: Error | undefined;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
+    error: undefined,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
+  public static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -29,9 +32,22 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <Layout>
           <PageContentWrapper>
-            <h1 className="govuk-heading-xl">
-              Sorry... an unexpected error has occurred
+            <h1
+              className="govuk-heading-xl"
+              data-testid="txt-error-page-heading"
+            >
+              Sorry, there is a problem with the service
             </h1>
+            <p className="govuk-body">
+              Try again later, or{" "}
+              <a href="/" className="govuk-link">
+                click here to start a new search
+              </a>
+              .
+            </p>
+            <div className="govuk-inset-text">
+              {this.state.error?.toString()}
+            </div>
           </PageContentWrapper>
         </Layout>
       );

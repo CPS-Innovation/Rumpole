@@ -18,6 +18,7 @@ describe("accordion documentsmapper", () => {
     const apiResult: UseApiResult<CaseDocument[]> = {
       status: "failed",
       error: null,
+      httpStatusCode: undefined,
     };
 
     const result = documentsMapper(apiResult);

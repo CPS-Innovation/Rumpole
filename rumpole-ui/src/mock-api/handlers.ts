@@ -64,7 +64,7 @@ export const setupHandlers = ({
       const { id } = req.params;
 
       const result = documentsDataSources[sourceName](id);
-      console.log(result);
+
       return res(delay(ctx), ctx.json(result));
     }),
   ];
