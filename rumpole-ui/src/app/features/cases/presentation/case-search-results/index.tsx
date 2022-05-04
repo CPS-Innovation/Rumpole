@@ -38,7 +38,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
     useSearchInputLogic({ initialUrn, setParams });
 
   const state = useApi(searchUrn, initialUrn!);
-  console.log(state.status);
+
   if (state.status === "loading") {
     return <Wait />;
   }

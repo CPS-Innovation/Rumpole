@@ -20,9 +20,10 @@ describe("case details page", () => {
 
   describe("case details", () => {
     it("can show case details", () => {
+      cy.visit("/case-search-results?urn=12AB1111111");
       cy.visit("/case-details/13401");
       cy.findByTestId("txt-defendant-name").contains("Walsh, Steve");
-      cy.findByTestId("txt-case-urn").contains("99ZZ9999999");
+      cy.findByTestId("txt-case-urn").contains("12AB1111111");
     });
   });
 });

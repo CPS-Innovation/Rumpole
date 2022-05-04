@@ -17,6 +17,7 @@
 import "./commands";
 import "@cypress/code-coverage/support";
 import "cypress-hmr-restarter";
+import { setupMockApi } from "../../src/mock-api/browser";
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -25,4 +26,12 @@ Cypress.on("uncaught:exception", (err, runnable) => {
   //  so cypress thinks there is an uncontrolled error and tests fails
   //  see https://github.com/cypress-io/cypress/issues/7196
   return false;
+});
+
+Cypress.on("test:before:run:async", async () => {
+  await setupMockApi({
+    sourceName: Cypress.env().REACT_APP_MOCK_API_SOURCE,
+    baseUrl: Cypress.env().REACT_APP_GATEWAY_BASE_URL,
+    maxDelay: Cypress.env().REACT_APP_MOCK_API_MAX_DELAY,
+  });
 });

@@ -70,6 +70,13 @@ steps:
     displayName: "combine unit and cypress coverage"
 
   - task: PublishBuildArtifacts@1
+    condition: always() # this step will always run, helpful to diagnose failing cypress testts
+    inputs:
+      PathtoPublish: "rumpole-ui/cypress/videos"
+      ArtifactName: "Cypress failure vidoes"
+      publishLocation: "Container"
+
+  - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: "rumpole-ui/report"
       ArtifactName: "Unit test report"
