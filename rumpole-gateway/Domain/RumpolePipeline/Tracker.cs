@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace RumpoleGateway.Domain.RumpolePipeline
 {
@@ -12,11 +12,12 @@ namespace RumpoleGateway.Domain.RumpolePipeline
         [JsonProperty("documents")]
         public List<TrackerDocument> Documents { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("status")]
+        public TrackerStatus Status { get; set; }
+
         [JsonProperty("logs")]
         public List<Log> Logs { get; set; }
-
-        [JsonProperty("IsComplete")]
-        public bool IsComplete { get; set; }
     }
 }
 

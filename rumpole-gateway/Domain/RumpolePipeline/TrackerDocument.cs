@@ -1,14 +1,19 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace RumpoleGateway.Domain.RumpolePipeline
 {
-	public class TrackerDocument
-	{
+    public class TrackerDocument
+    {
         [JsonProperty("documentId")]
-        public int DocumentId { get; set; }
+        public string DocumentId { get; set; }
 
         [JsonProperty("pdfBlobName")]
         public string PdfBlobName { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("status")]
+        public DocumentStatus Status { get; set; }
     }
 }
 

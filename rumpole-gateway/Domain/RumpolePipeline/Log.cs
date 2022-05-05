@@ -11,7 +11,7 @@ namespace RumpoleGateway.Domain.RumpolePipeline
         public string TimeStamp { get; set; }
 
         [JsonProperty("documentId")]
-        public int? DocumentId { get; set; }
+        public string DocumentId { get; set; }
     }
 }
 
