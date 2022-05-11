@@ -76,8 +76,24 @@ describe("accordion documentsmapper", () => {
         sectionId: "Uncategorised",
         sectionLabel: "Uncategorised",
         docs: [
-          { documentId: "1", fileName: "foo", createdDate: "2020-01-01" },
-          { documentId: "2", fileName: "bar", createdDate: "2020-01-02" },
+          {
+            documentId: "1",
+            fileName: "foo",
+            cmsDocType: {
+              code: "MG11",
+              name: "MG11 File",
+            },
+            createdDate: "2020-01-01",
+          },
+          {
+            documentId: "2",
+            fileName: "bar",
+            cmsDocType: {
+              code: "MG12",
+              name: "MG12 File",
+            },
+            createdDate: "2020-01-02",
+          },
         ],
       },
     ] as Section[]);
