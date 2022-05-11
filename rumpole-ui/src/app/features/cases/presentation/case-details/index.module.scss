@@ -9,4 +9,19 @@
 
 .leftColumn {
   padding-right: 50px !important;
+  overflow-y: auto;
+  height: calc(100vh - 55px);
+}
+
+.rightColumn {
+  /* to compensate for the back link height pushing our right column content down*/
+  margin-top: -55px;
+  height: 100vh;
+}
+
+.pdfViewer {
+  height: 84vh;
+  max-height: 1500px; // to prevent zooming out overly elongating the pdf
+  width: 100%;
+  position: relative;
 }

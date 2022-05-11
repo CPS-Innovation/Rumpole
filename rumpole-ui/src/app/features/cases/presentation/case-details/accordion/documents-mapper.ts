@@ -1,6 +1,6 @@
 import { UseApiResult } from "../../../../../common/hooks/useApi";
 import { CaseDocument } from "../../../domain/CaseDocument";
-import { AccordionDocument, Section } from "./types";
+import { Section } from "./types";
 
 const sectionTestersInPresentationOrder: {
   sectionId: string;
@@ -49,10 +49,8 @@ export const documentsMapper = (
 
         // ... add to the section results ...
         resultItem.docs.push({
-          docId: caseDocument.documentId,
-          docLabel: caseDocument.fileName,
-          docDate: caseDocument.createdDate,
-        } as AccordionDocument);
+          ...caseDocument,
+        });
 
         // ... and no need to apply any more tests to this document
         break;

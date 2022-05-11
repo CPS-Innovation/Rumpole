@@ -1,11 +1,7 @@
-export type AccordionDocument = {
-  docId: string;
-  docLabel: string;
-  docDate: string;
-};
+import { CaseDocument } from "../../../domain/CaseDocument";
 
 export type Section = {
   sectionId: string;
   sectionLabel: string;
-  docs: AccordionDocument[];
+  docs: CaseDocument[];
 };

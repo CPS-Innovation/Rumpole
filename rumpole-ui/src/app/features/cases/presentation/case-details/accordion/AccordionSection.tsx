@@ -1,13 +1,15 @@
 import { AccordionDocument } from "./AccordionDocument";
 import classes from "./Accordion.module.scss";
 import { AccordionNoDocuments } from "./AccordionNoDocuments";
+import { CaseDocument } from "../../../domain/CaseDocument";
 
 type Props = {
   sectionId: string;
   sectionLabel: string;
-  docs: { docId: string; docLabel: string; docDate: string }[];
+  docs: CaseDocument[];
   isOpen: boolean;
   handleToggleOpenSection: (id: string) => void;
+  handleOpenDocument: (caseDocument: CaseDocument) => void;
 };
 
 export const AccordionSection: React.FC<Props> = ({
@@ -16,6 +18,7 @@ export const AccordionSection: React.FC<Props> = ({
   docs,
   isOpen,
   handleToggleOpenSection,
+  handleOpenDocument,
 }) => {
   return (
     <div className={`${classes["accordion-section"]}`} aria-expanded={isOpen}>
@@ -49,11 +52,11 @@ export const AccordionSection: React.FC<Props> = ({
                 </tr>
               </thead>
               <tbody>
-                {docs.map(({ docId, docLabel, docDate }) => (
+                {docs.map((caseDocument) => (
                   <AccordionDocument
-                    key={docId}
-                    docLabel={docLabel}
-                    docDate={docDate}
+                    key={caseDocument.documentId}
+                    caseDocument={caseDocument}
+                    handleOpenDocument={handleOpenDocument}
                   />
                 ))}
               </tbody>

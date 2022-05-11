@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { CaseDocument } from "../../../domain/CaseDocument";
 import classes from "./Accordion.module.scss";
 import { AccordionHeader } from "./AccordionHeader";
 import { AccordionSection } from "./AccordionSection";
@@ -7,9 +8,13 @@ import { Section } from "./types";
 
 type Props = {
   sections: Section[];
+  handleOpenDocument: (caseDocument: CaseDocument) => void;
 };
 
-export const Accordion: React.FC<Props> = ({ sections }) => {
+export const Accordion: React.FC<Props> = ({
+  sections,
+  handleOpenDocument,
+}) => {
   const [state, dispatch] = useReducer(
     reducer,
     buildInitialState(sections.map((section) => section.sectionLabel))
@@ -37,6 +42,7 @@ export const Accordion: React.FC<Props> = ({ sections }) => {
           docs={docs}
           isOpen={state.sections[sectionId]}
           handleToggleOpenSection={handleToggleOpenSection}
+          handleOpenDocument={handleOpenDocument}
         />
       ))}
     </div>

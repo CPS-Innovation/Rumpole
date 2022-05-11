@@ -15,6 +15,7 @@ export const AccordionHeader: React.FC<Props> = ({
         className={`${classes["accordion-expand-all"]}`}
         aria-expanded={isAllOpen}
         onClick={handleToggleAllOpen}
+        data-testid="btn-accordion-open-close-all"
       >
         {isAllOpen ? "Close all folders" : "Open all folders"}
       </button>

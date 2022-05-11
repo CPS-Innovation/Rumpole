@@ -85,6 +85,7 @@ interface Props<T_HT> {
     transformSelection: () => void
   ) => JSX.Element | null;
   enableAreaSelection: (event: MouseEvent) => boolean;
+  onWheelDownwards: () => void;
 }
 
 const EMPTY_ID = "empty-id";
@@ -145,6 +146,8 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       doc.defaultView?.addEventListener("resize", this.debouncedScaleValue);
       if (observer) observer.observe(ref);
 
+      ref.addEventListener("wheel", this.handleWheel)
+
       this.unsubscribe = () => {
         eventBus.off("pagesinit", this.onDocumentReady);
         eventBus.off("textlayerrendered", this.onTextLayerRendered);
@@ -155,9 +158,20 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
           this.debouncedScaleValue
         );
         if (observer) observer.disconnect();
+
+        ref.removeEventListener("wheel", this.handleWheel);
+        
       };
     }
   };
+
+  handleWheel = (ev: WheelEvent) => {
+    if (ev.deltaY > 0) {
+      
+      //ev.preventDefault();
+      this.props.onWheelDownwards();
+    }
+  }
 
   componentDidUpdate(prevProps: Props<T_HT>) {
     if (prevProps.pdfDocument !== this.props.pdfDocument) {

@@ -1,0 +1,63 @@
+/* @import url("//hello.myfonts.net/count/413f20");
+
+@font-face {
+  font-family: "TransportNew";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 90%;
+  src: url("../../../public/fonts/TransportNewLight/font.woff2") format("woff2"),
+    url("../../../public/fonts/TransportNewLight/font.woff") format("woff");
+}
+
+body {
+  margin: 0;
+  font-family: "TransportNew", "Arial", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: #ffffff;
+  color: #fff;
+}
+
+.sidebar {
+  overflow: auto;
+  color: black;
+  
+}
+
+.sidebar__highlights {
+  list-style: none;
+  padding: 0;
+} */
+
+.highlight__location {
+  margin-top: 0.5rem;
+  text-align: right;
+  font-size: 10px;
+}
+
+.highlight__image {
+  overflow: auto;
+  max-width: 300px;
+  border: 1px dashed;
+}
+
+/* .sidebar__highlight {
+  padding: 1rem;
+  border: 1px solid #eeeeee;
+  margin-bottom: 10px;
+}
+
+.sidebar__highlight:hover {
+  background: rgba(58, 56, 52, 0.08);
+}
+
+a {
+  color: #d35400;
+}
+
+blockquote {
+  padding: 0;
+  margin: 0;
+} */

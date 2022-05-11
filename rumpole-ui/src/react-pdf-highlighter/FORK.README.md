@@ -16,3 +16,13 @@ have been added directly to ourt own `package.json`:
     "pdfjs-dist": "2.11.338",
     "react-rnd": "^10.1.10"
 ```
+
+
+## Comparing releases of `react-pdf-highlighter`
+https://github.com/agentcooper/react-pdf-highlighter/compare/e9e8e00..1d1c768
+
+## Area highlighting drops by a pixel
+See https://github.com/agentcooper/react-pdf-highlighter/issues/160#issuecomment-942854641
+
+## css notes
+

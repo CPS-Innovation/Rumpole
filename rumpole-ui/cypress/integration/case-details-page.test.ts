@@ -39,6 +39,22 @@ describe("case details page", () => {
       cy.findByTestId("txt-case-urn").contains("12AB1111111");
     });
   });
+
+  describe("pdf viewing", () => {
+    it.only("can open a pdf", () => {
+      cy.visit("/case-search-results?urn=12AB1111111");
+      cy.visit("/case-details/13401");
+      cy.findByTestId("btn-accordion-open-close-all").click();
+
+      cy.findByTestId("div-pdfviewer").should("not.exist");
+
+      cy.findByTestId("link-document-1").click();
+
+      cy.findByTestId("div-pdfviewer")
+        .should("exist")
+        .contains("WEST YORKSHIRE POLICE");
+    });
+  });
 });
 
 export {};
