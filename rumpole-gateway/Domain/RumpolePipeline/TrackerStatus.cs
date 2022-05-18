@@ -4,6 +4,7 @@
 	{
 		NotStarted,
 		Running,
+		NoDocumentsFoundInCDE,
 		Completed,
 		Failed
 	}

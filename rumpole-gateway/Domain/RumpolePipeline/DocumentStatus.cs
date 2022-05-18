@@ -5,7 +5,8 @@
 		None,
 		PdfUploadedToBlob,
 		NotFoundInCDE,
-		FailedToConvertToPdf
+		UnableToConvertToPdf,
+		UnexpectedFailure
 	}
 }
 
