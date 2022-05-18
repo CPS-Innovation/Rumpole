@@ -80,9 +80,28 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		}
 
 		[Fact]
+		public async Task TriggerCoordinator_UrlHasNoForceQueryWhenForceIsFalse()
+		{
+			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
+
+			_mockRequestFactory.Verify(factory => factory.Create($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken));
+		}
+
+		[Fact]
+		public async Task TriggerCoordinator_UrlHasForceQueryWhenForceIsTrue()
+		{
+			var url = $"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}&&force=true";
+			_mockRequestFactory.Setup(factory => factory.Create(url, _accessToken)).Returns(_httpRequestMessage);
+
+			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, true);
+
+			_mockRequestFactory.Verify(factory => factory.Create(url, _accessToken));
+		}
+
+		[Fact]
 		public async Task TriggerCoordinator_TriggersCoordinatorSuccessfully()
         {
-			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken);
+			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
         }
 
 		[Fact]

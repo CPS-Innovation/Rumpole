@@ -13,6 +13,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -56,9 +57,16 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
                 }
 
+                var force = false;
+                if (request.Query.ContainsKey("force") && !bool.TryParse(request.Query["force"], out force))
+                {
+                    errorMessage = "Invalid query string. Force value must be a boolean.";
+                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
+                }
+
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
 
-                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken);
+                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken, force);
 
                 return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(request));
             }

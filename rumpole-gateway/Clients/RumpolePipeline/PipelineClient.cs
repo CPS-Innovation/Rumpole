@@ -27,9 +27,10 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _jsonConvertWrapper = jsonConvertWrapper;
         }
 
-        public async Task TriggerCoordinatorAsync(string caseId, string accessToken)
+        public async Task TriggerCoordinatorAsync(string caseId, string accessToken, bool force)
         {
-            await SendRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+            var forceQuery = force ? "&&force=true" : string.Empty;
+            await SendRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}{forceQuery}", accessToken);
         }
 
         public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken)

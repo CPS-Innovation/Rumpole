@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Identity.Client;
 using Moq;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
@@ -75,11 +77,20 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		}
 
 		[Fact]
+		public async Task Run_ReturnsBadRequestWhenForceIsNotABool()
+		{
+			_request.Query = new QueryCollection(new Dictionary<string, StringValues> { { "force", new StringValues("not a bool") } });
+			var response = await RumpolePipelineTriggerCoordinator.Run(_request, _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
+
+		[Fact]
 		public async Task Run_TriggersCoordinator()
         {
 			var response = await RumpolePipelineTriggerCoordinator.Run(_request, _caseId);
 
-			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken));
+			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false));
 		}
 
 		[Fact]
@@ -113,7 +124,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenHttpExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
 				.ThrowsAsync(new HttpRequestException());
 
 			var response = await RumpolePipelineTriggerCoordinator.Run(_request, _caseId) as StatusCodeResult;
@@ -124,7 +135,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
 				.ThrowsAsync(new Exception());
 
 			var response = await RumpolePipelineTriggerCoordinator.Run(_request, _caseId) as StatusCodeResult;
