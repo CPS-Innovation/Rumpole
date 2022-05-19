@@ -79,7 +79,7 @@ export const getCaseDocumentsList = async (caseId: string) => {
 
 export const initiatePipeline = async (caseId: string) => {
   const headers = await getHeaders();
-  const path = getFullUrl(`/api/cases/${caseId}`);
+  const path = getFullUrl(`/api/cases/${caseId}?force=true`);
   const response = await fetch(path, {
     headers,
     method: "POST",
