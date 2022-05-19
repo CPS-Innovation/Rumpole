@@ -1,19 +1,6 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../errors/ApiError";
-
-export type UseApiResult<T> =
-  | {
-      data: T;
-      status: "succeeded";
-    }
-  | {
-      error: any;
-      status: "failed";
-      httpStatusCode: number | undefined;
-    }
-  | {
-      status: "loading";
-    };
+import { ApiResult } from "../types/ApiResult";
 
 type UseApiParams = <T extends (...args: any[]) => Promise<any>>(
   del: T,
@@ -22,7 +9,7 @@ type UseApiParams = <T extends (...args: any[]) => Promise<any>>(
   param2?: Parameters<T>[2],
   param3?: Parameters<T>[3],
   param4?: Parameters<T>[4]
-) => UseApiResult<Awaited<ReturnType<typeof del>>>;
+) => ApiResult<Awaited<ReturnType<typeof del>>>;
 
 /*
   If there is an api method `getFoo(id: number, name: string) => Promise<Model>` then `useApi` is called thus:

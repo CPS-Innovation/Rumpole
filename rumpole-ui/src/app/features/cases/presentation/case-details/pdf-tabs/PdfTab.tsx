@@ -1,17 +1,17 @@
 import { Placeholder } from "../../../../../common/presentation/components/Placeholder";
-import { GATEWAY_BASE_URL } from "../../../../../config";
-import { CaseDocument } from "../../../domain/CaseDocument";
+import { CaseDocumentWithUrl } from "../../../domain/CaseDocumentWithUrl";
 import PdfViewer from "../pdf-viewer/PdfViewer";
+import { Wait } from "../pdf-viewer/Wait";
 
 type PdfTabProps = {
-  caseDocument: CaseDocument;
+  caseDocument: CaseDocumentWithUrl;
+  authToken: string | undefined;
 };
 
 export const PdfTab: React.FC<PdfTabProps> = ({
-  caseDocument: { documentId, fileName },
+  caseDocument: { url },
+  authToken,
 }) => {
-  const url = `${GATEWAY_BASE_URL}/api/documents/${documentId}/${fileName}`;
-
   return (
     <>
       <Placeholder
@@ -20,7 +20,11 @@ export const PdfTab: React.FC<PdfTabProps> = ({
         marginLeft={-21}
         marginRight={-21}
       />
-      <PdfViewer url={url} />
+      {url && authToken ? (
+        <PdfViewer url={url} authToken={authToken} />
+      ) : (
+        <Wait />
+      )}
     </>
   );
 };

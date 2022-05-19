@@ -1,6 +1,7 @@
-import { UseApiResult } from "../../../../../common/hooks/useApi";
-import { CaseDocument } from "../../../domain/CaseDocument";
-import { Section } from "./types";
+import { ApiResult } from "../../../../common/types/ApiResult";
+import { DelayedResult } from "../../../../common/types/DelayedResult";
+import { CaseDocument } from "../../domain/CaseDocument";
+import { AccordionDocumentSection } from "../../presentation/case-details/accordion/types";
 
 const sectionTestersInPresentationOrder: {
   sectionId: string;
@@ -21,21 +22,24 @@ const sectionTestersInPresentationOrder: {
   { sectionId: "Uncategorised", showIfEmpty: false, test: () => true },
 ];
 
-export const documentsMapper = (
-  documentsState: UseApiResult<CaseDocument[]>
-): Section[] | false => {
+export const mapDocumentsToAccordionState = (
+  documentsState: ApiResult<CaseDocument[]>
+): DelayedResult<AccordionDocumentSection[]> => {
   if (documentsState.status !== "succeeded") {
-    return false;
+    // we wait for documentsState to be ready, even if pipeline results arrive first
+    return {
+      status: "loading",
+    };
   }
+
   // first make sure we have every section represented in our results
   //  (we want to return sections even if they are empty)
-  const results: Section[] = sectionTestersInPresentationOrder.map(
-    ({ sectionId }) => ({
+  const results: AccordionDocumentSection[] =
+    sectionTestersInPresentationOrder.map(({ sectionId }) => ({
       sectionId: sectionId,
       sectionLabel: sectionId,
       docs: [],
-    })
-  );
+    }));
 
   // cycle through each doc from the api
   for (const caseDocument of documentsState.data) {
@@ -50,6 +54,7 @@ export const documentsMapper = (
         // ... add to the section results ...
         resultItem.docs.push({
           ...caseDocument,
+          tabSafeId: `d${resultItem.docs.length}`,
         });
 
         // ... and no need to apply any more tests to this document
@@ -70,5 +75,5 @@ export const documentsMapper = (
       )
   );
 
-  return visibleResults;
+  return { status: "succeeded", data: visibleResults };
 };

@@ -11,4 +11,4 @@ report-cypress
 
 public/mockServiceWorker.js
 src/react-pdf-highlighter
-src/mock-api/data/files/file-strings.json
+src/mock-api/data/pdfs/pdf-strings.json

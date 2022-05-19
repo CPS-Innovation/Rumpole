@@ -57,7 +57,7 @@
     "start": "react-scripts start",
     "start:coredata": "sudo HTTPS=true PORT=443 env-cmd -f .env.coredata react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --watchAll",
     "test:ci": "CI=true react-scripts test --coverage --reporters=default --reporters=jest-junit --coverageReporters=cobertura --coverageReporters=lcov --coverageReporters=json",
     "eject": "react-scripts eject",
     "prettier": "prettier --check .",
@@ -73,7 +73,8 @@
     ],
     "rules": {
       "testing-library/await-async-query": "off",
-      "testing-library/prefer-screen-queries": "off"
+      "testing-library/prefer-screen-queries": "off",
+      "eslinttesting-library/no-unnecessary-act": "off"
     }
   },
   "browserslist": {

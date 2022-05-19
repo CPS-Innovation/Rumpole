@@ -1,15 +1,15 @@
 import { AccordionDocument } from "./AccordionDocument";
 import classes from "./Accordion.module.scss";
 import { AccordionNoDocuments } from "./AccordionNoDocuments";
-import { CaseDocument } from "../../../domain/CaseDocument";
+import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
 
 type Props = {
   sectionId: string;
   sectionLabel: string;
-  docs: CaseDocument[];
+  docs: CaseDocumentWithTabSafeId[];
   isOpen: boolean;
   handleToggleOpenSection: (id: string) => void;
-  handleOpenDocument: (caseDocument: CaseDocument) => void;
+  handleOpenDocument: (caseDocument: CaseDocumentWithTabSafeId) => void;
 };
 
 export const AccordionSection: React.FC<Props> = ({

@@ -25,6 +25,7 @@ interface State {
 
 interface Props {
   url: string;
+  authToken: string;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -147,7 +148,11 @@ class App extends Component<Props, State> {
           ref={this.containerRef}
           data-testid="div-pdfviewer"
         >
-          <PdfLoader url={url} beforeLoad={<Wait />}>
+          <PdfLoader
+            url={url}
+            authToken={this.props.authToken}
+            beforeLoad={<Wait />}
+          >
             {(pdfDocument) => (
               <PdfHighlighter
                 onWheelDownwards={() =>

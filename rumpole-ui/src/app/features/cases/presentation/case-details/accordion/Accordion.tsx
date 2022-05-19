@@ -1,18 +1,18 @@
 import { useReducer } from "react";
-import { CaseDocument } from "../../../domain/CaseDocument";
+import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
 import classes from "./Accordion.module.scss";
 import { AccordionHeader } from "./AccordionHeader";
 import { AccordionSection } from "./AccordionSection";
 import { buildInitialState, reducer } from "./reducer";
-import { Section } from "./types";
+import { AccordionDocumentSection } from "./types";
 
 type Props = {
-  sections: Section[];
-  handleOpenDocument: (caseDocument: CaseDocument) => void;
+  accordionState: AccordionDocumentSection[];
+  handleOpenDocument: (caseDocument: CaseDocumentWithTabSafeId) => void;
 };
 
 export const Accordion: React.FC<Props> = ({
-  sections,
+  accordionState: sections,
   handleOpenDocument,
 }) => {
   const [state, dispatch] = useReducer(

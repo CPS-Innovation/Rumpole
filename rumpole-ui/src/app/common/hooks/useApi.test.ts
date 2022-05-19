@@ -1,6 +1,4 @@
-import "@testing-library/jest-dom";
-import "@testing-library/jest-dom/extend-expect";
-import { act, renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react-hooks";
 import { useApi } from "./useApi";
 
 describe("useApi", () => {
@@ -65,7 +63,7 @@ describe("useApi", () => {
     const { rerender } = renderHook(() => useApi(mockApiCall, "1"));
 
     expect(mockApiCall.mock.calls.length).toEqual(1);
-    act(() => rerender());
+    rerender();
     expect(mockApiCall.mock.calls.length).toEqual(1);
   });
 
@@ -84,12 +82,12 @@ describe("useApi", () => {
     });
 
     expect(mockApiCall.mock.calls.length).toEqual(1);
-    act(() => {
-      rerender({
-        del: mockApiCall,
-        p1: "2",
-      });
+
+    rerender({
+      del: mockApiCall,
+      p1: "2",
     });
+
     expect(mockApiCall.mock.calls.length).toEqual(2);
   });
 });

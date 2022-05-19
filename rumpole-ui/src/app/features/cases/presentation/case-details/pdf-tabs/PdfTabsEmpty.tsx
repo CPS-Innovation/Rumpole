@@ -1,10 +1,10 @@
-export const Empty: React.FC = () => (
+export const PdfTabsEmpty: React.FC = () => (
   <div>
     <h2
       className="govuk-heading-m"
       style={{ margin: "220px 0 0 0", textAlign: "center" }}
     >
-      View your documents{" "}
+      View your documents
     </h2>
     <p
       className="govuk-body"

@@ -8,6 +8,7 @@ interface Props {
   workerSrc: string;
 
   url: string;
+  authToken: string;
   beforeLoad: JSX.Element;
   errorMessage?: JSX.Element;
   children: (pdfDocument: PDFDocumentProxy) => JSX.Element;
@@ -76,9 +77,12 @@ export class PdfLoader extends Component<Props, State> {
         if (!url) {
           return;
         }
-
+  
         return getDocument({
           ...this.props,
+          httpHeaders: {
+            authorization: this.props.authToken
+          },
           ownerDocument,
           cMapUrl,
           cMapPacked,

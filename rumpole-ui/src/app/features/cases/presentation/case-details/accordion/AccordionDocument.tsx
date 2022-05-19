@@ -2,13 +2,13 @@ import {
   CommonDateTimeFormats,
   formatDate,
 } from "../../../../../common/utils/dates";
-import { CaseDocument } from "../../../domain/CaseDocument";
+import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
 
 import classes from "./Accordion.module.scss";
 
 type Props = {
-  caseDocument: CaseDocument;
-  handleOpenDocument: (caseDocument: CaseDocument) => void;
+  caseDocument: CaseDocumentWithTabSafeId;
+  handleOpenDocument: (caseDocument: CaseDocumentWithTabSafeId) => void;
 };
 
 export const AccordionDocument: React.FC<Props> = ({
@@ -22,7 +22,7 @@ export const AccordionDocument: React.FC<Props> = ({
         style={{ wordWrap: "break-word" }}
       >
         <a
-          href={`#${caseDocument.fileName}`}
+          href={`#${caseDocument.tabSafeId}`}
           onClick={(ev) => {
             handleOpenDocument(caseDocument);
             //ev.preventDefault();

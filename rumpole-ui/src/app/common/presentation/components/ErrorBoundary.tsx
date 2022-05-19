@@ -1,5 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Component, ErrorInfo, ReactNode } from "react";
 import { Layout } from "../layout/Layout";
 import { PageContentWrapper } from "./PageContentWrapper";
 

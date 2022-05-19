@@ -1,20 +1,26 @@
 import { rest, RestContext } from "msw";
+
 import devSearchDataSource from "./data/searchResults.dev";
 import cypressSearchDataSource from "./data/searchResults.cypress";
 import devCaseDetailsDataSource from "./data/caseDetails.dev";
 import cypressDetailsDataSource from "./data/caseDetails.cypress";
 import devDocumentsDataSource from "./data/documents.dev";
 import cypressDocumentsDataSource from "./data/documents.cypress";
+import devpipelinePdfResultsDataSource from "./data/pipelinePdfResults.dev";
+import cypresspipelinePdfResultsDataSource from "./data/pipelinePdfResults.cypress";
+
 import { SearchDataSource } from "./data/types/SearchDataSource";
 import {
   CaseDetailsDataSource,
   lastRequestedUrnCache,
 } from "./data/types/CaseDetailsDataSource";
 import { DocumentsDataSource } from "./data/types/DocumentsDataSource";
+import { PipelinePdfResultsDataSource } from "./data/types/PipelinePdfResultsDataSource";
+
 import { MockApiConfig } from "./MockApiConfig";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import fileStrings from "./data/files/file-strings.json";
+import pdfStrings from "./data/pdfs/pdf-strings.json";
 
 const searchDataSources: { [key: string]: SearchDataSource } = {
   dev: devSearchDataSource,
@@ -29,6 +35,13 @@ const caseDetailsDataSources: { [key: string]: CaseDetailsDataSource } = {
 const documentsDataSources: { [key: string]: DocumentsDataSource } = {
   dev: devDocumentsDataSource,
   cypress: cypressDocumentsDataSource,
+};
+
+const pipelinePdfResultsDataSources: {
+  [key: string]: PipelinePdfResultsDataSource;
+} = {
+  dev: devpipelinePdfResultsDataSource,
+  cypress: cypresspipelinePdfResultsDataSource,
 };
 
 export const setupHandlers = ({
@@ -72,13 +85,31 @@ export const setupHandlers = ({
     rest.get(
       makeApiPath("api/documents/:documentId/:fileName"),
       (req, res, ctx) => {
-        const { fileName } = req.params;
-
-        const fileBase64 = (fileStrings as { [key: string]: string })[fileName];
-
-        return res(delay(ctx), ctx.body(_base64ToArrayBuffer(fileBase64)));
+        throw new Error("Not implemented");
       }
     ),
+
+    rest.post(makeApiPath("api/cases/:caseId"), (req, res, ctx) => {
+      const { caseId } = req.params;
+      return res(
+        delay(ctx),
+        ctx.json({ trackerUrl: makeApiPath(`api/cases/${caseId}/tracker`) })
+      );
+    }),
+
+    rest.get(makeApiPath("api/cases/:caseId/tracker"), (req, res, ctx) => {
+      const result = pipelinePdfResultsDataSources[sourceName]();
+
+      return res(delay(ctx), ctx.json(result));
+    }),
+
+    rest.get(makeApiPath("api/pdfs/:blobName"), (req, res, ctx) => {
+      const { blobName } = req.params;
+
+      const fileBase64 = (pdfStrings as { [key: string]: string })[blobName];
+
+      return res(delay(ctx), ctx.body(_base64ToArrayBuffer(fileBase64)));
+    }),
   ];
 };
 

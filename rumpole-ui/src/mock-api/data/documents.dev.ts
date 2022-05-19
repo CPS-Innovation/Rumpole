@@ -9,7 +9,7 @@ export default dataSource;
 
 const documents: CaseDocument[] = [
   {
-    documentId: "1",
+    documentId: "d1",
     fileName: "MCLOVEMG3",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -18,7 +18,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "2",
+    documentId: "d2",
     fileName: "CM01",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -27,7 +27,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "3",
+    documentId: "d3",
     fileName: "MG05MCLOVE",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -36,7 +36,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "4",
+    documentId: "d4",
     fileName: "MG06_3June",
     createdDate: "2020-06-03",
     cmsDocType: {
@@ -45,7 +45,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "5",
+    documentId: "d5",
     fileName: "MG06_10june",
     createdDate: "2020-06-10",
     cmsDocType: {
