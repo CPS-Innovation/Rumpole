@@ -13,7 +13,7 @@ import { PageContentWrapper } from "../../../../common/presentation/components/P
 
 export const path = "/case-search";
 
-const validationFailMessage = "Please enter a valid URN";
+const validationFailMessage = "Enter a URN in the right format";
 
 const Page: React.FC = () => {
   const { urn: initialUrn, setParams } =

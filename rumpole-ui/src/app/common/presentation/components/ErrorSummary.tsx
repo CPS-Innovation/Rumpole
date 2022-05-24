@@ -1,6 +1,6 @@
 import * as GDS from "govuk-react-jsx";
 import React, { ReactNode } from "react";
-import { PageContentWrapper } from "./PageContentWrapper";
+
 import styles from "./ErrorSummary.module.scss";
 
 type ErrorSummaryProps = React.DetailedHTMLProps<
@@ -27,8 +27,6 @@ export const ErrorSummary: React.FC<ErrorSummaryProps> = (props) => {
   };
 
   return (
-    <PageContentWrapper>
-      <GDS.ErrorSummary {...resolvedProps} className={styles.ErrorSummary} />
-    </PageContentWrapper>
+    <GDS.ErrorSummary {...resolvedProps} className={styles.ErrorSummary} />
   );
 };

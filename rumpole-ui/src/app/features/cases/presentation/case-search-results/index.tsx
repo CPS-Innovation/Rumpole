@@ -8,7 +8,6 @@ import {
 import { CaseSearchQueryParams } from "../../types/CaseSearchQueryParams";
 import { useQueryParamsState } from "../../../../common/hooks/useQueryParamsState";
 
-import classes from "./index.module.scss";
 import { useSearchInputLogic } from "../../hooks/useSearchInputLogic";
 import { generatePath, Link } from "react-router-dom";
 import { path as casePath } from "../case-details";
@@ -23,9 +22,11 @@ import { useApi } from "../../../../common/hooks/useApi";
 import { searchUrn } from "../../api/gateway-api";
 import { Placeholder } from "../../../../common/presentation/components/Placeholder";
 
+import classes from "./index.module.scss";
+
 export const path = "/case-search-results";
 
-const validationFailMessage = "Please enter a valid URN";
+const validationFailMessage = "Enter a URN in the right format";
 
 type Props = BackLinkingPageProps & {};
 
@@ -56,7 +57,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
       <BackLink to={backLinkProps.to}>{backLinkProps.label}</BackLink>
       <PageContentWrapper>
         <div className="govuk-grid-row">
-          <div className="govuk-grid-column-full">
+          <div className="govuk-grid-column-two-thirds">
             {isError && (
               <ErrorSummary
                 errorList={[
@@ -96,17 +97,14 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                   children: "Search for a case URN",
                 }}
                 formGroup={{
-                  className: "govuk-!-width-one-half",
+                  className: "govuk-!-width-full",
                 }}
               />
               <Button onClick={handleSubmit} data-testid="button-search">
                 Search
               </Button>
             </div>
-          </div>
-        </div>
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
+
             <div className={classes.results}>
               <p className="govuk-body">
                 We've found <b data-testid="txt-result-count">{data.length}</b>
