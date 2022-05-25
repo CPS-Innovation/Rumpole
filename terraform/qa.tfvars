@@ -16,5 +16,5 @@ core_data_api_details = {
 
 coordinator_scope_details = {
     app_registration_application_id = "db476ea0-9bec-44af-8c1c-7c570587855d"
-    user_impersonation_scope_id = "1612346b-07c9-552f-0bc5-a193e5f459e0"
+    user_impersonation_scope_id = "f07216d7-d6fe-42aa-8034-fe6506e03a49"
 }
