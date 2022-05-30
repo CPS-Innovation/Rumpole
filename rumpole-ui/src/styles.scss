@@ -34,6 +34,7 @@ body {
 .perma-scrollbar::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px;
+  height: 7px;
 }
 .perma-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 4px;

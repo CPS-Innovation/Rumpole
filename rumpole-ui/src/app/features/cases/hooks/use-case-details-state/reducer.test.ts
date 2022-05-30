@@ -280,6 +280,42 @@ describe("useCaseDetailsState reducer", () => {
     expect(nextState.tabsState).toBe(existingTabsState);
   });
 
+  it("can close a tab", () => {
+    const existingTabsState = {
+      authToken: "authtoken",
+      items: [
+        {
+          documentId: "d1",
+          url: undefined,
+          tabSafeId: "t1",
+        },
+        {
+          documentId: "d2",
+          url: undefined,
+          tabSafeId: "t2",
+        },
+      ],
+    } as CombinedState["tabsState"];
+
+    const nextState = reducer(
+      {
+        tabsState: existingTabsState,
+      } as CombinedState,
+      { type: "CLOSE_PDF", payload: { tabSafeId: "t2" } }
+    );
+
+    expect(nextState.tabsState).toEqual({
+      authToken: "authtoken",
+      items: [
+        {
+          documentId: "d1",
+          url: undefined,
+          tabSafeId: "t1",
+        },
+      ],
+    });
+  });
+
   it("throws if update auth token fails", () => {
     expect(() =>
       reducer({} as CombinedState, {

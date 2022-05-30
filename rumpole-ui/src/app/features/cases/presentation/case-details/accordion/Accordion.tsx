@@ -1,5 +1,4 @@
 import { useReducer } from "react";
-import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
 import classes from "./Accordion.module.scss";
 import { AccordionHeader } from "./AccordionHeader";
 import { AccordionSection } from "./AccordionSection";
@@ -8,12 +7,15 @@ import { AccordionDocumentSection } from "./types";
 
 type Props = {
   accordionState: AccordionDocumentSection[];
-  handleOpenDocument: (caseDocument: CaseDocumentWithTabSafeId) => void;
+  handleOpenPdf: (caseDocument: {
+    tabSafeId: string;
+    documentId: string;
+  }) => void;
 };
 
 export const Accordion: React.FC<Props> = ({
   accordionState: sections,
-  handleOpenDocument,
+  handleOpenPdf,
 }) => {
   const [state, dispatch] = useReducer(
     reducer,
@@ -42,7 +44,7 @@ export const Accordion: React.FC<Props> = ({
           docs={docs}
           isOpen={state.sections[sectionId]}
           handleToggleOpenSection={handleToggleOpenSection}
-          handleOpenDocument={handleOpenDocument}
+          handleOpenPdf={handleOpenPdf}
         />
       ))}
     </div>

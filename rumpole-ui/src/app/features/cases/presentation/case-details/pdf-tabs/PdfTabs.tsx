@@ -1,6 +1,6 @@
-import { Tabs } from "../../../../../common/presentation/components/Tabs";
+import { Tabs } from "../../../../../common/presentation/components/tabs";
 import { CaseDocumentWithUrl } from "../../../domain/CaseDocumentWithUrl";
-import classes from "../index.module.scss";
+
 import { PdfTab } from "./PdfTab";
 
 type PdfTabsProps = {
@@ -8,21 +8,15 @@ type PdfTabsProps = {
     items: CaseDocumentWithUrl[];
     authToken: undefined | string;
   };
+  handleClosePdf: (caseDocument: { tabSafeId: string }) => void;
 };
 
 export const PdfTabs: React.FC<PdfTabsProps> = ({
   tabsState: { items, authToken },
+  handleClosePdf,
 }) => {
-  // Important to only render Tabs when there is at least one tab.  If we first render Tabs component
-  //  with no tabs, the underlying govuk JS quits its initialisation method, due to there being
-  //  no tabs.  Subsequently adding tabs doesn't fully work if the initialisation fails.
-  if (!items.length) {
-    return null;
-  }
-
   return (
     <Tabs
-      className={classes.pdfTabs}
       idPrefix="pdf"
       items={items.map((item) => ({
         id: item.tabSafeId,
@@ -32,6 +26,7 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
         },
       }))}
       title="Contents"
+      handleClosePdf={handleClosePdf}
     />
   );
 };

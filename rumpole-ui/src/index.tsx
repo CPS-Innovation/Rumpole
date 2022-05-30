@@ -9,8 +9,8 @@ if (process.env.REACT_APP_MOCK_API_SOURCE === "dev") {
   const { setupMockApi } = require("./mock-api/browser");
 
   setupMockApi({
-    baseUrl: process.env.REACT_APP_GATEWAY_BASE_URL!,
-    maxDelay: Number(process.env.REACT_APP_MOCK_API_MAX_DELAY!),
+    baseUrl: process.env.REACT_APP_GATEWAY_BASE_URL,
+    maxDelayMs: process.env.REACT_APP_MOCK_API_MAX_DELAY,
     sourceName: "dev",
   });
 }

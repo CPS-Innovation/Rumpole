@@ -44,7 +44,7 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleOpenPdf = useCallback(
-    (caseDocument: CaseDocumentWithTabSafeId) => {
+    (caseDocument: { tabSafeId: string; documentId: string }) => {
       dispatch({
         type: "OPEN_PDF",
         payload: {
@@ -56,10 +56,22 @@ export const useCaseDetailsState = (id: string) => {
     [dispatch]
   );
 
+  const handleClosePdf = useCallback(
+    (caseDocument: { tabSafeId: string }) => {
+      dispatch({
+        type: "CLOSE_PDF",
+        payload: {
+          tabSafeId: caseDocument.tabSafeId,
+        },
+      });
+    },
+    [dispatch]
+  );
   return {
     caseState: combinedState.caseState,
     accordionState: combinedState.accordionState,
     tabsState: combinedState.tabsState,
     handleOpenPdf,
+    handleClosePdf,
   };
 };

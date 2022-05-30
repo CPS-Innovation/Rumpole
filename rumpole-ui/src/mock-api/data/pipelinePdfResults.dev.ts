@@ -8,7 +8,6 @@ const dataSource: PipelinePdfResultsDataSource = () => {
     callIndex = 0;
   }
 
-  console.log(callIndex);
   const incrementingData = pipelinePdfResults.documents.reduce(
     (prev, curr, index) => {
       if (index >= callIndex) {
@@ -53,6 +52,31 @@ const pipelinePdfResults: PipelineResults = {
     },
     {
       documentId: "d5",
+      pdfBlobName: "MG06_10june",
+      status: "finished",
+    },
+    {
+      documentId: "d6",
+      pdfBlobName: "MCLOVEMG3",
+      status: "finished",
+    },
+    {
+      documentId: "d7",
+      pdfBlobName: "CM01",
+      status: "finished",
+    },
+    {
+      documentId: "d8",
+      pdfBlobName: "MG05MCLOVE",
+      status: "finished",
+    },
+    {
+      documentId: "d9",
+      pdfBlobName: "MG06_3June",
+      status: "finished",
+    },
+    {
+      documentId: "d10",
       pdfBlobName: "MG06_10june",
       status: "finished",
     },

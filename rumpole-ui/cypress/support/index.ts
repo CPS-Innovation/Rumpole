@@ -32,6 +32,6 @@ Cypress.on("test:before:run:async", async () => {
   await setupMockApi({
     sourceName: Cypress.env().REACT_APP_MOCK_API_SOURCE,
     baseUrl: Cypress.env().REACT_APP_GATEWAY_BASE_URL,
-    maxDelay: Cypress.env().REACT_APP_MOCK_API_MAX_DELAY,
+    maxDelayMs: Cypress.env().REACT_APP_MOCK_API_MAX_DELAY,
   });
 });

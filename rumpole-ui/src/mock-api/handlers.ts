@@ -46,12 +46,17 @@ const pipelinePdfResultsDataSources: {
 
 export const setupHandlers = ({
   sourceName,
-  maxDelay,
+  maxDelayMs,
   baseUrl,
 }: MockApiConfig) => {
+  // make sure we are reading a number not string from config
+  //  also msw will not accept a delay of 0, so if 0 is passed then just set to 1ms
+  const sanitisedMaxDelay = Number(maxDelayMs) || 1;
+
   const makeApiPath = (path: string) => new URL(path, baseUrl).toString();
 
-  const delay = (ctx: RestContext) => ctx.delay(Math.random() * maxDelay);
+  const delay = (ctx: RestContext) =>
+    ctx.delay(Math.random() * sanitisedMaxDelay);
 
   return [
     rest.get(makeApiPath("api/case-information-by-urn/*"), (req, res, ctx) => {
@@ -100,7 +105,8 @@ export const setupHandlers = ({
     rest.get(makeApiPath("api/cases/:caseId/tracker"), (req, res, ctx) => {
       const result = pipelinePdfResultsDataSources[sourceName]();
 
-      return res(delay(ctx), ctx.json(result));
+      // always maxDelay as we want this to be slow to illustrate async nature of tracker/polling
+      return res(ctx.delay(sanitisedMaxDelay), ctx.json(result));
     }),
 
     rest.get(makeApiPath("api/pdfs/:blobName"), (req, res, ctx) => {

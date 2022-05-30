@@ -19,8 +19,13 @@ type Props = BackLinkingPageProps & {};
 export const Page: React.FC<Props> = ({ backLinkProps }) => {
   const { id } = useParams<{ id: string }>();
 
-  const { caseState, accordionState, tabsState, handleOpenPdf } =
-    useCaseDetailsState(id);
+  const {
+    caseState,
+    accordionState,
+    tabsState,
+    handleOpenPdf,
+    handleClosePdf,
+  } = useCaseDetailsState(id);
 
   if (caseState.status === "loading") {
     // if we are waiting on the main case details call, show holding message
@@ -55,7 +60,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
               ) : (
                 <Accordion
                   accordionState={accordionState.data}
-                  handleOpenDocument={handleOpenPdf}
+                  handleOpenPdf={handleOpenPdf}
                 />
               )}
             </div>
@@ -66,7 +71,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
             {!tabsState.items.length ? (
               <PdfTabsEmpty />
             ) : (
-              <PdfTabs tabsState={tabsState} />
+              <PdfTabs tabsState={tabsState} handleClosePdf={handleClosePdf} />
             )}
           </div>
         </div>

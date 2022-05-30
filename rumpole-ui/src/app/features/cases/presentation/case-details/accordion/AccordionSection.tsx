@@ -9,7 +9,10 @@ type Props = {
   docs: CaseDocumentWithTabSafeId[];
   isOpen: boolean;
   handleToggleOpenSection: (id: string) => void;
-  handleOpenDocument: (caseDocument: CaseDocumentWithTabSafeId) => void;
+  handleOpenPdf: (caseDocument: {
+    tabSafeId: string;
+    documentId: string;
+  }) => void;
 };
 
 export const AccordionSection: React.FC<Props> = ({
@@ -18,7 +21,7 @@ export const AccordionSection: React.FC<Props> = ({
   docs,
   isOpen,
   handleToggleOpenSection,
-  handleOpenDocument,
+  handleOpenPdf,
 }) => {
   return (
     <div className={`${classes["accordion-section"]}`} aria-expanded={isOpen}>
@@ -56,7 +59,7 @@ export const AccordionSection: React.FC<Props> = ({
                   <AccordionDocument
                     key={caseDocument.documentId}
                     caseDocument={caseDocument}
-                    handleOpenDocument={handleOpenDocument}
+                    handleOpenPdf={handleOpenPdf}
                   />
                 ))}
               </tbody>

@@ -21,7 +21,11 @@ export const reducer = (
       }
     | {
         type: "OPEN_PDF";
-        payload: { pdfId: string; tabSafeId: string };
+        payload: { tabSafeId: string; pdfId: string };
+      }
+    | {
+        type: "CLOSE_PDF";
+        payload: { tabSafeId: string };
       }
     | {
         type: "UPDATE_AUTH_TOKEN";
@@ -88,36 +92,50 @@ export const reducer = (
 
       return { ...state, pipelineState };
     case "OPEN_PDF":
-      const { pdfId, tabSafeId } = action.payload;
-      if (
-        !state.tabsState.items.some((item) => item.documentId === pdfId) &&
-        state.documentsState.status === "succeeded"
-      ) {
-        const foundDocument = state.documentsState.data.find(
-          (item) => item.documentId === pdfId
-        )!;
-        const blobName =
-          state.pipelineState.status === "succeeded"
-            ? state.pipelineState.data.documents.find(
-                (item) => item.documentId === pdfId
-              )?.pdfBlobName
-            : undefined;
+      {
+        const { pdfId, tabSafeId } = action.payload;
+        if (
+          !state.tabsState.items.some((item) => item.documentId === pdfId) &&
+          state.documentsState.status === "succeeded"
+        ) {
+          const foundDocument = state.documentsState.data.find(
+            (item) => item.documentId === pdfId
+          )!;
+          const blobName =
+            state.pipelineState.status === "succeeded"
+              ? state.pipelineState.data.documents.find(
+                  (item) => item.documentId === pdfId
+                )?.pdfBlobName
+              : undefined;
 
-        const url = blobName && resolvePdfUrl(blobName);
+          const url = blobName && resolvePdfUrl(blobName);
 
-        return {
-          ...state,
-          tabsState: {
-            ...state.tabsState,
-            items: [
-              ...state.tabsState.items,
-              { ...foundDocument, url, tabSafeId },
-            ],
-          },
-        };
+          return {
+            ...state,
+            tabsState: {
+              ...state.tabsState,
+              items: [
+                ...state.tabsState.items,
+                { ...foundDocument, url, tabSafeId },
+              ],
+            },
+          };
+        }
       }
-
       return state;
+    case "CLOSE_PDF": {
+      const { tabSafeId } = action.payload;
+      console.log({ state, action });
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: state.tabsState.items.filter(
+            (item) => item.tabSafeId !== tabSafeId
+          ),
+        },
+      };
+    }
     case "UPDATE_AUTH_TOKEN":
       if (action.payload.status === "failed") {
         throw action.payload.error;
