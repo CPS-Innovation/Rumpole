@@ -33,7 +33,13 @@ export const Routes: FC = () => {
         <Layout isWide>
           <Case
             backLinkProps={{
-              to: caseSearchResultsPath + state,
+              // Typically the user will be on the case details page having navigated through the
+              //  results screen, and so `state` will be the expected string holding the return
+              //  path.  If the user has visited the case screen directly (e.g. bookmarked a case URL)
+              //  `state` will be undefined.  In this case, we want to take the user back to the vanilla
+              //  home page.  This is best represented by redirecting to empty and allowing the default
+              //  route to kick -in.
+              to: state ? caseSearchResultsPath + state : "",
               label: "Find a case",
             }}
           />
