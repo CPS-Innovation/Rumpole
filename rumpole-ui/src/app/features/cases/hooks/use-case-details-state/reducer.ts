@@ -31,6 +31,14 @@ export const reducer = (
         type: "UPDATE_AUTH_TOKEN";
         payload: ApiResult<Headers>;
       }
+    | {
+        type: "UPDATE_SEARCH_TERM";
+        payload: { searchTerm: string };
+      }
+    | {
+        type: "OPEN_CLOSE_SEARCH_RESULTS";
+        payload: { isOpen: boolean };
+      }
 ): CombinedState => {
   switch (action.type) {
     case "UPDATE_CASE_DETAILS":
@@ -125,7 +133,7 @@ export const reducer = (
       return state;
     case "CLOSE_PDF": {
       const { tabSafeId } = action.payload;
-      console.log({ state, action });
+
       return {
         ...state,
         tabsState: {
@@ -147,6 +155,22 @@ export const reducer = (
       }
 
       return state;
+    case "UPDATE_SEARCH_TERM":
+      return {
+        ...state,
+        searchState: {
+          ...state.searchState,
+          searchTerm: action.payload.searchTerm,
+        },
+      };
+    case "OPEN_CLOSE_SEARCH_RESULTS":
+      return {
+        ...state,
+        searchState: {
+          ...state.searchState,
+          isResultsVisible: action.payload.isOpen,
+        },
+      };
     default:
       throw new Error("Unknown action passed to case details reducer");
   }

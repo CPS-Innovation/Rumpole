@@ -10,7 +10,7 @@ describe("useCaseDetailsState reducer", () => {
   it("throws if update caseState fails", () => {
     expect(() =>
       reducer({} as CombinedState, {
-        type: "UPDATE_CASE_DOCUMENTS",
+        type: "UPDATE_CASE_DETAILS",
         payload: { status: "failed", error: ERROR, httpStatusCode: undefined },
       })
     ).toThrowError(ERROR);
@@ -383,6 +383,57 @@ describe("useCaseDetailsState reducer", () => {
       }
     );
     expect(newState.tabsState).toEqual({ items: [], authToken: "auth-token" });
+  });
+
+  it("can update search term", () => {
+    const existingSearchState = {
+      searchTerm: "foo",
+      isResultsVisible: false,
+    } as CombinedState["searchState"];
+
+    const newState = reducer(
+      { searchState: existingSearchState } as CombinedState,
+      { type: "UPDATE_SEARCH_TERM", payload: { searchTerm: "bar" } }
+    );
+
+    expect(newState.searchState).toEqual({
+      searchTerm: "bar",
+      isResultsVisible: false,
+    });
+  });
+
+  it("can open search results", () => {
+    const existingSearchState = {
+      searchTerm: "foo",
+      isResultsVisible: false,
+    } as CombinedState["searchState"];
+
+    const newState = reducer(
+      { searchState: existingSearchState } as CombinedState,
+      { type: "OPEN_CLOSE_SEARCH_RESULTS", payload: { isOpen: true } }
+    );
+
+    expect(newState.searchState).toEqual({
+      searchTerm: "foo",
+      isResultsVisible: true,
+    });
+  });
+
+  it("can close search results", () => {
+    const existingSearchState = {
+      searchTerm: "foo",
+      isResultsVisible: true,
+    } as CombinedState["searchState"];
+
+    const newState = reducer(
+      { searchState: existingSearchState } as CombinedState,
+      { type: "OPEN_CLOSE_SEARCH_RESULTS", payload: { isOpen: false } }
+    );
+
+    expect(newState.searchState).toEqual({
+      searchTerm: "foo",
+      isResultsVisible: false,
+    });
   });
 
   it("can not handle an unknown action", () => {

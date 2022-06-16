@@ -74,7 +74,8 @@
     "rules": {
       "testing-library/await-async-query": "off",
       "testing-library/prefer-screen-queries": "off",
-      "eslinttesting-library/no-unnecessary-act": "off"
+      "eslinttesting-library/no-unnecessary-act": "off",
+      "testing-library/await-async-utils": "off"
     }
   },
   "browserslist": {

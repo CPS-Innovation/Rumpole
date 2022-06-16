@@ -11,6 +11,8 @@ import classes from "./index.module.scss";
 import { PdfTabs } from "./pdf-tabs/PdfTabs";
 import { useCaseDetailsState } from "../../hooks/use-case-details-state/useCaseDetailsState";
 import { PdfTabsEmpty } from "./pdf-tabs/PdfTabsEmpty";
+import { SearchBox } from "./search-box/SearchBox";
+import { Modal } from "../../../../common/presentation/components/Modal";
 
 export const path = "/case-details/:id";
 
@@ -23,8 +25,12 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     caseState,
     accordionState,
     tabsState,
+    searchState,
     handleOpenPdf,
     handleClosePdf,
+    handleSearchTermChange,
+    handleOpenSearchResults,
+    handleCloseSearchResults,
   } = useCaseDetailsState(id);
 
   if (caseState.status === "loading") {
@@ -35,6 +41,13 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
 
   return (
     <>
+      <Modal
+        isVisible={searchState.isResultsVisible}
+        handleClose={handleCloseSearchResults}
+      >
+        <div data-testid="div-search-results"></div>
+      </Modal>
+
       <Placeholder height={40} />
 
       <BackLink to={backLinkProps.to}>{backLinkProps.label}</BackLink>
@@ -53,7 +66,11 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
                 backgroundColor={"#1d70b8"}
               />
 
-              <Placeholder height={40} marginTop={50} marginBottom={20} />
+              <SearchBox
+                value={searchState.searchTerm}
+                handleChange={handleSearchTermChange}
+                handleSubmit={handleOpenSearchResults}
+              />
 
               {accordionState.status === "loading" ? (
                 <AccordionWait />

@@ -14,4 +14,8 @@ export type CombinedState = {
     items: CaseDocumentWithUrl[];
     authToken: undefined | string;
   };
+  searchState: {
+    isResultsVisible: boolean;
+    searchTerm: undefined | string;
+  };
 };

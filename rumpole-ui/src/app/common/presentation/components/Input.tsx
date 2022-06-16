@@ -24,8 +24,8 @@ type InputProps = Omit<
   label?: LabelProps;
   name?: string;
   id?: string;
-  prefix?: string;
-  suffix?: string;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
   // as a convenience, let consumer just deal with the event value rather than the event
   onChange?: (val: string) => void;
 };
