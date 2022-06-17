@@ -14,6 +14,7 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using RumpoleGateway.Mappers;
@@ -33,6 +34,10 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
+            builder.Services.AddOptions<SearchIndexOptions>().Configure<IConfiguration>((setttings, configuration) =>
+            {
+                configuration.GetSection("searchIndexService").Bind(setttings);
+            });
             builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
@@ -42,6 +47,8 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
             builder.Services.AddTransient<ITriggerCoordinatorResponseFactory, TriggerCoordinatorResponseFactory>();
             builder.Services.AddTransient<ITrackerUrlMapper, TrackerUrlMapper>();
+            builder.Services.AddTransient<ISearchIndexClient, SearchIndexClient>();
+            builder.Services.AddTransient<ISearchClientFactory, SearchClientFactory>();
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {

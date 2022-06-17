@@ -49,3 +49,8 @@ variable "coordinator_scope_details" {
 variable "stub_blob_storage_connection_string" {
   type = string
 }
+
+# TODO get rid of this as it will change every time search index service is rebuilt
+variable "search_index_client_authorization_key" {
+  type = string
+}

@@ -3,6 +3,7 @@ location = "UK South"
 environment_tag="Development"
 rumpole_pipeline_coordinator_function_app_key="58mN4H3J0zfMJE0NyJBtb4AnzLfED/WtXYWvUvADeDhUcqFxmieLJQ=="
 stub_blob_storage_connection_string="DefaultEndpointsProtocol=https;AccountName=sadevcmsdocumentservices;AccountKey=06beksVS54Cw5YqSLpvKrJStK8yYMsSui1cPO3MT4+pnHys6sCBFqBq17ix5ZGXuL5cHxnBIslXzZsL24ZRa7g==;EndpointSuffix=core.windows.net"
+search_index_client_authorization_key="vROU0E80Q2KcFdtmtUAJTKxOUs4loMacLht2QXky6gAzSeDSXCgj"
 
 app_service_plan_sku = {
     size = "B1"

@@ -18,6 +18,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.1.1" />
+    <PackageReference Include="Azure.Search.Documents" Version="11.3.0" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Azure.Core.NewtonsoftJson" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="local.Designer.cs">
@@ -37,6 +40,9 @@
     <None Remove="Clients\DocumentExtraction\" />
     <None Remove="Domain\DocumentExtraction\" />
     <None Remove="Mappers\" />
+    <None Remove="Azure.Search.Documents" />
+    <None Remove="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" />
+    <None Remove="Microsoft.Azure.Core.NewtonsoftJson" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
