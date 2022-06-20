@@ -34,9 +34,9 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            builder.Services.AddOptions<SearchIndexOptions>().Configure<IConfiguration>((setttings, configuration) =>
+            builder.Services.AddOptions<SearchClientOptions>().Configure<IConfiguration>((setttings, configuration) =>
             {
-                configuration.GetSection("searchIndexService").Bind(setttings);
+                configuration.GetSection("searchClient").Bind(setttings);
             });
             builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);

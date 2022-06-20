@@ -3,15 +3,14 @@ using Azure;
 using Azure.Core.Serialization;
 using Azure.Search.Documents;
 using Microsoft.Extensions.Options;
-using RumpoleGateway.Domain.RumpolePipeline;
 
 namespace RumpoleGateway.Factories
 {
 	public class SearchClientFactory : ISearchClientFactory
 	{
-        private readonly SearchIndexOptions _options;
+        private readonly Domain.RumpolePipeline.SearchClientOptions _options;
 
-        public SearchClientFactory(IOptions<SearchIndexOptions> options)
+        public SearchClientFactory(IOptions<Domain.RumpolePipeline.SearchClientOptions> options)
         {
             _options = options.Value;
         }

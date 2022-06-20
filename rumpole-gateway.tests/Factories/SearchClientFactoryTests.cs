@@ -12,20 +12,20 @@ namespace RumpoleGateway.Tests.Factories
 	public class SearchClientFactoryTests
 	{
 		private Fixture _fixture;
-		private SearchIndexOptions _searchIndexOptions;
+		private Domain.RumpolePipeline.SearchClientOptions _searchIndexOptions;
 
-		private Mock<IOptions<SearchIndexOptions>> _mockSearchIndexOptions;
+		private Mock<IOptions<Domain.RumpolePipeline.SearchClientOptions>> _mockSearchIndexOptions;
 
 		private ISearchClientFactory SearchClientFactory;
 
 		public SearchClientFactoryTests()
 		{
 			_fixture = new Fixture();
-			_searchIndexOptions = _fixture.Build<SearchIndexOptions>()
+			_searchIndexOptions = _fixture.Build<SearchClientOptions>()
 									.With(o => o.EndpointUrl, "https://www.google.co.uk")
 									.Create();
 
-			_mockSearchIndexOptions = new Mock<IOptions<SearchIndexOptions>>();
+            _mockSearchIndexOptions = new Mock<IOptions<Domain.RumpolePipeline.SearchClientOptions>>();
 
 			_mockSearchIndexOptions.Setup(options => options.Value).Returns(_searchIndexOptions);
 

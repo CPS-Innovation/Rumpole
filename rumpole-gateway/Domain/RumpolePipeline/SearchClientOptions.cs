@@ -1,6 +1,6 @@
 ﻿namespace RumpoleGateway.Domain.RumpolePipeline
 {
-    public class SearchIndexOptions
+    public class SearchClientOptions
     {
         public string EndpointUrl { get; set; }
 
