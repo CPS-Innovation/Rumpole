@@ -21,7 +21,7 @@ namespace RumpoleGateway.Tests.Factories
 		public SearchClientFactoryTests()
 		{
 			_fixture = new Fixture();
-			_searchIndexOptions = _fixture.Build<SearchClientOptions>()
+			_searchIndexOptions = _fixture.Build<Domain.RumpolePipeline.SearchClientOptions>()
 									.With(o => o.EndpointUrl, "https://www.google.co.uk")
 									.Create();
 
