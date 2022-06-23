@@ -13,10 +13,8 @@ export const SearchBox: React.FC<Props> = ({
   handleChange,
   handleSubmit,
 }) => {
-  const localHandleSubmit = () => !!value && handleSubmit();
-
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) =>
-    event.key === "Enter" && localHandleSubmit();
+    event.key === "Enter" && handleSubmit();
 
   return (
     <div className={classes.container}>
@@ -32,8 +30,7 @@ export const SearchBox: React.FC<Props> = ({
               data-testid="btn-search-case"
               className={classes.button}
               type="submit"
-              onClick={localHandleSubmit}
-              disabled={!value}
+              onClick={handleSubmit}
             ></button>
           ),
           className: classes.suffix,
