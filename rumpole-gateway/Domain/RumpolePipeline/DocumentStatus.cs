@@ -4,9 +4,11 @@
 	{
 		None,
 		PdfUploadedToBlob,
+		Indexed,
 		NotFoundInCDE,
 		UnableToConvertToPdf,
-		UnexpectedFailure
+		UnexpectedFailure,
+		OcrAndIndexFailure
 	}
 }
 
