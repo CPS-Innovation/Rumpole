@@ -15,7 +15,7 @@ export const Placeholder: React.FC<Props> = ({
   marginBottom = 5,
   marginLeft = 0,
   marginRight = 0,
-  backgroundColor = "#eeeeee",
+  backgroundColor = "#ffffff",
 }) => {
   return (
     <div

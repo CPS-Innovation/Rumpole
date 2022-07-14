@@ -1,12 +1,12 @@
 import { AccordionDocument } from "./AccordionDocument";
 import classes from "./Accordion.module.scss";
 import { AccordionNoDocuments } from "./AccordionNoDocuments";
-import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
+import { MappedCaseDocument } from "../../../domain/MappedCaseDocument";
 
 type Props = {
   sectionId: string;
   sectionLabel: string;
-  docs: CaseDocumentWithTabSafeId[];
+  docs: MappedCaseDocument[];
   isOpen: boolean;
   handleToggleOpenSection: (id: string) => void;
   handleOpenPdf: (caseDocument: {

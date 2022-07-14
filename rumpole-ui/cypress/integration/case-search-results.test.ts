@@ -1,3 +1,5 @@
+import { CASE_SEARCH_ROUTE } from "../../src/mock-api/routes";
+
 describe("search results", () => {
   it("displays search result and summarises returned count and URN", () => {
     cy.visit("/case-search-results?urn=12AB1111111");
@@ -36,11 +38,11 @@ describe("search results", () => {
   });
 
   it("shows the unhandled error page if an unexpected error occurrs with the api", () => {
-    cy.visitPageAndbreakApiRoute(
-      "/case-search",
-      "api/case-information-by-urn/*",
-      500
-    );
+    cy.visit("/case-search");
+    cy.overrideRoute(CASE_SEARCH_ROUTE, {
+      type: "break",
+      httpStatusCode: 599,
+    });
 
     cy.findByTestId("input-search-urn").type("12AB1111111");
     cy.findByTestId("button-search").click();
@@ -50,11 +52,11 @@ describe("search results", () => {
   });
 
   it("does not show error if gateway call returns 404", () => {
-    cy.visitPageAndbreakApiRoute(
-      "/case-search",
-      "api/case-information-by-urn/*",
-      404
-    );
+    cy.visit("/case-search");
+    cy.overrideRoute(CASE_SEARCH_ROUTE, {
+      type: "break",
+      httpStatusCode: 404,
+    });
 
     cy.findByTestId("input-search-urn").type("12AB1111111");
     cy.findByTestId("button-search").click();

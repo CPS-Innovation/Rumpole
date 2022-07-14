@@ -4,6 +4,7 @@ import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../../../config";
 import { CaseDocument } from "../domain/CaseDocument";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 import { PipelineResults } from "../domain/PipelineResults";
+import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
 
 const getFullUrl = (path: string) => {
   return new URL(path, GATEWAY_BASE_URL).toString();
@@ -102,4 +103,19 @@ export const getPipelinePdfResults = async (trackerUrl: string) => {
   });
 
   return (await response.json()) as PipelineResults;
+};
+
+export const searchCase = async (caseId: string, searchTerm: string) => {
+  const headers = await getHeaders();
+  const path = getFullUrl(`/api/cases/${caseId}/query/${searchTerm}`);
+  const response = await fetch(path, {
+    headers,
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Search Case Text failed", path, response);
+  }
+
+  return (await response.json()) as ApiTextSearchResult[];
 };

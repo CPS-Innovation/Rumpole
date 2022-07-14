@@ -1,438 +1,954 @@
-import { CombinedState } from "./CombinedState";
+import { CombinedState } from "../../domain/CombinedState";
 import { reducer } from "./reducer";
-import * as documentsMapper from "./documents-mapper";
+import * as accordionMapper from "./map-accordion-state";
+import * as documentsMapper from "./map-documents-state";
 import * as apiGateway from "../../api/gateway-api";
 import { ApiResult } from "../../../../common/types/ApiResult";
+import { PipelineResults } from "../../domain/PipelineResults";
+import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
+import * as sorter from "./sort-mapped-text-search-result";
+import { MappedTextSearchResult } from "../../domain/MappedTextSearchResult";
+import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
+import * as documentVisibility from "./is-document-visible";
+import { ApiTextSearchResult } from "../../domain/ApiTextSearchResult";
+import * as textSearchMapper from "./map-text-search";
+import * as filters from "./map-filters";
+import * as missingDocuments from "./map-missing-documents";
 
 const ERROR = new Error();
 
 describe("useCaseDetailsState reducer", () => {
-  it("throws if update caseState fails", () => {
-    expect(() =>
-      reducer({} as CombinedState, {
-        type: "UPDATE_CASE_DETAILS",
-        payload: { status: "failed", error: ERROR, httpStatusCode: undefined },
-      })
-    ).toThrowError(ERROR);
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  it("can update case details", () => {
-    const newCaseState = {} as CombinedState["caseState"];
-
-    const nextState = reducer({} as CombinedState, {
-      type: "UPDATE_CASE_DETAILS",
-      payload: newCaseState,
+  describe("UPDATE_CASE_DETAILS", () => {
+    it("throws if update case details fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_CASE_DETAILS",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+          },
+        })
+      ).toThrowError(ERROR);
     });
 
-    expect(nextState.caseState).toBe(newCaseState);
-  });
+    it("can update case details", () => {
+      const newCaseState = {} as CombinedState["caseState"];
 
-  it("throws if update documentsState fails", () => {
-    expect(() =>
-      reducer({} as CombinedState, {
-        type: "UPDATE_CASE_DOCUMENTS",
-        payload: {
-          status: "failed",
-          error: ERROR,
-          httpStatusCode: undefined,
-        },
-      })
-    ).toThrowError(ERROR);
-  });
-
-  it("can not update accordionState if incoming documentsState is not ready", () => {
-    const newDocumentsState = {
-      status: "loading",
-    } as CombinedState["documentsState"];
-
-    const exitingAccordionState = {} as CombinedState["accordionState"];
-
-    const nextState = reducer(
-      { accordionState: exitingAccordionState } as CombinedState,
-      {
-        type: "UPDATE_CASE_DOCUMENTS",
-        payload: newDocumentsState,
-      }
-    );
-
-    expect(nextState.documentsState).toBe(newDocumentsState);
-    expect(nextState.accordionState).toBe(exitingAccordionState);
-  });
-
-  it("can update accordionState if incoming documentsState is ready", () => {
-    const existingAccordionState = {} as CombinedState["accordionState"];
-    const newAccordionState = {} as CombinedState["accordionState"];
-    const newDocumentsState = {
-      status: "succeeded",
-    } as CombinedState["documentsState"];
-
-    jest
-      .spyOn(documentsMapper, "mapDocumentsToAccordionState")
-      .mockImplementation((documentsState) => {
-        if (documentsState !== newDocumentsState) throw new Error();
-        return newAccordionState;
+      const nextState = reducer({} as CombinedState, {
+        type: "UPDATE_CASE_DETAILS",
+        payload: newCaseState,
       });
 
-    const nextState = reducer(
-      { accordionState: existingAccordionState } as CombinedState,
-      {
-        type: "UPDATE_CASE_DOCUMENTS",
-        payload: newDocumentsState,
-      }
-    );
-
-    expect(nextState.documentsState).toBe(newDocumentsState);
-    expect(nextState.accordionState).toBe(newAccordionState);
+      expect(nextState.caseState).toBe(newCaseState);
+    });
   });
 
-  it("throws if update pipelineState fails", () => {
-    expect(() =>
-      reducer({} as CombinedState, {
-        type: "UPDATE_PIPELINE",
-        payload: {
-          status: "failed",
-          error: ERROR,
-          httpStatusCode: undefined,
-        },
-      })
-    ).toThrowError(ERROR);
-  });
-
-  it("can update from pipeline", () => {
-    const newPipelineState = {} as CombinedState["pipelineState"];
-
-    const nextState = reducer({} as CombinedState, {
-      type: "UPDATE_PIPELINE",
-      payload: newPipelineState,
+  describe("UPDATE_CASE_DOCUMENTS", () => {
+    it("throws if update case documents fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_CASE_DOCUMENTS",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+          },
+        })
+      ).toThrowError(ERROR);
     });
 
-    expect(nextState.pipelineState).toBe(newPipelineState);
+    it("can update accordionState if incoming documentsState is ready", () => {
+      const existingAccordionState = {} as CombinedState["accordionState"];
+
+      const newAccordionState = {} as CombinedState["accordionState"];
+      const newDocumentsState = {
+        status: "succeeded",
+      } as CombinedState["documentsState"];
+
+      jest
+        .spyOn(accordionMapper, "mapAccordionState")
+        .mockImplementation((documentsState) => {
+          if (documentsState !== newDocumentsState) throw new Error();
+          return newAccordionState;
+        });
+
+      jest
+        .spyOn(documentsMapper, "mapDocumentsState")
+        .mockImplementation((documentsState) => {
+          if (documentsState !== newDocumentsState) throw new Error();
+          return newDocumentsState;
+        });
+
+      const nextState = reducer(
+        { accordionState: existingAccordionState } as CombinedState,
+        {
+          type: "UPDATE_CASE_DOCUMENTS",
+          payload: newDocumentsState,
+        }
+      );
+
+      expect(nextState.documentsState).toBe(newDocumentsState);
+      expect(nextState.accordionState).toBe(newAccordionState);
+    });
   });
 
-  it("can update from pipeline when no tabs are open", () => {
-    const newPipelineState = {
-      status: "succeeded",
-      data: {
-        documents: [
+  describe("UPDATE_PIPELINE", () => {
+    it("throws if update pipelineState fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_PIPELINE",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+            haveData: false,
+          },
+        })
+      ).toThrowError(ERROR);
+    });
+
+    it("can update from pipeline if initiating", () => {
+      const existingPipelineState = {
+        status: "initiating",
+      } as CombinedState["pipelineState"];
+
+      const nextState = reducer(
+        {
+          pipelineState: existingPipelineState,
+        } as CombinedState,
+        {
+          type: "UPDATE_PIPELINE",
+          payload: {
+            status: "initiating",
+            haveData: false,
+          },
+        }
+      );
+
+      expect(nextState.pipelineState).toEqual(existingPipelineState);
+    });
+
+    it("can update from pipeline if succeeded", () => {
+      const expectedNextState = {
+        status: "incomplete",
+        haveData: true,
+        data: {
+          transactionId: "123",
+          status: "Running",
+          documents: [{ documentId: "1" }],
+        },
+      } as AsyncPipelineResult<PipelineResults>;
+
+      const nextState = reducer(
+        {
+          pipelineState: {},
+        } as CombinedState,
+        {
+          type: "UPDATE_PIPELINE",
+          payload: {
+            status: "incomplete",
+            haveData: true,
+            data: {
+              transactionId: "123",
+              status: "Running",
+              documents: [{ documentId: "1" }],
+            },
+          } as AsyncPipelineResult<PipelineResults>,
+        }
+      );
+
+      expect(nextState.pipelineState).toEqual(expectedNextState);
+    });
+
+    it("can update from pipeline if succeeded and is now complete", () => {
+      const expectedNextState = {
+        status: "complete",
+        haveData: true,
+        data: {
+          documents: [{ documentId: "1", pdfBlobName: "foo" }],
+          transactionId: "123",
+          status: "Completed",
+        },
+      } as AsyncPipelineResult<PipelineResults>;
+
+      const nextState = reducer(
+        {
+          pipelineState: {},
+          tabsState: { items: [] },
+        } as unknown as CombinedState,
+        {
+          type: "UPDATE_PIPELINE",
+          payload: {
+            status: "complete",
+            haveData: true,
+            data: {
+              documents: [{ documentId: "1", pdfBlobName: "foo" }],
+              status: "Completed",
+              transactionId: "123",
+            },
+          } as AsyncPipelineResult<PipelineResults>,
+        }
+      );
+
+      expect(nextState.pipelineState).toEqual(expectedNextState);
+    });
+
+    it("can update from pipeline when no tabs are open", () => {
+      const newPipelineState = {
+        status: "complete",
+        haveData: true,
+        data: {
+          documents: [
+            {
+              documentId: "d2",
+              pdfBlobName: "foo",
+            },
+          ],
+        },
+      } as AsyncPipelineResult<PipelineResults>;
+
+      const existingTabsState = {
+        items: [],
+        authToken: undefined,
+      } as CombinedState["tabsState"];
+
+      const nextState = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "UPDATE_PIPELINE",
+          payload: newPipelineState,
+        }
+      );
+
+      expect(nextState.tabsState).toBe(existingTabsState);
+    });
+
+    it("can update from pipeline tabs already open with pdf url", () => {
+      const newPipelineState = {
+        status: "complete",
+        data: {
+          documents: [
+            {
+              documentId: "d2",
+              pdfBlobName: "foo",
+            },
+          ],
+        },
+      } as CombinedState["pipelineState"];
+
+      const existingTabsState = {
+        items: [
+          { documentId: "d1", url: undefined },
+          { documentId: "d2", url: undefined },
+          { documentId: "d3", url: undefined },
+        ],
+      } as CombinedState["tabsState"];
+
+      jest.spyOn(apiGateway, "resolvePdfUrl").mockImplementation((blobName) => {
+        if (blobName !== "foo") throw new Error();
+        return "baz";
+      });
+
+      const nextState = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "UPDATE_PIPELINE",
+          payload: newPipelineState,
+        }
+      );
+
+      expect(nextState.tabsState).toEqual({
+        items: [
+          { documentId: "d1", url: undefined },
+          { documentId: "d2", url: "baz" },
+          { documentId: "d3", url: undefined },
+        ],
+      });
+    });
+  });
+
+  describe("OPEN_PDF", () => {
+    it("can open a tab when the pdf details are known", () => {
+      const existingTabsState = {
+        authToken: "authtoken",
+        items: [],
+      } as CombinedState["tabsState"];
+
+      const existingDocumentsState = {
+        status: "succeeded",
+        data: [{ documentId: "d1" }],
+      } as CombinedState["documentsState"];
+
+      const existingPipelineState = {
+        status: "complete",
+        haveData: true,
+        data: {
+          transactionId: "",
+          documents: [{ documentId: "d1", pdfBlobName: "foo" }],
+        },
+      } as CombinedState["pipelineState"];
+
+      jest.spyOn(apiGateway, "resolvePdfUrl").mockImplementation((blobName) => {
+        if (blobName !== "foo") throw new Error();
+        return "baz";
+      });
+
+      const nextState = reducer(
+        {
+          documentsState: existingDocumentsState,
+          pipelineState: existingPipelineState,
+          tabsState: existingTabsState,
+        } as CombinedState,
+        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
+      );
+
+      expect(nextState.tabsState).toEqual({
+        authToken: "authtoken",
+        items: [
           {
-            documentId: "d2",
-            pdfBlobName: "foo",
+            documentId: "d1",
+            url: "baz",
+            tabSafeId: "t1",
           },
         ],
-      },
-    } as CombinedState["pipelineState"];
+      });
+    });
 
-    const existingTabsState = {
-      items: [],
-      authToken: undefined,
-    } as CombinedState["tabsState"];
+    it("can open a tab when the pdf pdf details are not known", () => {
+      const existingTabsState = {
+        authToken: "authtoken",
+        items: [],
+      } as CombinedState["tabsState"];
 
-    const nextState = reducer(
-      { tabsState: existingTabsState } as CombinedState,
-      {
-        type: "UPDATE_PIPELINE",
-        payload: newPipelineState,
-      }
-    );
+      const existingDocumentsState = {
+        status: "succeeded",
+        data: [{ documentId: "d1" }],
+      } as CombinedState["documentsState"];
 
-    expect(nextState.tabsState).toBe(existingTabsState);
-  });
+      const existingPipelineState = {
+        status: "incomplete",
+      } as CombinedState["pipelineState"];
 
-  it("can update from pipeline tabs already open with pdf url", () => {
-    const newPipelineState = {
-      status: "succeeded",
-      data: {
-        documents: [
+      const nextState = reducer(
+        {
+          documentsState: existingDocumentsState,
+          pipelineState: existingPipelineState,
+          tabsState: existingTabsState,
+        } as CombinedState,
+        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
+      );
+
+      expect(nextState.tabsState).toEqual({
+        authToken: "authtoken",
+        items: [
           {
-            documentId: "d2",
-            pdfBlobName: "foo",
+            documentId: "d1",
+            url: undefined,
+            tabSafeId: "t1",
           },
         ],
-      },
-    } as CombinedState["pipelineState"];
-
-    const existingTabsState = {
-      items: [
-        { documentId: "d1", url: undefined },
-        { documentId: "d2", url: undefined },
-        { documentId: "d3", url: undefined },
-      ],
-    } as CombinedState["tabsState"];
-
-    jest.spyOn(apiGateway, "resolvePdfUrl").mockImplementation((blobName) => {
-      if (blobName !== "foo") throw new Error();
-      return "baz";
+      });
     });
 
-    const nextState = reducer(
-      { tabsState: existingTabsState } as CombinedState,
-      {
-        type: "UPDATE_PIPELINE",
-        payload: newPipelineState,
-      }
-    );
+    it("can reopen a tab that is already open", () => {
+      const existingTabsState = {
+        authToken: "authtoken",
+        items: [
+          {
+            documentId: "d1",
+            url: "baz",
+            tabSafeId: "t1",
+          },
+        ],
+      } as CombinedState["tabsState"];
 
-    expect(nextState.tabsState).toEqual({
-      items: [
-        { documentId: "d1", url: undefined },
-        { documentId: "d2", url: "baz" },
-        { documentId: "d3", url: undefined },
-      ],
+      const nextState = reducer(
+        {
+          tabsState: existingTabsState,
+        } as CombinedState,
+        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
+      );
+
+      expect(nextState.tabsState).toBe(existingTabsState);
     });
   });
 
-  it("can open a tab when the pdf pdf details are known", () => {
-    const existingTabsState = {
-      authToken: "authtoken",
-      items: [],
-    } as CombinedState["tabsState"];
-    const existingDocumentsState = {
-      status: "succeeded",
-      data: [{ documentId: "d1" }],
-    } as CombinedState["documentsState"];
-    const existingPipelineState = {
-      status: "succeeded",
-      data: {
-        transationId: "",
-        documents: [{ documentId: "d1", pdfBlobName: "foo" }],
-      },
-    } as CombinedState["pipelineState"];
+  describe("CLOSE_PDF", () => {
+    it("can close a tab", () => {
+      const existingTabsState = {
+        authToken: "authtoken",
+        items: [
+          {
+            documentId: "d1",
+            url: undefined,
+            tabSafeId: "t1",
+          },
+          {
+            documentId: "d2",
+            url: undefined,
+            tabSafeId: "t2",
+          },
+        ],
+      } as CombinedState["tabsState"];
 
-    jest.spyOn(apiGateway, "resolvePdfUrl").mockImplementation((blobName) => {
-      if (blobName !== "foo") throw new Error();
-      return "baz";
-    });
-
-    const nextState = reducer(
-      {
-        documentsState: existingDocumentsState,
-        pipelineState: existingPipelineState,
-        tabsState: existingTabsState,
-      } as CombinedState,
-      { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
-    );
-
-    expect(nextState.tabsState).toEqual({
-      authToken: "authtoken",
-      items: [
+      const nextState = reducer(
         {
-          documentId: "d1",
-          url: "baz",
-          tabSafeId: "t1",
-        },
-      ],
+          tabsState: existingTabsState,
+        } as CombinedState,
+        { type: "CLOSE_PDF", payload: { tabSafeId: "t2" } }
+      );
+
+      expect(nextState.tabsState).toEqual({
+        authToken: "authtoken",
+        items: [
+          {
+            documentId: "d1",
+            url: undefined,
+            tabSafeId: "t1",
+          },
+        ],
+      });
     });
   });
 
-  it("can open a tab when the pdf pdf details are not known", () => {
-    const existingTabsState = {
-      authToken: "authtoken",
-      items: [],
-    } as CombinedState["tabsState"];
-    const existingDocumentsState = {
-      status: "succeeded",
-      data: [{ documentId: "d1" }],
-    } as CombinedState["documentsState"];
-    const existingPipelineState = {
-      status: "loading",
-    } as CombinedState["pipelineState"];
-
-    const nextState = reducer(
-      {
-        documentsState: existingDocumentsState,
-        pipelineState: existingPipelineState,
-        tabsState: existingTabsState,
-      } as CombinedState,
-      { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
-    );
-
-    expect(nextState.tabsState).toEqual({
-      authToken: "authtoken",
-      items: [
-        {
-          documentId: "d1",
-          url: undefined,
-          tabSafeId: "t1",
-        },
-      ],
+  describe("UPDATE_AUTH_TOKEN", () => {
+    it("throws if update auth token fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_AUTH_TOKEN",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+          },
+        })
+      ).toThrowError(ERROR);
     });
-  });
 
-  it("can reopen a tab that is already open", () => {
-    const existingTabsState = {
-      authToken: "authtoken",
-      items: [
-        {
-          documentId: "d1",
-          url: "baz",
-          tabSafeId: "t1",
-        },
-      ],
-    } as CombinedState["tabsState"];
+    it("can not update auth token if headers are not ready", () => {
+      const existingState = {} as CombinedState;
+      const newHeaders = { status: "loading" } as ApiResult<Headers>;
 
-    const nextState = reducer(
-      {
-        tabsState: existingTabsState,
-      } as CombinedState,
-      { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
-    );
-
-    expect(nextState.tabsState).toBe(existingTabsState);
-  });
-
-  it("can close a tab", () => {
-    const existingTabsState = {
-      authToken: "authtoken",
-      items: [
-        {
-          documentId: "d1",
-          url: undefined,
-          tabSafeId: "t1",
-        },
-        {
-          documentId: "d2",
-          url: undefined,
-          tabSafeId: "t2",
-        },
-      ],
-    } as CombinedState["tabsState"];
-
-    const nextState = reducer(
-      {
-        tabsState: existingTabsState,
-      } as CombinedState,
-      { type: "CLOSE_PDF", payload: { tabSafeId: "t2" } }
-    );
-
-    expect(nextState.tabsState).toEqual({
-      authToken: "authtoken",
-      items: [
-        {
-          documentId: "d1",
-          url: undefined,
-          tabSafeId: "t1",
-        },
-      ],
-    });
-  });
-
-  it("throws if update auth token fails", () => {
-    expect(() =>
-      reducer({} as CombinedState, {
+      const nextState = reducer(existingState, {
         type: "UPDATE_AUTH_TOKEN",
+        payload: newHeaders,
+      });
+      expect(nextState).toBe(existingState);
+    });
+
+    it("can not update auth token if headers are not present", () => {
+      const existingTabsState = {
+        items: [],
+        authToken: undefined,
+      } as CombinedState["tabsState"];
+
+      const newHeadersApiResult = {
+        status: "succeeded",
+        data: new Headers(),
+      } as ApiResult<Headers>;
+
+      const nextState = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "UPDATE_AUTH_TOKEN",
+          payload: newHeadersApiResult,
+        }
+      );
+      expect(nextState.tabsState).toEqual({ items: [], authToken: undefined });
+    });
+
+    it("can update auth token if headers are present", () => {
+      const existingTabsState = {
+        items: [],
+        authToken: undefined,
+      } as CombinedState["tabsState"];
+
+      const headers = new Headers();
+      headers.append("Authorization", "auth-token");
+
+      const newHeadersApiResult = {
+        status: "succeeded",
+        data: headers,
+      } as ApiResult<Headers>;
+
+      const nextState = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "UPDATE_AUTH_TOKEN",
+          payload: newHeadersApiResult,
+        }
+      );
+      expect(nextState.tabsState).toEqual({
+        items: [],
+        authToken: "auth-token",
+      });
+    });
+  });
+
+  describe("UPDATE_SEARCH_TERM", () => {
+    it("can update search term", () => {
+      const existingState = { searchTerm: "foo" } as CombinedState;
+
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_TERM",
+        payload: { searchTerm: "bar" },
+      });
+
+      expect(nextState).toEqual({
+        searchTerm: "bar",
+      });
+    });
+  });
+
+  describe("CLOSE_SEARCH_RESULTS", () => {
+    it("can close search results", () => {
+      const existingSearchState = {
+        isResultsVisible: true,
+      } as CombinedState["searchState"];
+
+      const nextState = reducer(
+        { searchState: existingSearchState } as CombinedState,
+        { type: "CLOSE_SEARCH_RESULTS" }
+      );
+
+      expect(nextState.searchState).toEqual({
+        isResultsVisible: false,
+      });
+    });
+  });
+
+  describe("LAUNCH_SEARCH_RESULTS", () => {
+    it("can open search results", () => {
+      const existingSearchState = {
+        isResultsVisible: false,
+      } as CombinedState["searchState"];
+
+      const nextState = reducer(
+        {
+          searchTerm: "foo",
+          searchState: existingSearchState,
+        } as CombinedState,
+        { type: "LAUNCH_SEARCH_RESULTS" }
+      );
+
+      expect(nextState.searchState).toEqual({
+        submittedSearchTerm: "foo",
+        isResultsVisible: true,
+      } as CombinedState["searchState"]);
+    });
+  });
+
+  describe("UPDATE_SEARCH_RESULTS", () => {
+    it("throws if search call fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_SEARCH_RESULTS",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+          },
+        })
+      ).toThrowError(ERROR);
+    });
+
+    it("returns a loading searchState if the search call is loading", () => {
+      const nextState = reducer({ searchState: {} } as CombinedState, {
+        type: "UPDATE_SEARCH_RESULTS",
         payload: {
-          status: "failed",
-          error: ERROR,
-          httpStatusCode: undefined,
+          status: "loading",
         },
-      })
-    ).toThrowError(ERROR);
-  });
+      });
 
-  it("can not update auth token if headers are not ready", () => {
-    const existingState = {} as CombinedState;
-    const newHeaders = { status: "loading" } as ApiResult<Headers>;
-
-    const newState = reducer(existingState, {
-      type: "UPDATE_AUTH_TOKEN",
-      payload: newHeaders,
+      expect(nextState).toEqual({
+        searchState: {
+          results: {
+            status: "loading",
+          },
+        },
+      });
     });
-    expect(newState).toBe(existingState);
-  });
 
-  it("can not update auth token if headers are not present", () => {
-    const existingTabsState = {
-      items: [],
-      authToken: undefined,
-    } as CombinedState["tabsState"];
+    it("does not alter state if documentState is not succeeded", () => {
+      const existingState = {
+        documentsState: { status: "loading" },
+      } as CombinedState;
 
-    const newHeadersApiResult = {
-      status: "succeeded",
-      data: new Headers(),
-    } as ApiResult<Headers>;
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_RESULTS",
+        payload: {
+          status: "succeeded",
+          data: [],
+        } as ApiResult<undefined | ApiTextSearchResult[]>,
+      });
 
-    const newState = reducer(
-      { tabsState: existingTabsState } as CombinedState,
-      {
-        type: "UPDATE_AUTH_TOKEN",
-        payload: newHeadersApiResult,
-      }
-    );
-    expect(newState.tabsState).toEqual({ items: [], authToken: undefined });
-  });
+      expect(nextState).toBe(existingState);
+    });
 
-  it("can update auth token if headers are present", () => {
-    const existingTabsState = {
-      items: [],
-      authToken: undefined,
-    } as CombinedState["tabsState"];
+    it("does not alter state if pipelineState is not succeeded", () => {
+      const existingState = {
+        documentsState: { status: "succeeded" },
+        pipelineState: { status: "incomplete" },
+      } as CombinedState;
 
-    const headers = new Headers();
-    headers.append("Authorization", "auth-token");
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_RESULTS",
+        payload: {
+          status: "succeeded",
+          data: [],
+        } as ApiResult<undefined | ApiTextSearchResult[]>,
+      });
 
-    const newHeadersApiResult = {
-      status: "succeeded",
-      data: headers,
-    } as ApiResult<Headers>;
+      expect(nextState).toBe(existingState);
+    });
 
-    const newState = reducer(
-      { tabsState: existingTabsState } as CombinedState,
-      {
-        type: "UPDATE_AUTH_TOKEN",
-        payload: newHeadersApiResult,
-      }
-    );
-    expect(newState.tabsState).toEqual({ items: [], authToken: "auth-token" });
-  });
+    it("does not alter state if there is no submitted search term", () => {
+      const existingState = {
+        documentsState: { status: "succeeded" },
+        pipelineState: { status: "complete" },
+        searchState: { submittedSearchTerm: "" },
+      } as CombinedState;
 
-  it("can update search term", () => {
-    const existingSearchState = {
-      searchTerm: "foo",
-      isResultsVisible: false,
-    } as CombinedState["searchState"];
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_RESULTS",
+        payload: {
+          status: "succeeded",
+          data: [],
+        } as ApiResult<undefined | ApiTextSearchResult[]>,
+      });
 
-    const newState = reducer(
-      { searchState: existingSearchState } as CombinedState,
-      { type: "UPDATE_SEARCH_TERM", payload: { searchTerm: "bar" } }
-    );
+      expect(nextState).toBe(existingState);
+    });
 
-    expect(newState.searchState).toEqual({
-      searchTerm: "bar",
-      isResultsVisible: false,
+    it("does not alter state if the search call carries undefined data", () => {
+      const existingState = {
+        documentsState: { status: "succeeded" },
+        pipelineState: { status: "complete" },
+        searchState: { submittedSearchTerm: "foo" },
+      } as CombinedState;
+
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_RESULTS",
+        payload: {
+          status: "succeeded",
+          data: undefined,
+        } as ApiResult<undefined | ApiTextSearchResult[]>,
+      });
+
+      expect(nextState).toBe(existingState);
+    });
+
+    it("can update search results, update missing documents and build filter options", () => {
+      const existingState = {
+        documentsState: { status: "succeeded", data: {} },
+        pipelineState: { status: "complete", haveData: true, data: {} },
+        searchState: { submittedSearchTerm: "foo", resultsOrder: "byDateDesc" },
+      } as CombinedState;
+
+      const inputPayload = {
+        status: "succeeded",
+        data: [],
+      } as ApiResult<undefined | ApiTextSearchResult[]>;
+
+      const mockUnsortedData = {} as MappedTextSearchResult;
+      const mockData = {} as MappedTextSearchResult;
+      const mockMissingDocs = {} as CombinedState["searchState"]["missingDocs"];
+      const mockFilterOptions =
+        {} as CombinedState["searchState"]["filterOptions"];
+
+      jest
+        .spyOn(textSearchMapper, "mapTextSearch")
+        .mockImplementation(
+          (textSearchResult, mappedCaseDocuments, submittedSearchTerm) => {
+            if (
+              inputPayload.status === "succeeded" &&
+              textSearchResult === inputPayload.data &&
+              existingState.documentsState.status === "succeeded" &&
+              mappedCaseDocuments === existingState.documentsState.data &&
+              submittedSearchTerm ===
+                existingState.searchState.submittedSearchTerm
+            ) {
+              return mockUnsortedData;
+            }
+            throw new Error("Unexpected mock function arguments");
+          }
+        );
+
+      jest
+        .spyOn(sorter, "sortMappedTextSearchResult")
+        .mockImplementation((mappedTextSearchResult, resultOrder) => {
+          if (
+            mappedTextSearchResult === mockUnsortedData &&
+            resultOrder === existingState.searchState.resultsOrder
+          ) {
+            return mockData;
+          }
+          throw new Error("Unexpected mock function arguments");
+        });
+
+      jest
+        .spyOn(missingDocuments, "mapMissingDocuments")
+        .mockImplementation((pipelineResults, mappedCaseDocuments) => {
+          if (
+            pipelineResults ===
+              (existingState.pipelineState.haveData &&
+                existingState.pipelineState.data) &&
+            existingState.documentsState.status === "succeeded" &&
+            mappedCaseDocuments === existingState.documentsState.data
+          ) {
+            return mockMissingDocs;
+          }
+          throw new Error("Unexpected mock function arguments");
+        });
+
+      jest
+        .spyOn(filters, "mapFilters")
+        .mockImplementation((mappedTextSearchResult) => {
+          if (mappedTextSearchResult === mockUnsortedData) {
+            return mockFilterOptions;
+          }
+          throw new Error("Unexpected mock function arguments");
+        });
+
+      const nextState = reducer(existingState, {
+        type: "UPDATE_SEARCH_RESULTS",
+        payload: inputPayload,
+      });
+
+      expect(nextState).toEqual({
+        ...existingState,
+        searchState: {
+          ...existingState.searchState,
+          missingDocs: mockMissingDocs,
+          filterOptions: mockFilterOptions,
+          results: {
+            status: "succeeded",
+            data: mockData,
+          },
+        },
+      });
+
+      expect(nextState.searchState.missingDocs).toBe(mockMissingDocs);
+      expect(nextState.searchState.filterOptions).toBe(mockFilterOptions);
+
+      expect(
+        nextState.searchState.results.status === "succeeded" &&
+          nextState.searchState.results.data
+      ).toBe(mockData);
     });
   });
 
-  it("can open search results", () => {
-    const existingSearchState = {
-      searchTerm: "foo",
-      isResultsVisible: false,
-    } as CombinedState["searchState"];
+  describe("CHANGE_RESULTS_ORDER", () => {
+    it("can update the stored results order but not change search results ordering if the search state is still loading", () => {
+      const existingState = {
+        searchState: {
+          results: { status: "loading" },
+          resultsOrder: "byOccurancesPerDocumentDesc",
+        },
+      } as CombinedState;
 
-    const newState = reducer(
-      { searchState: existingSearchState } as CombinedState,
-      { type: "OPEN_CLOSE_SEARCH_RESULTS", payload: { isOpen: true } }
-    );
+      const nextState = reducer(existingState, {
+        type: "CHANGE_RESULTS_ORDER",
+        payload: "byDateDesc",
+      });
 
-    expect(newState.searchState).toEqual({
-      searchTerm: "foo",
-      isResultsVisible: true,
+      expect(nextState).toEqual({
+        searchState: {
+          results: {
+            status: "loading",
+          },
+          resultsOrder: "byDateDesc",
+        },
+      });
+    });
+
+    it("can update results ordering if search state is ready", () => {
+      const existingMappedTextSearchResult = {} as MappedTextSearchResult;
+      const expectedMappedTextSearchResult = {} as MappedTextSearchResult;
+
+      jest
+        .spyOn(sorter, "sortMappedTextSearchResult")
+        .mockImplementation((mappedTextSearchResult, sortOrder) => {
+          if (mappedTextSearchResult !== existingMappedTextSearchResult)
+            throw new Error();
+          if (sortOrder !== "byDateDesc") throw new Error();
+          return expectedMappedTextSearchResult;
+        });
+
+      const existingState = {
+        searchState: {
+          results: {
+            status: "succeeded",
+            data: existingMappedTextSearchResult,
+          },
+          resultsOrder: "byOccurancesPerDocumentDesc",
+        },
+      } as CombinedState;
+
+      const nextState = reducer(existingState, {
+        type: "CHANGE_RESULTS_ORDER",
+        payload: "byDateDesc",
+      });
+
+      expect(nextState).toEqual({
+        searchState: {
+          results: {
+            status: "succeeded",
+            data: expectedMappedTextSearchResult,
+          },
+          resultsOrder: "byDateDesc",
+        },
+      });
     });
   });
 
-  it("can close search results", () => {
-    const existingSearchState = {
-      searchTerm: "foo",
-      isResultsVisible: true,
-    } as CombinedState["searchState"];
+  describe("UPDATE_FILTER", () => {
+    it("can update filters but not sort data if search state is still loading", () => {
+      const existingSearchState = {
+        results: { status: "loading" },
 
-    const newState = reducer(
-      { searchState: existingSearchState } as CombinedState,
-      { type: "OPEN_CLOSE_SEARCH_RESULTS", payload: { isOpen: false } }
-    );
+        filterOptions: {
+          category: {
+            a: { label: "", count: -1, isSelected: true },
+            b: { label: "", count: -1, isSelected: false },
+          },
+          docType: {
+            a: { label: "", count: -1, isSelected: true },
+            b: { label: "", count: -1, isSelected: true },
+          },
+        } as CombinedState["searchState"]["filterOptions"],
+      } as CombinedState["searchState"];
 
-    expect(newState.searchState).toEqual({
-      searchTerm: "foo",
-      isResultsVisible: false,
+      const result = reducer(
+        { searchState: existingSearchState } as CombinedState,
+        {
+          type: "UPDATE_FILTER",
+          payload: { filter: "docType", id: "b", isSelected: true },
+        }
+      );
+
+      expect(result).toEqual({
+        searchState: {
+          filterOptions: {
+            category: {
+              a: {
+                count: -1,
+                isSelected: true,
+                label: "",
+              },
+              b: {
+                count: -1,
+                isSelected: false,
+                label: "",
+              },
+            },
+            docType: {
+              a: {
+                count: -1,
+                isSelected: true,
+                label: "",
+              },
+              b: {
+                count: -1,
+                isSelected: true,
+                label: "",
+              },
+            },
+          },
+          results: {
+            status: "loading",
+          },
+        },
+      });
+    });
+
+    it("can update filters and sort data if search state has succeeded", () => {
+      jest
+        .spyOn(documentVisibility, "isDocumentVisible")
+        .mockImplementation(({ documentId }, filterOptions) => {
+          switch (documentId) {
+            case "1":
+              return { isVisible: true, hasChanged: true };
+            case "2":
+              return { isVisible: false, hasChanged: true };
+            case "3":
+              return { isVisible: true, hasChanged: false };
+            default:
+              throw new Error("Unexpected mock function arguments");
+          }
+        });
+
+      const existingSearchState = {
+        results: {
+          status: "succeeded",
+          data: {
+            documentResults: [
+              { documentId: "1", occurrencesInDocumentCount: 2 },
+              { documentId: "2", occurrencesInDocumentCount: 3 },
+              { documentId: "3", occurrencesInDocumentCount: 7 },
+            ] as MappedDocumentResult[],
+          },
+        },
+
+        filterOptions: {
+          category: {},
+          docType: {},
+        } as CombinedState["searchState"]["filterOptions"],
+      } as CombinedState["searchState"];
+
+      const result = reducer(
+        { searchState: existingSearchState } as CombinedState,
+        {
+          type: "UPDATE_FILTER",
+          payload: { filter: "docType", id: "a", isSelected: true },
+        }
+      );
+
+      expect(result).toEqual({
+        searchState: {
+          filterOptions: {
+            category: {},
+            docType: {
+              a: { isSelected: true },
+            },
+          },
+          results: {
+            data: {
+              documentResults: [
+                {
+                  documentId: "1",
+                  isVisible: true,
+                  occurrencesInDocumentCount: 2,
+                },
+                {
+                  documentId: "2",
+                  isVisible: false,
+                  occurrencesInDocumentCount: 3,
+                },
+                { documentId: "3", occurrencesInDocumentCount: 7 },
+              ],
+              filteredDocumentCount: 1,
+              filteredOccurrencesCount: 2,
+            },
+            status: "succeeded",
+          },
+        },
+      });
+
+      // assert we have been given the same reference to the object if
+      //  the document has not changed
+      expect(
+        result.searchState.results.status === "succeeded" &&
+          result.searchState.results.data.documentResults[2]
+      ).toBe(
+        existingSearchState.results.status === "succeeded" &&
+          existingSearchState.results.data.documentResults[2]
+      );
     });
   });
 

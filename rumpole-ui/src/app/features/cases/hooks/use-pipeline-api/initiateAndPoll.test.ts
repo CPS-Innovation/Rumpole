@@ -4,8 +4,9 @@ import { initiateAndPoll } from "./initiateAndPoll";
 import * as api from "../../api/gateway-api";
 import { waitFor } from "@testing-library/react";
 import { ApiError } from "../../../../common/errors/ApiError";
+import { AsyncPipelineResult } from "./AsyncPipelineResult";
 
-const POLLING_INTERVAL_MS = 75;
+const POLLING_INTERVAL_MS = 175;
 
 const ensureHasStoppedPollingHelper = async (
   quitFn: () => void,
@@ -24,7 +25,7 @@ describe("initiateAndPoll", () => {
       .spyOn(api, "initiatePipeline")
       .mockImplementation((caseId) => Promise.reject(expectedError));
 
-    let results: ApiResult<PipelineResults>;
+    let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
       "1",
       POLLING_INTERVAL_MS,
@@ -36,7 +37,8 @@ describe("initiateAndPoll", () => {
         status: "failed",
         error: expectedError,
         httpStatusCode: 100,
-      } as ApiResult<PipelineResults>)
+        haveData: false,
+      } as AsyncPipelineResult<PipelineResults>)
     );
 
     ensureHasStoppedPollingHelper(quitFn, spy);
@@ -52,7 +54,7 @@ describe("initiateAndPoll", () => {
       .spyOn(api, "getPipelinePdfResults")
       .mockImplementation((caseId) => Promise.reject(expectedError));
 
-    let results: ApiResult<PipelineResults>;
+    let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
       "1",
       POLLING_INTERVAL_MS,
@@ -64,6 +66,7 @@ describe("initiateAndPoll", () => {
         status: "failed",
         error: expectedError,
         httpStatusCode: 100,
+        haveData: false,
       } as ApiResult<PipelineResults>)
     );
 
@@ -76,7 +79,8 @@ describe("initiateAndPoll", () => {
       .mockImplementation((caseId) => Promise.resolve("foo"));
 
     const expectedResults = {
-      transationId: "",
+      transactionId: "",
+      status: "Completed",
       documents: [{ pdfBlobName: "foo" }],
     } as PipelineResults;
 
@@ -84,7 +88,7 @@ describe("initiateAndPoll", () => {
       .spyOn(api, "getPipelinePdfResults")
       .mockImplementation((caseId) => Promise.resolve(expectedResults));
 
-    let results: ApiResult<PipelineResults>;
+    let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
       "1",
       POLLING_INTERVAL_MS,
@@ -92,7 +96,11 @@ describe("initiateAndPoll", () => {
     );
 
     await waitFor(() =>
-      expect(results).toEqual({ status: "succeeded", data: expectedResults })
+      expect(results).toEqual({
+        status: "complete",
+        haveData: true,
+        data: expectedResults,
+      })
     );
 
     ensureHasStoppedPollingHelper(quitFn, spy);
@@ -104,13 +112,21 @@ describe("initiateAndPoll", () => {
       .mockImplementation((caseId) => Promise.resolve("foo"));
 
     const expectedInterimResults = {
-      transationId: "",
-      documents: [{ pdfBlobName: "foo" }, {}],
+      transactionId: "",
+      status: "Running",
+      documents: [
+        { pdfBlobName: "foo", status: "PdfUploadedToBlob" },
+        { status: "None" },
+      ],
     } as PipelineResults;
 
     const expectedFinalResults = {
-      transationId: "",
-      documents: [{ pdfBlobName: "foo" }, { pdfBlobName: "bar" }],
+      transactionId: "",
+      status: "Completed",
+      documents: [
+        { pdfBlobName: "foo", status: "PdfUploadedToBlob" },
+        { pdfBlobName: "bar", status: "PdfUploadedToBlob" },
+      ],
     } as PipelineResults;
 
     let runIndex = 0;
@@ -125,22 +141,22 @@ describe("initiateAndPoll", () => {
         }
       });
 
-    let results: ApiResult<PipelineResults>;
-    const quitFn = initiateAndPoll(
-      "1",
-      POLLING_INTERVAL_MS,
-      (res) => (results = res)
-    );
+    let results: AsyncPipelineResult<PipelineResults>;
+    const quitFn = initiateAndPoll("1", POLLING_INTERVAL_MS, (res) => {
+      results = res;
+    });
 
     await waitFor(() =>
       expect(results).toEqual({
-        status: "succeeded",
+        status: "incomplete",
+        haveData: true,
         data: expectedInterimResults,
       })
     );
     await waitFor(() =>
       expect(results).toEqual({
-        status: "succeeded",
+        status: "complete",
+        haveData: true,
         data: expectedFinalResults,
       })
     );

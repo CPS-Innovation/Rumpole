@@ -28,57 +28,58 @@ const dataSource: PipelinePdfResultsDataSource = () => {
 export default dataSource;
 
 const pipelinePdfResults: PipelineResults = {
-  transationId: "121",
+  transactionId: "121",
+  status: "Completed",
   documents: [
     {
       documentId: "d1",
       pdfBlobName: "MCLOVEMG3",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d2",
       pdfBlobName: "CM01",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d3",
       pdfBlobName: "MG05MCLOVE",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d4",
       pdfBlobName: "MG06_3June",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d5",
       pdfBlobName: "MG06_10june",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d6",
       pdfBlobName: "MCLOVEMG3",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d7",
       pdfBlobName: "CM01",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d8",
       pdfBlobName: "MG05MCLOVE",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d9",
       pdfBlobName: "MG06_3June",
-      status: "finished",
+      status: "Indexed",
     },
     {
       documentId: "d10",
       pdfBlobName: "MG06_10june",
-      status: "finished",
+      status: "Indexed",
     },
   ],
 };

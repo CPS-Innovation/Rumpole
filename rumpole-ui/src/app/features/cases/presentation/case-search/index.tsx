@@ -9,7 +9,7 @@ import {
 } from "../../../../common/presentation/components";
 import { useSearchInputLogic } from "../../hooks/useSearchInputLogic";
 import classes from "./index.module.scss";
-import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
+import { PageContentWrapper } from "../../../../common/presentation/components";
 
 export const path = "/case-search";
 

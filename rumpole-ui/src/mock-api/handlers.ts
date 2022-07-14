@@ -8,6 +8,8 @@ import devDocumentsDataSource from "./data/documents.dev";
 import cypressDocumentsDataSource from "./data/documents.cypress";
 import devpipelinePdfResultsDataSource from "./data/pipelinePdfResults.dev";
 import cypresspipelinePdfResultsDataSource from "./data/pipelinePdfResults.cypress";
+import devSearchCaseDataSource from "./data/searchCaseResults.dev";
+import cypressSearchCaseDataSource from "./data/searchCaseResults.cypress";
 
 import { SearchDataSource } from "./data/types/SearchDataSource";
 import {
@@ -16,7 +18,8 @@ import {
 } from "./data/types/CaseDetailsDataSource";
 import { DocumentsDataSource } from "./data/types/DocumentsDataSource";
 import { PipelinePdfResultsDataSource } from "./data/types/PipelinePdfResultsDataSource";
-
+import { SearchCaseDataSource } from "./data/types/SearchCaseDataSource";
+import * as routes from "./routes";
 import { MockApiConfig } from "./MockApiConfig";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -44,6 +47,11 @@ const pipelinePdfResultsDataSources: {
   cypress: cypresspipelinePdfResultsDataSource,
 };
 
+const searchCaseDataSources: { [key: string]: SearchCaseDataSource } = {
+  dev: devSearchCaseDataSource,
+  cypress: cypressSearchCaseDataSource,
+};
+
 export const setupHandlers = ({
   sourceName,
   maxDelayMs,
@@ -59,7 +67,7 @@ export const setupHandlers = ({
     ctx.delay(Math.random() * sanitisedMaxDelay);
 
   return [
-    rest.get(makeApiPath("api/case-information-by-urn/*"), (req, res, ctx) => {
+    rest.get(makeApiPath(routes.CASE_SEARCH_ROUTE), (req, res, ctx) => {
       const urn = req.url.pathname.split("/").pop()!;
       lastRequestedUrnCache.urn = urn;
 
@@ -68,7 +76,7 @@ export const setupHandlers = ({
       return res(delay(ctx), ctx.json(results));
     }),
 
-    rest.get(makeApiPath("api/case-details/:id"), (req, res, ctx) => {
+    rest.get(makeApiPath(routes.CASE_ROUTE), (req, res, ctx) => {
       const { id } = req.params;
 
       const result = {
@@ -79,7 +87,7 @@ export const setupHandlers = ({
       return res(delay(ctx), ctx.json(result));
     }),
 
-    rest.get(makeApiPath("api/case-documents/:id"), (req, res, ctx) => {
+    rest.get(makeApiPath(routes.DOCUMENTS_ROUTE), (req, res, ctx) => {
       const { id } = req.params;
 
       const result = documentsDataSources[sourceName](id);
@@ -87,14 +95,7 @@ export const setupHandlers = ({
       return res(delay(ctx), ctx.json(result));
     }),
 
-    rest.get(
-      makeApiPath("api/documents/:documentId/:fileName"),
-      (req, res, ctx) => {
-        throw new Error("Not implemented");
-      }
-    ),
-
-    rest.post(makeApiPath("api/cases/:caseId"), (req, res, ctx) => {
+    rest.post(makeApiPath(routes.INITIATE_PIPELINE_ROUTE), (req, res, ctx) => {
       const { caseId } = req.params;
       return res(
         delay(ctx),
@@ -102,19 +103,27 @@ export const setupHandlers = ({
       );
     }),
 
-    rest.get(makeApiPath("api/cases/:caseId/tracker"), (req, res, ctx) => {
+    rest.get(makeApiPath(routes.TRACKER_ROUTE), (req, res, ctx) => {
       const result = pipelinePdfResultsDataSources[sourceName]();
 
       // always maxDelay as we want this to be slow to illustrate async nature of tracker/polling
+      //  (when in dev mode)
       return res(ctx.delay(sanitisedMaxDelay), ctx.json(result));
     }),
 
-    rest.get(makeApiPath("api/pdfs/:blobName"), (req, res, ctx) => {
+    rest.get(makeApiPath(routes.FILE_ROUTE), (req, res, ctx) => {
       const { blobName } = req.params;
 
       const fileBase64 = (pdfStrings as { [key: string]: string })[blobName];
 
       return res(delay(ctx), ctx.body(_base64ToArrayBuffer(fileBase64)));
+    }),
+
+    rest.get(makeApiPath(routes.TEXT_SEARCH_ROUTE), (req, res, ctx) => {
+      const { query } = req.params;
+      const results = searchCaseDataSources[sourceName](query);
+
+      return res(delay(ctx), ctx.json(results));
     }),
   ];
 };

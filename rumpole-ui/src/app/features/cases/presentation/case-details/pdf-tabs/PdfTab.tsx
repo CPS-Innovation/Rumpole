@@ -1,4 +1,4 @@
-import { Placeholder } from "../../../../../common/presentation/components/Placeholder";
+import { Placeholder } from "../../../../../common/presentation/components";
 import { CaseDocumentWithUrl } from "../../../domain/CaseDocumentWithUrl";
 import PdfViewer from "../pdf-viewer/PdfViewer";
 import { Wait } from "../pdf-viewer/Wait";

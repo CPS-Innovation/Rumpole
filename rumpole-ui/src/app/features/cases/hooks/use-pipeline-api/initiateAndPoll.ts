@@ -1,7 +1,8 @@
 import { ApiError } from "../../../../common/errors/ApiError";
-import { ApiResult } from "../../../../common/types/ApiResult";
+import { AsyncPipelineResult } from "./AsyncPipelineResult";
 import { getPipelinePdfResults, initiatePipeline } from "../../api/gateway-api";
 import { PipelineResults } from "../../domain/PipelineResults";
+import { isPipelineFinished } from "../../domain/PipelineStatus";
 
 const delay = (delayMs: number) =>
   new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -9,28 +10,32 @@ const delay = (delayMs: number) =>
 export const initiateAndPoll = (
   caseId: string,
   delayMs: number,
-  del: (pipelineResults: ApiResult<PipelineResults>) => void
+  del: (pipelineResults: AsyncPipelineResult<PipelineResults>) => void
 ) => {
   let keepPolling = true;
 
+  const handleSuccess = (pipelineResult: PipelineResults) => {
+    const isComplete = isPipelineFinished(pipelineResult.status);
+    del({
+      status: isComplete ? "complete" : "incomplete",
+      data: pipelineResult,
+      haveData: true,
+    });
+
+    if (isComplete) {
+      keepPolling = false;
+    }
+  };
+
   const handleError = (error: any) => {
-    keepPolling = false;
     del({
       status: "failed",
       error,
       httpStatusCode: error instanceof ApiError ? error.code : undefined,
-    });
-  };
-
-  const handlePipelineSuccess = (pipelineResult: PipelineResults) => {
-    del({
-      status: "succeeded",
-      data: pipelineResult,
+      haveData: false,
     });
 
-    if (pipelineResult.documents.every((doc) => doc.pdfBlobName)) {
-      keepPolling = false;
-    }
+    keepPolling = false;
   };
 
   const doWork = async () => {
@@ -47,7 +52,7 @@ export const initiateAndPoll = (
         await delay(delayMs);
 
         const pipelineResult = await getPipelinePdfResults(trackerUrl);
-        handlePipelineSuccess(pipelineResult);
+        handleSuccess(pipelineResult);
       } catch (error) {
         handleError(error);
       }

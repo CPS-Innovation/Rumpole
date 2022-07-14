@@ -1,6 +1,12 @@
 import { PdfDocument } from "./PdfDocument";
 
 export type PipelineResults = {
-  transationId: string;
+  transactionId: string;
   documents: PdfDocument[];
+  status:
+    | "NotStarted"
+    | "Running"
+    | "NoDocumentsFoundInCDE"
+    | "Completed"
+    | "Failed";
 };

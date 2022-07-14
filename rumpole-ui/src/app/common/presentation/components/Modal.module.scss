@@ -4,22 +4,31 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 2; // gov inputs have z-index = 1 when they are focussed, so bigger than 1 required
+  background: rgba(0, 0, 0, 0.4);
+  // 1) gov inputs have z-index = 1 when they are focussed, so bigger than 1 required
+  // 2) wheeling on the modal does not work witth z-index: 2 as pdf-lib.js seems to intercept
+  //  the wheel and starts scrolling itself, rather than the modal content.
+  // So z-index: 3 is the one
+  z-index: 3;
 }
 
 .modalContent {
   position: fixed;
   background: white;
-  width: 90%;
-  min-height: 90%;
-  top: 60%;
+  width: 85%;
+  height: calc(100% - 100px);
+  top: 100px;
   left: 50%;
-  transform: translate(-50%, -60%);
+  transform: translate(-50%, 0);
+  padding: 20px 50px 30px 50px;
+  overflow-y: auto;
+}
+
+.closeContainer {
+  text-align: right;
 }
 
 .close {
-  float: right;
   box-sizing: content-box;
   width: 2em;
   height: 2em;
@@ -32,4 +41,8 @@
   border-radius: 0.25rem;
   opacity: 0.5;
   cursor: pointer;
+}
+
+.stopHtmlScroll {
+  overflow: hidden !important;
 }

@@ -1,3 +1,5 @@
+import { CASE_ROUTE } from "../../../src/mock-api/routes";
+
 describe("case details page", () => {
   describe("case page navigation", () => {
     it("can navigate back from case page, having not previously visited results page, and land on search page", () => {
@@ -26,11 +28,11 @@ describe("case details page", () => {
     });
 
     it("shows the unhandled error page if an unexpected error occurrs with the api", () => {
-      cy.visitPageAndbreakApiRoute(
-        "/case-search-results?urn=12AB1111111",
-        "api/case-details/:id",
-        500
-      );
+      cy.visit("/case-search-results?urn=12AB1111111");
+      cy.overrideRoute(CASE_ROUTE, {
+        type: "break",
+        httpStatusCode: 500,
+      });
 
       cy.findByTestId("link-12AB1111111").click();
 
@@ -58,7 +60,9 @@ describe("case details page", () => {
 
       cy.findByTestId("link-document-d1").click();
 
-      cy.findByTestId("div-pdfviewer").should("exist").contains("CASE OUTLINE");
+      cy.findByTestId("div-pdfviewer")
+        .should("exist")
+        .contains("REPORT TO CROWN PROSECUTOR FOR CHARGING DECISION,");
     });
   });
 });

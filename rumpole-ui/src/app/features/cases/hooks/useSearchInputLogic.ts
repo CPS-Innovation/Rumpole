@@ -12,21 +12,23 @@ export const useSearchInputLogic = ({
   const [urn, setUrn] = useState(initialUrn || "");
   const [isError, setIsError] = useState(false);
 
-  const isValid = isUrnValid(urn);
-
   const handleChange = (val: string) => {
     setUrn(val.toUpperCase());
   };
 
   const handleSubmit = () => {
+    const isValid = isUrnValid(urn);
     setIsError(!isValid);
     if (isValid) {
       setParams({ urn });
     }
   };
 
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) =>
-    event.key === "Enter" && handleSubmit();
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSubmit();
+    }
+  };
 
   return {
     handleChange,

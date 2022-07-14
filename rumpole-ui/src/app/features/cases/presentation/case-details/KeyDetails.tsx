@@ -1,4 +1,4 @@
-import { Placeholder } from "../../../../common/presentation/components/Placeholder";
+import { Placeholder } from "../../../../common/presentation/components";
 import { CaseDetails } from "../../domain/CaseDetails";
 import classes from "./index.module.scss";
 

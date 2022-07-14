@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
-import { ApiResult } from "../../../../common/types/ApiResult";
+import { AsyncPipelineResult } from "./AsyncPipelineResult";
 import { PipelineResults } from "../../domain/PipelineResults";
 import { initiateAndPoll } from "./initiateAndPoll";
+import { PIPELINE_POLLING_DELAY } from "../../../../config";
 
-const POLLING_DELAY = 1000;
-
-export const usePipelineApi = (caseId: string): ApiResult<PipelineResults> => {
+export const usePipelineApi = (
+  caseId: string
+): AsyncPipelineResult<PipelineResults> => {
   const [pipelineResults, setPipelineResults] = useState<
-    ApiResult<PipelineResults>
+    AsyncPipelineResult<PipelineResults>
   >({
-    status: "loading",
+    status: "initiating",
+    haveData: false,
   });
 
   useEffect(() => {
-    return initiateAndPoll(caseId, POLLING_DELAY, (results) =>
+    return initiateAndPoll(caseId, PIPELINE_POLLING_DELAY, (results) =>
       setPipelineResults(results)
     );
   }, [caseId]);

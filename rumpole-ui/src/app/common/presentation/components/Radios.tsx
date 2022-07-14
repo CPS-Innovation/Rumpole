@@ -4,9 +4,9 @@ type RadiosProps = {
   value: string | undefined;
   name: string;
   items: {
-    key?: string; //reactListKey
+    reactListKey?: string;
     value: string | undefined;
-    text: React.ReactNode; // children
+    children: React.ReactNode;
   }[];
   onChange: (value: string | undefined) => void;
 };
@@ -18,8 +18,7 @@ export const Radios: React.FC<RadiosProps> = ({
 }) => {
   const processedItems = items.map((item) => ({
     ...item,
-    reactListKey: item.key || item.value,
-    children: item.text,
+    reactListKey: item.reactListKey || item.value,
   }));
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) =>

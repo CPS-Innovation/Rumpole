@@ -16,13 +16,14 @@ import {
   CommonDateTimeFormats,
 } from "../../../../common/utils/dates";
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
-import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
-import { Wait } from "../../../../common/presentation/components/Wait";
+import { PageContentWrapper } from "../../../../common/presentation/components";
+import { WaitPage } from "../../../../common/presentation/components";
 import { useApi } from "../../../../common/hooks/useApi";
 import { searchUrn } from "../../api/gateway-api";
-import { Placeholder } from "../../../../common/presentation/components/Placeholder";
+import { Placeholder } from "../../../../common/presentation/components";
 
 import classes from "./index.module.scss";
+import { SectionBreak } from "../../../../common/presentation/components";
 
 export const path = "/case-search-results";
 
@@ -43,7 +44,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
   const state = useApi(searchUrn, initialUrn!);
 
   if (state.status === "loading") {
-    return <Wait />;
+    return <WaitPage />;
   }
 
   if (state.status === "failed") {
@@ -113,7 +114,9 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                   : " case that matches "}
                 <span data-testid="txt-result-urn">{initialUrn}</span>
               </p>
-              <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+              <SectionBreak />
+
               {data.map((item) => (
                 <div key={item.id} className={classes.result}>
                   <h2 className="govuk-heading-m ">

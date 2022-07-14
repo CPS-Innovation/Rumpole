@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { BackLink } from "../../../../common/presentation/components";
-import { PageContentWrapper } from "../../../../common/presentation/components/PageContentWrapper";
-import { Placeholder } from "../../../../common/presentation/components/Placeholder";
-import { Wait } from "../../../../common/presentation/components/Wait";
+import { PageContentWrapper } from "../../../../common/presentation/components";
+import { Placeholder } from "../../../../common/presentation/components";
+import { WaitPage } from "../../../../common/presentation/components";
 import { Wait as AccordionWait } from "./accordion/Wait";
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
 import { Accordion } from "./accordion/Accordion";
@@ -12,7 +12,7 @@ import { PdfTabs } from "./pdf-tabs/PdfTabs";
 import { useCaseDetailsState } from "../../hooks/use-case-details-state/useCaseDetailsState";
 import { PdfTabsEmpty } from "./pdf-tabs/PdfTabsEmpty";
 import { SearchBox } from "./search-box/SearchBox";
-import { Modal } from "../../../../common/presentation/components/Modal";
+import { ResultsModal } from "./results/ResultsModal";
 
 export const path = "/case-details/:id";
 
@@ -26,27 +26,39 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     accordionState,
     tabsState,
     searchState,
+    searchTerm,
+    pipelineState,
     handleOpenPdf,
     handleClosePdf,
     handleSearchTermChange,
-    handleOpenSearchResults,
+    handleLaunchSearchResults,
     handleCloseSearchResults,
+    handleChangeResultsOrder,
+    handleUpdateFilter,
   } = useCaseDetailsState(id);
 
   if (caseState.status === "loading") {
     // if we are waiting on the main case details call, show holding message
     //  (we are prepared to show page whilst waiting for docs to load though)
-    return <Wait />;
+    return <WaitPage />;
   }
 
   return (
     <>
-      <Modal
-        isVisible={searchState.isResultsVisible}
-        handleClose={handleCloseSearchResults}
-      >
-        <div data-testid="div-search-results"></div>
-      </Modal>
+      <ResultsModal
+        {...{
+          caseState,
+          searchTerm,
+          searchState,
+          pipelineState,
+          handleSearchTermChange,
+          handleLaunchSearchResults,
+          handleCloseSearchResults,
+          handleChangeResultsOrder,
+          handleUpdateFilter,
+          handleOpenPdf,
+        }}
+      />
 
       <Placeholder height={40} />
 
@@ -67,9 +79,11 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
               />
 
               <SearchBox
-                value={searchState.searchTerm}
+                data-testid="search-case"
+                labelText="Search"
+                value={searchTerm}
                 handleChange={handleSearchTermChange}
-                handleSubmit={handleOpenSearchResults}
+                handleSubmit={handleLaunchSearchResults}
               />
 
               {accordionState.status === "loading" ? (

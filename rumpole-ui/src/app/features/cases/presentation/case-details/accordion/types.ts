@@ -1,7 +1,7 @@
-import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
+import { MappedCaseDocument } from "../../../domain/MappedCaseDocument";
 
 export type AccordionDocumentSection = {
   sectionId: string;
   sectionLabel: string;
-  docs: CaseDocumentWithTabSafeId[];
+  docs: MappedCaseDocument[];
 };

@@ -1,11 +1,12 @@
 import { usePipelineApi } from "./usePipelineApi";
 import * as polling from "./initiateAndPoll";
 import { PipelineResults } from "../../domain/PipelineResults";
-import { ApiResult } from "../../../../common/types/ApiResult";
 import { renderHook } from "@testing-library/react-hooks";
+import { AsyncPipelineResult } from "./AsyncPipelineResult";
+
 describe("usePipelineApi", () => {
   it("can return results", async () => {
-    const expectedResults = {} as ApiResult<PipelineResults>;
+    const expectedResults = {} as AsyncPipelineResult<PipelineResults>;
 
     jest
       .spyOn(polling, "initiateAndPoll")
@@ -18,7 +19,7 @@ describe("usePipelineApi", () => {
 
     const { result, waitForNextUpdate } = renderHook(() => usePipelineApi("1"));
 
-    expect(result.current).toEqual({ status: "loading" });
+    expect(result.current).toEqual({ status: "initiating", haveData: false });
 
     await waitForNextUpdate();
 

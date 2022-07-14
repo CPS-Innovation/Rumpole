@@ -2,12 +2,12 @@ import {
   CommonDateTimeFormats,
   formatDate,
 } from "../../../../../common/utils/dates";
-import { CaseDocumentWithTabSafeId } from "../../../domain/CaseDocumentWithTabSafeId";
+import { MappedCaseDocument } from "../../../domain/MappedCaseDocument";
 
 import classes from "./Accordion.module.scss";
 
 type Props = {
-  caseDocument: CaseDocumentWithTabSafeId;
+  caseDocument: MappedCaseDocument;
   handleOpenPdf: (caseDocument: {
     tabSafeId: string;
     documentId: string;
