@@ -15,15 +15,15 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             _blobStorageConnectionString = blobStorageConnectionString;
         }
 
-		public async Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
+		public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
         {
-            return caseId switch
+            return Task.FromResult(caseId switch
             {
                 "18846" => McLoveCase(caseId),
                 "1000000" => McLoveCase(caseId),
                 "1000001" => MultipleFileTypeCase(caseId),
                 _ => null
-            };
+            });
         }
 
         public async Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken)

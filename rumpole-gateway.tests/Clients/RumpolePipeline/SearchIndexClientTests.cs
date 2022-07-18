@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
@@ -15,16 +17,14 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 {
 	public class SearchIndexClientTests
 	{
-		private Fixture _fixture;
-		private int _caseId;
-		private string _searchTerm;
+		private readonly Fixture _fixture;
+		private readonly int _caseId;
+		private readonly string _searchTerm;
 
-		private Mock<ISearchClientFactory> _mockSearchClientFactory;
-		private Mock<SearchClient> _mockSearchClient;
-		private Mock<Response<SearchResults<SearchLine>>> _mockResponse;
-		private Mock<SearchResults<SearchLine>> _mockSearchResults;
+		private readonly Mock<SearchClient> _mockSearchClient;
+		private readonly Mock<Response<SearchResults<SearchLine>>> _mockResponse;
 
-		private ISearchIndexClient SearchIndexClient;
+		private readonly ISearchIndexClient _searchIndexClient;
 
 		public SearchIndexClientTests()
 		{
@@ -32,26 +32,55 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 			_caseId = _fixture.Create<int>();
 			_searchTerm = _fixture.Create<string>();
 
-			_mockSearchClientFactory = new Mock<ISearchClientFactory>();
+			var mockSearchClientFactory = new Mock<ISearchClientFactory>();
 			_mockSearchClient = new Mock<SearchClient>();
 			_mockResponse = new Mock<Response<SearchResults<SearchLine>>>();
-			_mockSearchResults = new Mock<SearchResults<SearchLine>>();
+			var mockSearchResults = new Mock<SearchResults<SearchLine>>();
 
-			_mockSearchClientFactory.Setup(factory => factory.Create()).Returns(_mockSearchClient.Object);
+			mockSearchClientFactory.Setup(factory => factory.Create()).Returns(_mockSearchClient.Object);
 			_mockSearchClient.Setup(client => client.SearchAsync<SearchLine>(_searchTerm, It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(_mockResponse.Object);
-			_mockResponse.Setup(response => response.Value).Returns(_mockSearchResults.Object);
+			_mockResponse.Setup(response => response.Value).Returns(mockSearchResults.Object);
 
-			SearchIndexClient = new SearchIndexClient(_mockSearchClientFactory.Object);
+			_searchIndexClient = new SearchIndexClient(mockSearchClientFactory.Object);
 		}
 
         [Fact]
 		public async Task Query_ReturnsSearchLines()
         {
-			var results = SearchIndexClient.Query(_caseId, _searchTerm);
+			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
 
 			results.Should().NotBeNull();
         }
+
+		[Fact]
+		public async Task Query_WhenResultsContainDuplicates_ShouldReturnNoDuplicates()
+		{
+			var responseMock = new Mock<Response>();
+			var fakeSearchLines = _fixture.CreateMany<SearchLine>(3).ToList();
+			var duplicateRecord = fakeSearchLines[0];
+			var duplicateRecordId = duplicateRecord.Id;
+			fakeSearchLines.Add(duplicateRecord);
+
+			_mockSearchClient.Setup(client => client.SearchAsync<SearchLine>(_searchTerm, 
+					It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
+				.Returns(Task.FromResult(
+						Response.FromValue(
+							SearchModelFactory.SearchResults<SearchLine>(new[] {
+								SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null),
+								SearchModelFactory.SearchResult(fakeSearchLines[1], 0.8, null),
+								SearchModelFactory.SearchResult(fakeSearchLines[2], 0.8, null),
+								SearchModelFactory.SearchResult(fakeSearchLines[3], 0.9, null)
+							}, 100, null, null, responseMock.Object), responseMock.Object)));
+			
+			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
+
+			using (new AssertionScope())
+			{
+				results.Count.Should().Be(3);
+				results.Count(s => s.Id == duplicateRecordId).Should().Be(1);
+			}
+		}
 	}
 }
 

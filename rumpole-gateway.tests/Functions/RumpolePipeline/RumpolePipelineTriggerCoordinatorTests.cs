@@ -27,7 +27,9 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private string _caseId;
 		private string _onBehalfOfAccessToken;
 		private string _rumpolePipelineCoordinatorScope;
+#pragma warning disable CS0649
 		private TriggerCoordinatorResponse _triggerCoordinatorResponse;
+#pragma warning restore CS0649
 
 		private Mock<ILogger<RumpolePipelineTriggerCoordinator>> _mockLogger;
 		private Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;

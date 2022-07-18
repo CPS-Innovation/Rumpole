@@ -17,16 +17,16 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 
 		public async Task<IList<SearchLine>> Query(int caseId, string searchTerm)
         {
-			var searchResults = await _searchClient.SearchAsync<SearchLine>(searchTerm, new SearchOptions { Filter = $"caseId eq {caseId}" });
+			var searchResults = await _searchClient.SearchAsync<SearchLine>(searchTerm, new SearchOptions { Filter = $"caseId eq {caseId}", OrderBy = { "" }});
 
 			var searchLines = new List<SearchLine>();
 			await foreach (var searchResult in searchResults.Value.GetResultsAsync())
 			{
-				searchLines.Add(searchResult.Document);
+				if (searchResult.Document != null && searchLines.Find(sl => sl.Id == searchResult.Document.Id) == null)
+					searchLines.Add(searchResult.Document);
 			}
 
 			return searchLines;
 		}
 	}
 }
-
