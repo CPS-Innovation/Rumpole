@@ -22,7 +22,6 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		private readonly string _searchTerm;
 
 		private readonly Mock<SearchClient> _mockSearchClient;
-		private readonly Mock<Response<SearchResults<SearchLine>>> _mockResponse;
 
 		private readonly ISearchIndexClient _searchIndexClient;
 
@@ -34,18 +33,18 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 
 			var mockSearchClientFactory = new Mock<ISearchClientFactory>();
 			_mockSearchClient = new Mock<SearchClient>();
-			_mockResponse = new Mock<Response<SearchResults<SearchLine>>>();
+			var mockResponse = new Mock<Response<SearchResults<SearchLine>>>();
 			var mockSearchResults = new Mock<SearchResults<SearchLine>>();
 
 			mockSearchClientFactory.Setup(factory => factory.Create()).Returns(_mockSearchClient.Object);
 			_mockSearchClient.Setup(client => client.SearchAsync<SearchLine>(_searchTerm, It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
-				.ReturnsAsync(_mockResponse.Object);
-			_mockResponse.Setup(response => response.Value).Returns(mockSearchResults.Object);
+				.ReturnsAsync(mockResponse.Object);
+			mockResponse.Setup(response => response.Value).Returns(mockSearchResults.Object);
 
 			_searchIndexClient = new SearchIndexClient(mockSearchClientFactory.Object);
 		}
-
-        [Fact]
+		
+		[Fact]
 		public async Task Query_ReturnsSearchLines()
         {
 			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
@@ -66,7 +65,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 					It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
 				.Returns(Task.FromResult(
 						Response.FromValue(
-							SearchModelFactory.SearchResults<SearchLine>(new[] {
+							SearchModelFactory.SearchResults(new[] {
 								SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null),
 								SearchModelFactory.SearchResult(fakeSearchLines[1], 0.8, null),
 								SearchModelFactory.SearchResult(fakeSearchLines[2], 0.8, null),
@@ -79,6 +78,36 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 			{
 				results.Count.Should().Be(3);
 				results.Count(s => s.Id == duplicateRecordId).Should().Be(1);
+			}
+		}
+
+		[Fact]
+		public async Task Query_ResultsAreOrderedByDocumentId()
+		{
+			var responseMock = new Mock<Response>();
+			var fakeSearchLines = _fixture.CreateMany<SearchLine>(3).ToList();
+			fakeSearchLines[0].DocumentId = "XYZ";
+			fakeSearchLines[1].DocumentId = "LMN";
+			fakeSearchLines[2].DocumentId = "ABC";
+			
+			_mockSearchClient.Setup(client => client.SearchAsync<SearchLine>(_searchTerm, 
+					It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
+				.Returns(Task.FromResult(
+					Response.FromValue(
+						SearchModelFactory.SearchResults(new[] {
+							SearchModelFactory.SearchResult(fakeSearchLines[2], 0.8, null),
+							SearchModelFactory.SearchResult(fakeSearchLines[1], 0.8, null),
+							SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null)
+						}, 100, null, null, responseMock.Object), responseMock.Object)));
+			
+			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
+
+			using (new AssertionScope())
+			{
+				results.Count.Should().Be(3);
+				results[0].DocumentId.Should().Be("ABC");
+				results[1].DocumentId.Should().Be("LMN");
+				results[2].DocumentId.Should().Be("XYZ");
 			}
 		}
 	}

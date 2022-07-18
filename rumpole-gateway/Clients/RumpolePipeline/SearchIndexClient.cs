@@ -16,8 +16,14 @@ namespace RumpoleGateway.Clients.RumpolePipeline
         }
 
 		public async Task<IList<SearchLine>> Query(int caseId, string searchTerm)
-        {
-			var searchResults = await _searchClient.SearchAsync<SearchLine>(searchTerm, new SearchOptions { Filter = $"caseId eq {caseId}", OrderBy = { "" }});
+		{
+			var searchOptions = new SearchOptions
+			{
+				Filter = $"caseId eq {caseId}"
+			};
+			searchOptions.OrderBy.Add("DocumentId");
+			
+			var searchResults = await _searchClient.SearchAsync<SearchLine>(searchTerm, searchOptions);
 
 			var searchLines = new List<SearchLine>();
 			await foreach (var searchResult in searchResults.Value.GetResultsAsync())
