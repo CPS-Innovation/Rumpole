@@ -34,6 +34,7 @@ declare global {
         apiRoute: string,
         response:
           | { type: "break"; httpStatusCode: number }
+          | { type: "delay"; timeMs: number }
           | { type?: false; body: any }
       ): Chainable<AUTWindow>;
     }
@@ -51,11 +52,14 @@ Cypress.Commands.add("overrideRoute", (apiRoute, response) => {
 
     msw.worker.use(
       (msw.rest as typeof mswRest).get(apiPath(apiRoute), (req, res, ctx) => {
-        return res.once(
-          response.type === "break"
-            ? ctx.status(response.httpStatusCode)
-            : ctx.json(response.body)
-        );
+        switch (response.type) {
+          case "break":
+            return res.once(ctx.status(response.httpStatusCode));
+          case "delay":
+            return res.once(ctx.delay(response.timeMs));
+          default:
+            return res.once(response.body);
+        }
       })
     );
   });

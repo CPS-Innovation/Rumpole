@@ -2,7 +2,7 @@ import {
   allMissingDocsPipelinePdfResults,
   missingDocsPipelinePdfResults,
 } from "../../../src/mock-api/data/pipelinePdfResults.cypress";
-import { TRACKER_ROUTE } from "../../../src/mock-api/routes";
+import { TEXT_SEARCH_ROUTE, TRACKER_ROUTE } from "../../../src/mock-api/routes";
 
 describe("Case Details Search", () => {
   describe("Search box", () => {
@@ -386,6 +386,24 @@ describe("Case Details Search", () => {
         cy.findByTestId("details-expand-missing-docs")
           .findByTestId("txt-missing-doc-d5")
           .should("exist");
+      });
+    });
+
+    describe("Loading...", () => {
+      it.only("can show the user the 'Loading...' content for a long running search call", () => {
+        cy.overrideRoute(TEXT_SEARCH_ROUTE, { type: "delay", timeMs: 1500 });
+        cy.visit("/case-details/13401");
+        cy.findByTestId("input-search-case").type("drink{enter}");
+
+        cy.findByTestId("div-please-wait");
+      });
+
+      it.only("can show the user the 'Loading...' content for a long running pipeline call", () => {
+        cy.overrideRoute(TRACKER_ROUTE, { type: "delay", timeMs: 1500 });
+        cy.visit("/case-details/13401");
+        cy.findByTestId("input-search-case").type("drink{enter}");
+
+        cy.findByTestId("div-please-wait");
       });
     });
   });

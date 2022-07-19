@@ -26,6 +26,7 @@ export const SearchBox: React.FC<Props> = ({
   return (
     <div className={classes.container}>
       <Input
+        autoFocus
         data-testid={dataTestId && `input-${dataTestId}`}
         value={value}
         onChange={handleChange}

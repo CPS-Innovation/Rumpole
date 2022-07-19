@@ -2,7 +2,7 @@ import classes from "./Modal.module.scss";
 
 type Props = {
   isVisible: boolean | undefined;
-  handleClose: () => void;
+  handleClose?: () => void;
 };
 
 export const Modal: React.FC<Props> = ({
@@ -31,15 +31,17 @@ export const Modal: React.FC<Props> = ({
         className={classes.modalContent}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={classes.closeContainer}>
-          <button
-            data-testid="btn-modal-close"
-            type="button"
-            className={classes.close}
-            aria-label="Close"
-            onClick={handleClose}
-          ></button>
-        </div>
+        {handleClose && (
+          <div className={classes.closeContainer}>
+            <button
+              data-testid="btn-modal-close"
+              type="button"
+              className={classes.close}
+              aria-label="Close"
+              onClick={handleClose}
+            ></button>
+          </div>
+        )}
         <div className={classes.contentContainer}>{children}</div>
       </div>
     </div>

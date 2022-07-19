@@ -1,13 +1,14 @@
 import { CaseDetailsState } from "../../../hooks/use-case-details-state/useCaseDetailsState";
 import { SearchBox } from "../search-box/SearchBox";
-import { ContentModeSwitch } from "./ContentModeSwitch";
 import classes from "./Content.module.scss";
 import { SucceededApiResult } from "../../../../../common/types/SucceededApiResult";
 import { CaseDetails } from "../../../domain/CaseDetails";
+import { Results } from "./ready-mode/Results";
+import React from "react";
+
 type Props = {
   caseState: SucceededApiResult<CaseDetails>;
   searchTerm: CaseDetailsState["searchTerm"];
-  pipelineState: CaseDetailsState["pipelineState"];
   searchState: CaseDetailsState["searchState"];
   handleSearchTermChange: CaseDetailsState["handleSearchTermChange"];
   handleLaunchSearchResults: CaseDetailsState["handleLaunchSearchResults"];
@@ -15,6 +16,8 @@ type Props = {
   handleUpdateFilter: CaseDetailsState["handleUpdateFilter"];
   handleOpenPdf: CaseDetailsState["handleOpenPdf"];
 };
+
+const MemoizedResults = React.memo(Results);
 
 export const Content: React.FC<Props> = ({
   caseState: {
@@ -24,8 +27,13 @@ export const Content: React.FC<Props> = ({
     },
   },
   searchTerm: value,
-  pipelineState,
-  searchState,
+  searchState: {
+    results,
+    submittedSearchTerm,
+    missingDocs,
+    resultsOrder,
+    filterOptions,
+  },
   handleSearchTermChange: handleChange,
   handleLaunchSearchResults: handleSubmit,
   handleChangeResultsOrder,
@@ -36,7 +44,7 @@ export const Content: React.FC<Props> = ({
 
   return (
     <div
-      className={`govuk-width-container ${classes.contentWidth}`}
+      className={`govuk-width-container ${classes.content}`}
       data-testid="div-search-results"
     >
       <div className="govuk-grid-row">
@@ -47,16 +55,22 @@ export const Content: React.FC<Props> = ({
           />
         </div>
       </div>
+
       <div className="govuk-grid-row">
-        <ContentModeSwitch
-          {...{
-            pipelineState,
-            searchState,
-            handleChangeResultsOrder,
-            handleUpdateFilter,
-            handleOpenPdf,
-          }}
-        />
+        {submittedSearchTerm && results.status === "succeeded" ? (
+          <MemoizedResults
+            {...{
+              missingDocs,
+              searchResult: results.data,
+              submittedSearchTerm,
+              resultsOrder,
+              filterOptions,
+              handleChangeResultsOrder,
+              handleUpdateFilter,
+              handleOpenPdf,
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );

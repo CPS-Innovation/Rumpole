@@ -1,6 +1,5 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import { useSearchInputLogic } from "./useSearchInputLogic";
-import { isUrnValid } from "../logic/isUrnValid";
 
 let mockIsValidValue: boolean | undefined;
 jest.mock("../logic/isUrnValid", () => ({

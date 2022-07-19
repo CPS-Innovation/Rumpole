@@ -45,20 +45,22 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
 
   return (
     <>
-      <ResultsModal
-        {...{
-          caseState,
-          searchTerm,
-          searchState,
-          pipelineState,
-          handleSearchTermChange,
-          handleLaunchSearchResults,
-          handleCloseSearchResults,
-          handleChangeResultsOrder,
-          handleUpdateFilter,
-          handleOpenPdf,
-        }}
-      />
+      {searchState.isResultsVisible && (
+        <ResultsModal
+          {...{
+            caseState,
+            searchTerm,
+            searchState,
+            pipelineState,
+            handleSearchTermChange,
+            handleLaunchSearchResults,
+            handleCloseSearchResults,
+            handleChangeResultsOrder,
+            handleUpdateFilter,
+            handleOpenPdf,
+          }}
+        />
+      )}
 
       <Placeholder height={40} />
 
