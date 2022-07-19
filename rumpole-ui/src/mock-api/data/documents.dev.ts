@@ -13,8 +13,8 @@ const documents: CaseDocument[] = [
     fileName: "MCLOVEMG3  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG3",
+      name: "MG3 File",
     },
   },
   {
@@ -31,8 +31,8 @@ const documents: CaseDocument[] = [
     fileName: "MG05MCLOVE very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG5",
+      name: "MG5 File",
     },
   },
   {
@@ -40,8 +40,8 @@ const documents: CaseDocument[] = [
     fileName: "MG06_3June  very long .docx",
     createdDate: "2020-06-03",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG6",
+      name: "MG6 File",
     },
   },
   {
@@ -49,8 +49,8 @@ const documents: CaseDocument[] = [
     fileName: "MG06_10june  very long .docx",
     createdDate: "2020-06-10",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG3",
+      name: "MG3 File",
     },
   },
   {
@@ -58,8 +58,8 @@ const documents: CaseDocument[] = [
     fileName: "MCLOVEMG3  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG3",
+      name: "MG3 File",
     },
   },
   {
@@ -67,8 +67,8 @@ const documents: CaseDocument[] = [
     fileName: "CM01  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "Other Comm (In)",
+      name: "Other Comm (In) File",
     },
   },
   {
@@ -76,8 +76,8 @@ const documents: CaseDocument[] = [
     fileName: "MG05MCLOVE very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG5",
+      name: "MG5 File",
     },
   },
   {
@@ -85,8 +85,8 @@ const documents: CaseDocument[] = [
     fileName: "MG06_3June  very long .docx",
     createdDate: "2020-06-03",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG6",
+      name: "MG6 File",
     },
   },
   {
@@ -94,8 +94,8 @@ const documents: CaseDocument[] = [
     fileName: "MG06_10june  very long .docx",
     createdDate: "2020-06-10",
     cmsDocType: {
-      code: "MG11",
-      name: "MG11 File",
+      code: "MG6",
+      name: "MG6 File",
     },
   },
 ];

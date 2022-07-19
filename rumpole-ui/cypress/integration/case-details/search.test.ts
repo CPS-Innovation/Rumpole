@@ -236,7 +236,7 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-search-result-d3");
       });
 
-      it("can combine filters across both filter types and show results that match any filter", () => {
+      it.only("can combine filters across both filter types and show results that match any filter", () => {
         cy.visit("/case-details/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
@@ -244,19 +244,16 @@ describe("Case Details Search", () => {
 
         cy.findByTestId("div-search-result-d1");
         cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
 
-        cy.findByTestId("checkboxes-category").get("#Uncategorised").check();
+        cy.findByTestId("checkboxes-category").get("#Exhibits").check();
 
         cy.findByTestId("div-search-result-d1");
         cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3");
 
-        cy.findByTestId("checkboxes-category").get("#Uncategorised").uncheck();
+        cy.findByTestId("checkboxes-category").get("#Exhibits").uncheck();
 
         cy.findByTestId("div-search-result-d1");
         cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
       });
 
       it("can hide filters if there are no results", () => {

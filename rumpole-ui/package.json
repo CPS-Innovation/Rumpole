@@ -28,6 +28,7 @@
     "del": "^6.0.0",
     "env-cmd": "^10.1.0",
     "faker": "5.5.3",
+    "fast-csv": "^4.3.6",
     "govuk-react-jsx": "^7.0.0",
     "istanbul-lib-coverage": "^3.2.0",
     "jest-junit": "^13.1.0",
