@@ -21,7 +21,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 			{
 				Filter = $"caseId eq {caseId}"
 			};
-			searchOptions.OrderBy.Add("DocumentId");
+			searchOptions.OrderBy.Add("id");
 			
 			var searchResults = await _searchClient.SearchAsync<SearchLine>(searchTerm, searchOptions);
 
