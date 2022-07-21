@@ -28,7 +28,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 			var searchLines = new List<SearchLine>();
 			await foreach (var searchResult in searchResults.Value.GetResultsAsync())
 			{
-				if (searchResult.Document != null && searchLines.Find(sl => sl.Id == searchResult.Document.Id) == null)
+				//if (searchResult.Document != null && searchLines.Find(sl => sl.Id == searchResult.Document.Id) == null)
 					searchLines.Add(searchResult.Document);
 			}
 
