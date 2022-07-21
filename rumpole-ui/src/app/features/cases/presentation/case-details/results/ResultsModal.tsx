@@ -38,7 +38,7 @@ export const ResultsModal: React.FC<Props> = ({
     MANDATORY_WAIT_PERIOD
   );
 
-  if (waitStatus === "wait") {
+  if (waitStatus === "wait" && searchState.submittedSearchTerm) {
     return (
       <Modal isVisible={searchState.isResultsVisible}>
         <PleaseWait handleClose={handleCloseSearchResults} />
