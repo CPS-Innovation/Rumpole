@@ -5,6 +5,7 @@ build
 coverage
 build-cypress
 coverage-cypress
+coverage-merged
 report
 report-cypress
 .nyc_output
