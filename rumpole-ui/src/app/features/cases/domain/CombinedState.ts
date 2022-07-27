@@ -2,7 +2,7 @@ import { AsyncPipelineResult } from "../hooks/use-pipeline-api/AsyncPipelineResu
 import { AsyncResult } from "../../../common/types/AsyncResult";
 import { CaseDetails } from "./CaseDetails";
 
-import { CaseDocumentWithUrl } from "./CaseDocumentWithUrl";
+import { CaseDocumentViewModel } from "./CaseDocumentViewModel";
 import { PipelineResults } from "./PipelineResults";
 import { MappedTextSearchResult } from "./MappedTextSearchResult";
 import { AccordionDocumentSection } from "../presentation/case-details/accordion/types";
@@ -15,7 +15,7 @@ export type CombinedState = {
   pipelineState: AsyncPipelineResult<PipelineResults>;
   accordionState: AsyncResult<AccordionDocumentSection[]>;
   tabsState: {
-    items: CaseDocumentWithUrl[];
+    items: CaseDocumentViewModel[];
     authToken: undefined | string;
   };
   // `searchTerm` is outside of `searchState` as it is more volatile: when

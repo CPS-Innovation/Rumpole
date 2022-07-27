@@ -4,7 +4,6 @@ import { Component } from "react";
 import {
   PdfLoader,
   PdfHighlighter,
-  Tip,
   Highlight,
   Popup,
   AreaHighlight,
@@ -16,8 +15,6 @@ import "./style/pdf-viewer.css"; // todo: these are the styles that come along w
 import classes from "../index.module.scss";
 import { Wait } from "./Wait";
 
-const testHighlights: Record<string, Array<IHighlight>> = {};
-
 interface State {
   url: string;
   highlights: Array<IHighlight>;
@@ -26,35 +23,39 @@ interface State {
 interface Props {
   url: string;
   authToken: string;
+  highlights: Array<IHighlight>;
+  focussedHighlightIndex: number;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
 
-const parseIdFromHash = () =>
-  document.location.hash.slice("#highlight-".length);
+// const parseIdFromHash = () =>
+//   document.location.hash.slice("#highlight-".length);
 
 const resetHash = () => {
   document.location.hash = "";
 };
 
-const HighlightPopup = ({
-  comment,
-  onClick,
-}: {
-  comment: { text: string; emoji: string };
-  onClick: () => void;
-}) => (
-  <div className="Tip">
-    <div className="Tip__compact Tip__compact-unredact" onClick={onClick}>
-      Remove redaction
-    </div>
-  </div>
-);
-
-// const initialUrl = "/MCLOVE-MG3.pdf";
+// const HighlightPopup = ({
+//   comment,
+//   onClick,
+// }: {
+//   comment: { text: string; emoji: string };
+//   onClick: () => void;
+// }) => (
+//   <div className="Tip">
+//     <div className="Tip__compact Tip__compact-unredact" onClick={onClick}>
+//       Remove redaction
+//     </div>
+//   </div>
+// );
 
 class App extends Component<Props, State> {
   private containerRef: React.RefObject<HTMLDivElement>;
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    return { ...state, highlights: props.highlights };
+  }
 
   constructor(props: Props) {
     super(props);
@@ -63,9 +64,7 @@ class App extends Component<Props, State> {
 
   state = {
     url: this.props.url,
-    highlights: testHighlights[this.props.url]
-      ? [...testHighlights[this.props.url]]
-      : [],
+    highlights: this.props.highlights,
     isRedactionComplete: false,
   };
 
@@ -78,10 +77,12 @@ class App extends Component<Props, State> {
   scrollViewerTo = (highlight: any) => {};
 
   scrollToHighlightFromHash = () => {
-    const highlight = this.getHighlightById(parseIdFromHash());
+    const highlight = this.getHighlightById(
+      String(this.props.focussedHighlightIndex)
+    );
 
     if (highlight) {
-      this.scrollViewerTo(highlight);
+      //this.scrollViewerTo(highlight);
     }
   };
 
@@ -234,18 +235,20 @@ class App extends Component<Props, State> {
                   return (
                     <Popup
                       popupContent={
-                        <HighlightPopup
-                          {...highlight}
-                          onClick={() => {
-                            this.removeHighlight(highlight.id);
-                            hideTip();
-                          }}
-                        />
+                        <></>
+                        // <HighlightPopup
+                        //   {...highlight}
+                        //   onClick={() => {
+                        //     this.removeHighlight(highlight.id);
+                        //     hideTip();
+                        //   }}
+                        // />
                       }
-                      onMouseOver={(popupContent) =>
-                        setTip(highlight, (highlight) => popupContent)
+                      onMouseOver={
+                        (popupContent) => {}
+                        //setTip(highlight, (highlight) => popupContent)
                       }
-                      onMouseOut={hideTip}
+                      onMouseOut={() => {}} //hideTip}
                       key={index}
                       children={component}
                     />

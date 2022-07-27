@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import classes from "./Modal.module.scss";
 
 type Props = {
@@ -18,8 +19,17 @@ export const Modal: React.FC<Props> = ({
   if (isVisible) {
     htmlElement.classList.add(classes.stopHtmlScroll);
   } else {
+    // We need to reenable the scrolling the behaviour for the window
+    //  if we are hiding the modal. But see following comment....
     htmlElement.classList.remove(classes.stopHtmlScroll);
   }
+
+  useEffect(() => {
+    // ... we also need to make sure the window scroll is reenabled if
+    //  we are being unmounted before the the isVisible flag is seen to be
+    //  false.
+    return () => htmlElement.classList.remove(classes.stopHtmlScroll);
+  }, [htmlElement.classList]);
 
   return !isVisible ? null : (
     <div

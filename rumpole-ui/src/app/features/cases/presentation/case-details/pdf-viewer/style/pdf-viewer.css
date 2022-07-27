@@ -31,7 +31,7 @@ body {
   padding: 0;
 } */
 
-.highlight__location {
+/* .highlight__location {
   margin-top: 0.5rem;
   text-align: right;
   font-size: 10px;
@@ -41,7 +41,7 @@ body {
   overflow: auto;
   max-width: 300px;
   border: 1px dashed;
-}
+} */
 
 /* .sidebar__highlight {
   padding: 1rem;

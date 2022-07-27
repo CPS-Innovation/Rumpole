@@ -32,7 +32,7 @@ export const ListItem: React.FC<Props> = ({
         <a
           href={`#${tabSafeId}`}
           onClick={(ev) => {
-            handleOpenPdf({ documentId, tabSafeId });
+            handleOpenPdf({ documentId, tabSafeId, mode: "search" });
           }}
           data-testid={`link-result-document-${documentId}`}
         >

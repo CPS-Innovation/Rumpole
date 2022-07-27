@@ -85,7 +85,7 @@ interface Props<T_HT> {
     transformSelection: () => void
   ) => JSX.Element | null;
   enableAreaSelection: (event: MouseEvent) => boolean;
-  onWheelDownwards: () => void;
+  onWheelDownwards?: () => void;
 }
 
 const EMPTY_ID = "empty-id";
@@ -166,7 +166,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
   };
 
   handleWheel = (ev: WheelEvent) => {
-    if (ev.deltaY > 0) {
+    if (this.props.onWheelDownwards && ev.deltaY > 0) {
       
       //ev.preventDefault();
       this.props.onWheelDownwards();

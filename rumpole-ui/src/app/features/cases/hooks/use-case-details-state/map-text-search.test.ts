@@ -68,11 +68,7 @@ describe("mapTextSearch", () => {
                 },
               ],
               id: "1",
-              occurrencesInLine: [
-                {
-                  boundingBox: [1],
-                },
-              ],
+              occurrencesInLine: [[1]],
               pageIndex: 0,
             },
           ],
@@ -94,11 +90,7 @@ describe("mapTextSearch", () => {
                 },
               ],
               id: "2",
-              occurrencesInLine: [
-                {
-                  boundingBox: [1],
-                },
-              ],
+              occurrencesInLine: [[1]],
               pageIndex: 0,
             },
             {
@@ -113,14 +105,7 @@ describe("mapTextSearch", () => {
                 },
               ],
               id: "3",
-              occurrencesInLine: [
-                {
-                  boundingBox: [1],
-                },
-                {
-                  boundingBox: [1],
-                },
-              ],
+              occurrencesInLine: [[1], [1]],
               pageIndex: 0,
             },
             {
@@ -135,11 +120,7 @@ describe("mapTextSearch", () => {
                 },
               ],
               id: "4",
-              occurrencesInLine: [
-                {
-                  boundingBox: [1],
-                },
-              ],
+              occurrencesInLine: [[1]],
               pageIndex: 1,
             },
           ],

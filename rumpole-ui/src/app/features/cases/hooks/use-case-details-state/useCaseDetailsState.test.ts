@@ -159,11 +159,13 @@ describe("useCaseDetailsState", () => {
         },
       } = renderHook(() => useCaseDetailsState("foo"));
 
-      act(() => handleOpenPdf({ tabSafeId: "1", documentId: "2" }));
+      act(() =>
+        handleOpenPdf({ tabSafeId: "1", documentId: "2", mode: "read" })
+      );
 
       expect(reducerSpy).toBeCalledWith(expect.anything(), {
         type: "OPEN_PDF",
-        payload: { tabSafeId: "1", pdfId: "2" },
+        payload: { tabSafeId: "1", pdfId: "2", mode: "read" },
       });
     });
 

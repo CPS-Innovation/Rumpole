@@ -1,19 +1,21 @@
 import { Tabs } from "../../../../../common/presentation/components/tabs";
-import { CaseDocumentWithUrl } from "../../../domain/CaseDocumentWithUrl";
+import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 
 import { PdfTab } from "./PdfTab";
 
 type PdfTabsProps = {
   tabsState: {
-    items: CaseDocumentWithUrl[];
+    items: CaseDocumentViewModel[];
     authToken: undefined | string;
   };
   handleClosePdf: (caseDocument: { tabSafeId: string }) => void;
+  handleLaunchSearchResults: () => void;
 };
 
 export const PdfTabs: React.FC<PdfTabsProps> = ({
   tabsState: { items, authToken },
   handleClosePdf,
+  handleLaunchSearchResults,
 }) => {
   return (
     <Tabs
@@ -22,7 +24,13 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
         id: item.tabSafeId,
         label: item.fileName,
         panel: {
-          children: <PdfTab caseDocument={item} authToken={authToken} />,
+          children: (
+            <PdfTab
+              caseDocumentViewModel={item}
+              authToken={authToken}
+              handleLaunchSearchResults={handleLaunchSearchResults}
+            />
+          ),
         },
       }))}
       title="Contents"

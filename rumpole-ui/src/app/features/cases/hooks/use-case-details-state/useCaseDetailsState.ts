@@ -9,6 +9,7 @@ import { usePipelineApi } from "../use-pipeline-api/usePipelineApi";
 import { CombinedState } from "../../domain/CombinedState";
 import { reducer } from "./reducer";
 import { searchCaseWhenReady } from "./search-case-when-ready";
+import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 
 export type CaseDetailsState = ReturnType<typeof useCaseDetailsState>;
 
@@ -87,12 +88,17 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleOpenPdf = useCallback(
-    (caseDocument: { tabSafeId: string; documentId: string }) => {
+    (caseDocument: {
+      tabSafeId: string;
+      documentId: string;
+      mode: CaseDocumentViewModel["mode"];
+    }) => {
       dispatch({
         type: "OPEN_PDF",
         payload: {
           pdfId: caseDocument.documentId,
           tabSafeId: caseDocument.tabSafeId,
+          mode: caseDocument.mode,
         },
       });
     },

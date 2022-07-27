@@ -9,6 +9,10 @@
     padding-top: 5px;
   }
 
+  :global(.govuk-tabs__panel) {
+    padding: 0 !important;
+  }
+
   :global(.govuk-tabs__list-item) {
     // make inactive tabs touch the top of the content, rather than have a separation
     padding-bottom: 12px !important;

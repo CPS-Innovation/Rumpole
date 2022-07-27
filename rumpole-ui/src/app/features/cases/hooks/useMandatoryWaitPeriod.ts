@@ -41,7 +41,7 @@ export const useMandatoryWaitPeriod = (
   if (!eventLog.length) {
     // Our log is [], so the external flag is not ready, and nothing else
     //  has happened, so we are in the pre-wait period
-    return "preWait";
+    return preWaitPeriodMs ? "preWait" : "wait";
   }
 
   if (

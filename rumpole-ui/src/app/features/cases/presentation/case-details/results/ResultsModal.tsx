@@ -22,8 +22,10 @@ type Props = {
   handleOpenPdf: CaseDetailsState["handleOpenPdf"];
 };
 
-const PAUSE_PERIOD_MS = 1000;
-const MANDATORY_WAIT_PERIOD = 1000;
+// make PAUSE_PERIOD_MS > 0 to allow a window of time where results can appear without he Please Wait
+//  appearing if the data is available quicker than PAUSE_PERIOD_MS
+const PAUSE_PERIOD_MS = 0;
+const MANDATORY_WAIT_PERIOD = 600;
 
 export const ResultsModal: React.FC<Props> = ({
   handleCloseSearchResults,

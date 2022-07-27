@@ -7,7 +7,7 @@ components it provides. We need control over our look-and-feel hence we fork the
 importing from npm.
 
 The `src/` folder from the repo has been copied here and the following npm dependencies of `react-pdf-highlighter`
-have been added directly to ourt own `package.json`:
+have been added directly to our own `package.json`:
 
 ```
 	"@types/lodash.debounce": "^4.0.6",

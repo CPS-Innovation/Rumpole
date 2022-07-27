@@ -14,6 +14,7 @@ import { ApiTextSearchResult } from "../../domain/ApiTextSearchResult";
 import * as textSearchMapper from "./map-text-search";
 import * as filters from "./map-filters";
 import * as missingDocuments from "./map-missing-documents";
+import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
 
 const ERROR = new Error();
 
@@ -273,6 +274,25 @@ describe("useCaseDetailsState reducer", () => {
   });
 
   describe("OPEN_PDF", () => {
+    it("can try to open a tab when the documents are unknown", () => {
+      const nextState = reducer(
+        {
+          documentsState: { status: "loading" },
+        } as CombinedState,
+        {
+          type: "OPEN_PDF",
+          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+        }
+      );
+
+      expect(nextState).toEqual({
+        documentsState: { status: "loading" },
+        searchState: {
+          isResultsVisible: false,
+        },
+      });
+    });
+
     it("can open a tab when the pdf details are known", () => {
       const existingTabsState = {
         authToken: "authtoken",
@@ -304,7 +324,10 @@ describe("useCaseDetailsState reducer", () => {
           pipelineState: existingPipelineState,
           tabsState: existingTabsState,
         } as CombinedState,
-        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
+        {
+          type: "OPEN_PDF",
+          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+        }
       );
 
       expect(nextState.tabsState).toEqual({
@@ -312,6 +335,7 @@ describe("useCaseDetailsState reducer", () => {
         items: [
           {
             documentId: "d1",
+            mode: "read",
             url: "baz",
             tabSafeId: "t1",
           },
@@ -319,7 +343,7 @@ describe("useCaseDetailsState reducer", () => {
       });
     });
 
-    it("can open a tab when the pdf pdf details are not known", () => {
+    it("can open a tab when the pdf details are not known", () => {
       const existingTabsState = {
         authToken: "authtoken",
         items: [],
@@ -340,7 +364,10 @@ describe("useCaseDetailsState reducer", () => {
           pipelineState: existingPipelineState,
           tabsState: existingTabsState,
         } as CombinedState,
-        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
+        {
+          type: "OPEN_PDF",
+          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+        }
       );
 
       expect(nextState.tabsState).toEqual({
@@ -349,32 +376,296 @@ describe("useCaseDetailsState reducer", () => {
           {
             documentId: "d1",
             url: undefined,
+            mode: "read",
             tabSafeId: "t1",
           },
         ],
       });
     });
 
-    it("can reopen a tab that is already open", () => {
-      const existingTabsState = {
-        authToken: "authtoken",
-        items: [
+    describe("reopening pdfs", () => {
+      it("can reopen a read mode pdf and show the previously visible document", () => {
+        const existingTabsState = {
+          authToken: "authtoken",
+          items: [{ documentId: "d1", mode: "read" }],
+        } as CombinedState["tabsState"];
+
+        const nextState = reducer(
           {
-            documentId: "d1",
-            url: "baz",
-            tabSafeId: "t1",
+            documentsState: { status: "succeeded" },
+            tabsState: existingTabsState,
+          } as CombinedState,
+          {
+            type: "OPEN_PDF",
+            payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+          }
+        );
+
+        expect(nextState).toEqual({
+          documentsState: { status: "succeeded" },
+          searchState: {
+            isResultsVisible: false,
           },
-        ],
-      } as CombinedState["tabsState"];
-
-      const nextState = reducer(
-        {
           tabsState: existingTabsState,
-        } as CombinedState,
-        { type: "OPEN_PDF", payload: { pdfId: "d1", tabSafeId: "t1" } }
-      );
+        });
+      });
 
-      expect(nextState.tabsState).toBe(existingTabsState);
+      it("can reopen a search mode pdf and show the previously visible document", () => {
+        const existingTabsState = {
+          authToken: "authtoken",
+          items: [{ documentId: "d1", mode: "search", searchTerm: "foo" }],
+        } as CombinedState["tabsState"];
+
+        const nextState = reducer(
+          {
+            searchState: { submittedSearchTerm: "foo" },
+            documentsState: { status: "succeeded" },
+            tabsState: existingTabsState,
+          } as CombinedState,
+          {
+            type: "OPEN_PDF",
+            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+          }
+        );
+
+        expect(nextState).toEqual({
+          documentsState: { status: "succeeded" },
+          searchState: {
+            submittedSearchTerm: "foo",
+            isResultsVisible: false,
+          },
+          tabsState: existingTabsState,
+        });
+      });
+
+      it("can reopen a read mode pdf in search mode", () => {
+        const existingTabsState = {
+          authToken: "authtoken",
+          items: [
+            { documentId: "d0", mode: "read" },
+            { documentId: "d1", mode: "read" },
+            { documentId: "d2", mode: "read" },
+          ],
+        } as CombinedState["tabsState"];
+
+        const existingDocumentsState = {
+          status: "succeeded",
+          data: [] as MappedCaseDocument[],
+        } as CombinedState["documentsState"];
+
+        const existingSearchState = {
+          submittedSearchTerm: "foo",
+          results: {
+            status: "succeeded",
+            data: {
+              documentResults: [
+                {
+                  documentId: "d1",
+                  occurrences: [
+                    { pageIndex: 0, occurrencesInLine: [[1, 2, 3]] },
+                  ] as MappedDocumentResult["occurrences"],
+                  occurrencesInDocumentCount: 3,
+                },
+              ],
+            },
+          },
+        } as CombinedState["searchState"];
+
+        const existingPipelineState = {} as CombinedState["pipelineState"];
+
+        const nextState = reducer(
+          {
+            searchState: existingSearchState,
+            documentsState: existingDocumentsState,
+            tabsState: existingTabsState,
+            pipelineState: existingPipelineState,
+          } as CombinedState,
+          {
+            type: "OPEN_PDF",
+            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+          }
+        );
+
+        expect(nextState).toEqual({
+          documentsState: existingDocumentsState,
+          searchState: { ...existingSearchState, isResultsVisible: false },
+          pipelineState: existingPipelineState,
+          tabsState: {
+            authToken: "authtoken",
+            items: [
+              { documentId: "d0", mode: "read" },
+              {
+                documentId: "d1",
+                mode: "search",
+                occurrencesInDocumentCount: 3,
+                pageOccurrences: [
+                  {
+                    boundingBoxes: [[1, 2, 3]],
+                    pageIndex: 0,
+                  },
+                ],
+                searchTerm: "foo",
+                tabSafeId: "t1",
+                url: undefined,
+              },
+              { documentId: "d2", mode: "read" },
+            ],
+          },
+        });
+      });
+
+      it("can reopen a search mode pdf in read mode", () => {
+        const existingTabsState = {
+          authToken: "authtoken",
+          items: [
+            { documentId: "d0", mode: "read" },
+            { documentId: "d1", mode: "search" },
+            { documentId: "d2", mode: "read" },
+          ],
+        } as CombinedState["tabsState"];
+
+        const existingDocumentsState = {
+          status: "succeeded",
+          data: [] as MappedCaseDocument[],
+        } as CombinedState["documentsState"];
+
+        const existingSearchState = {
+          submittedSearchTerm: "foo",
+          results: {
+            status: "succeeded",
+          },
+        } as CombinedState["searchState"];
+
+        const existingPipelineState = {} as CombinedState["pipelineState"];
+
+        const nextState = reducer(
+          {
+            searchState: existingSearchState,
+            documentsState: existingDocumentsState,
+            tabsState: existingTabsState,
+            pipelineState: existingPipelineState,
+          } as CombinedState,
+          {
+            type: "OPEN_PDF",
+            payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+          }
+        );
+
+        expect(nextState).toEqual({
+          documentsState: existingDocumentsState,
+          searchState: { ...existingSearchState, isResultsVisible: false },
+          pipelineState: existingPipelineState,
+          tabsState: {
+            authToken: "authtoken",
+            items: [
+              { documentId: "d0", mode: "read" },
+              {
+                documentId: "d1",
+                mode: "read",
+                tabSafeId: "t1",
+                url: undefined,
+              },
+              { documentId: "d2", mode: "read" },
+            ],
+          },
+        });
+      });
+
+      it("can reopen a search mode pdf in search mode with a different search term", () => {
+        const existingTabsState = {
+          authToken: "authtoken",
+          items: [
+            { documentId: "d0", mode: "read" },
+            {
+              documentId: "d1",
+              mode: "search",
+              searchTerm: "foo",
+              occurrencesInDocumentCount: 1,
+              pageOccurrences: [
+                {
+                  boundingBoxes: [[1, 2, 3]],
+                  pageIndex: 0,
+                },
+              ],
+            },
+            { documentId: "d2", mode: "read" },
+          ],
+        } as CombinedState["tabsState"];
+
+        const existingDocumentsState = {
+          status: "succeeded",
+          data: [] as MappedCaseDocument[],
+        } as CombinedState["documentsState"];
+
+        const existingSearchState = {
+          submittedSearchTerm: "bar",
+          results: {
+            status: "succeeded",
+            data: {
+              documentResults: [
+                {
+                  documentId: "d1",
+                  occurrences: [
+                    { pageIndex: 1, occurrencesInLine: [[4, 5, 6]] },
+                    { pageIndex: 2, occurrencesInLine: [[7, 8, 9]] },
+                    { pageIndex: 2, occurrencesInLine: [[10, 11, 12]] },
+                  ] as MappedDocumentResult["occurrences"],
+                  occurrencesInDocumentCount: 4,
+                },
+              ],
+            },
+          },
+        } as CombinedState["searchState"];
+
+        const existingPipelineState = {} as CombinedState["pipelineState"];
+
+        const nextState = reducer(
+          {
+            searchState: existingSearchState,
+            documentsState: existingDocumentsState,
+            tabsState: existingTabsState,
+            pipelineState: existingPipelineState,
+          } as CombinedState,
+          {
+            type: "OPEN_PDF",
+            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+          }
+        );
+
+        expect(nextState).toEqual({
+          documentsState: existingDocumentsState,
+          searchState: { ...existingSearchState, isResultsVisible: false },
+          pipelineState: existingPipelineState,
+          tabsState: {
+            authToken: "authtoken",
+            items: [
+              { documentId: "d0", mode: "read" },
+              {
+                documentId: "d1",
+                mode: "search",
+                occurrencesInDocumentCount: 4,
+                pageOccurrences: [
+                  {
+                    boundingBoxes: [[4, 5, 6]],
+                    pageIndex: 1,
+                  },
+                  {
+                    boundingBoxes: [
+                      [7, 8, 9],
+                      [10, 11, 12],
+                    ],
+                    pageIndex: 2,
+                  },
+                ],
+                searchTerm: "bar",
+                tabSafeId: "t1",
+                url: undefined,
+              },
+              { documentId: "d2", mode: "read" },
+            ],
+          },
+        });
+      });
     });
   });
 

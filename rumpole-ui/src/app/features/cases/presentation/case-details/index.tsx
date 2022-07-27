@@ -93,7 +93,9 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
               ) : (
                 <Accordion
                   accordionState={accordionState.data}
-                  handleOpenPdf={handleOpenPdf}
+                  handleOpenPdf={(caseDoc) =>
+                    handleOpenPdf({ ...caseDoc, mode: "read" })
+                  }
                 />
               )}
             </div>
@@ -104,7 +106,11 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
             {!tabsState.items.length ? (
               <PdfTabsEmpty />
             ) : (
-              <PdfTabs tabsState={tabsState} handleClosePdf={handleClosePdf} />
+              <PdfTabs
+                tabsState={tabsState}
+                handleClosePdf={handleClosePdf}
+                handleLaunchSearchResults={handleLaunchSearchResults}
+              />
             )}
           </div>
         </div>
