@@ -1,5 +1,4 @@
-﻿using System;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -10,30 +9,27 @@ namespace RumpoleGateway.Tests.Mappers
 {
 	public class TrackerUrlMapperTests
 	{
-		private Fixture _fixture;
-		private string _requestScheme;
-		private string _requestHost;
-		private ushort _requestPort;
+        private readonly string _requestScheme;
+		private readonly string _requestHost;
+		private readonly ushort _requestPort;
 
-		private Mock<HttpRequest> _mockRequest;
+		private readonly Mock<HttpRequest> _mockRequest;
 
-		
-
-		private TrackerUrlMapper TrackerUrlMapper;
+		private readonly TrackerUrlMapper _trackerUrlMapper;
 
 		public TrackerUrlMapperTests()
         {
-			_fixture = new Fixture();
+            var fixture = new Fixture();
 			_requestScheme = "http";
-			_requestHost = _fixture.Create<string>();
-			_requestPort = _fixture.Create<ushort>();
+			_requestHost = fixture.Create<string>();
+			_requestPort = fixture.Create<ushort>();
 
 			_mockRequest = new Mock<HttpRequest>();
 
 			_mockRequest.Setup(x => x.Scheme).Returns(_requestScheme);
 			_mockRequest.Setup(x => x.Host).Returns(new HostString(_requestHost, _requestPort));
 
-			TrackerUrlMapper = new TrackerUrlMapper();
+			_trackerUrlMapper = new TrackerUrlMapper();
 		}
 
 		[Fact]
@@ -41,7 +37,7 @@ namespace RumpoleGateway.Tests.Mappers
         {
 			var expectedAbsoluteUri = $"{_requestScheme}://{_requestHost}:{_requestPort}/tracker";
 
-			var uri = TrackerUrlMapper.Map(_mockRequest.Object);
+			var uri = _trackerUrlMapper.Map(_mockRequest.Object);
 
 			uri.AbsoluteUri.Should().Be(expectedAbsoluteUri);
 		}
@@ -52,7 +48,7 @@ namespace RumpoleGateway.Tests.Mappers
 			var expectedAbsoluteUri = $"{_requestScheme}://{_requestHost}/tracker";
 			_mockRequest.Setup(x => x.Host).Returns(new HostString(_requestHost));
 
-			var uri = TrackerUrlMapper.Map(_mockRequest.Object);
+			var uri = _trackerUrlMapper.Map(_mockRequest.Object);
 
 			uri.AbsoluteUri.Should().Be(expectedAbsoluteUri);
 		}

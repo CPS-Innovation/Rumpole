@@ -11,7 +11,7 @@ describe("mapTextSearch", () => {
         pageIndex: 0,
         words: [
           { boundingBox: [1], text: "foo", confidence: 1 },
-          { boundingBox: [1], text: "bar", confidence: 1 },
+          { boundingBox: null, text: "bar", confidence: 1 },
         ],
       },
       {
@@ -19,7 +19,7 @@ describe("mapTextSearch", () => {
         documentId: "2",
         pageIndex: 0,
         words: [
-          { boundingBox: [1], text: "baz", confidence: 1 },
+          { boundingBox: null, text: "baz", confidence: 1 },
           { boundingBox: [1], text: "foo", confidence: 1 },
         ],
       },
@@ -38,7 +38,7 @@ describe("mapTextSearch", () => {
         pageIndex: 1,
         words: [
           { boundingBox: [1], text: "foo", confidence: 1 },
-          { boundingBox: [1], text: "baz", confidence: 1 },
+          { boundingBox: null, text: "baz", confidence: 1 },
         ],
       },
     ] as ApiTextSearchResult[];

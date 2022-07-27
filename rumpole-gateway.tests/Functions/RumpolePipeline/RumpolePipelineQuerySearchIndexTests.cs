@@ -19,7 +19,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private int _caseIdInt;
 		private string _caseId;
 		private string _searchTerm;
-		private IList<SearchLine> _searchResults;
+		private IList<StreamlinedSearchLine> _searchResults;
 
 		private Mock<ILogger<RumpolePipelineQuerySearchIndex>> _mockLogger;
 		private Mock<ISearchIndexClient> _searchIndexClient;
@@ -32,7 +32,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_caseIdInt = _fixture.Create<int>();
 			_caseId = _caseIdInt.ToString();
 			_searchTerm = _fixture.Create<string>();
-			_searchResults = _fixture.Create<IList<SearchLine>>();
+			_searchResults = _fixture.Create<IList<StreamlinedSearchLine>>();
 
 			_mockLogger = new Mock<ILogger<RumpolePipelineQuerySearchIndex>>();
 			_searchIndexClient = new Mock<ISearchIndexClient>();
@@ -83,7 +83,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as OkObjectResult;
 
-			response.Value.Should().Be(_searchResults);
+			response?.Value.Should().Be(_searchResults);
 		}
 
 		[Fact]
@@ -94,7 +94,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 
 
@@ -106,7 +106,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 	}
 }

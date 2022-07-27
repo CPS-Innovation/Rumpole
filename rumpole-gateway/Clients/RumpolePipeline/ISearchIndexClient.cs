@@ -6,7 +6,9 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 {
 	public interface ISearchIndexClient
 	{
-		Task<IList<SearchLine>> Query(int caseId, string searchTerm);
-	}
+		Task<IList<StreamlinedSearchLine>> Query(int caseId, string searchTerm);
+
+        IList<StreamlinedSearchLine> BuildStreamlinedResults(IList<SearchLine> searchResults, string searchTerm);
+    }
 }
 

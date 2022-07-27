@@ -3,7 +3,6 @@ using Azure.Search.Documents;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
-using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Factories;
 using Xunit;
 
@@ -11,31 +10,28 @@ namespace RumpoleGateway.Tests.Factories
 {
 	public class SearchClientFactoryTests
 	{
-		private Fixture _fixture;
-		private Domain.RumpolePipeline.SearchClientOptions _searchClientOptions;
+        private readonly Domain.RumpolePipeline.SearchClientOptions _searchClientOptions;
 
-		private Mock<IOptions<Domain.RumpolePipeline.SearchClientOptions>> _mockSearchClientOptions;
-
-		private ISearchClientFactory SearchClientFactory;
+        private readonly ISearchClientFactory _searchClientFactory;
 
 		public SearchClientFactoryTests()
 		{
-			_fixture = new Fixture();
-			_searchClientOptions = _fixture.Build<Domain.RumpolePipeline.SearchClientOptions>()
+            var fixture = new Fixture();
+			_searchClientOptions = fixture.Build<Domain.RumpolePipeline.SearchClientOptions>()
 									.With(o => o.EndpointUrl, "https://www.google.co.uk")
 									.Create();
 
-            _mockSearchClientOptions = new Mock<IOptions<Domain.RumpolePipeline.SearchClientOptions>>();
+            var mockSearchClientOptions = new Mock<IOptions<Domain.RumpolePipeline.SearchClientOptions>>();
 
-			_mockSearchClientOptions.Setup(options => options.Value).Returns(_searchClientOptions);
+			mockSearchClientOptions.Setup(options => options.Value).Returns(_searchClientOptions);
 
-			SearchClientFactory = new SearchClientFactory(_mockSearchClientOptions.Object);
+			_searchClientFactory = new SearchClientFactory(mockSearchClientOptions.Object);
 		}
 
         [Fact]
 		public void Create_ReturnsSearchClient()
         {
-			var searchClient = SearchClientFactory.Create();
+			var searchClient = _searchClientFactory.Create();
 
 			searchClient.Should().BeOfType<SearchClient>();
         }
@@ -43,7 +39,7 @@ namespace RumpoleGateway.Tests.Factories
 		[Fact]
 		public void Create_SetsExpectedEndpoint()
 		{
-			var searchClient = SearchClientFactory.Create();
+			var searchClient = _searchClientFactory.Create();
 
 			searchClient.Endpoint.Should().Be(_searchClientOptions.EndpointUrl);
 		}
@@ -51,7 +47,7 @@ namespace RumpoleGateway.Tests.Factories
 		[Fact]
 		public void Create_SetsExpectedIndexName()
 		{
-			var searchClient = SearchClientFactory.Create();
+			var searchClient = _searchClientFactory.Create();
 
 			searchClient.IndexName.Should().Be(_searchClientOptions.IndexName);
 		}

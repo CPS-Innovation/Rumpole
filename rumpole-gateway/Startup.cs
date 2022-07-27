@@ -49,6 +49,9 @@ namespace RumpoleGateway
             builder.Services.AddTransient<ITrackerUrlMapper, TrackerUrlMapper>();
             builder.Services.AddTransient<ISearchIndexClient, SearchIndexClient>();
             builder.Services.AddTransient<ISearchClientFactory, SearchClientFactory>();
+            builder.Services.AddTransient<IStreamlinedSearchLineMapper, StreamlinedSearchLineMapper>();
+            builder.Services.AddTransient<IStreamlinedSearchWordMapper, StreamlinedSearchWordMapper>();
+            builder.Services.AddTransient<IStreamlinedSearchResultFactory, StreamlinedSearchResultFactory>();
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {

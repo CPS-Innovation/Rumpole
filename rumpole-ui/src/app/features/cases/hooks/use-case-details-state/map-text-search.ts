@@ -38,8 +38,20 @@ export const mapTextSearch = (
       const { id, pageIndex, words } = apiResultDocument;
 
       const occurrencesInLine = words
-        .filter((word) => areAlphanumericallyEqual(word.text, searchTerm))
-        .map((word) => ({ boundingBox: word.boundingBox }));
+        .filter(
+          (word) =>
+            !!word.boundingBox && // backend sends null for bounding box if not matched word
+            areAlphanumericallyEqual(word.text, searchTerm)
+        )
+        .map((word) => ({
+          boundingBox:
+            word.boundingBox ||
+            // this || clause keeps typescript happy, by this point we are guaranteed to have an array,
+            //  with stuff in rather than null, but typescript doen't think so, and I can't find a
+            //  type-guard-y kind of way to convince typescript.
+            /* istanbul ignore next */
+            [],
+        }));
 
       const thisOccurrence = {
         id,

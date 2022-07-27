@@ -40,6 +40,5 @@
     <Folder Include="Functions\RumpolePipeline\" />
     <Folder Include="Clients\RumpolePipeline\" />
     <Folder Include="Functions\DocumentExtraction\" />
-    <Folder Include="Mappers\" />
   </ItemGroup>
 </Project>

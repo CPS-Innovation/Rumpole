@@ -4,10 +4,9 @@ export type ApiTextSearchResult = {
   documentId: string;
   pageIndex: number;
   lineIndex: number;
-  boundingBox: number[];
   text: string;
   words: {
-    boundingBox: number[];
+    boundingBox: number[] | null;
     text: string;
     confidence: number;
   }[];
