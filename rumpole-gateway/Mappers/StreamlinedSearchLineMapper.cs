@@ -15,6 +15,8 @@ namespace RumpoleGateway.Mappers
                 Id = searchLine.Id,
                 LineIndex = searchLine.LineIndex,
                 PageIndex = searchLine.PageIndex,
+                PageHeight = searchLine.PageHeight,
+                PageWidth = searchLine.PageWidth,
                 Words = new List<StreamlinedWord>()
             };
 

@@ -32,6 +32,8 @@ namespace RumpoleGateway.Tests.Mappers
                 streamlinedVersion.LineIndex.Should().Be(searchLine.LineIndex);
                 streamlinedVersion.PageIndex.Should().Be(searchLine.PageIndex);
                 streamlinedVersion.Text.Should().Be(searchLine.Text);
+                streamlinedVersion.PageHeight.Should().Be(searchLine.PageHeight);
+                streamlinedVersion.PageWidth.Should().Be(searchLine.PageWidth);
             }
         }
     }

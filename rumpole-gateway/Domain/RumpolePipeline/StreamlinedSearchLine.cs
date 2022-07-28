@@ -17,6 +17,12 @@ namespace RumpoleGateway.Domain.RumpolePipeline
         [JsonProperty("pageIndex")]
         public int PageIndex { get; set; }
 
+        [JsonProperty("pageHeight")]
+        public double PageHeight { get; set; }
+
+        [JsonProperty("pageWidth")]
+        public double PageWidth { get; set; }
+
         [JsonProperty("lineIndex")]
         public int LineIndex { get; set; }
 
