@@ -14,44 +14,52 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 {
 	public class BlobStorageClientTests
 	{
-        private readonly string _blobName;
+		private Fixture _fixture;
+		private string _blobContainerName;
+		private string _blobName;
+		private BlobDownloadResult _blobDownloadResult;
+		private BinaryData _binaryData;
 
-        private readonly Mock<Response<bool>> _mockBlobContainerExistsResponse;
-        private readonly Mock<Response<bool>> _mockBlobClientExistsResponse;
+		private Mock<BlobServiceClient> _mockBlobServiceClient;
+		private Mock<BlobContainerClient> _mockBlobContainerClient;
+		private Mock<Response<bool>> _mockBlobContainerExistsResponse;
+		private Mock<BlobClient> _mockBlobClient;
+		private Mock<Response<bool>> _mockBlobClientExistsResponse;
+		private Mock<Response<BlobDownloadResult>> _mockBlobDownloadResponse;
 
-        private readonly IBlobStorageClient _blobStorageClient;
+		private IBlobStorageClient BlobStorageClient;
 
 		public BlobStorageClientTests()
 		{
-            var fixture = new Fixture();
-			var blobContainerName = fixture.Create<string>();
-			_blobName = fixture.Create<string>();
-			var binaryData = new BinaryData(new byte[] { });
+			_fixture = new Fixture();
+			_blobContainerName = _fixture.Create<string>();
+			_blobName = _fixture.Create<string>();
+			_binaryData = new BinaryData(new byte[] { });
 
-			var mockBlobServiceClient = new Mock<BlobServiceClient>();
-			var mockBlobContainerClient = new Mock<BlobContainerClient>();
-			var mockBlobClient = new Mock<BlobClient>();
-			var mockBlobDownloadResponse = new Mock<Response<BlobDownloadResult>>();
-			var blobDownloadResult = BlobsModelFactory.BlobDownloadResult(binaryData);
+			_mockBlobServiceClient = new Mock<BlobServiceClient>();
+			_mockBlobContainerClient = new Mock<BlobContainerClient>();
+			_mockBlobClient = new Mock<BlobClient>();
+			_mockBlobDownloadResponse = new Mock<Response<BlobDownloadResult>>();
+			_blobDownloadResult = BlobsModelFactory.BlobDownloadResult(_binaryData);
 
-			mockBlobServiceClient.Setup(client => client.GetBlobContainerClient(blobContainerName))
-				.Returns(mockBlobContainerClient.Object);
+			_mockBlobServiceClient.Setup(client => client.GetBlobContainerClient(_blobContainerName))
+				.Returns(_mockBlobContainerClient.Object);
 
 			_mockBlobContainerExistsResponse = new Mock<Response<bool>>();
 			_mockBlobContainerExistsResponse.Setup(response => response.Value).Returns(true);
-			mockBlobContainerClient.Setup(client => client.ExistsAsync(It.IsAny<CancellationToken>()))
+			_mockBlobContainerClient.Setup(client => client.ExistsAsync(It.IsAny<CancellationToken>()))
 				.ReturnsAsync(_mockBlobContainerExistsResponse.Object);
-			mockBlobContainerClient.Setup(client => client.GetBlobClient(_blobName)).Returns(mockBlobClient.Object);
+			_mockBlobContainerClient.Setup(client => client.GetBlobClient(_blobName)).Returns(_mockBlobClient.Object);
 
 			_mockBlobClientExistsResponse = new Mock<Response<bool>>();
 			_mockBlobClientExistsResponse.Setup(response => response.Value).Returns(true);
-			mockBlobClient.Setup(client => client.ExistsAsync(It.IsAny<CancellationToken>()))
+			_mockBlobClient.Setup(client => client.ExistsAsync(It.IsAny<CancellationToken>()))
 				.ReturnsAsync(_mockBlobClientExistsResponse.Object);
-			mockBlobClient.Setup(client => client.DownloadContentAsync()).ReturnsAsync(mockBlobDownloadResponse.Object);
+			_mockBlobClient.Setup(client => client.DownloadContentAsync()).ReturnsAsync(_mockBlobDownloadResponse.Object);
 
-			mockBlobDownloadResponse.Setup(response => response.Value).Returns(blobDownloadResult);
+			_mockBlobDownloadResponse.Setup(response => response.Value).Returns(_blobDownloadResult);
 
-			_blobStorageClient = new BlobStorageClient(mockBlobServiceClient.Object, blobContainerName);
+			BlobStorageClient = new BlobStorageClient(_mockBlobServiceClient.Object, _blobContainerName);
 		}
 
 		[Fact]
@@ -59,7 +67,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
         {
 			_mockBlobContainerExistsResponse.Setup(response => response.Value).Returns(false);
 
-			await Assert.ThrowsAsync<RequestFailedException>(() => _blobStorageClient.GetDocumentAsync(_blobName));
+			await Assert.ThrowsAsync<RequestFailedException>(() => BlobStorageClient.GetDocumentAsync(_blobName));
 		}
 
 		[Fact]
@@ -67,7 +75,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		{
 			_mockBlobClientExistsResponse.Setup(response => response.Value).Returns(false);
 
-			var document = await _blobStorageClient.GetDocumentAsync(_blobName);
+			var document = await BlobStorageClient.GetDocumentAsync(_blobName);
 
 			document.Should().BeNull();
 		}
@@ -75,7 +83,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		[Fact]
 		public async Task GetDocumentAsync_ReturnsBlobStream()
 		{
-			var document = await _blobStorageClient.GetDocumentAsync(_blobName);
+			var document = await BlobStorageClient.GetDocumentAsync(_blobName);
 
 			document.Should().NotBeNull();
 		}

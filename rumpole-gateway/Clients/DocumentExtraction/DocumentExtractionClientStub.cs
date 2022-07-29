@@ -2,45 +2,33 @@
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
-using Microsoft.Extensions.Options;
-using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Domain.DocumentExtraction;
-using RumpoleGateway.Services;
 
 namespace RumpoleGateway.Clients.DocumentExtraction
 {
 	public class DocumentExtractionClientStub : IDocumentExtractionClient
 	{
-        private readonly BlobOptions _blobOptions;
-        private readonly ISasGeneratorService _sasGeneratorService;
+        private readonly string _blobStorageConnectionString;
 
-        public DocumentExtractionClientStub(IOptions<BlobOptions> blobOptions, ISasGeneratorService sasGeneratorService)
+        public DocumentExtractionClientStub(string blobStorageConnectionString)
         {
-            _blobOptions = blobOptions.Value;
-            _sasGeneratorService = sasGeneratorService;
+            _blobStorageConnectionString = blobStorageConnectionString;
         }
 
-		public async Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
+		public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
         {
-            var result = Task.FromResult(caseId switch
+            return Task.FromResult(caseId switch
             {
                 "18846" => McLoveCase(caseId),
                 "1000000" => McLoveCase(caseId),
                 "1000001" => MultipleFileTypeCase(caseId),
                 _ => null
-            }).Result;
-
-            foreach (var document in result.CaseDocuments)
-            {
-                document.SasUri = await _sasGeneratorService.GenerateSasUrlAsync(document.FileName);
-            }
-
-            return result;
+            });
         }
 
         public async Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken)
         {
-            var blobClient = new BlobClient(_blobOptions.BlobStorageConnectionString, _blobOptions.BlobContainerName, fileName);
+            var blobClient = new BlobClient(_blobStorageConnectionString, "cms-documents", fileName);
 
             if (!await blobClient.ExistsAsync())
             {
@@ -52,7 +40,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             return blob.Value.Content.ToStream();
         }
 
-        private static Case McLoveCase(string caseId)
+        private Case McLoveCase(string caseId)
         {
             return new Case
             {
@@ -272,7 +260,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             };
         }
 
-        private static Case MultipleFileTypeCase(string caseId)
+        private Case MultipleFileTypeCase(string caseId)
         {
             return new Case
             {

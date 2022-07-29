@@ -56,12 +56,12 @@
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-      <LastGenOutput>local.settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions\RumpolePipeline\" />
     <Folder Include="Clients\RumpolePipeline\" />
+    <Folder Include="Wrappers\" />
     <Folder Include="Functions\DocumentExtraction\" />
     <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Domain\DocumentExtraction\" />
