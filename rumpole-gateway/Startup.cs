@@ -14,10 +14,12 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using RumpoleGateway.Mappers;
+using RumpoleGateway.Services;
 using RumpoleGateway.Wrappers;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
@@ -34,11 +36,16 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            builder.Services.AddOptions<SearchClientOptions>().Configure<IConfiguration>((setttings, configuration) =>
+            builder.Services.AddOptions<SearchClientOptions>().Configure<IConfiguration>((settings, _) =>
             {
-                configuration.GetSection("searchClient").Bind(setttings);
+                configuration.GetSection("searchClient").Bind(settings);
             });
-            builder.Services.AddScoped<IGraphQLClient>(s => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
+            builder.Services.AddOptions<BlobOptions>().Configure<IConfiguration>((settings, _) =>
+            {
+                configuration.GetSection("blob").Bind(settings);
+            });
+
+            builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
@@ -59,7 +66,7 @@ namespace RumpoleGateway
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
 
-            builder.Services.AddSingleton(serviceProvider =>
+            builder.Services.AddSingleton(_ =>
             {
                 var instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
                 var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
@@ -83,21 +90,19 @@ namespace RumpoleGateway
                 builder.AddBlobServiceClient(new Uri(configuration["BlobServiceUrl"]))
                     .WithCredential(new DefaultAzureCredential());
             });
-            builder.Services.AddTransient<IBlobStorageClient>(serviceProvider =>
-            {
-                return new BlobStorageClient(
-                    serviceProvider.GetRequiredService<BlobServiceClient>(),
-                    configuration["BlobServiceContainerName"]);
-            });
-            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
-            {
-                return new DocumentExtractionClientStub(
-                    configuration["StubBlobStorageConnectionString"]);
-            });
 
+            builder.Services.AddTransient<IBlobStorageClient>(serviceProvider => new BlobStorageClient(
+                serviceProvider.GetRequiredService<BlobServiceClient>(),
+                configuration["BlobServiceContainerName"]));
+
+            builder.Services.AddTransient<IDocumentExtractionClient, DocumentExtractionClientStub>();
+            builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
+            builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
+            builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
+            builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
         }
 
-        private string GetValueFromConfig(IConfiguration configuration, string secretName)
+        private static string GetValueFromConfig(IConfiguration configuration, string secretName)
         {
             var secret = configuration[secretName];
             if (string.IsNullOrWhiteSpace(secret))

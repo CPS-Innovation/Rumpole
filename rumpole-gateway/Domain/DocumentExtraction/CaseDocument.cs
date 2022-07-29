@@ -16,6 +16,9 @@ namespace RumpoleGateway.Domain.DocumentExtraction
 
 		[JsonProperty("cmsDocType")]
 		public CmsDocType CmsDocType { get; set; }
+
+        [JsonProperty("sasUri")]
+        public string SasUri { get; set; }
 	}
 }
 
