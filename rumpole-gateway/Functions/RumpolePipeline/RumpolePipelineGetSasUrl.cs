@@ -1,34 +1,36 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Clients.RumpolePipeline;
-using System;
-using System.Threading.Tasks;
+using RumpoleGateway.Services;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class RumpolePipelineGetPdf
+    public class RumpolePipelineGetSasUrl
     {
-        private readonly IBlobStorageClient _blobStorageClient;
-        private readonly ILogger<RumpolePipelineGetPdf> _logger;
+        private readonly ILogger<RumpolePipelineGetSasUrl> _logger;
+        private readonly ISasGeneratorService _sasGeneratorService;
 
-        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger)
+        public RumpolePipelineGetSasUrl(ILogger<RumpolePipelineGetSasUrl> logger, ISasGeneratorService sasGeneratorService)
         {
-            _blobStorageClient = blobStorageClient;
             _logger = logger;
+            _sasGeneratorService = sasGeneratorService;
         }
 
-        [FunctionName("RumpolePipelineGetPdf")]
+        [FunctionName("RumpolePipelineGetSasUrl")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdfs/{*blobName}")] HttpRequest req, string blobName)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdf/sasUrl/{*blobName}")]
+            HttpRequest req, string blobName)
         {
             try
             {
                 string errorMessage;
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) ||
+                    string.IsNullOrWhiteSpace(accessToken))
                 {
                     errorMessage = "Authorization token is not supplied.";
                     return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
@@ -40,24 +42,24 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
                 }
 
-                var blobStream = await _blobStorageClient.GetDocumentAsync(blobName);
+                var sasUrl = await _sasGeneratorService.GenerateSasUrlAsync(blobName);
 
-                if (blobStream != null) return new OkObjectResult(blobStream);
+                if (!string.IsNullOrWhiteSpace(sasUrl)) return new OkObjectResult(sasUrl);
 
                 errorMessage = $"No pdf document found for blob name '{blobName}'.";
                 return ErrorResponse(new NotFoundObjectResult(errorMessage), errorMessage);
-
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return exception switch
                 {
-                    RequestFailedException => InternalServerErrorResponse(exception, "A blob storage exception occurred."),
+                    RequestFailedException => InternalServerErrorResponse(exception,
+                        "A blob storage exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
         }
-
+    
         private IActionResult ErrorResponse(IActionResult result, string message)
         {
             _logger.LogError(message);
@@ -71,4 +73,3 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         }
     }
 }
-

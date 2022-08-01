@@ -18,4 +18,3 @@ namespace RumpoleGateway.Domain.DocumentExtraction
 		public CmsDocType CmsDocType { get; set; }
 	}
 }
-

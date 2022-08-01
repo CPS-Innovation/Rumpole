@@ -37,7 +37,6 @@
     <None Remove="Mappers\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Functions\RumpolePipeline\" />
     <Folder Include="Clients\RumpolePipeline\" />
     <Folder Include="Functions\DocumentExtraction\" />
   </ItemGroup>

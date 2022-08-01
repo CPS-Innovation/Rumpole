@@ -6,8 +6,8 @@ using RumpoleGateway.Domain.DocumentExtraction;
 
 namespace RumpoleGateway.Clients.DocumentExtraction
 {
-	public class DocumentExtractionClientStub : IDocumentExtractionClient
-	{
+    public class DocumentExtractionClientStub : IDocumentExtractionClient
+    {
         private readonly string _blobStorageConnectionString;
 
         public DocumentExtractionClientStub(string blobStorageConnectionString)
@@ -15,7 +15,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             _blobStorageConnectionString = blobStorageConnectionString;
         }
 
-		public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
+        public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
         {
             return Task.FromResult(caseId switch
             {
@@ -457,6 +457,5 @@ namespace RumpoleGateway.Clients.DocumentExtraction
                 }
             };
         }
-	}
+    }
 }
-
