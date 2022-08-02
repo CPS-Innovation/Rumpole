@@ -97,7 +97,8 @@ namespace RumpoleGateway
                 serviceProvider.GetRequiredService<BlobServiceClient>(),
                 configuration["BlobServiceContainerName"]));
 
-            builder.Services.AddTransient<IDocumentExtractionClient, DocumentExtractionClientStub>();
+            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider => new DocumentExtractionClientStub(configuration["StubBlobStorageConnectionString"]));
+
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();

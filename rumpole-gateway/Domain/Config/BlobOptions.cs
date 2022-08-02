@@ -7,7 +7,5 @@
         public int BlobExpirySecs { get; set; }
 
         public int UserDelegationKeyExpirySecs { get; set; }
-
-        public string BlobStorageConnectionString { get; set; }
     }
 }

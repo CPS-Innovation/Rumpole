@@ -27,10 +27,10 @@ resource "azurerm_function_app" "fa_rumpole" {
     "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
     "BlobServiceUrl"                                 = "https://sacps${var.env != "prod" ? var.env : ""}rumpolepipeline.blob.core.windows.net/"
     "BlobServiceContainerName"                       = "documents"
-    "blob__BlobContainerName"                        = "cms-documents"
+    "blob__BlobContainerName"                        = "documents"
     "blob__BlobExpirySecs"                           = 3600
     "blob__UserDelegationKeyExpirySecs"              = 3600
-    "blob__BlobStorageConnectionString"              = var.stub_blob_storage_connection_string
+    "StubBlobStorageConnectionString"                = var.stub_blob_storage_connection_string
     "searchClient__EndpointUrl"                      = "https://ss-rumpole-pipeline${local.env_name_suffix}.search.windows.net"
     //TODO put in keyvault rather than hardcoded as a variable
     "searchClient__AuthorizationKey"                 = var.search_client_authorization_key
