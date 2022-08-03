@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Clients\RumpolePipeline\" />
-    <Folder Include="Functions\DocumentExtraction\" />
     <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Domain\DocumentExtraction\" />
   </ItemGroup>

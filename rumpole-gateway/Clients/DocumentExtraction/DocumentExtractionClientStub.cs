@@ -40,7 +40,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             return blob.Value.Content.ToStream();
         }
 
-        private Case McLoveCase(string caseId)
+        private static Case McLoveCase(string caseId)
         {
             return new Case
             {
@@ -260,7 +260,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
             };
         }
 
-        private Case MultipleFileTypeCase(string caseId)
+        private static Case MultipleFileTypeCase(string caseId)
         {
             return new Case
             {

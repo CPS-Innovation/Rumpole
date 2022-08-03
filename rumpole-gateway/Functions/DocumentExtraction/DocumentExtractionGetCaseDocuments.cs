@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.DocumentExtraction;
-using System;
-using System.Threading.Tasks;
 
-namespace RumpoleGateway.Functions.CoreDataApi
+namespace RumpoleGateway.Functions.DocumentExtraction
 {
     public class DocumentExtractionGetCaseDocuments
     {
@@ -52,7 +52,7 @@ namespace RumpoleGateway.Functions.CoreDataApi
                 errorMsg = $"No data found for case id '{caseId}'.";
                 return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return exception switch
                 {

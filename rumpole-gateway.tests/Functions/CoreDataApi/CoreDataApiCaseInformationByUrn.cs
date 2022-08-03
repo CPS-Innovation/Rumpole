@@ -8,13 +8,13 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Tests.FakeData;
-using RumpoleGateway.Functions.CoreDataApi;
 using Xunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using NSubstitute.ExceptionExtensions;
 using RumpoleGateway.Domain.CoreDataApi;
 using System;
+using RumpoleGateway.Functions.CoreDataApi.Case;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
 {

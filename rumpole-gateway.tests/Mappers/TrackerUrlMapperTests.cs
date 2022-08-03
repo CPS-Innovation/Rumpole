@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using AutoFixture.Idioms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -9,6 +10,7 @@ namespace RumpoleGateway.Tests.Mappers
 {
 	public class TrackerUrlMapperTests
 	{
+		private readonly Fixture _fixture;
         private readonly string _requestScheme;
 		private readonly string _requestHost;
 		private readonly ushort _requestPort;
@@ -19,10 +21,10 @@ namespace RumpoleGateway.Tests.Mappers
 
 		public TrackerUrlMapperTests()
         {
-            var fixture = new Fixture();
+            _fixture = new Fixture();
 			_requestScheme = "http";
-			_requestHost = fixture.Create<string>();
-			_requestPort = fixture.Create<ushort>();
+			_requestHost = _fixture.Create<string>();
+			_requestPort = _fixture.Create<ushort>();
 
 			_mockRequest = new Mock<HttpRequest>();
 
@@ -31,6 +33,13 @@ namespace RumpoleGateway.Tests.Mappers
 
 			_trackerUrlMapper = new TrackerUrlMapper();
 		}
+
+        [Fact]
+        public void Constructor_EnsureNotNull()
+        {
+            var assertion = new GuardClauseAssertion(_fixture);
+            assertion.Verify(_trackerUrlMapper.GetType().GetConstructors());
+        }
 
 		[Fact]
 	    public void Map_ReturnsExpectedUriWhenDefinedPortIsSet()

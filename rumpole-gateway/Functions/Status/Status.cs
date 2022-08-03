@@ -21,11 +21,11 @@ namespace RumpoleGateway.Functions.Status
 			var version = Assembly
 				.GetExecutingAssembly()
 				.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-				.InformationalVersion;
+                ?.InformationalVersion;
 
 			if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
 			{
-				var errorMsg = "Authorization token is not supplied.";
+				const string errorMsg = "Authorization token is not supplied.";
 				_logger.LogError(errorMsg);
 				return new UnauthorizedObjectResult(errorMsg);
 			}

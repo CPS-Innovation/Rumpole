@@ -7,7 +7,7 @@ namespace RumpoleGateway.Tests.Functions.SharedMethods
 
     public class SharedMethods
     {
-        protected HttpRequest CreateHttpRequest()
+        protected static HttpRequest CreateHttpRequest()
         {
             const string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
             var context = new DefaultHttpContext();
@@ -15,7 +15,7 @@ namespace RumpoleGateway.Tests.Functions.SharedMethods
             return context.Request;
         }
 
-        protected HttpRequest CreateHttpRequestWithoutToken()
+        protected static HttpRequest CreateHttpRequestWithoutToken()
         {
             var context = new DefaultHttpContext();
             return context.Request;

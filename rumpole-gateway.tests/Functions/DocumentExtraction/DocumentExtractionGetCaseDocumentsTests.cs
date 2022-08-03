@@ -7,41 +7,39 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Domain.DocumentExtraction;
-using RumpoleGateway.Functions.CoreDataApi;
+using RumpoleGateway.Functions.DocumentExtraction;
 using Xunit;
 
 namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 {
-	public class DocumentExtractionGetCaseDocumentsTests : SharedMethods.SharedMethods
+    public class DocumentExtractionGetCaseDocumentsTests : SharedMethods.SharedMethods
 	{
-		private Fixture _fixture;
-		private string _caseId;
-		private Case _case;
+        private readonly string _caseId;
+		private readonly Case _case;
 
-        private Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
-		private Mock<ILogger<DocumentExtractionGetCaseDocuments>> _mockLogger;
+        private readonly Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
 
-		private DocumentExtractionGetCaseDocuments DocumentExtractionGetCaseDocuments;
+        private readonly DocumentExtractionGetCaseDocuments _documentExtractionGetCaseDocuments;
 
 		public DocumentExtractionGetCaseDocumentsTests()
 		{
-			_fixture = new Fixture();
-			_caseId = _fixture.Create<int>().ToString();
-			_case = _fixture.Create<Case>();
+            var fixture = new Fixture();
+			_caseId = fixture.Create<int>().ToString();
+			_case = fixture.Create<Case>();
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
-			_mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
+			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
 
 			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
 				.ReturnsAsync(_case);
 
-			DocumentExtractionGetCaseDocuments = new DocumentExtractionGetCaseDocuments(_mockDocumentExtractionClient.Object, _mockLogger.Object);
+			_documentExtractionGetCaseDocuments = new DocumentExtractionGetCaseDocuments(_mockDocumentExtractionClient.Object, mockLogger.Object);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
 		{
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequestWithoutToken(), _caseId);
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequestWithoutToken(), _caseId);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}
@@ -49,7 +47,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
 		{
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequest(), "Not an integer");
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), "Not an integer");
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -60,7 +58,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
 				.ReturnsAsync(default(Case));
 
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
 
 			response.Should().BeOfType<NotFoundObjectResult>();
 		}
@@ -68,18 +66,18 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsOk()
 		{
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
 
 			response.Should().BeOfType<OkObjectResult>();
 		}
 
 		[Fact]
 		public async Task Run_ReturnsCase()
-		{
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId) as OkObjectResult;
+        {
+            var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId) as OkObjectResult;
 
-			response.Value.Should().Be(_case);
-		}
+            response?.Value.Should().Be(_case);
+        }
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
@@ -87,10 +85,10 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
 				.ThrowsAsync(new Exception());
 
-			var response = await DocumentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;
 
-			response.StatusCode.Should().Be(500);
-		}
+            response?.StatusCode.Should().Be(500);
+        }
 	}
 }
 

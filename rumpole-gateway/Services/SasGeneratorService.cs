@@ -21,9 +21,9 @@ namespace RumpoleGateway.Services
             IOptions<BlobOptions> blobOptions)
         {
             _blobServiceClient = blobServiceClient;
-            _blobSasBuilderFactory = blobSasBuilderFactory;
-            _blobSasBuilderWrapperFactory = blobSasBuilderWrapperFactory;
-            _blobOptions = blobOptions.Value;
+            _blobSasBuilderFactory = blobSasBuilderFactory ?? throw new ArgumentNullException(nameof(blobSasBuilderFactory));
+            _blobSasBuilderWrapperFactory = blobSasBuilderWrapperFactory ?? throw new ArgumentNullException(nameof(blobSasBuilderWrapperFactory));
+            _blobOptions = blobOptions != null ? blobOptions.Value : throw new ArgumentNullException(nameof(blobOptions));
         }
 
         public async Task<string> GenerateSasUrlAsync(string blobName)

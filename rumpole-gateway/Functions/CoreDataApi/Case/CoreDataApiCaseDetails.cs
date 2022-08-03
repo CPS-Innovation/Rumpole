@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -12,17 +9,19 @@ using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Helpers.Extension;
+using System;
+using System.Threading.Tasks;
 
-namespace RumpoleGateway.Functions.CoreDataApi
+namespace RumpoleGateway.Functions.CoreDataApi.Case
 {
-    public class CoreDataApiCaseInformationByUrn
+    public class CoreDataApiCaseDetails
     {
-        private readonly ILogger<CoreDataApiCaseInformationByUrn> _logger;
+        private readonly ILogger<CoreDataApiCaseDetails> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
 
-        public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger,
+        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
                                  IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  ICoreDataApiClient coreDataApiClient,
                                  IConfiguration configuration)
@@ -33,10 +32,9 @@ namespace RumpoleGateway.Functions.CoreDataApi
             _configuration = configuration;
         }
 
-        [FunctionName("CoreDataApiCaseInformationByUrn")]
+        [FunctionName("CoreDataApiCaseDetails")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
-            string urn)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-details/{caseId}")] HttpRequest req, string caseId)
         {
             try
             {
@@ -47,29 +45,29 @@ namespace RumpoleGateway.Functions.CoreDataApi
                     return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
                 }
 
-                if (string.IsNullOrEmpty(urn))
+                if (!int.TryParse(caseId, out _))
                 {
-                    errorMsg = "Urn is not supplied.";
+                    errorMsg = "Invalid case id. A 32-bit integer is required.";
                     return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
                 }
 
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
-                var caseInformation = await _coreDataApiClient.GetCaseInformationByUrnAsync(urn, onBehalfOfAccessToken);
+                var caseDetails = await _coreDataApiClient.GetCaseDetailsByIdAsync(caseId, onBehalfOfAccessToken);
 
-                if (caseInformation != null && caseInformation.Any())
+                if (caseDetails != null)
                 {
-                    return new OkObjectResult(caseInformation);
+                    return new OkObjectResult(caseDetails);
                 }
 
-                errorMsg = $"No data found for urn '{urn}'.";
+                errorMsg = $"No data found for case id '{caseId}'.";
                 return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
             }
             catch (Exception exception)
             {
                 return exception switch
                 {
-                    MsalException => InternalServerErrorResponse(exception, "An msal exception occurred."),
+                    MsalException => InternalServerErrorResponse(exception, "An MSAL exception occurred."),
                     CoreDataApiException => InternalServerErrorResponse(exception, "A core data api exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };

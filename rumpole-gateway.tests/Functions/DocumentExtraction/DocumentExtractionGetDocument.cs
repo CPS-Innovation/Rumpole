@@ -7,43 +7,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RumpoleGateway.Clients.DocumentExtraction;
-using RumpoleGateway.Functions.CoreDataApi;
+using RumpoleGateway.Functions.DocumentExtraction;
 using Xunit;
 
 namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 {
-	public class DocumentExtractionGetDocumentTests : SharedMethods.SharedMethods
+    public class DocumentExtractionGetDocumentTests : SharedMethods.SharedMethods
 	{
-		private Fixture _fixture;
-		private string _documentId;
-		private string _fileName;
-		private Stream _stream;
+        private readonly string _documentId;
+		private readonly string _fileName;
+		private readonly Stream _stream;
 
-        private Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
-		private Mock<ILogger<DocumentExtractionGetCaseDocuments>> _mockLogger;
+        private readonly Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
 
-		private DocumentExtractionGetDocument DocumentExtractionGetDocument;
+        private readonly DocumentExtractionGetDocument _documentExtractionGetDocument;
 
 		public DocumentExtractionGetDocumentTests()
 		{
-			_fixture = new Fixture();
-			_documentId = _fixture.Create<string>();
-			_fileName = _fixture.Create<string>();
+            var fixture = new Fixture();
+			_documentId = fixture.Create<string>();
+			_fileName = fixture.Create<string>();
 			_stream = new MemoryStream();
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
-			_mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
+			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
 
 			_mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
 				.ReturnsAsync(_stream);
 
-			DocumentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, _mockLogger.Object);
+			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
 		{
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequestWithoutToken(), _documentId, _fileName);
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequestWithoutToken(), _documentId, _fileName);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}
@@ -54,7 +52,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[InlineData(" ")]
 		public async Task Run_ReturnsBadRequestWhenDocumentIdIsMissing(string documentId)
 		{
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequest(), documentId, _fileName);
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), documentId, _fileName);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -65,7 +63,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[InlineData(" ")]
 		public async Task Run_ReturnsBadRequestWhenFileNameIsMissing(string fileName)
 		{
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, fileName);
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, fileName);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -73,18 +71,18 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsOk()
 		{
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName);
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName);
 
 			response.Should().BeOfType<OkObjectResult>();
 		}
 
 		[Fact]
 		public async Task Run_ReturnsStream()
-		{
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName) as OkObjectResult;
+        {
+            var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName) as OkObjectResult;
 
-			response.Value.Should().Be(_stream);
-		}
+            response?.Value.Should().Be(_stream);
+        }
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
@@ -92,9 +90,9 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			_mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
 				.ThrowsAsync(new Exception());
 
-			var response = await DocumentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName) as StatusCodeResult;
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName) as StatusCodeResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 	}
 }

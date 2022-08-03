@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.DocumentExtraction;
+using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.Config;
@@ -103,6 +104,7 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
             builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
+            builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)
