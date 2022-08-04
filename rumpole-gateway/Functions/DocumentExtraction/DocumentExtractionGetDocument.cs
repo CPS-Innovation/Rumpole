@@ -9,17 +9,14 @@ using RumpoleGateway.Clients.DocumentExtraction;
 
 namespace RumpoleGateway.Functions.DocumentExtraction
 {
-    public class DocumentExtractionGetDocument
+    public class DocumentExtractionGetDocument : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        private readonly ILogger<DocumentExtractionGetCaseDocuments> _logger;
-
-        public DocumentExtractionGetDocument(
-            IDocumentExtractionClient documentExtractionClient,
-            ILogger<DocumentExtractionGetCaseDocuments> logger)
+        
+        public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger)
+            : base(logger)
         {
             _documentExtractionClient = documentExtractionClient;
-            _logger = logger;
         }
 
         [FunctionName("DocumentExtractionGetDocument")]
@@ -28,35 +25,20 @@ namespace RumpoleGateway.Functions.DocumentExtraction
         {
             try
             {
-                string errorMsg;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMsg = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
-                }
-
+                    return AuthorizationErrorResponse();
+                
                 if (string.IsNullOrWhiteSpace(documentId))
-                {
-                    errorMsg = "Document id is not supplied.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
-                }
-
+                    return BadRequestErrorResponse("Document id is not supplied.");
+                
                 if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    errorMsg = "FileName is not supplied.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
-                }
-
+                    return BadRequestErrorResponse("FileName is not supplied.");
+                
                 //TODO exchange access token via on behalf of?
                 var document = await _documentExtractionClient.GetDocumentAsync(documentId, fileName, "accessToken");
 
-                if (document != null)
-                {
-                    return new OkObjectResult(document);
-                }
-
-                errorMsg = $"No document found for file name '{fileName}'."; // TODO change this to document id when hooked up to CDE
-                return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+                return document != null ? new OkObjectResult(document) 
+                    : NotFoundErrorResponse($"No document found for file name '{fileName}'."); // TODO change this to document id when hooked up to CDE
             }
             catch (Exception exception)
             {
@@ -65,18 +47,6 @@ namespace RumpoleGateway.Functions.DocumentExtraction
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

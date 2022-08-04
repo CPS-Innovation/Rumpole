@@ -1,10 +1,10 @@
 ﻿namespace RumpoleGateway.Domain.DocumentRedaction
 {
-    public enum DocumentCheckOutStatus
+    public enum DocumentRedactionStatus
     {
         CheckedOut = 1,
         AlreadyCheckedOut = 2,
         NotFound = 0,
-        SystemError = 3
+        CheckedIn = 3
     }
 }

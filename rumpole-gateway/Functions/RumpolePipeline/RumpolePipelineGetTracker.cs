@@ -14,19 +14,16 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class RumpolePipelineGetTracker
+    public class RumpolePipelineGetTracker : BaseRumpoleFunction
     {
-        private readonly ILogger<RumpolePipelineGetTracker> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
 
-        public RumpolePipelineGetTracker(ILogger<RumpolePipelineGetTracker> logger,
-                                 IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 IPipelineClient pipelineClient,
+        public RumpolePipelineGetTracker(ILogger<RumpolePipelineGetTracker> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IPipelineClient pipelineClient,
                                  IConfiguration configuration)
+        : base(logger)
         {
-            _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _pipelineClient = pipelineClient;
             _configuration = configuration;
@@ -38,30 +35,17 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         {
             try
             {
-                string errorMessage;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMessage = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
-                }
+                    return AuthorizationErrorResponse();
 
                 if (!int.TryParse(caseId, out var _))
-                {
-                    errorMessage = "Invalid case id. A 32-bit integer is required.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
-                }
-
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
+                
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
 
                 var tracker = await _pipelineClient.GetTrackerAsync(caseId, onBehalfOfAccessToken);
 
-                if (tracker == null)
-                {
-                    errorMessage = $"No tracker found for case id '{caseId}'.";
-                    return ErrorResponse(new NotFoundObjectResult(errorMessage), errorMessage);
-                }
-
-                return new OkObjectResult(tracker);
+                return tracker == null ? NotFoundErrorResponse($"No tracker found for case id '{caseId}'.") : new OkObjectResult(tracker);
             }
             catch(Exception exception)
             {
@@ -72,18 +56,6 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string errorMessage)
-        {
-            _logger.LogError(errorMessage);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse( Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

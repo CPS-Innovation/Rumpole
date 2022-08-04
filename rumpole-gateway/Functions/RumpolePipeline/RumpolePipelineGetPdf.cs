@@ -10,15 +10,14 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class RumpolePipelineGetPdf
+    public class RumpolePipelineGetPdf : BaseRumpoleFunction
     {
         private readonly IBlobStorageClient _blobStorageClient;
-        private readonly ILogger<RumpolePipelineGetPdf> _logger;
 
         public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger)
+        : base(logger)
         {
             _blobStorageClient = blobStorageClient;
-            _logger = logger;
         }
 
         [FunctionName("RumpolePipelineGetPdf")]
@@ -27,26 +26,15 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         {
             try
             {
-                string errorMessage;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMessage = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
-                }
+                    return AuthorizationErrorResponse();
 
                 if (string.IsNullOrWhiteSpace(blobName))
-                {
-                    errorMessage = "Blob name is not supplied.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
-                }
+                    return BadRequestErrorResponse("Blob name is not supplied.");
 
                 var blobStream = await _blobStorageClient.GetDocumentAsync(blobName);
 
-                if (blobStream != null) return new OkObjectResult(blobStream);
-
-                errorMessage = $"No pdf document found for blob name '{blobName}'.";
-                return ErrorResponse(new NotFoundObjectResult(errorMessage), errorMessage);
-
+                return blobStream != null ? new OkObjectResult(blobStream) : NotFoundErrorResponse($"No pdf document found for blob name '{blobName}'.");
             }
             catch(Exception exception)
             {
@@ -56,18 +44,6 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

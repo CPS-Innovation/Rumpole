@@ -12,7 +12,7 @@ using Xunit;
 
 namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 {
-    public class DocumentRedactionCheckOut : SharedMethods.SharedMethods
+    public class DocumentRedactionCheckOutTests : SharedMethods.SharedMethods
     {
         private readonly string _caseId;
         private readonly string _documentId;
@@ -21,7 +21,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
         private readonly DocumentRedactionCheckOutDocument _documentRedactionCheckOutFunction;
 
-        public DocumentRedactionCheckOut()
+        public DocumentRedactionCheckOutTests()
         {
             var fixture = new Fixture();
             _caseId = fixture.Create<int>().ToString();
@@ -32,7 +32,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
             _mockDocumentRedactionClient
                 .Setup(s => s.CheckOutDocument(_caseId, _documentId, It.IsAny<string>()))
-                .ReturnsAsync(DocumentCheckOutStatus.CheckedOut);
+                .ReturnsAsync(DocumentRedactionStatus.CheckedOut);
 
             _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object);
         }

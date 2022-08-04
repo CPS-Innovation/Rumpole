@@ -14,19 +14,16 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.CoreDataApi.Case
 {
-    public class CoreDataApiCaseDetails
+    public class CoreDataApiCaseDetails : BaseRumpoleFunction
     {
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger,
-                                 IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 ICoreDataApiClient coreDataApiClient,
+        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
                                  IConfiguration configuration)
+        : base(logger)
         {
-            _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
             _configuration = configuration;
@@ -38,30 +35,17 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         {
             try
             {
-                string errorMsg;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMsg = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
-                }
-
+                    return AuthorizationErrorResponse();
+                
                 if (!int.TryParse(caseId, out _))
-                {
-                    errorMsg = "Invalid case id. A 32-bit integer is required.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
-                }
-
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
+                
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
                 var caseDetails = await _coreDataApiClient.GetCaseDetailsByIdAsync(caseId, onBehalfOfAccessToken);
 
-                if (caseDetails != null)
-                {
-                    return new OkObjectResult(caseDetails);
-                }
-
-                errorMsg = $"No data found for case id '{caseId}'.";
-                return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+                return caseDetails != null ? new OkObjectResult(caseDetails) : NotFoundErrorResponse($"No data found for case id '{caseId}'.");
             }
             catch (Exception exception)
             {
@@ -72,18 +56,6 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

@@ -9,17 +9,14 @@ using RumpoleGateway.Clients.DocumentExtraction;
 
 namespace RumpoleGateway.Functions.DocumentExtraction
 {
-    public class DocumentExtractionGetCaseDocuments
+    public class DocumentExtractionGetCaseDocuments : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        private readonly ILogger<DocumentExtractionGetCaseDocuments> _logger;
-
-        public DocumentExtractionGetCaseDocuments(
-            IDocumentExtractionClient documentExtractionClient,
-            ILogger<DocumentExtractionGetCaseDocuments> logger)
+        
+        public DocumentExtractionGetCaseDocuments(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger)
+            : base(logger)
         {
             _documentExtractionClient = documentExtractionClient;
-            _logger = logger;
         }
 
         [FunctionName("DocumentExtractionGetCaseDocuments")]
@@ -28,29 +25,16 @@ namespace RumpoleGateway.Functions.DocumentExtraction
         {
             try
             {
-                string errorMsg;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMsg = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
-                }
-
+                    return AuthorizationErrorResponse();
+                
                 if (!int.TryParse(caseId, out var _))
-                {
-                    errorMsg = "Invalid case id. A 32-bit integer is required.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
-                }
-
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
+                
                 //TODO exchange access token via on behalf of?
                 var caseDocuments = await _documentExtractionClient.GetCaseDocumentsAsync(caseId, "accessToken");
 
-                if (caseDocuments != null)
-                {
-                    return new OkObjectResult(caseDocuments);
-                }
-
-                errorMsg = $"No data found for case id '{caseId}'.";
-                return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+                return caseDocuments != null ? new OkObjectResult(caseDocuments) : NotFoundErrorResponse($"No data found for case id '{caseId}'.");
             }
             catch (Exception exception)
             {
@@ -59,18 +43,6 @@ namespace RumpoleGateway.Functions.DocumentExtraction
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

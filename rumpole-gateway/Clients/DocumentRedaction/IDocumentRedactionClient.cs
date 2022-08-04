@@ -5,6 +5,8 @@ namespace RumpoleGateway.Clients.DocumentRedaction
 {
     public interface IDocumentRedactionClient
     {
-        public Task<DocumentCheckOutStatus> CheckOutDocument(string caseId, string documentId, string accessToken);
+        public Task<DocumentRedactionStatus> CheckOutDocument(string caseId, string documentId, string accessToken);
+
+        public Task<DocumentRedactionStatus> CheckInDocument(string caseId, string documentId, string accessToken);
     }
 }

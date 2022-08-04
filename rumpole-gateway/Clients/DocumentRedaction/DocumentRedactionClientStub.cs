@@ -5,9 +5,14 @@ namespace RumpoleGateway.Clients.DocumentRedaction
 {
     public class DocumentRedactionClientStub : IDocumentRedactionClient
     {
-        public Task<DocumentCheckOutStatus> CheckOutDocument(string caseId, string documentId, string accessToken)
+        public Task<DocumentRedactionStatus> CheckOutDocument(string caseId, string documentId, string accessToken)
         {
-            return Task.FromResult(DocumentCheckOutStatus.CheckedOut);
+            return Task.FromResult(DocumentRedactionStatus.CheckedOut);
+        }
+
+        public Task<DocumentRedactionStatus> CheckInDocument(string caseId, string documentId, string accessToken)
+        {
+            return Task.FromResult(DocumentRedactionStatus.CheckedIn);
         }
     }
 }

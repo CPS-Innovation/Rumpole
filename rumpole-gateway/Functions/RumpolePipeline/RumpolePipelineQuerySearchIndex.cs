@@ -10,14 +10,12 @@ using System.Threading.Tasks;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
-    public class RumpolePipelineQuerySearchIndex
+    public class RumpolePipelineQuerySearchIndex : BaseRumpoleFunction
     {
-        private readonly ILogger<RumpolePipelineQuerySearchIndex> _logger;
         private readonly ISearchIndexClient _searchIndexClient;
 
-        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient)
+        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient) : base(logger)
         {
-            _logger = logger;
             _searchIndexClient = searchIndexClient;
         }
 
@@ -27,25 +25,15 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         {
             try
             {
-                string errorMessage;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMessage = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMessage), errorMessage);
-                }
+                    return AuthorizationErrorResponse();
 
                 if (!int.TryParse(caseId, out var caseIdInt))
-                {
-                    errorMessage = "Invalid case id. A 32-bit integer is required.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
-                }
-
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
+                
                 if (string.IsNullOrWhiteSpace(searchTerm))
-                {
-                    errorMessage = "Search term is not supplied.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMessage), errorMessage);
-                }
-
+                    return BadRequestErrorResponse("Search term is not supplied.");
+                
                 var searchResults = await _searchIndexClient.Query(caseIdInt, searchTerm);
 
                 return new OkObjectResult(searchResults);
@@ -58,18 +46,6 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }

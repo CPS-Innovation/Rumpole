@@ -41,6 +41,5 @@
     <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Clients\DocumentRedaction\" />
     <Folder Include="Clients\RumpolePipeline\" />
-    <Folder Include="Functions\DocumentExtraction\" />
   </ItemGroup>
 </Project>

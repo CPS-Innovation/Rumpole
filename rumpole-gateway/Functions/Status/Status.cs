@@ -7,13 +7,10 @@ using System.Reflection;
 
 namespace RumpoleGateway.Functions.Status
 {
-	public class Status
+	public class Status : BaseRumpoleFunction
 	{
-		private readonly ILogger<Status> _logger;
 		public Status(ILogger<Status> logger)
-		{
-			_logger = logger;
-		}
+		    : base(logger) { }
 
 		[FunctionName("Status")]
 		public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status")] HttpRequest req)
@@ -25,9 +22,7 @@ namespace RumpoleGateway.Functions.Status
 
 			if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
 			{
-				const string errorMsg = "Authorization token is not supplied.";
-				_logger.LogError(errorMsg);
-				return new UnauthorizedObjectResult(errorMsg);
+				return AuthorizationErrorResponse();
 			}
 
 			var response = new Domain.Status.Status

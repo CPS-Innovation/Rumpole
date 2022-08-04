@@ -15,19 +15,16 @@ using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.CoreDataApi.Case
 {
-    public class CoreDataApiCaseInformationByUrn
+    public class CoreDataApiCaseInformationByUrn : BaseRumpoleFunction
     {
-        private readonly ILogger<CoreDataApiCaseInformationByUrn> _logger;
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
 
-        public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger,
-                                 IOnBehalfOfTokenClient onBehalfOfTokenClient,
-                                 ICoreDataApiClient coreDataApiClient,
+        public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
                                  IConfiguration configuration)
+        : base(logger)
         {
-            _logger = logger;
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
             _configuration = configuration;
@@ -40,19 +37,12 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         {
             try
             {
-                string errorMsg;
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                {
-                    errorMsg = "Authorization token is not supplied.";
-                    return ErrorResponse(new UnauthorizedObjectResult(errorMsg), errorMsg);
-                }
-
+                    return AuthorizationErrorResponse();
+                
                 if (string.IsNullOrEmpty(urn))
-                {
-                    errorMsg = "Urn is not supplied.";
-                    return ErrorResponse(new BadRequestObjectResult(errorMsg), errorMsg);
-                }
-
+                    return BadRequestErrorResponse("Urn is not supplied.");
+                
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
                 var caseInformation = await _coreDataApiClient.GetCaseInformationByUrnAsync(urn, onBehalfOfAccessToken);
@@ -62,8 +52,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                     return new OkObjectResult(caseInformation);
                 }
 
-                errorMsg = $"No data found for urn '{urn}'.";
-                return ErrorResponse(new NotFoundObjectResult(errorMsg), errorMsg);
+                return NotFoundErrorResponse($"No data found for urn '{urn}'.");
             }
             catch (Exception exception)
             {
@@ -74,18 +63,6 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
-        }
-
-        private IActionResult ErrorResponse(IActionResult result, string message)
-        {
-            _logger.LogError(message);
-            return result;
-        }
-
-        private IActionResult InternalServerErrorResponse(Exception exception, string baseErrorMessage)
-        {
-            _logger.LogError(exception, baseErrorMessage);
-            return new StatusCodeResult(500);
         }
     }
 }
