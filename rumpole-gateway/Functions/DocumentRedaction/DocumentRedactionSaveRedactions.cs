@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Aspose.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Domain.DocumentRedaction;
+using RumpoleGateway.Domain.Exceptions;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Helpers.Extension;
 
@@ -20,6 +22,16 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             : base(logger)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
+
+            try
+            {
+                var license = new License();
+                license.SetLicense("Aspose.Total.NET.lic");
+            }
+            catch (Exception exception)
+            {
+                throw new AsposeLicenseException(exception.Message);
+            }
         }
 
         [FunctionName("DocumentRedactionSaveRedactions")]
