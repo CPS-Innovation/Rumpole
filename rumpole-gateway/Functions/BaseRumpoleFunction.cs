@@ -37,5 +37,10 @@ namespace RumpoleGateway.Functions
             _logger.LogError(exception, additionalMessage);
             return new StatusCodeResult(500);
         }
+
+        protected void LogInformation(string message)
+        {
+            _logger.LogInformation(message);
+        }
     }
 }

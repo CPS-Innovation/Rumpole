@@ -6,6 +6,8 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 	public interface IBlobStorageClient
 	{
 		Task<Stream> GetDocumentAsync(string blobName);
-	}
+
+        Task UploadDocumentAsync(Stream stream, string blobName);
+    }
 }
 
