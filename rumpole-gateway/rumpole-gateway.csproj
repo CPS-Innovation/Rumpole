@@ -48,6 +48,9 @@
     <None Remove="Microsoft.Azure.Core.NewtonsoftJson" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Aspose.Total.NET.lic">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
