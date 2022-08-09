@@ -69,4 +69,12 @@
     <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Domain\DocumentExtraction\" />
   </ItemGroup>
+	<Target Name="CopyRequiredNativeAssets" AfterTargets="_FunctionsPostPublish">
+		<ItemGroup>
+			<NativeAssetToCopy Include="$(PublishDir)bin\runtimes\win-x86\native\libSkiaSharp.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(NativeAssetToCopy)" DestinationFolder="$(PublishDir)bin" />
+		<Copy SourceFiles="Aspose.Total.NET.lic" DestinationFolder="$(PublishDir)bin" />
+
+	</Target>
 </Project>
