@@ -38,8 +38,21 @@ variable "rumpole_pipeline_coordinator_function_app_key" {
   type = string
 }
 
+# TODO get rid of this as it will change every time pdf generator is rebuilt
+variable "rumpole_pipeline_redact_pdf_function_app_key" {
+  type = string
+}
+
 # TODO get rid of this as it will change every time coordinator is rebuilt
 variable "coordinator_scope_details" {
+  type = object({
+    app_registration_application_id = string
+    user_impersonation_scope_id = string
+  })
+}
+
+# TODO get rid of this as it will change every time coordinator is rebuilt
+variable "redact_pdf_scope_details" {
   type = object({
     app_registration_application_id = string
     user_impersonation_scope_id = string

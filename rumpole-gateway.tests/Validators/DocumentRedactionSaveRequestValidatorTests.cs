@@ -47,7 +47,7 @@ namespace RumpoleGateway.Tests.Validators
         public async Task Redactions_WhenZeroLength_ReturnsValidationError()
         {
             var saveRequest = _fixture.Create<DocumentRedactionSaveRequest>();
-            saveRequest.Redactions = new List<Redaction>();
+            saveRequest.Redactions = new List<RedactionDefinition>();
 
             var redactionValidator = new DocumentRedactionSaveRequestValidator();
             var validationResult = await redactionValidator.TestValidateAsync(saveRequest);
@@ -59,7 +59,7 @@ namespace RumpoleGateway.Tests.Validators
         public void Redactions_CorrectChildValidator_Loaded()
         {
             var saveRequest = _fixture.Create<DocumentRedactionSaveRequest>();
-            saveRequest.Redactions = new List<Redaction>();
+            saveRequest.Redactions = new List<RedactionDefinition>();
 
             var redactionValidator = new DocumentRedactionSaveRequestValidator();
             redactionValidator.ShouldHaveChildValidator(x => x.Redactions, typeof(RedactionValidator));
@@ -71,7 +71,7 @@ namespace RumpoleGateway.Tests.Validators
         public async Task Redaction_PageIndex_DoesNotReturnValidationError(int pageIndex)
         {
             var saveRequest = _fixture.Create<DocumentRedactionSaveRequest>();
-            saveRequest.Redactions = _fixture.CreateMany<Redaction>().ToList();
+            saveRequest.Redactions = _fixture.CreateMany<RedactionDefinition>().ToList();
             saveRequest.Redactions[0].PageIndex = pageIndex;
 
             var redactionValidator = new DocumentRedactionSaveRequestValidator();

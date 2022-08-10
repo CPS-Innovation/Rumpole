@@ -69,6 +69,12 @@ namespace RumpoleGateway
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
 
+            builder.Services.AddHttpClient<IRedactionClient, RedactionClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["RumpolePipelineRedactPdfBaseUrl"]);
+                client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            });
+
             builder.Services.AddSingleton(_ =>
             {
                 var instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
@@ -105,6 +111,7 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
             builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
             builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
+            builder.Services.AddTransient<IRedactPdfRequestMapper, RedactPdfRequestMapper>();
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)

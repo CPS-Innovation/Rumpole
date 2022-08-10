@@ -35,7 +35,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 if (!int.TryParse(caseId, out _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
                 
-                var checkoutResult = await _documentRedactionClient.CheckOutDocument(caseId, documentId, accessToken);
+                var checkoutResult = await _documentRedactionClient.CheckOutDocumentAsync(caseId, documentId, accessToken);
                 return checkoutResult switch
                 {
                     DocumentRedactionStatus.CheckedOut => new OkObjectResult(new DocumentStatusChangeResult(true, checkoutResult)),

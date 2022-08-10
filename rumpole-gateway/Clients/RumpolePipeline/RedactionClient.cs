@@ -1,22 +1,22 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Wrappers;
 
 namespace RumpoleGateway.Clients.RumpolePipeline
 {
-    public class PipelineClient : IPipelineClient
+    public class RedactionClient : IRedactionClient
     {
         private readonly IPipelineClientRequestFactory _pipelineClientRequestFactory;
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IJsonConvertWrapper _jsonConvertWrapper;
 
-        public PipelineClient(
-            IPipelineClientRequestFactory pipelineClientRequestFactory,
+        public RedactionClient(IPipelineClientRequestFactory pipelineClientRequestFactory,
             HttpClient httpClient,
             IConfiguration configuration,
             IJsonConvertWrapper jsonConvertWrapper)
@@ -27,22 +27,17 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _jsonConvertWrapper = jsonConvertWrapper;
         }
 
-        public async Task TriggerCoordinatorAsync(string caseId, string accessToken, bool force)
-        {
-            var forceQuery = force ? "&&force=true" : string.Empty;
-            await SendGetRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}{forceQuery}", accessToken);
-        }
-
-        public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken)
+        public async Task<RedactPdfResponse> RedactPdfAsync(RedactPdfRequest redactPdfRequest, string accessToken)
         {
             HttpResponseMessage response;
             try
             {
-                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+                var requestMessage = new StringContent(_jsonConvertWrapper.SerializeObject(redactPdfRequest), Encoding.UTF8, "application/json");
+                response = await SendPutRequestAsync($"redactPdf?code={_configuration["RumpolePipelineRedactPdfFunctionAppKey"]}", accessToken, requestMessage);
             }
             catch (HttpRequestException exception)
             {
-                if(exception.StatusCode == HttpStatusCode.NotFound)
+                if (exception.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
                 }
@@ -51,14 +46,13 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             }
 
             var stringContent = await response.Content.ReadAsStringAsync();
-            return _jsonConvertWrapper.DeserializeObject<Tracker>(stringContent);
+            return _jsonConvertWrapper.DeserializeObject<RedactPdfResponse>(stringContent);
         }
 
-        
-
-        private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken)
+        private async Task<HttpResponseMessage> SendPutRequestAsync(string requestUri, string accessToken, HttpContent requestMessage)
         {
-            var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken);
+            var request = _pipelineClientRequestFactory.CreatePut(requestUri, accessToken);
+            request.Content = requestMessage;
             var response = await _httpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
@@ -67,4 +61,3 @@ namespace RumpoleGateway.Clients.RumpolePipeline
         }
     }
 }
-

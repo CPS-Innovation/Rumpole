@@ -9,6 +9,6 @@ namespace RumpoleGateway.Domain.DocumentRedaction
         public int DocId { get; set; }
 
         [JsonProperty("redactions")]
-        public List<Redaction> Redactions { get; set; }
+        public List<RedactionDefinition> Redactions { get; set; }
     }
 }

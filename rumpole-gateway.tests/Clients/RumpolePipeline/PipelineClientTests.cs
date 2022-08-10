@@ -19,95 +19,89 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 {
 	public class PipelineClientTests
 	{
-		private Fixture _fixture;
-		private string _caseId;
-		private string _accessToken;
-		private HttpRequestMessage _httpRequestMessage;
-		private HttpResponseMessage _triggerCoordinatorHttpResponseMessage;
-		private HttpResponseMessage _getTrackerHttpResponseMessage;
-		private string _rumpolePipelineFunctionAppKey;
-		private Tracker _tracker;
+        private readonly string _caseId;
+		private readonly string _accessToken;
+		private readonly HttpRequestMessage _httpRequestMessage;
+        private readonly HttpResponseMessage _getTrackerHttpResponseMessage;
+		private readonly string _rumpolePipelineFunctionAppKey;
+		private readonly Tracker _tracker;
 
-		private HttpClient _getTrackerHttpClient;
-		private HttpClient _triggerCoordinatorHttpClient;
-		private Mock<IPipelineClientRequestFactory> _mockRequestFactory;
-		private Mock<IConfiguration> _mockConfiguration;
-		private Mock<IJsonConvertWrapper> _mockJsonConvertWrapper;
+        private readonly Mock<IPipelineClientRequestFactory> _mockRequestFactory;
 
-		private IPipelineClient TriggerCoordinatorPipelineClient;
-		private IPipelineClient GetTrackerPipelineClient;
+        private readonly IPipelineClient _triggerCoordinatorPipelineClient;
+		private readonly IPipelineClient _getTrackerPipelineClient;
 
 		public PipelineClientTests()
 		{
-			_fixture = new Fixture();
-			_caseId = _fixture.Create<string>();
-			_accessToken = _fixture.Create<string>();
+            var fixture = new Fixture();
+			_caseId = fixture.Create<string>();
+			_accessToken = fixture.Create<string>();
 			_httpRequestMessage = new HttpRequestMessage();
-			_tracker = _fixture.Create<Tracker>();
-			_triggerCoordinatorHttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+			_tracker = fixture.Create<Tracker>();
+			var triggerCoordinatorHttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
 			_getTrackerHttpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
 			{
 				Content = new StringContent(JsonConvert.SerializeObject(_tracker))
 			};
-			_rumpolePipelineFunctionAppKey = _fixture.Create<string>();
+			_rumpolePipelineFunctionAppKey = fixture.Create<string>();
 
 			var mockTriggerCoordinatorHttpMessageHandler = new Mock<HttpMessageHandler>();
 			mockTriggerCoordinatorHttpMessageHandler.Protected()
 				.Setup<Task<HttpResponseMessage>>("SendAsync", _httpRequestMessage, ItExpr.IsAny<CancellationToken>())
-				.ReturnsAsync(_triggerCoordinatorHttpResponseMessage);
-			_triggerCoordinatorHttpClient = new HttpClient(mockTriggerCoordinatorHttpMessageHandler.Object) { BaseAddress = new Uri("https://testUrl") };
+				.ReturnsAsync(triggerCoordinatorHttpResponseMessage);
+			var triggerCoordinatorHttpClient = new HttpClient(mockTriggerCoordinatorHttpMessageHandler.Object) { BaseAddress = new Uri("https://testUrl") };
 
 			var mockTrackerHttpMessageHandler = new Mock<HttpMessageHandler>();
 			mockTrackerHttpMessageHandler.Protected()
 				.Setup<Task<HttpResponseMessage>>("SendAsync", _httpRequestMessage, ItExpr.IsAny<CancellationToken>())
 				.ReturnsAsync(_getTrackerHttpResponseMessage);
-			_getTrackerHttpClient = new HttpClient(mockTrackerHttpMessageHandler.Object) { BaseAddress = new Uri("https://testUrl") };
+			var getTrackerHttpClient = new HttpClient(mockTrackerHttpMessageHandler.Object) { BaseAddress = new Uri("https://testUrl") };
 
 			_mockRequestFactory = new Mock<IPipelineClientRequestFactory>();
-			_mockConfiguration = new Mock<IConfiguration>();
-			_mockJsonConvertWrapper = new Mock<IJsonConvertWrapper>();
+			var mockConfiguration = new Mock<IConfiguration>();
+			var mockJsonConvertWrapper = new Mock<IJsonConvertWrapper>();
 
-			_mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorFunctionAppKey"]).Returns(_rumpolePipelineFunctionAppKey);
+			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorFunctionAppKey"]).Returns(_rumpolePipelineFunctionAppKey);
 
-			_mockRequestFactory.Setup(factory => factory.Create($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken)).Returns(_httpRequestMessage);
-			_mockRequestFactory.Setup(factory => factory.Create($"cases/{_caseId}/tracker?code={_rumpolePipelineFunctionAppKey}", _accessToken)).Returns(_httpRequestMessage);
+			_mockRequestFactory.Setup(factory => factory.CreateGet($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken)).Returns(_httpRequestMessage);
+			_mockRequestFactory.Setup(factory => factory.CreateGet($"cases/{_caseId}/tracker?code={_rumpolePipelineFunctionAppKey}", _accessToken)).Returns(_httpRequestMessage);
 
 			var stringContent = _getTrackerHttpResponseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-			_mockJsonConvertWrapper.Setup(wrapper => wrapper.DeserializeObject<Tracker>(stringContent)).Returns(_tracker);
+			mockJsonConvertWrapper.Setup(wrapper => wrapper.DeserializeObject<Tracker>(stringContent)).Returns(_tracker);
 
-			TriggerCoordinatorPipelineClient = new PipelineClient(_mockRequestFactory.Object, _triggerCoordinatorHttpClient, _mockConfiguration.Object, _mockJsonConvertWrapper.Object);
-			GetTrackerPipelineClient = new PipelineClient(_mockRequestFactory.Object, _getTrackerHttpClient, _mockConfiguration.Object, _mockJsonConvertWrapper.Object);
+			_triggerCoordinatorPipelineClient = new PipelineClient(_mockRequestFactory.Object, triggerCoordinatorHttpClient, mockConfiguration.Object, mockJsonConvertWrapper.Object);
+			_getTrackerPipelineClient = new PipelineClient(_mockRequestFactory.Object, getTrackerHttpClient, mockConfiguration.Object, mockJsonConvertWrapper.Object);
 		}
 
 		[Fact]
 		public async Task TriggerCoordinator_UrlHasNoForceQueryWhenForceIsFalse()
 		{
-			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
+			await _triggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
 
-			_mockRequestFactory.Verify(factory => factory.Create($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken));
+			_mockRequestFactory.Verify(factory => factory.CreateGet($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken));
 		}
 
 		[Fact]
 		public async Task TriggerCoordinator_UrlHasForceQueryWhenForceIsTrue()
 		{
 			var url = $"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}&&force=true";
-			_mockRequestFactory.Setup(factory => factory.Create(url, _accessToken)).Returns(_httpRequestMessage);
+			_mockRequestFactory.Setup(factory => factory.CreateGet(url, _accessToken)).Returns(_httpRequestMessage);
 
-			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, true);
+			await _triggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, true);
 
-			_mockRequestFactory.Verify(factory => factory.Create(url, _accessToken));
+			_mockRequestFactory.Verify(factory => factory.CreateGet(url, _accessToken));
 		}
 
 		[Fact]
 		public async Task TriggerCoordinator_TriggersCoordinatorSuccessfully()
         {
-			await TriggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
+			await _triggerCoordinatorPipelineClient.TriggerCoordinatorAsync(_caseId, _accessToken, false);
         }
 
 		[Fact]
 		public async Task GetTracker_ReturnsTracker()
 		{
-			var response = await GetTrackerPipelineClient.GetTrackerAsync(_caseId, _accessToken);
+			var response = await _getTrackerPipelineClient.GetTrackerAsync(_caseId, _accessToken);
 
 			response.Should().Be(_tracker);
 		}
@@ -117,7 +111,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		{
 			_getTrackerHttpResponseMessage.StatusCode = HttpStatusCode.NotFound;
 
-			var response = await GetTrackerPipelineClient.GetTrackerAsync(_caseId, _accessToken);
+			var response = await _getTrackerPipelineClient.GetTrackerAsync(_caseId, _accessToken);
 
 			response.Should().BeNull();
 		}

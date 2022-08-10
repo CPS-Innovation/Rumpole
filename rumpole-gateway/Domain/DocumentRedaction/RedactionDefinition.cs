@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace RumpoleGateway.Domain.DocumentRedaction
 {
-    public class Redaction
+    public class RedactionDefinition
     {
         [JsonProperty("pageIndex")]
         public int PageIndex { get; set; }

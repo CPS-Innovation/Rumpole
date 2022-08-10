@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using Aspose.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.DocumentRedaction;
+using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.DocumentRedaction;
-using RumpoleGateway.Domain.Exceptions;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Helpers.Extension;
 
@@ -16,22 +16,17 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 {
     public class DocumentRedactionSaveRedactions : BaseRumpoleFunction
     {
+        private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IDocumentRedactionClient _documentRedactionClient;
+        private readonly IConfiguration _configuration;
 
-        public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IDocumentRedactionClient documentRedactionClient)
+        public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
+            IConfiguration configuration)
             : base(logger)
         {
+            _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
-
-            try
-            {
-                var license = new License();
-                license.SetLicense("Aspose.Total.NET.lic");
-            }
-            catch (Exception exception)
-            {
-                throw new AsposeLicenseException(exception.Message);
-            }
+            _configuration = configuration;
         }
 
         [FunctionName("DocumentRedactionSaveRedactions")]
@@ -59,9 +54,10 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                     LogInformation("Invalid redaction request");
                     return redactions.ToBadRequest();
                 }
-                
-                //TODO exchange access token via on behalf of?
-                var saveRedactionResult = await _documentRedactionClient.SaveRedactions(caseId, documentId, fileName, redactions.Value, accessToken);
+
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineRedactPdfScope"]);
+
+                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, documentId, fileName, redactions.Value, accessToken);
                 return saveRedactionResult is {Succeeded: true} ? new OkObjectResult(saveRedactionResult)
                     : string.IsNullOrWhiteSpace(saveRedactionResult.Message) 
                         ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.") : BadRequestErrorResponse(saveRedactionResult.Message);

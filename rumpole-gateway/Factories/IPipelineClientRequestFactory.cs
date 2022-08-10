@@ -4,7 +4,9 @@ namespace RumpoleGateway.Factories
 {
 	public interface IPipelineClientRequestFactory
 	{
-		HttpRequestMessage Create(string requestUri, string accessToken);
+		HttpRequestMessage CreateGet(string requestUri, string accessToken);
+
+		HttpRequestMessage CreatePut(string requestUri, string accessToken);
 	}
 }
 

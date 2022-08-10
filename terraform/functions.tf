@@ -25,6 +25,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline${local.env_name_suffix}-coordinator.azurewebsites.net/api/"
     "RumpolePipelineCoordinatorScope"                = "api://fa-rumpole-pipeline${local.env_name_suffix}-coordinator/user_impersonation"
     "RumpolePipelineCoordinatorFunctionAppKey"       = var.rumpole_pipeline_coordinator_function_app_key
+    "RumpolePipelineRedactPdfScope"                  = "api://fa-rumpole-pipeline${local.env_name_suffix}-pdf-generator/user_impersonation"
+    "RumpolePipelineRedactPdfBaseUrl"                = "https://fa-rumpole-pipeline${local.env_name_suffix}-pdf-generator.azurewebsites.net/api/"
+    "RumpolePipelineRedactPdfFunctionAppKey"         = var.rumpole_pipeline_redact_pdf_function_app_key
     "BlobServiceUrl"                                 = "https://sacps${var.env != "prod" ? var.env : ""}rumpolepipeline.blob.core.windows.net/"
     "BlobServiceContainerName"                       = "documents"
     "blob__BlobContainerName"                        = "documents"

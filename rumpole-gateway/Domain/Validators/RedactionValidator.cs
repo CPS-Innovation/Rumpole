@@ -3,7 +3,7 @@ using RumpoleGateway.Domain.DocumentRedaction;
 
 namespace RumpoleGateway.Domain.Validators
 {
-    public class RedactionValidator : AbstractValidator<Redaction>
+    public class RedactionValidator : AbstractValidator<RedactionDefinition>
     {
         public RedactionValidator()
         {

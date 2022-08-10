@@ -31,7 +31,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             var mockLogger = new Mock<ILogger<DocumentRedactionCheckOutDocument>>();
 
             _mockDocumentRedactionClient
-                .Setup(s => s.CheckOutDocument(_caseId, _documentId, It.IsAny<string>()))
+                .Setup(s => s.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>()))
                 .ReturnsAsync(DocumentRedactionStatus.CheckedOut);
 
             _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object);
@@ -78,7 +78,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
         {
-            _mockDocumentRedactionClient.Setup(client => client.CheckOutDocument(_caseId, _documentId, It.IsAny<string>()))
+            _mockDocumentRedactionClient.Setup(client => client.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
 
             var response = await _documentRedactionCheckOutFunction.Run(CreateHttpRequest(), _caseId, _documentId) as StatusCodeResult;
