@@ -70,7 +70,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             {
                 return exception switch
                 {
-                    _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
+                    _ => InternalServerErrorResponse(exception, $"An unhandled exception occurred - \"{exception.Message}\"")
                 };
             }
         }
