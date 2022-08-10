@@ -35,6 +35,7 @@ namespace RumpoleGateway.Clients.DocumentRedaction
 
         public async Task<DocumentRedactionSaveResult> SaveRedactions(string caseId, string documentId, string fileName, DocumentRedactionSaveRequest saveRequest, string accessToken)
         {
+            System.AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);
             var saveResult = new DocumentRedactionSaveResult();
 
             try
