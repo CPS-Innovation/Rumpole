@@ -55,7 +55,6 @@ resource "azuread_application" "as_web_rumpole" {
     implicit_grant {
       access_token_issuance_enabled = true
       //id_token_issuance_enabled     = true
-	  redirect_uris = var.env == "dev" ? ["https://getpostman.com/oauth2/callback"] : [""]
     }
   }
 
