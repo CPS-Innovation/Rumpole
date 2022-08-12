@@ -1,4 +1,3 @@
-#Error (line 28): the step 'PublishCodeCoverageResults@1' does not have a conversion path yet
 on:
   push:
     branches:
@@ -25,15 +24,21 @@ jobs:
         run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }}
       - name: Run tests
         run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-      - # "Error: the step 'PublishCodeCoverageResults@1' does not have a conversion path yet"
-        name: Publish code coverage results
-        run: |
-          echo "Error: the step 'PublishCodeCoverageResults@1' does not have a conversion path yet"
-          #task: PublishCodeCoverageResults@1
-          #displayName: Publish code coverage results
-          #inputs:
-          #  codecoveragetool: Cobertura
-          #  summaryfilelocation: '**/*coverage.cobertura.xml'
+      - name: Copy Coverage To Predictable Location
+        run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.0.2
+        with:
+          filename: coverage/coverage.cobertura.xml
+          badge: true
+          format: 'markdown'
+          output: 'both'
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
       - name: Publish
         run: dotnet publish ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.BuildConfiguration }} --output ${{ github.workspace }}
       - uses: actions/upload-artifact@v2
