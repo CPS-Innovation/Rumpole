@@ -23,9 +23,9 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }}
       - name: Run tests
-        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
       - name: Copy Coverage To Predictable Location
-        run: cp **/*coverage.cobertura.xml coverage/coverage.cobertura.xml
+        run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.0.2
         with:
@@ -39,6 +39,8 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
+      - name: Adding markdown to build summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
       - name: Publish
         run: dotnet publish ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.BuildConfiguration }} --output ${{ github.workspace }}
       - uses: actions/upload-artifact@v2
