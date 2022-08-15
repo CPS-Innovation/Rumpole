@@ -19,7 +19,6 @@ on:
       - rumpole-gateway/*
       - RumpoleGateway/*
   workflow_dispatch:
-  
 env:
   functionName: rumpole-gateway
   appName: fa-rumpole-gateway
