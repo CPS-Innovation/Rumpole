@@ -3,15 +3,11 @@ on:
     branches:
       - main
       - release/*
-      - bug/*
-      - feature/*
     paths:
       - rumpole-gateway/*
       - RumpoleGateway/*  
   pull_request:
     branches:
-      - main
-      - release/*
       - bug/*
       - feature/*
     paths:
@@ -35,7 +31,7 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }} --no-restore
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
       - name: Copy Coverage To Predictable Location
         run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
       - name: Code Coverage Report
