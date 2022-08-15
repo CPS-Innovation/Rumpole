@@ -1,8 +1,11 @@
+name: Rumpole Gateway
 on:
   push:
     branches:
       - main
       - release/*
+      - bug/*
+      - feature/*
     paths:
       - rumpole-gateway/*
       - RumpoleGateway/*  
