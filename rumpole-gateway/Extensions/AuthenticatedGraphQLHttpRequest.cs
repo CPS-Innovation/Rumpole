@@ -5,12 +5,12 @@ using System.Net.Http;
 
 namespace RumpoleGateway.Extensions
 {
-	public class AuthenticatedGraphQLHttpRequest : GraphQLHttpRequest
+	public class AuthenticatedGraphQlHttpRequest : GraphQLHttpRequest
 	{
 
 		private readonly string _accessToken;
 
-		public AuthenticatedGraphQLHttpRequest(string accessToken, GraphQLHttpRequest request)
+		public AuthenticatedGraphQlHttpRequest(string accessToken, GraphQLHttpRequest request)
 				: base(request)
 		{
 			if (string.IsNullOrWhiteSpace(accessToken))

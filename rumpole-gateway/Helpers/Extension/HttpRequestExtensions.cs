@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -7,6 +8,7 @@ using RumpoleGateway.Domain.Validation;
 
 namespace RumpoleGateway.Helpers.Extension
 {
+    [ExcludeFromCodeCoverage]
     public static class HttpRequestExtensions
     {
         public static async Task<ValidatableRequest<T>> GetJsonBody<T, V>(this HttpRequest request)

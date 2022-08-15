@@ -5,9 +5,9 @@ namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
 {
     public class AuthenticatedGraphQLHttpRequestFactory : IAuthenticatedGraphQLHttpRequestFactory
     {
-        public AuthenticatedGraphQLHttpRequest Create(string accessToken, GraphQLHttpRequest graphQLHttpRequest)
+        public AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQLHttpRequest)
         {
-            return new AuthenticatedGraphQLHttpRequest(accessToken, graphQLHttpRequest);
+            return new AuthenticatedGraphQlHttpRequest(accessToken, graphQLHttpRequest);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace RumpoleGateway.tests.Factories.AuthenticatedGraphQLHttpRequestFactory
 
             var authenticatedRequest = factory.Create( "accessToken", new GraphQLHttpRequest());
 
-            authenticatedRequest.Should().BeOfType<AuthenticatedGraphQLHttpRequest>();
+            authenticatedRequest.Should().BeOfType<AuthenticatedGraphQlHttpRequest>();
         }
     }
 }
