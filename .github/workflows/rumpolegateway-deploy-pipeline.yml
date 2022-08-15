@@ -11,6 +11,8 @@ on:
       - RumpoleGateway/*  
   pull_request:
     branches:
+      - main
+      - release/*
       - bug/*
       - feature/*
     paths:
