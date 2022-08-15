@@ -25,16 +25,19 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }}
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
-      - name: Copy Coverage To Predictable Location
-        run: cp **/*coverage.cobertura.xml coverage/coverage.cobertura.xml
-      - name: Code Coverage Summary Report
-        uses: irongut/CodeCoverageSummary@v1.0.2
+        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: coverage/coverage.cobertura.xml
+          filename: coverage/**/coverage.cobertura.xml
           badge: true
-          format: 'markdown'
-          output: 'both'
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '60 80'
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
