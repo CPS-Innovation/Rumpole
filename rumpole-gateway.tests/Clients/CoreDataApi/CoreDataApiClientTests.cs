@@ -38,7 +38,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                                                                    .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                                                                    .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = new GraphQLResponse<ResponseCaseDetails>
             {
@@ -60,7 +60,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = new GraphQLResponse<ResponseCaseDetails>
             {
@@ -82,7 +82,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = new GraphQLResponse<ResponseCaseDetails>
             {
@@ -105,7 +105,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = new GraphQLResponse<ResponseCaseDetails>
             {
@@ -129,7 +129,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                                                                    .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                                                                    .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
             fakedResponse.Data.CaseDetails = _fixture.CreateMany<CaseDetails>(5).ToList();
@@ -149,7 +149,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
             fakedResponse.Data = null;
@@ -168,7 +168,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         public async Task CoreDataApiClient_GetCaseInformationByUrnAsync_WhenCaseDetails_IsNull_ReturnsNull()
         {
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
             fakedResponse.Data.CaseDetails = null;
@@ -188,7 +188,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         {
             //Arrange
             _authenticatedGraphQlHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>()))
-                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
+                .Returns(new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>()));
 
             var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
             fakedResponse.Data.CaseDetails = _fixture.CreateMany<CaseDetails>(5).ToList();
