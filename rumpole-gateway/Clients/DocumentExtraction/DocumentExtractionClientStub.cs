@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -6,6 +7,7 @@ using RumpoleGateway.Domain.DocumentExtraction;
 
 namespace RumpoleGateway.Clients.DocumentExtraction
 {
+    [ExcludeFromCodeCoverage]
     public class DocumentExtractionClientStub : IDocumentExtractionClient
     {
         private readonly string _blobStorageConnectionString;
