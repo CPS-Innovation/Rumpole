@@ -13,12 +13,12 @@ namespace RumpoleGateway.Clients.CoreDataApi
     public class CoreDataApiClient : ICoreDataApiClient
     {
         private readonly IGraphQLClient _coreDataApiClient;
-        private readonly IAuthenticatedGraphQLHttpRequestFactory _authenticatedGraphQLHttpRequestFactory;
+        private readonly IAuthenticatedGraphQLHttpRequestFactory _authenticatedGraphQlHttpRequestFactory;
         public CoreDataApiClient(IGraphQLClient coreDataApiClient,
-            IAuthenticatedGraphQLHttpRequestFactory authenticatedGraphQLHttpRequestFactory)
+            IAuthenticatedGraphQLHttpRequestFactory authenticatedGraphQlHttpRequestFactory)
         {
             _coreDataApiClient = coreDataApiClient;
-            _authenticatedGraphQLHttpRequestFactory = authenticatedGraphQLHttpRequestFactory;
+            _authenticatedGraphQlHttpRequestFactory = authenticatedGraphQlHttpRequestFactory;
         }
          
         public async Task<CaseDetails> GetCaseDetailsByIdAsync(string caseId, string accessToken)
@@ -32,7 +32,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
                             + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
 
-                var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
+                var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query);
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseDetails>(authenticatedRequest);
                 
                 if (response.Data == null || response.Data?.CaseDetails == null) return null;
@@ -49,7 +49,6 @@ namespace RumpoleGateway.Clients.CoreDataApi
         {
             try
             {
-
                 var query = new GraphQLHttpRequest
                 {
                     Query = "query {cases(urn: \""+ urn +"\")  " 
@@ -58,7 +57,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
                              + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
 
-                var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query);
+                var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query);
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformationByUrn>(authenticatedRequest);
                 
                 if (response.Data == null || response.Data?.CaseDetails?.Count == 0) return null;
