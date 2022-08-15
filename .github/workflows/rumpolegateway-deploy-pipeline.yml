@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }} --no-restore
       - name: Run tests
-        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage/
       - name: Copy Coverage To Predictable Location
         run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
       - name: Code Coverage Report
