@@ -42,7 +42,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ env.functionName }}/${{ env.functionName }}*tests/TestResults/coverage.info
+          path-to-lcov: ${{ env.functionName }}/${{ env.functionName }}.tests/TestResults/coverage.info
       - name: Publish
         run: dotnet publish ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.BuildConfiguration }} --output ${{ github.workspace }}
       - uses: actions/upload-artifact@v2
