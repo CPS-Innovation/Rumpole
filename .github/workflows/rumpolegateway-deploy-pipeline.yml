@@ -1,12 +1,14 @@
 on:
-  push:
-    branches:
-      - main
-      - release/*
-      - bug/*
-    paths:
-      - rumpole-gateway/*
-      - RumpoleGateway/*
+  #push:
+  #  branches:
+  #    - main
+  #    - release/*
+  #    - bug/*
+  #  paths:
+  #    - rumpole-gateway/*
+  #    - RumpoleGateway/*
+  workflow_dispatch:
+    
 env:
   functionName: rumpole-gateway
   appName: fa-rumpole-gateway
