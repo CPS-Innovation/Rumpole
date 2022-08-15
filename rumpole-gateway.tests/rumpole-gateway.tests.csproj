@@ -42,7 +42,4 @@
     <None Remove="Functions\DocumentExtraction\" />
     <None Remove="Mappers\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clients\RumpolePipeline\" />
-  </ItemGroup>
 </Project>

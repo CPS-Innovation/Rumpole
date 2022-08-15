@@ -1,11 +1,12 @@
-﻿
-using Microsoft.Identity.Client;
+﻿using Microsoft.Identity.Client;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
 {
-    class OnBehalfOfTokenClient : IOnBehalfOfTokenClient
+    [ExcludeFromCodeCoverage]
+    public class OnBehalfOfTokenClient : IOnBehalfOfTokenClient
     {
         private readonly IConfidentialClientApplication _application;
      

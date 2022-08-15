@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.RumpolePipeline;
@@ -8,6 +9,7 @@ using RumpoleGateway.Services;
 
 namespace RumpoleGateway.Clients.DocumentRedaction
 {
+    [ExcludeFromCodeCoverage]
     public class DocumentRedactionClientStub : IDocumentRedactionClient
     {
         private readonly IRedactPdfRequestMapper _redactPdfRequestMapper;

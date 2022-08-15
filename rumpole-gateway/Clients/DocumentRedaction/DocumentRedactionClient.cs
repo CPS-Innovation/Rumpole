@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.DocumentRedaction;
 
 namespace RumpoleGateway.Clients.DocumentRedaction
 {
+    [ExcludeFromCodeCoverage]
     public class DocumentRedactionClient : IDocumentRedactionClient
     {
         public Task<DocumentRedactionStatus> CheckInDocumentAsync(string caseId, string documentId, string accessToken)
