@@ -1,14 +1,22 @@
 on:
-  #push:
-  #  branches:
-  #    - main
-  #    - release/*
-  #    - bug/*
-  #  paths:
-  #    - rumpole-gateway/*
-  #    - RumpoleGateway/*
-  workflow_dispatch:
-    
+  push:
+    branches:
+      - main
+      - release/*
+      - bug/*
+      - feature/*
+    paths:
+      - rumpole-gateway/*
+      - RumpoleGateway/*  
+  pull_request:
+    branches:
+      - main
+      - release/*
+      - bug/*
+      - feature/*
+    paths:
+      - rumpole-gateway/*
+      - RumpoleGateway/*
 env:
   functionName: rumpole-gateway
   appName: fa-rumpole-gateway
@@ -22,10 +30,14 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
+      - name: Install dependencies
+        run: dotnet restore
       - name: Build
-        run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }}
+        run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }} --no-restore
       - name: Run tests
-        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+      - name: Copy Coverage To Predictable Location
+        run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
