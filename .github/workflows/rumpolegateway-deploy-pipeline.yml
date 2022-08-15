@@ -19,10 +19,6 @@ on:
       - rumpole-gateway/*
       - RumpoleGateway/*
   workflow_dispatch:
-env:
-  functionName: rumpole-gateway
-  appName: fa-rumpole-gateway
-  buildConfiguration: Release
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,16 +31,16 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        run: dotnet build ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.buildConfiguration }} --no-restore
+        run: dotnet build rumpole-gateway/rumpole-gateway.csproj --configuration Release --no-restore
       - name: Run tests
-        run: dotnet test ${{ env.functionName }}*tests/${{ env.functionName }}*tests.csproj --configuration ${{ env.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+        run: dotnet test rumpole-gateway.tests/rumpole-gateway.tests.csproj --configuration Release /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ env.functionName }}/${{ env.functionName }}.tests/TestResults/coverage.info
+          path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
       - name: Publish
-        run: dotnet publish ${{ env.functionName }}/${{ env.functionName }}.csproj --configuration ${{ env.BuildConfiguration }} --output ${{ github.workspace }}
+        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}
       - uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}
