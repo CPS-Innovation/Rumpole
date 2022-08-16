@@ -3,8 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - rumpole-gateway/*
-      - RumpoleGateway/*
+      - rumpole-ui
   pull_request:
     branches: [main]
     paths:
