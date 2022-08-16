@@ -57,7 +57,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
-          flag-name: "rumpole-gateway"
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-gateway.tests/TestResults
+          name: Merged coverage report
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
       - name: Publish
         run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}/rumpole-gateway-drop
@@ -121,10 +125,8 @@ jobs:
           name: rumpole-ui-drop
       - name: Combine unit and cypress test coverage reports
         run: npm run coverage
-      - name: Publish combined coverage report to coveralls.io
-        uses: coverallsapp/github-action@master
+      - uses: actions/upload-artifact@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ github.workspace }}/rumpole-ui/coverage-merged/lcov.info
-          flag-name: "rumpole-ui"
+          path: ${{ github.workspace }}/rumpole-ui/coverage-merged
+          name: Merged coverage report
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
