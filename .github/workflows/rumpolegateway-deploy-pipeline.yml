@@ -4,10 +4,12 @@ on:
     branches: [main]
     paths:
       - rumpole-gateway/*
+      - RumpoleGateway/*
   pull_request:
     branches: [main]
     paths:
       - rumpole-gateway/* 
+      - RumpoleGateway/*
   workflow_dispatch:
 jobs:
   build:
