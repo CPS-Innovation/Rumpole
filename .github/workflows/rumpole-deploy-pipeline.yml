@@ -112,6 +112,7 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/rumpole-ui/
           command: npm run cy:ci
+          env: process.env.CI = false
       - name: carry out unit testing
         run: npm run test:ci
       #- name: carry out Cypress testing
