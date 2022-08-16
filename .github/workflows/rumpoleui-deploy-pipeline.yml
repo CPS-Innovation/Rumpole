@@ -20,7 +20,13 @@ jobs:
         run: |
           rm -f \
             rumpole-ui/.env \
-      - name: npm install
+      - name: npm config setup
+        run: npm config set registry http://registry.npmjs.org
+      - name: npm install npm
+        run: npm -g install npm
+      - name: npm clean cache
+        run: npm cache clean -f
+      - name: npm install against application
         run: npm install rumpole-ui
       - name: npm prettier
         run: npm run prettier rumpole-ui
