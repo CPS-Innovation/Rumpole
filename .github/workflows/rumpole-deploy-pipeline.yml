@@ -57,6 +57,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
       - name: Publish
         run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}/rumpole-gateway-drop
       - uses: actions/upload-artifact@v2
@@ -124,3 +125,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ${{ github.workspace }}/rumpole-ui/coverage-merged/lcov.info
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
