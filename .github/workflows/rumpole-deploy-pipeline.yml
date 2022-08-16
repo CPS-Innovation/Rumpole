@@ -119,43 +119,8 @@ jobs:
           name: rumpole-ui-drop
       - name: Combine unit and cypress test coverage reports
         run: npm run coverage
-      - uses: actions/upload-artifact@v2
+      - name: Publish combined coverage report to coveralls.io
+        uses: coverallsapp/github-action@master
         with:
-          path: ${{ github.workspace }}/rumpole-ui/cypress/videos
-          name: Cypress failure vidoes
-        if: always()
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/report
-          name: Unit test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/report-cypress
-          name: Cypress test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage
-          name: Unit test coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage-cypress
-          name: Cypress coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage-merged
-          name: Merged coverage report
-      - name: Unit tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "${{ github.workspace }}/rumpole-ui/report/*.xml"
-      - name: Cypress tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "${{ github.workspace }}/rumpole-ui/report-cypress/test-*.xml"
-      - name: Code coverage results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ github.workspace }}/rumpole-ui/coverage-merged/lcov.info
