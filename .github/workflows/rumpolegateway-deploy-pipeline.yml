@@ -1,11 +1,12 @@
 name: Rumpole Gateway
 on:
   push:
+    branches: main
+    paths:
+      - rumpole-gateway/*
+      - RumpoleGateway/*
   pull_request:
-    branches:
-    - main
-    - feature/*
-    - bug/*
+    branches: main
     paths:
       - rumpole-gateway/*
       - RumpoleGateway/*  
