@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        name: Remove .env file
+      - name: Remove .env file
         run: |
           rm -f \
             rumpole-ui/.env \
