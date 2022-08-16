@@ -107,25 +107,21 @@ jobs:
       #  with:
       #    runTests: false
       #    working-directory: ${{ github.workspace }}/rumpole-ui/
-      #- name: Cypress run
-      #  uses: cypress-io/github-action@v4
-      #  with:
-      #    install: false
-      #    working-directory: ${{ github.workspace }}/rumpole-ui/
-      #    start: npm start
-      #    command: npm run cy:ci
-      #    wait-on: 'http://localhost:3000'
-      #    wait-on-timeout: 120
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: ${{ github.workspace }}/rumpole-ui/
+          command: npm run cy:ci
       - name: carry out unit testing
         run: npm run test:ci
-      - name: carry out Cypress testing
-        run: npm run cy:ci
+      #- name: carry out Cypress testing
+      #  run: npm run cy:ci
       - uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/rumpole-ui/build
           name: rumpole-ui-drop
       - name: combine unit and cypress coverage
-        run: npm run coverage ${{ github.workspace }}/rumpole-ui
+        run: npm run combine:coverage
       - uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/rumpole-ui/cypress/videos
