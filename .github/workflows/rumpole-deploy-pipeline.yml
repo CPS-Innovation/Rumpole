@@ -83,10 +83,8 @@ jobs:
             rumpole-ui/.env \
       - name: Install prettier
         run: npm install -g prettier
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.2
-        with:
-          working_directory: ${{ github.workspace }}/rumpole-ui/
+      - name: npm prettier
+        run: npm run prettier ${{ github.workspace }}/rumpole-ui/
       - name: npm test
         run: npm run test:ci ${{ github.workspace }}/rumpole-ui/
       - name: cypress run tests
