@@ -66,7 +66,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
             }
             catch (Exception exception)
             {
-                throw new CoreDataApiException("Error response from Core Data Api.", exception);
+                throw new CoreDataApiException("Error response from the Core Data Api.", exception);
             }
         }
     }
