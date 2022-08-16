@@ -1,3 +1,4 @@
+name: Rumpole UI
 on:
   push:
     branches: [main]
