@@ -99,12 +99,10 @@ jobs:
       - name: run ci tests
         run: npm ci
       - name: run cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
-          browser: chrome
-          build: npm run integration:build
-          start: |
-            npm run cy:ci
+          build: npm run cy:ci
+          working-directory: ${{ github.workspace }}/rumpole-ui/
       - name: run build
         run: npm run build --if-present
       - name: carry out testing
