@@ -7,6 +7,7 @@ on:
       - feature/**
       - bug/**
   workflow_dispatch:
+permissions: write-all
 jobs:
   # JOB to run change detection
   changes:
