@@ -106,18 +106,6 @@ jobs:
           wait-on-timeout: 120
           command: npm run cy:ci
           working-directory: ${{ github.workspace }}/rumpole-ui/
-      - name: upload cypress artifacts - if failed
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-      - name: record cypress artifacts - if succeeded
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: cypress-videos
-          path: cypress/videos
       - name: run build
         run: npm run build --if-present
       - name: carry out testing
