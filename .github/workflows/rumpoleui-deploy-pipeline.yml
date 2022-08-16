@@ -1,13 +1,14 @@
-#Error (line 18): the step 'DeleteFiles@1' does not have a conversion path yet
-#Error (line 68): the step 'PublishTestResults@2' does not have a conversion path yet
-#Error (line 70): the step 'PublishTestResults@2' does not have a conversion path yet
-#Error (line 85): the step 'PublishCodeCoverageResults@1' does not have a conversion path yet
+name: Rumpole UI
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - rumpole-ui
+  pull_request:
+    branches: [main]
+    paths:
+      - rumpole-ui
+  workflow_dispatch:
 env:
   REACT_APP_BUILD_NUMBER: ${{ github.run_number }}
 jobs:
@@ -15,15 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - # "Error: the step 'DeleteFiles@1' does not have a conversion path yet"
-        name: Remove .env file
+      - name: Remove .env file
         run: |
-          echo "Error: the step 'DeleteFiles@1' does not have a conversion path yet"
-          #task: DeleteFiles@1
-          #displayName: Remove .env file
-          #inputs:
-          #  contents: 
-          #    rumpole-ui/.env
+          rm -f \
+            rumpole-ui/.env \
       - name: npm install
         run: npm install rumpole-ui
       - name: npm prettier
@@ -65,27 +61,18 @@ jobs:
         with:
           path: rumpole-ui/coverage-merged
           name: Merged coverage report
-      - # "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
-        run: |
-          echo "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
-          #task: PublishTestResults@2
-          #inputs:
-          #  testresultsformat: JUnit
-          #  testresultsfiles: rumpole-ui/report/*.xml
-          #  testruntitle: Unit tests
-      - # "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
-        run: |
-          echo "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
-          #task: PublishTestResults@2
-          #inputs:
-          #  testresultsformat: JUnit
-          #  testresultsfiles: rumpole-ui/report-cypress/test-*.xml
-          #  testruntitle: Cypress tests
-          #  mergetestresults: true
-      - # "Error: the step 'PublishCodeCoverageResults@1' does not have a conversion path yet"
-        run: |
-          echo "Error: the step 'PublishCodeCoverageResults@1' does not have a conversion path yet"
-          #task: PublishCodeCoverageResults@1
-          #inputs:
-          #  codecoveragetool: Cobertura
-          #  summaryfilelocation: ${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml
+      - name: Unit tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "rumpole-ui/report/*.xml"
+      - name: Cypress tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "rumpole-ui/report-cypress/test-*.xml"
+      - name: Code coverage results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
