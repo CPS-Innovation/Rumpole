@@ -57,10 +57,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
       - name: Publish
-        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}
+        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}/rumpole-gateway-drop
       - uses: actions/upload-artifact@v2
         with:
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/rumpole-gateway-drop
           name: rumpole-gateway-drop
 
   # JOB to build and test frontend code
