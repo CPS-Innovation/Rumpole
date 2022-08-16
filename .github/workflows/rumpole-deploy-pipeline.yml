@@ -89,6 +89,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: Install dependencies
+        run: npm ci
       - name: Install prettier
         run: npm install -g prettier
       - name: Prettify code
@@ -107,6 +109,7 @@ jobs:
           install: false
           working-directory: ${{ github.workspace }}/rumpole-ui/
           start: npm start
+          command: npm run cy:ci
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
       - name: carry out testing
