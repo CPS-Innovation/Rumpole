@@ -94,10 +94,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up node 
         uses: actions/setup-node@v1
-      - name: set up ci tests
+        with:
+          node-version: 12
+      - name: run ci tests
         run: npm ci
-      - name: setup cypress tests
-        run: npm cy:ci
+      - name: run cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          build: npm run integration:build
+          start: |
+            npm run cy:ci
       - name: run build
         run: npm run build --if-present
       - name: carry out testing
