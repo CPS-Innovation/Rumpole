@@ -117,3 +117,5 @@ jobs:
         with:
           path: ${{ github.workspace }}/rumpole-ui/build
           name: rumpole-ui-drop
+      - name: Combine unit and cypress test coverage reports
+        run: npm run coverage
