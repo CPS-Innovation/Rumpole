@@ -1,0 +1,134 @@
+name: Rumpole Build Pipeline
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - feature/**
+      - bug/**
+  workflow_dispatch:
+jobs:
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+    # For pull requests it's not necessary to checkout the code
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: ${{ github.ref }}
+        filters: |
+          backend:
+            - 'rumpole-gateway/**'
+          frontend:
+            - 'rumpole-ui/**'
+
+  # JOB to build and test backend code
+  backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with: 
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+      - name: Use .NET Core sdk
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build rumpole-gateway/rumpole-gateway.csproj --configuration Release --no-restore
+      - name: Run tests
+        run: dotnet test rumpole-gateway.tests/rumpole-gateway.tests.csproj --configuration Release /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+      - name: Publish coverage report to coveralls.io
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
+      - name: Publish
+        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}
+          name: rumpole-gateway-drop
+
+  # JOB to build and test frontend code
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with: 
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: rumpole-ui
+      - name: Remove .env file
+        run: |
+          rm -f \
+            rumpole-ui/.env \
+      - name: npm prettier
+        run: npm run prettier rumpole-ui
+      - name: npm test
+        run: npm run test:ci rumpole-ui
+      - name: cypress run tests
+        run: npm run cy:ci rumpole-ui
+      - name: npm build
+        run: npm run build rumpole-ui
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/build
+          name: rumpole-ui-drop
+      - name: combine unit and cypress coverage
+        run: npm run coverage rumpole-ui
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/cypress/videos
+          name: Cypress failure vidoes
+        if: always()
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/report
+          name: Unit test report
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/report-cypress
+          name: Cypress test report
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/coverage
+          name: Unit test coverage report
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/coverage-cypress
+          name: Cypress coverage report
+      - uses: actions/upload-artifact@v2
+        with:
+          path: rumpole-ui/coverage-merged
+          name: Merged coverage report
+      - name: Unit tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "rumpole-ui/report/*.xml"
+      - name: Cypress tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "rumpole-ui/report-cypress/test-*.xml"
+      - name: Code coverage results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
