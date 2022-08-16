@@ -63,7 +63,6 @@ jobs:
         with:
           coverage-files: TestResults/coverage.info
           minimum-coverage: 80
-          artifact-name: rumpole-gateway-code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: rumpole-gateway.tests
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -134,7 +133,6 @@ jobs:
         with:
           coverage-files: coverage-merged/lcov.info
           minimum-coverage: 80
-          artifact-name: rumpole-ui-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ${{ github.workspace }}/rumpole-ui/
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
