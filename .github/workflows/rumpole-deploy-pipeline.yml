@@ -7,6 +7,7 @@ on:
       - feature/**
       - bug/**
   workflow_dispatch:
+permissions: write-all
 jobs:
   # JOB to run change detection
   changes:
@@ -16,16 +17,19 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-    # For pull requests it's not necessary to checkout the code
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        base: ${{ github.ref }}
-        filters: |
-          backend:
-            - 'rumpole-gateway/**'
-          frontend:
-            - 'rumpole-ui/**'
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'rumpole-gateway/**'
+            frontend:
+              - 'rumpole-ui/**'
 
   # JOB to build and test backend code
   backend:
@@ -34,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with: 
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
@@ -53,11 +57,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
       - name: Publish
-        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}
+        run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}/rumpole-gateway-drop
       - uses: actions/upload-artifact@v2
         with:
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/rumpole-gateway-drop
           name: rumpole-gateway-drop
 
   # JOB to build and test frontend code
@@ -65,70 +70,59 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/rumpole-ui/
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with: 
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: rumpole-ui
+          working-directory: ${{ github.workspace }}/rumpole-ui/
       - name: Remove .env file
         run: |
           rm -f \
             rumpole-ui/.env \
-      - name: npm prettier
-        run: npm run prettier rumpole-ui
-      - name: npm test
-        run: npm run test:ci rumpole-ui
-      - name: cypress run tests
-        run: npm run cy:ci rumpole-ui
-      - name: npm build
-        run: npm run build rumpole-ui
-      - uses: actions/upload-artifact@v2
+      - name: Set up node 
+        uses: actions/setup-node@v1
         with:
-          path: rumpole-ui/build
+          node-version: 12
+      - name: Install dependencies
+        run: npm ci
+      - name: Install GovUK React Frontend pack
+        run: npm install govuk-frontend@4.0.1
+      - name: Install GovUK React JSX pack
+        run: npm install govuk-react-jsx
+      - name: Install prettier
+        run: npm install -g prettier
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.2
+        with:
+          working_directory: ${{ github.workspace }}/rumpole-ui/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Carry out Unit testing
+        run: npm run test:ci
+      - name: Carry out Cypress testing
+        run: npm run cy:ci
+        env:
+          CI: false
+      - name: Run the build
+        run: npm run build
+        env:
+          CI: false
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/rumpole-ui/build
           name: rumpole-ui-drop
-      - name: combine unit and cypress coverage
-        run: npm run coverage rumpole-ui
-      - uses: actions/upload-artifact@v2
+      - name: Combine unit and cypress test coverage reports
+        run: npm run coverage
+      - name: Publish combined coverage report to coveralls.io
+        uses: coverallsapp/github-action@master
         with:
-          path: rumpole-ui/cypress/videos
-          name: Cypress failure vidoes
-        if: always()
-      - uses: actions/upload-artifact@v2
-        with:
-          path: rumpole-ui/report
-          name: Unit test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: rumpole-ui/report-cypress
-          name: Cypress test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: rumpole-ui/coverage
-          name: Unit test coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: rumpole-ui/coverage-cypress
-          name: Cypress coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: rumpole-ui/coverage-merged
-          name: Merged coverage report
-      - name: Unit tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "rumpole-ui/report/*.xml"
-      - name: Cypress tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "rumpole-ui/report-cypress/test-*.xml"
-      - name: Code coverage results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ github.workspace }}/rumpole-ui/coverage-merged/lcov.info
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
