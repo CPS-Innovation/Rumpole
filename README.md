@@ -1,1 +1,1 @@
-Rumpole Gateway: [![Coverage Status](https://coveralls.io/repos/github/CPS-Innovation/Rumpole/badge.svg?branch=feature/improving-code-to-pass-code-coverage-tests)](https://coveralls.io/github/CPS-Innovation/Rumpole?branch=feature/improving-code-to-pass-code-coverage-tests)
+Rumpole Gateway: [![Coverage Status](https://coveralls.io/repos/github/CPS-Innovation/Rumpole/badge.svg?branch=main)](https://coveralls.io/github/CPS-Innovation/Rumpole?branch=main)
