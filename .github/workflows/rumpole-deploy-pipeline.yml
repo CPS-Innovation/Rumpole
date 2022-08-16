@@ -96,18 +96,16 @@ jobs:
         with:
           working_directory: ${{ github.workspace }}/rumpole-ui/
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: run ci tests
-        run: npm ci
-      - name: run cypress tests
-        uses: cypress-io/github-action@v4
+      - name: Cypress install
+        uses: cypress-io/github-action@v2
         with:
-          start: npm start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          command: npm run cy:ci
+          runTests: false
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          install: false
           working-directory: ${{ github.workspace }}/rumpole-ui/
-      - name: run build
-        run: npm run build --if-present
+          start: yarn start-server
       - name: carry out testing
         run: npm test
       - uses: actions/upload-artifact@v2
