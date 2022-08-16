@@ -91,6 +91,8 @@ jobs:
           node-version: 12
       - name: Install dependencies
         run: npm ci
+      - name: Install GovUK React
+        run: npm install govuk-react-jsx
       - name: Install prettier
         run: npm install -g prettier
       - name: Prettify code
