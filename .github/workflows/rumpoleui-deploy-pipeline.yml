@@ -16,18 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: rumpole-ui
       - name: Remove .env file
         run: |
           rm -f \
             rumpole-ui/.env \
-      - name: npm config setup
-        run: npm config set registry http://registry.npmjs.org
-      - name: npm install npm
-        run: npm -g install npm
-      - name: npm clean cache
-        run: npm cache clean -f
-      - name: npm install against application
-        run: npm install rumpole-ui
       - name: npm prettier
         run: npm run prettier rumpole-ui
       - name: npm test
