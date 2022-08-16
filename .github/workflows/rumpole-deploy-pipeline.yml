@@ -81,6 +81,8 @@ jobs:
         run: |
           rm -f \
             rumpole-ui/.env \
+      - name: Install prettier
+        run: npm install -g prettier
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
