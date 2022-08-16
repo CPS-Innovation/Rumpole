@@ -102,64 +102,14 @@ jobs:
         with:
           working_directory: ${{ github.workspace }}/rumpole-ui/
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      #- name: Cypress install
-      #  uses: cypress-io/github-action@v2
-      #  with:
-      #    runTests: false
-      #    working-directory: ${{ github.workspace }}/rumpole-ui/
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          working-directory: ${{ github.workspace }}/rumpole-ui/
-          command: npm run cy:ci
-          env: process.env.CI = false
-      - name: carry out unit testing
+      - name: Carry out Unit testing
         run: npm run test:ci
-      #- name: carry out Cypress testing
-      #  run: npm run cy:ci
-      - uses: actions/upload-artifact@v2
+      - name: Carry out Cypress testing
+        run: npm run cy:ci
+      - name: Run the build
+        run: npm run build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/rumpole-ui/build
           name: rumpole-ui-drop
-      - name: combine unit and cypress coverage
-        run: npm run combine:coverage
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/cypress/videos
-          name: Cypress failure vidoes
-        if: always()
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/report
-          name: Unit test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/report-cypress
-          name: Cypress test report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage
-          name: Unit test coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage-cypress
-          name: Cypress coverage report
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/rumpole-ui/coverage-merged
-          name: Merged coverage report
-      - name: Unit tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "${{ github.workspace }}/rumpole-ui/report/*.xml"
-      - name: Cypress tests
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: "${{ github.workspace }}/rumpole-ui/report-cypress/test-*.xml"
-      - name: Code coverage results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
