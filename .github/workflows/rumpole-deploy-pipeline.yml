@@ -76,7 +76,7 @@ jobs:
           ref: ${{ github.head_ref }}
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: rumpole-ui
+          working-directory: ${{ github.workspace }}/rumpole-ui/
       - name: Remove .env file
         run: |
           rm -f \
@@ -84,16 +84,16 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
-          working_directory: rumpole-ui/
+          working_directory: ${{ github.workspace }}/rumpole-ui/
       - name: npm test
-        run: npm run test:ci rumpole-ui
+        run: npm run test:ci rumpole-ui/
       - name: cypress run tests
-        run: npm run cy:ci rumpole-ui
+        run: npm run cy:ci rumpole-ui/
       - name: npm build
-        run: npm run build rumpole-ui
+        run: npm run build rumpole-ui/
       - uses: actions/upload-artifact@v2
         with:
-          path: rumpole-ui/build
+          path: ${{ github.workspace }}/rumpole-ui/build
           name: rumpole-ui-drop
       - name: combine unit and cypress coverage
         run: npm run coverage rumpole-ui
