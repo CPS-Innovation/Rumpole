@@ -101,7 +101,10 @@ jobs:
       - name: run cypress tests
         uses: cypress-io/github-action@v4
         with:
-          build: npm run cy:ci
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          command: npm run cy:ci
           working-directory: ${{ github.workspace }}/rumpole-ui/
       - name: run build
         run: npm run build --if-present
