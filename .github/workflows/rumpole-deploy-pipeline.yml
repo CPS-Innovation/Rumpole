@@ -16,15 +16,19 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-    # For pull requests it's not necessary to checkout the code
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          backend:
-            - 'rumpole-gateway/**'
-          frontend:
-            - 'rumpole-ui/**'
+      - name: Checkout
+        uses: actions/checkout@v2
+        with: 
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'rumpole-gateway/**'
+            frontend:
+              - 'rumpole-ui/**'
 
   # JOB to build and test backend code
   backend:
