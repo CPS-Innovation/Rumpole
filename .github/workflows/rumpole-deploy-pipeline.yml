@@ -84,7 +84,7 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
-          working-directory: ${{ github.workspace }}/rumpole-ui/
+          working_directory: ${{ github.workspace }}/rumpole-ui/
       - name: npm test
         run: npm run test:ci ${{ github.workspace }}/rumpole-ui/
       - name: cypress run tests
