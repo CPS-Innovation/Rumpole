@@ -3,14 +3,17 @@ on:
   push:
     branches: [main]
     paths:
-      - rumpole-ui
+      - rumpole-ui/*
   pull_request:
     branches: [main]
     paths:
-      - rumpole-ui
+      - rumpole-ui/*
   workflow_dispatch:
 env:
   REACT_APP_BUILD_NUMBER: ${{ github.run_number }}
+defaults:
+  run:
+    working-directory: rumpole-ui
 jobs:
   build:
     runs-on: ubuntu-latest
