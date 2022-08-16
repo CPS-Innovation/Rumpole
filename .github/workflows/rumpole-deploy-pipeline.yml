@@ -69,6 +69,9 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/rumpole-ui/
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -91,9 +94,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up node 
         uses: actions/setup-node@v1
-      - name: npm test
+      - name: set up ci tests
         run: npm ci
-      - name: cypress tests
+      - name: setup cypress tests
         run: npm cy:ci
       - name: run build
         run: npm run build --if-present
