@@ -110,6 +110,8 @@ jobs:
           CI: false
       - name: Run the build
         run: npm run build
+        env:
+          CI: false
       - name: Upload build artifact
         uses: actions/upload-artifact@v2
         with:
