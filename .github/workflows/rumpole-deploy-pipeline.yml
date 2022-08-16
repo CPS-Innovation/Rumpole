@@ -106,6 +106,8 @@ jobs:
         run: npm run test:ci
       - name: Carry out Cypress testing
         run: npm run cy:ci
+        env:
+          CI: false
       - name: Run the build
         run: npm run build
       - name: Upload build artifact
