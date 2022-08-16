@@ -85,6 +85,10 @@ jobs:
         run: |
           rm -f \
             rumpole-ui/.env \
+      - name: Set up node 
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
       - name: Install prettier
         run: npm install -g prettier
       - name: Prettify code
@@ -92,10 +96,6 @@ jobs:
         with:
           working_directory: ${{ github.workspace }}/rumpole-ui/
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up node 
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
       - name: run ci tests
         run: npm ci
       - name: run cypress tests
@@ -106,6 +106,18 @@ jobs:
           wait-on-timeout: 120
           command: npm run cy:ci
           working-directory: ${{ github.workspace }}/rumpole-ui/
+      - name: upload cypress artifacts - if failed
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - name: record cypress artifacts - if succeeded
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
       - name: run build
         run: npm run build --if-present
       - name: carry out testing
