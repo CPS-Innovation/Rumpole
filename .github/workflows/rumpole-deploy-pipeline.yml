@@ -58,14 +58,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: rumpole-gateway.tests/TestResults/coverage.info
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-      - name: Report code coverage
-        uses: zgosalvez/github-actions-report-lcov@v1
-        with:
-          coverage-files: TestResults/coverage.info
-          minimum-coverage: 80
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: rumpole-gateway.tests
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
       - name: Publish
         run: dotnet publish rumpole-gateway/rumpole-gateway.csproj --configuration Release --output ${{ github.workspace }}/rumpole-gateway-drop
       - uses: actions/upload-artifact@v2
@@ -128,11 +120,22 @@ jobs:
           name: rumpole-ui-drop
       - name: Combine unit and cypress test coverage reports
         run: npm run coverage
-      - name: Report code coverage
-        uses: zgosalvez/github-actions-report-lcov@v1
+      - uses: actions/upload-artifact@v2
         with:
-          coverage-files: coverage-merged/lcov.info
-          minimum-coverage: 80
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: ${{ github.workspace }}/rumpole-ui/
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+          path: ${{ github.workspace }}/rumpole-ui/coverage-merged
+          name: Merged coverage report
+      - name: Unit tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "${{ github.workspace }}/rumpole-ui/report/*.xml"
+      - name: Cypress tests
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "${{ github.workspace }}/rumpole-ui/report-cypress/test-*.xml"
+      - name: Code coverage results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          xunit_files: "${{ github.workspace }}/rumpole-ui/coverage-merged/cobertura-coverage.xml"
