@@ -9,11 +9,14 @@ import {
   AreaHighlight,
   IHighlight,
   NewHighlight,
+  //Tip,
 } from "../../../../../../react-pdf-highlighter";
 
 import "./style/pdf-viewer.css"; // todo: these are the styles that come along with pdf-highlighter, get rid of these/transplant
 import classes from "../index.module.scss";
 import { Wait } from "./Wait";
+
+const SCROLL_TO_OFFSET = 120;
 
 interface State {
   url: string;
@@ -36,19 +39,19 @@ const resetHash = () => {
   document.location.hash = "";
 };
 
-// const HighlightPopup = ({
-//   comment,
-//   onClick,
-// }: {
-//   comment: { text: string; emoji: string };
-//   onClick: () => void;
-// }) => (
-//   <div className="Tip">
-//     <div className="Tip__compact Tip__compact-unredact" onClick={onClick}>
-//       Remove redaction
-//     </div>
-//   </div>
-// );
+const HighlightPopup = ({
+  comment,
+  onClick,
+}: {
+  comment: { text: string; emoji: string };
+  onClick: () => void;
+}) => (
+  <div className="Tip">
+    <div className="Tip__compact Tip__compact-unredact" onClick={onClick}>
+      Remove redaction
+    </div>
+  </div>
+);
 
 class App extends Component<Props, State> {
   private containerRef: React.RefObject<HTMLDivElement>;
@@ -82,7 +85,7 @@ class App extends Component<Props, State> {
     );
 
     if (highlight) {
-      //this.scrollViewerTo(highlight);
+      this.scrollViewerTo(highlight);
     }
   };
 
@@ -157,16 +160,13 @@ class App extends Component<Props, State> {
             {(pdfDocument) => (
               <PdfHighlighter
                 onWheelDownwards={() =>
-                  window.scrollY < 120 && window.scrollTo({ top: 120 })
+                  window.scrollY < SCROLL_TO_OFFSET &&
+                  window.scrollTo({ top: SCROLL_TO_OFFSET })
                 }
                 pdfDocument={pdfDocument}
-                enableAreaSelection={(event) => {
-                  return (
-                    // disable highlighting/redaction
-                    //(event.target as HTMLElement).className === "textLayer"
-                    false
-                  ); //event.altKey;
-                }}
+                enableAreaSelection={(event) =>
+                  (event.target as HTMLElement).className === "textLayer"
+                }
                 onScrollChange={resetHash}
                 pdfScaleValue="page-width"
                 scrollRef={(scrollTo) => {
@@ -180,7 +180,7 @@ class App extends Component<Props, State> {
                   hideTipAndSelection,
                   transformSelection
                 ) => (
-                  // disable highlighting/redaction
+                  <></>
                   // <Tip
                   //   onOpen={transformSelection}
                   //   onConfirm={(comment) => {
@@ -189,11 +189,9 @@ class App extends Component<Props, State> {
                   //       position,
                   //       comment,
                   //     });
-
                   //     hideTipAndSelection();
                   //   }}
                   // />
-                  <></>
                 )}
                 highlightTransform={(
                   highlight,
@@ -235,20 +233,18 @@ class App extends Component<Props, State> {
                   return (
                     <Popup
                       popupContent={
-                        <></>
-                        // <HighlightPopup
-                        //   {...highlight}
-                        //   onClick={() => {
-                        //     this.removeHighlight(highlight.id);
-                        //     hideTip();
-                        //   }}
-                        // />
+                        <HighlightPopup
+                          {...highlight}
+                          onClick={() => {
+                            this.removeHighlight(highlight.id);
+                            hideTip();
+                          }}
+                        />
                       }
-                      onMouseOver={
-                        (popupContent) => {}
-                        //setTip(highlight, (highlight) => popupContent)
+                      onMouseOver={(popupContent) =>
+                        setTip(highlight, (highlight) => popupContent)
                       }
-                      onMouseOut={() => {}} //hideTip}
+                      onMouseOut={hideTip}
                       key={index}
                       children={component}
                     />

@@ -91,7 +91,18 @@ class MouseSelection extends Component<Props, State> {
           pageY -
           containerBoundingRect.top +
           container.scrollTop -
-          window.scrollY,
+          0 //window.scrollY
+          /*
+            The above line is `window.scrollY` in the original library code.
+            The library seems to be opionated in that the pdf should be shown 
+            full height of the screen, and hence the actual window scroll position is
+            active in determining the coordinate system.  As we only have the pdf taking 
+            up a <100% proportion of the screen and let the container of the pdf do the scrolling,
+            window.scrollY messes things up for us. So remove it from the calculation
+          */
+
+
+
       };
     };
 
