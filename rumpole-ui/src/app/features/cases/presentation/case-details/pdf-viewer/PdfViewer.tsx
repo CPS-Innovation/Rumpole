@@ -8,25 +8,26 @@ import {
   Popup,
   AreaHighlight,
   IHighlight,
-  NewHighlight,
-  //Tip,
 } from "../../../../../../react-pdf-highlighter";
+
+import { IRedaction, NewRedaction } from "./types";
 
 import "./style/pdf-viewer.css"; // todo: these are the styles that come along with pdf-highlighter, get rid of these/transplant
 import classes from "../index.module.scss";
 import { Wait } from "./Wait";
+import { RedactButton } from "./RedactButton";
 
 const SCROLL_TO_OFFSET = 120;
 
 interface State {
-  url: string;
-  highlights: Array<IHighlight>;
+  highlights: IHighlight[];
+  redactions: IRedaction[];
 }
 
 interface Props {
   url: string;
   authToken: string;
-  highlights: Array<IHighlight>;
+  highlights: IHighlight[];
   focussedHighlightIndex: number;
 }
 
@@ -65,10 +66,9 @@ class App extends Component<Props, State> {
     this.containerRef = React.createRef();
   }
 
-  state = {
-    url: this.props.url,
+  state: State = {
     highlights: this.props.highlights,
-    isRedactionComplete: false,
+    redactions: [],
   };
 
   resetHighlights = () => {
@@ -103,47 +103,22 @@ class App extends Component<Props, State> {
     return highlights.find((highlight) => highlight.id === id);
   }
 
-  addHighlight(highlight: NewHighlight) {
-    const { highlights } = this.state;
-
-    console.log("Saving highlight", highlight);
-
+  addRedaction(redaction: NewRedaction) {
+    const { redactions } = this.state;
     this.setState({
-      highlights: [{ ...highlight, id: getNextId() }, ...highlights],
+      redactions: [{ ...redaction, id: getNextId() }, ...redactions],
     });
   }
 
-  updateHighlight(highlightId: string, position: Object, content: Object) {
-    console.log("Updating highlight", highlightId, position, content);
-
+  removeRedaction = (id: string) => {
     this.setState({
-      highlights: this.state.highlights.map((h) => {
-        const {
-          id,
-          position: originalPosition,
-          content: originalContent,
-          ...rest
-        } = h;
-        return id === highlightId
-          ? {
-              id,
-              position: { ...originalPosition, ...position },
-              content: { ...originalContent, ...content },
-              ...rest,
-            }
-          : h;
-      }),
-    });
-  }
-
-  removeHighlight = (id: string) => {
-    this.setState({
-      highlights: this.state.highlights.filter((item) => item.id !== id),
+      redactions: this.state.redactions.filter((item) => item.id !== id),
     });
   };
 
   render() {
-    const { url, highlights } = this.state;
+    const { highlights } = this.state;
+    const { url } = this.props;
 
     return (
       <>
@@ -174,32 +149,23 @@ class App extends Component<Props, State> {
 
                   this.scrollToHighlightFromHash();
                 }}
-                onSelectionFinished={(
-                  position,
-                  content,
-                  hideTipAndSelection,
-                  transformSelection
-                ) => (
-                  <></>
-                  // <Tip
-                  //   onOpen={transformSelection}
-                  //   onConfirm={(comment) => {
-                  //     this.addHighlight({
-                  //       content,
-                  //       position,
-                  //       comment,
-                  //     });
-                  //     hideTipAndSelection();
-                  //   }}
-                  // />
+                onSelectionFinished={(position, _, hideTipAndSelection) => (
+                  <RedactButton
+                    onConfirm={() => {
+                      this.addRedaction({
+                        position,
+                      });
+                      hideTipAndSelection();
+                    }}
+                  />
                 )}
                 highlightTransform={(
                   highlight,
                   index,
                   setTip,
                   hideTip,
-                  viewportToScaled,
-                  screenshot,
+                  _,
+                  __,
                   isScrolledTo
                 ) => {
                   const isTextHighlight = !Boolean(
@@ -217,15 +183,7 @@ class App extends Component<Props, State> {
                       isScrolledTo={isScrolledTo}
                       highlight={highlight}
                       onChange={(boundingRect) => {
-                        this.updateHighlight(
-                          highlight.id,
-                          {
-                            boundingRect: viewportToScaled(boundingRect),
-                          },
-                          {
-                            image: screenshot(boundingRect),
-                          }
-                        );
+                        //remove this eventually
                       }}
                     />
                   );
@@ -236,7 +194,7 @@ class App extends Component<Props, State> {
                         <HighlightPopup
                           {...highlight}
                           onClick={() => {
-                            this.removeHighlight(highlight.id);
+                            this.removeRedaction(highlight.id);
                             hideTip();
                           }}
                         />
