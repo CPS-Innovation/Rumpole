@@ -35,33 +35,37 @@ export interface ScaledPosition {
   usePdfCoordinates?: boolean;
 }
 
-export interface Content {
-  text?: string;
-  image?: string;
-}
+// Note: for Rumpole we have no interest in content or comments etc for our
+  //  search highlihgts or redactions 
 
-export interface HighlightContent {
-  content: Content;
-}
+  // export interface Content {
+  //   text?: string;
+  //   image?: string;
+  // }
 
-export interface Comment {
-  text: string;
-  emoji: string;
-}
+  // export interface HighlightContent {
+  //   content: Content;
+  // }
 
-export interface HighlightComment {
-  comment: Comment;
-}
+  // export interface Comment {
+  //   text: string;
+  //   emoji: string;
+  // }
 
-export interface NewHighlight extends HighlightContent, HighlightComment {
+  // export interface HighlightComment {
+  //   comment: Comment;
+  // }
+
+export interface NewHighlight /*extends HighlightContent, HighlightComment*/ {
   position: ScaledPosition;
+  highlightType: "linear" | "area"
 }
 
 export interface IHighlight extends NewHighlight {
   id: string;
 }
 
-export interface ViewportHighlight extends HighlightContent, HighlightComment {
+export interface ViewportHighlight /*extends HighlightContent, HighlightComment*/ {
   position: Position;
 }
 

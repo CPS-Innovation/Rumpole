@@ -146,7 +146,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       doc.defaultView?.addEventListener("resize", this.debouncedScaleValue);
       if (observer) observer.observe(ref);
 
-      ref.addEventListener("wheel", this.handleWheel)
+      ref.addEventListener("wheel", this.handleWheel, {passive: true})
 
       this.unsubscribe = () => {
         eventBus.off("pagesinit", this.onDocumentReady);

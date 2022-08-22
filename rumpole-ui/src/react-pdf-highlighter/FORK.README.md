@@ -14,7 +14,6 @@ have been added directly to our own `package.json`:
     "@types/pdfjs-dist": "^2.7.4",
     "lodash.debounce": "^4.0.8",
     "pdfjs-dist": "2.11.338",
-    "react-rnd": "^10.1.10"
 ```
 
 
