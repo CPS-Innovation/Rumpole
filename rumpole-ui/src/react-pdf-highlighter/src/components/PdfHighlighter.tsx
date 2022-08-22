@@ -6,7 +6,9 @@ import {
   EventBus,
   PDFViewer,
   PDFLinkService,
-} from "pdfjs-dist/legacy/web/pdf_viewer";
+  // Note: for our purposes switch this away from leagcy to mainstream,
+  //  we only have modern browsers at CPS
+} from "pdfjs-dist/web/pdf_viewer"; //"pdfjs-dist/legacy/web/pdf_viewer";
 
 import "pdfjs-dist/web/pdf_viewer.css";
 import "../style/pdf_viewer.css";
