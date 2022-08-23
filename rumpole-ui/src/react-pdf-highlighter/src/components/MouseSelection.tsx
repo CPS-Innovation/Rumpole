@@ -78,12 +78,19 @@ class MouseSelection extends Component<Props, State> {
       return;
     }
 
-    let containerBoundingRect: DOMRect | null = null;
+
+    // Note: a CPS customisation here.  By caching containerBoundingRect the library
+    //  makes the assumption that the pdf viewing control is always rooted at the same spot
+    //  in the window.  In our use case, thew page can scroll up and down and hence move
+    //  the pdf control.  So we fix the bug by always calculating containerBoundingRect
+    //  on demand and removing the use of the caching variable.
+
+    //let containerBoundingRect: DOMRect | null = null;
 
     const containerCoords = (pageX: number, pageY: number) => {
-      if (!containerBoundingRect) {
-        containerBoundingRect = container.getBoundingClientRect();
-      }
+      //if (!containerBoundingRect) {
+        const containerBoundingRect = container.getBoundingClientRect();
+      //}
 
       return {
         x: pageX - containerBoundingRect.left + container.scrollLeft,
@@ -91,18 +98,7 @@ class MouseSelection extends Component<Props, State> {
           pageY -
           containerBoundingRect.top +
           container.scrollTop -
-          0 //window.scrollY
-          /*
-            The above line is `window.scrollY` in the original library code.
-            The library seems to be opionated in that the pdf should be shown 
-            full height of the screen, and hence the actual window scroll position is
-            active in determining the coordinate system.  As we only have the pdf taking 
-            up a <100% proportion of the screen and let the container of the pdf do the scrolling,
-            window.scrollY messes things up for us. So remove it from the calculation
-          */
-
-
-
+          window.scrollY
       };
     };
 
