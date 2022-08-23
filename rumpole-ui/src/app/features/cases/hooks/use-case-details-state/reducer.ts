@@ -202,6 +202,14 @@ export const reducer = (
         //  via the url hash functionality
         return coreNewState;
       }
+      const alreadyOpenedTabIndex = state.tabsState.items.findIndex(
+        (item) => item.documentId === pdfId
+      );
+
+      const redactionsHighlightsToRetain =
+        alreadyOpenedTabIndex !== -1
+          ? state.tabsState.items[alreadyOpenedTabIndex].redactionHighlights
+          : [];
 
       const foundDocument = state.documentsState.data.find(
         (item) => item.documentId === pdfId
@@ -223,7 +231,7 @@ export const reducer = (
           url,
           tabSafeId,
           mode,
-          redactionHighlights: [],
+          redactionHighlights: redactionsHighlightsToRetain,
         };
       } else {
         const foundDocumentSearchResult =
@@ -262,7 +270,7 @@ export const reducer = (
           url,
           tabSafeId,
           mode,
-          redactionHighlights: [],
+          redactionHighlights: redactionsHighlightsToRetain,
           searchTerm: state.searchState.submittedSearchTerm!,
           occurrencesInDocumentCount: foundDocumentSearchResult
             ? foundDocumentSearchResult.occurrencesInDocumentCount
@@ -270,10 +278,6 @@ export const reducer = (
           searchHighlights,
         };
       }
-
-      const alreadyOpenedTabIndex = state.tabsState.items.findIndex(
-        (item) => item.documentId === pdfId
-      );
 
       const nextItemsArray =
         alreadyOpenedTabIndex === -1
