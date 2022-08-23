@@ -15,6 +15,8 @@ import { mapFilters } from "./map-filters";
 import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
 import { isDocumentVisible } from "./is-document-visible";
 import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
+import { mapHighlights } from "./map-highlights";
+import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 
 export const reducer = (
   state: CombinedState,
@@ -68,6 +70,20 @@ export const reducer = (
           filter: keyof CombinedState["searchState"]["filterOptions"];
           id: string;
           isSelected: boolean;
+        };
+      }
+    | {
+        type: "ADD_REDACTION";
+        payload: {
+          pdfId: string;
+          redaction: NewPdfHighlight;
+        };
+      }
+    | {
+        type: "REMOVE_REDACTION";
+        payload: {
+          pdfId: string;
+          redactionId: string;
         };
       }
 ): CombinedState => {
@@ -207,6 +223,7 @@ export const reducer = (
           url,
           tabSafeId,
           mode,
+          redactionHighlights: [],
         };
       } else {
         const foundDocumentSearchResult =
@@ -215,37 +232,42 @@ export const reducer = (
             (item) => item.documentId === pdfId
           )!;
 
+        const pageOccurrences = foundDocumentSearchResult
+          ? foundDocumentSearchResult.occurrences.reduce((acc, curr) => {
+              let foundPage = acc.find(
+                (item) => item.pageIndex === curr.pageIndex
+              );
+
+              if (!foundPage) {
+                foundPage = {
+                  pageIndex: curr.pageIndex,
+                  boundingBoxes: [],
+                };
+                acc.push(foundPage);
+              }
+
+              foundPage.boundingBoxes = [
+                ...foundPage.boundingBoxes,
+                ...curr.occurrencesInLine,
+              ];
+
+              return acc;
+            }, [] as { pageIndex: number; boundingBoxes: number[][] }[])
+          : /* istanbul ignore next */ [];
+
+        const searchHighlights = mapHighlights(pageOccurrences);
+
         item = {
           ...foundDocument,
           url,
           tabSafeId,
           mode,
+          redactionHighlights: [],
           searchTerm: state.searchState.submittedSearchTerm!,
           occurrencesInDocumentCount: foundDocumentSearchResult
             ? foundDocumentSearchResult.occurrencesInDocumentCount
             : /* istanbul ignore next */ 0,
-          pageOccurrences: foundDocumentSearchResult
-            ? foundDocumentSearchResult.occurrences.reduce((acc, curr) => {
-                let foundPage = acc.find(
-                  (item) => item.pageIndex === curr.pageIndex
-                );
-
-                if (!foundPage) {
-                  foundPage = {
-                    pageIndex: curr.pageIndex,
-                    boundingBoxes: [],
-                  };
-                  acc.push(foundPage);
-                }
-
-                foundPage.boundingBoxes = [
-                  ...foundPage.boundingBoxes,
-                  ...curr.occurrencesInLine,
-                ];
-
-                return acc;
-              }, [] as { pageIndex: number; boundingBoxes: number[][] }[])
-            : /* istanbul ignore next */ [],
+          searchHighlights,
         };
       }
 
@@ -465,7 +487,47 @@ export const reducer = (
           },
         },
       };
+    case "ADD_REDACTION": {
+      const { pdfId, redaction } = action.payload;
 
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: state.tabsState.items.map((item) =>
+            item.documentId === pdfId
+              ? {
+                  ...item,
+                  redactionHighlights: [
+                    ...item.redactionHighlights,
+                    { ...redaction, id: String(+new Date()) },
+                  ],
+                }
+              : item
+          ),
+        },
+      };
+    }
+    case "REMOVE_REDACTION": {
+      const { redactionId, pdfId } = action.payload;
+
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: state.tabsState.items.map((item) =>
+            item.documentId === pdfId
+              ? {
+                  ...item,
+                  redactionHighlights: item.redactionHighlights.filter(
+                    (redaction) => redaction.id !== redactionId
+                  ),
+                }
+              : item
+          ),
+        },
+      };
+    }
     default:
       throw new Error("Unknown action passed to case details reducer");
   }

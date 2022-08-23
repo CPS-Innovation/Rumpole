@@ -11,106 +11,52 @@ import {
 import classes from "./PdfViewer.module.scss";
 import { Wait } from "./Wait";
 import { RedactButton } from "./RedactButton";
-import { IPdfHighlight } from "./types/IPdfHighlight";
+
 import { PdfLinearHighlight } from "./PdfLinearHighlight";
 import { PdfAreaHighlight } from "./PdfAreaHighlight";
 import { RemoveButton } from "./RemoveButton";
+import { IPdfHighlight } from "../../../domain/IPdfHighlight";
+import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
 
 const SCROLL_TO_OFFSET = 120;
-
-interface State {
-  highlights: IPdfHighlight[];
-  redactions: IPdfHighlight[];
-}
 
 interface Props {
   url: string;
   authToken: string;
   highlights: IPdfHighlight[];
   focussedHighlightIndex: number;
+  handleAddRedaction: (newRedaction: NewPdfHighlight) => void;
+  handleRemoveRedaction: (id: string) => void;
 }
-
-const getNextId = () => String(Math.random()).slice(2);
-
-// const parseIdFromHash = () =>
-//   document.location.hash.slice("#highlight-".length);
 
 const resetHash = () => {
   document.location.hash = "";
 };
 
-class App extends Component<Props, State> {
+export class PdfViewer extends Component<Props /*, State*/> {
   private containerRef: React.RefObject<HTMLDivElement>;
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    return { ...state, highlights: props.highlights };
-  }
 
   constructor(props: Props) {
     super(props);
     this.containerRef = React.createRef();
   }
 
-  state: State = {
-    highlights: this.props.highlights,
-    redactions: [],
-  };
-
-  // scrollToHighlightFromHash = () => {
-  //   const highlight = this.getHighlightById(
-  //     String(this.props.focussedHighlightIndex)
-  //   );
-
-  //   if (highlight) {
-  //     this.scrollViewerTo(highlight);
-  //   }
-  // };
-
-  // componentDidMount() {
-  //   window.addEventListener(
-  //     "hashchange",
-  //     this.scrollToHighlightFromHash,
-  //     false
-  //   );
-  // }
-
-  // getHighlightById(id: string) {
-  //   const { highlights } = this.state;
-
-  //   return highlights.find((highlight) => highlight.id === id);
-  // }
-
-  resetHighlights = () => {
-    this.setState({
-      highlights: [],
-    });
-  };
-
-  //scrollViewerTo = (highlight: any) => {};
-
   addRedaction(position: ScaledPosition, isAreaHighlight: boolean) {
-    const { redactions } = this.state;
-    this.setState({
-      redactions: [
-        {
-          id: getNextId(),
-          type: "redaction",
-          position,
-          highlightType: isAreaHighlight ? "area" : "linear",
-        },
-        ...redactions,
-      ],
-    });
+    const newRedaction: NewPdfHighlight = {
+      type: "redaction",
+      position,
+      highlightType: isAreaHighlight ? "area" : "linear",
+    };
+
+    this.props.handleAddRedaction(newRedaction);
   }
 
   removeRedaction = (id: string) => {
-    this.setState({
-      redactions: this.state.redactions.filter((item) => item.id !== id),
-    });
+    this.props.handleRemoveRedaction(id);
   };
 
   render() {
-    const { highlights, redactions } = this.state;
+    const { highlights } = this.props;
     const { url } = this.props;
 
     return (
@@ -198,7 +144,7 @@ class App extends Component<Props, State> {
                     />
                   );
                 }}
-                highlights={[...highlights, ...redactions]}
+                highlights={highlights}
               />
             )}
           </PdfLoader>
@@ -207,5 +153,3 @@ class App extends Component<Props, State> {
     );
   }
 }
-
-export default App;

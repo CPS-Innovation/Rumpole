@@ -10,6 +10,7 @@ import { CombinedState } from "../../domain/CombinedState";
 import { reducer } from "./reducer";
 import { searchCaseWhenReady } from "./search-case-when-ready";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
+import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 
 export type CaseDetailsState = ReturnType<typeof useCaseDetailsState>;
 
@@ -163,6 +164,18 @@ export const useCaseDetailsState = (id: string) => {
     []
   );
 
+  const handleAddRedaction = useCallback(
+    (pdfId: string, redaction: NewPdfHighlight) =>
+      dispatch({ type: "ADD_REDACTION", payload: { pdfId, redaction } }),
+    []
+  );
+
+  const handleRemoveRedaction = useCallback(
+    (pdfId: string, redactionId: string) =>
+      dispatch({ type: "REMOVE_REDACTION", payload: { pdfId, redactionId } }),
+    []
+  );
+
   return {
     ...combinedState,
     handleOpenPdf,
@@ -172,5 +185,7 @@ export const useCaseDetailsState = (id: string) => {
     handleCloseSearchResults,
     handleChangeResultsOrder,
     handleUpdateFilter,
+    handleAddRedaction,
+    handleRemoveRedaction,
   };
 };

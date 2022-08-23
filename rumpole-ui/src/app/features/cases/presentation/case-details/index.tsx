@@ -35,6 +35,8 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     handleCloseSearchResults,
     handleChangeResultsOrder,
     handleUpdateFilter,
+    handleAddRedaction,
+    handleRemoveRedaction,
   } = useCaseDetailsState(id);
 
   if (caseState.status === "loading") {
@@ -110,6 +112,8 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
                 tabsState={tabsState}
                 handleClosePdf={handleClosePdf}
                 handleLaunchSearchResults={handleLaunchSearchResults}
+                handleAddRedaction={handleAddRedaction}
+                handleRemoveRedaction={handleRemoveRedaction}
               />
             )}
           </div>

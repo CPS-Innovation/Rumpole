@@ -1,14 +1,12 @@
-import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
-import { IPdfHighlight } from "../pdf-viewer/types/IPdfHighlight";
+import { IPdfHighlight } from "../../domain/IPdfHighlight";
 
 const PDF_HEIGHT_INCHES = 11.69; //todo: this needs to come from caseDocumentParameter
 const PDF_WIDTH_INCHES = 8.27;
 const PADDING_INCHES = 0.03;
 
-export const mapHighlights = ({
-  pageOccurrences,
-  searchTerm,
-}: Extract<CaseDocumentViewModel, { mode: "search" }>): IPdfHighlight[] => {
+export const mapHighlights = (
+  pageOccurrences: { pageIndex: number; boundingBoxes: number[][] }[]
+): IPdfHighlight[] => {
   const results: IPdfHighlight[] = [];
 
   let i = 0;
