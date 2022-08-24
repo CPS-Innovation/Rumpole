@@ -8,8 +8,10 @@
   // 1) gov inputs have z-index = 1 when they are focussed, so bigger than 1 required
   // 2) wheeling on the modal does not work with z-index: 2 as pdf-lib.js seems to intercept
   //  the wheel and starts scrolling itself, rather than the modal content.
-  // So z-index: 3 is the one
-  z-index: 3;
+  // 3) z-index: 3 seems to be given to the text and annotation layer of pdf.js
+  // 4) z-index: 4 is used by the pdf viewer redaction summary footer
+  // So use z-index: 5
+  z-index: 5;
 }
 
 .modalContent {

@@ -1,5 +1,4 @@
-import React from "react";
-import { Component } from "react";
+import React, { useMemo, useRef } from "react";
 
 import {
   PdfLoader,
@@ -17,139 +16,141 @@ import { PdfAreaHighlight } from "./PdfAreaHighlight";
 import { RemoveButton } from "./RemoveButton";
 import { IPdfHighlight } from "../../../domain/IPdfHighlight";
 import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
+import { Footer } from "./Footer";
 
 const SCROLL_TO_OFFSET = 120;
 
-interface Props {
+type Props = {
   url: string;
   authToken: string;
-  highlights: IPdfHighlight[];
+  searchHighlights: undefined | IPdfHighlight[];
+  redactionHighlights: IPdfHighlight[];
   focussedHighlightIndex: number;
   handleAddRedaction: (newRedaction: NewPdfHighlight) => void;
   handleRemoveRedaction: (id: string) => void;
-}
-
-const resetHash = () => {
-  document.location.hash = "";
+  handleRemoveAllRedactions: () => void;
 };
 
-export class PdfViewer extends Component<Props /*, State*/> {
-  private containerRef: React.RefObject<HTMLDivElement>;
+const ensureAllPdfInView = () =>
+  window.scrollY < SCROLL_TO_OFFSET &&
+  window.scrollTo({ top: SCROLL_TO_OFFSET });
 
-  constructor(props: Props) {
-    super(props);
-    this.containerRef = React.createRef();
-  }
+export const PdfViewer: React.FC<Props> = ({
+  url,
+  authToken,
+  searchHighlights,
+  redactionHighlights,
+  handleAddRedaction,
+  handleRemoveRedaction,
+  handleRemoveAllRedactions,
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  addRedaction(position: ScaledPosition, isAreaHighlight: boolean) {
+  const highlights = useMemo(
+    () => [...(searchHighlights || []), ...redactionHighlights],
+    [searchHighlights, redactionHighlights]
+  );
+
+  const addRedaction = (position: ScaledPosition, isAreaHighlight: boolean) => {
     const newRedaction: NewPdfHighlight = {
       type: "redaction",
       position,
       highlightType: isAreaHighlight ? "area" : "linear",
     };
 
-    this.props.handleAddRedaction(newRedaction);
-  }
+    // const isFirstRedaction = !redactionHighlights.length;
+    // if (isFirstRedaction) {
+    //   scrollAllPdfIntoView();
+    // }
 
-  removeRedaction = (id: string) => {
-    this.props.handleRemoveRedaction(id);
+    handleAddRedaction(newRedaction);
   };
 
-  render() {
-    const { highlights } = this.props;
-    const { url } = this.props;
-
-    return (
-      <>
-        <div
-          className={classes.pdfViewer}
-          ref={this.containerRef}
-          data-testid="div-pdfviewer"
-        >
-          <PdfLoader
-            url={url}
-            authToken={this.props.authToken}
-            beforeLoad={<Wait />}
-          >
-            {(pdfDocument) => (
-              <PdfHighlighter
-                onWheelDownwards={() =>
-                  window.scrollY < SCROLL_TO_OFFSET &&
-                  window.scrollTo({ top: SCROLL_TO_OFFSET })
-                }
-                pdfDocument={pdfDocument}
-                enableAreaSelection={(event) =>
-                  (event.target as HTMLElement).className === "textLayer"
-                }
-                onScrollChange={resetHash}
-                pdfScaleValue="page-width"
-                scrollRef={(scrollTo) => {
-                  //this.scrollViewerTo = scrollTo;
-                  //this.scrollToHighlightFromHash();
-                }}
-                onSelectionFinished={(
-                  position,
-                  content,
-                  hideTipAndSelection
-                ) => (
-                  <RedactButton
-                    onConfirm={() => {
-                      this.addRedaction(position, !!content.image);
-                      hideTipAndSelection();
-                    }}
-                  />
-                )}
-                highlightTransform={(
-                  highlight,
-                  index,
-                  setTip,
-                  hideTip,
-                  _,
-                  __,
-                  isScrolledTo
-                ) => {
-                  const component =
-                    highlight.highlightType === "linear" ? (
-                      <PdfLinearHighlight
-                        type={highlight.type}
-                        isScrolledTo={isScrolledTo}
-                        position={highlight.position}
-                      />
-                    ) : (
-                      <PdfAreaHighlight
-                        type={highlight.type}
-                        isScrolledTo={isScrolledTo}
-                        position={highlight.position}
-                      />
-                    );
-
-                  return highlight.type === "search" ? (
-                    { ...component, key: index }
+  return (
+    <>
+      <div
+        className={classes.pdfViewer}
+        ref={containerRef}
+        data-testid="div-pdfviewer"
+      >
+        <PdfLoader url={url} authToken={authToken} beforeLoad={<Wait />}>
+          {(pdfDocument) => (
+            <PdfHighlighter
+              onWheelDownwards={ensureAllPdfInView}
+              pdfDocument={pdfDocument}
+              enableAreaSelection={(event) =>
+                (event.target as HTMLElement).className === "textLayer"
+              }
+              onScrollChange={() => {}}
+              pdfScaleValue="page-width"
+              scrollRef={(scrollTo) => {
+                //this.scrollViewerTo = scrollTo;
+                //this.scrollToHighlightFromHash();
+              }}
+              onSelectionFinished={(position, content, hideTipAndSelection) => (
+                <RedactButton
+                  onConfirm={() => {
+                    addRedaction(position, !!content.image);
+                    hideTipAndSelection();
+                  }}
+                />
+              )}
+              highlightTransform={(
+                highlight,
+                index,
+                setTip,
+                hideTip,
+                _,
+                __,
+                isScrolledTo
+              ) => {
+                const component =
+                  highlight.highlightType === "linear" ? (
+                    <PdfLinearHighlight
+                      type={highlight.type}
+                      isScrolledTo={isScrolledTo}
+                      position={highlight.position}
+                    />
                   ) : (
-                    <Popup
-                      popupContent={
-                        <RemoveButton
-                          onClick={() => {
-                            this.removeRedaction(highlight.id);
-                            hideTip();
-                          }}
-                        />
-                      }
-                      onMouseOver={(popupContent) =>
-                        setTip(highlight, (highlight) => popupContent)
-                      }
-                      onMouseOut={hideTip}
-                      key={index}
-                      children={component}
+                    <PdfAreaHighlight
+                      type={highlight.type}
+                      isScrolledTo={isScrolledTo}
+                      position={highlight.position}
                     />
                   );
-                }}
-                highlights={highlights}
-              />
-            )}
-          </PdfLoader>
-        </div>
-      </>
-    );
-  }
-}
+
+                return highlight.type === "search" ? (
+                  { ...component, key: index }
+                ) : (
+                  <Popup
+                    popupContent={
+                      <RemoveButton
+                        onClick={() => {
+                          handleRemoveRedaction(highlight.id);
+                          hideTip();
+                        }}
+                      />
+                    }
+                    onMouseOver={(popupContent) =>
+                      setTip(highlight, (highlight) => popupContent)
+                    }
+                    onMouseOut={hideTip}
+                    key={index}
+                    children={component}
+                  />
+                );
+              }}
+              highlights={highlights}
+            />
+          )}
+        </PdfLoader>
+        {!!redactionHighlights.length && (
+          <Footer
+            redactionHighlights={redactionHighlights}
+            handleRemoveAllRedactions={handleRemoveAllRedactions}
+          />
+        )}
+      </div>
+    </>
+  );
+};

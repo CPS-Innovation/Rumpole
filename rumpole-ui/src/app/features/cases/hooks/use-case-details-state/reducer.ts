@@ -86,6 +86,12 @@ export const reducer = (
           redactionId: string;
         };
       }
+    | {
+        type: "REMOVE_ALL_REDACTIONS";
+        payload: {
+          pdfId: string;
+        };
+      }
 ): CombinedState => {
   switch (action.type) {
     case "UPDATE_CASE_DETAILS":
@@ -225,13 +231,17 @@ export const reducer = (
 
       let item: CaseDocumentViewModel;
 
+      const coreItem = {
+        ...foundDocument,
+        url,
+        tabSafeId,
+        redactionHighlights: redactionsHighlightsToRetain,
+      };
+
       if (mode === "read") {
         item = {
-          ...foundDocument,
-          url,
-          tabSafeId,
-          mode,
-          redactionHighlights: redactionsHighlightsToRetain,
+          ...coreItem,
+          mode: "read",
         };
       } else {
         const foundDocumentSearchResult =
@@ -266,11 +276,8 @@ export const reducer = (
         const searchHighlights = mapHighlights(pageOccurrences);
 
         item = {
-          ...foundDocument,
-          url,
-          tabSafeId,
-          mode,
-          redactionHighlights: redactionsHighlightsToRetain,
+          ...coreItem,
+          mode: "search",
           searchTerm: state.searchState.submittedSearchTerm!,
           occurrencesInDocumentCount: foundDocumentSearchResult
             ? foundDocumentSearchResult.occurrencesInDocumentCount
@@ -526,6 +533,25 @@ export const reducer = (
                   redactionHighlights: item.redactionHighlights.filter(
                     (redaction) => redaction.id !== redactionId
                   ),
+                }
+              : item
+          ),
+        },
+      };
+    }
+
+    case "REMOVE_ALL_REDACTIONS": {
+      const { pdfId } = action.payload;
+
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: state.tabsState.items.map((item) =>
+            item.documentId === pdfId
+              ? {
+                  ...item,
+                  redactionHighlights: [],
                 }
               : item
           ),

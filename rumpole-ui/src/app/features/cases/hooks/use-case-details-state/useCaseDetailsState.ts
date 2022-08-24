@@ -176,6 +176,12 @@ export const useCaseDetailsState = (id: string) => {
     []
   );
 
+  const handleRemoveAllRedactions = useCallback(
+    (pdfId: string) =>
+      dispatch({ type: "REMOVE_ALL_REDACTIONS", payload: { pdfId } }),
+    []
+  );
+
   return {
     ...combinedState,
     handleOpenPdf,
@@ -187,5 +193,6 @@ export const useCaseDetailsState = (id: string) => {
     handleUpdateFilter,
     handleAddRedaction,
     handleRemoveRedaction,
+    handleRemoveAllRedactions,
   };
 };

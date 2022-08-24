@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
 import { CaseDetailsState } from "../../../hooks/use-case-details-state/useCaseDetailsState";
@@ -14,6 +14,7 @@ type PdfTabProps = {
   handleLaunchSearchResults: () => void;
   handleAddRedaction: CaseDetailsState["handleAddRedaction"];
   handleRemoveRedaction: CaseDetailsState["handleRemoveRedaction"];
+  handleRemoveAllRedactions: CaseDetailsState["handleRemoveAllRedactions"];
 };
 
 export const PdfTab: React.FC<PdfTabProps> = ({
@@ -22,6 +23,7 @@ export const PdfTab: React.FC<PdfTabProps> = ({
   handleLaunchSearchResults,
   handleAddRedaction,
   handleRemoveRedaction,
+  handleRemoveAllRedactions,
 }) => {
   const [focussedHighlightIndex, setFocussedHighlightIndex] =
     useState<number>(1);
@@ -30,11 +32,6 @@ export const PdfTab: React.FC<PdfTabProps> = ({
 
   const searchHighlights =
     mode === "search" ? caseDocumentViewModel.searchHighlights : undefined;
-
-  const highlights = useMemo(
-    () => [...(searchHighlights || []), ...redactionHighlights],
-    [searchHighlights, redactionHighlights]
-  );
 
   const localHandleAddRedaction = useCallback(
     (redaction: NewPdfHighlight) => handleAddRedaction(documentId, redaction),
@@ -46,6 +43,10 @@ export const PdfTab: React.FC<PdfTabProps> = ({
     [documentId, handleRemoveRedaction]
   );
 
+  const localHandleRemoveAllRedactions = useCallback(
+    () => handleRemoveAllRedactions(documentId),
+    [documentId, handleRemoveAllRedactions]
+  );
   return (
     <>
       {mode === "search" ? (
@@ -63,10 +64,12 @@ export const PdfTab: React.FC<PdfTabProps> = ({
         <PdfViewer
           url={url}
           authToken={authToken}
-          highlights={highlights}
+          searchHighlights={searchHighlights}
+          redactionHighlights={redactionHighlights}
           focussedHighlightIndex={focussedHighlightIndex}
           handleAddRedaction={localHandleAddRedaction}
           handleRemoveRedaction={localHandleRemoveRedaction}
+          handleRemoveAllRedactions={localHandleRemoveAllRedactions}
         />
       ) : (
         <Wait />

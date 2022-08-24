@@ -13,6 +13,7 @@ type PdfTabsProps = {
   handleLaunchSearchResults: () => void;
   handleAddRedaction: CaseDetailsState["handleAddRedaction"];
   handleRemoveRedaction: CaseDetailsState["handleRemoveRedaction"];
+  handleRemoveAllRedactions: CaseDetailsState["handleRemoveAllRedactions"];
 };
 
 export const PdfTabs: React.FC<PdfTabsProps> = ({
@@ -21,6 +22,7 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
   handleLaunchSearchResults,
   handleAddRedaction,
   handleRemoveRedaction,
+  handleRemoveAllRedactions,
 }) => {
   return (
     <Tabs
@@ -36,6 +38,7 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
               handleLaunchSearchResults={handleLaunchSearchResults}
               handleAddRedaction={handleAddRedaction}
               handleRemoveRedaction={handleRemoveRedaction}
+              handleRemoveAllRedactions={handleRemoveAllRedactions}
             />
           ),
         },

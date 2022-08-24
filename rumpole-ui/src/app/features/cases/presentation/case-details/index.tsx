@@ -37,6 +37,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     handleUpdateFilter,
     handleAddRedaction,
     handleRemoveRedaction,
+    handleRemoveAllRedactions,
   } = useCaseDetailsState(id);
 
   if (caseState.status === "loading") {
@@ -114,6 +115,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
                 handleLaunchSearchResults={handleLaunchSearchResults}
                 handleAddRedaction={handleAddRedaction}
                 handleRemoveRedaction={handleRemoveRedaction}
+                handleRemoveAllRedactions={handleRemoveAllRedactions}
               />
             )}
           </div>

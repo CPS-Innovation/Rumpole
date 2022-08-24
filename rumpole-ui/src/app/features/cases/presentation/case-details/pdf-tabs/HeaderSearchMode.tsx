@@ -1,4 +1,4 @@
-import { LinkButton } from "../../../../../common/presentation/components/tabs/LinkButton";
+import { LinkButton } from "../../../../../common/presentation/components/LinkButton";
 import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 import classes from "./HeaderSearchMode.module.scss";
 
