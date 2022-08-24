@@ -92,6 +92,19 @@ export const reducer = (
           pdfId: string;
         };
       }
+    | {
+        type: "CHECKOUT_DOCUMENT";
+        payload: {
+          pdfId: string;
+          isCheckoutSuccess: boolean;
+        };
+      }
+    | {
+        type: "CHECKIN_DOCUMENT";
+        payload: {
+          pdfId: string;
+        };
+      }
 ): CombinedState => {
   switch (action.type) {
     case "UPDATE_CASE_DETAILS":

@@ -119,3 +119,33 @@ export const searchCase = async (caseId: string, searchTerm: string) => {
 
   return (await response.json()) as ApiTextSearchResult[];
 };
+
+export const checkoutDocument = async (caseId: string, docId: string) => {
+  const headers = await getHeaders();
+  const path = getFullUrl(`/api/documents/checkout/${caseId}/${docId}`);
+  const response = await fetch(path, {
+    headers,
+    method: "PUT",
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Check out document failed", path, response);
+  }
+
+  return true; // unhappy path not known yet
+};
+
+export const checkinDocument = async (caseId: string, docId: string) => {
+  const headers = await getHeaders();
+  const path = getFullUrl(`/api/documents/checkin/${caseId}/${docId}`);
+  const response = await fetch(path, {
+    headers,
+    method: "PUT",
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Check out document failed", path, response);
+  }
+
+  return true; // unhappy path not known yet
+};

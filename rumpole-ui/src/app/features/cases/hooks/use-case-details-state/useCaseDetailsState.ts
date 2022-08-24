@@ -74,7 +74,7 @@ export const useCaseDetailsState = (id: string) => {
     combinedState.pipelineState.status === "complete",
     //  It makes it much easier if we enforce that the documents need to be known before allowing
     //   a search (logically, we do not need to wait for the documents call to return at the point we trigger a
-    //   search, we only need them when we map the eventul result of the search call).  However, this is a tidier
+    //   search, we only need them when we map the eventual result of the search call).  However, this is a tidier
     //   place to enforce the wait as we are already waiting for the pipeline here. If we don't wait here, then
     //   we have to deal with the condition where the search results have come back but we do not yet have the
     //   the documents result, and we have to chase up fixing the full mapped objects at that later point.
