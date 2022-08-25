@@ -240,7 +240,7 @@ export const reducer = (
 
       const coreItem = {
         ...foundDocument,
-        lockedState: "not-yet-locked" as const,
+        lockedState: "unlocked" as const,
         url,
         tabSafeId,
         redactionHighlights: redactionsHighlightsToRetain,

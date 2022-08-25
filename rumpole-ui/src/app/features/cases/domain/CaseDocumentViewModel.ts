@@ -5,7 +5,9 @@ export type CaseDocumentViewModel = MappedCaseDocument & {
   url: string | undefined;
   tabSafeId: string;
   redactionHighlights: IPdfHighlight[];
-  lockedState: "not-yet-locked" | "locking" | "locked" | "locked-by-other-user";
+  lockedState: // note: unlocked is just the state where the client doesn't know yet
+  //  (might be locked on the server, we haven't interacted yet)
+  "unlocked" | "locking" | "locked" | "unlocking" | "locked-by-other-user";
 } & (
     | { mode: "read" }
     | {

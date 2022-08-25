@@ -181,13 +181,19 @@ export const useCaseDetailsState = (id: string) => {
 
   const handleRemoveRedaction = useCallback(
     (pdfId: string, redactionId: string) =>
-      dispatch({ type: "REMOVE_REDACTION", payload: { pdfId, redactionId } }),
+      dispatch({
+        type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK",
+        payload: { pdfId, redactionId },
+      }),
     [dispatch]
   );
 
   const handleRemoveAllRedactions = useCallback(
     (pdfId: string) =>
-      dispatch({ type: "REMOVE_ALL_REDACTIONS", payload: { pdfId } }),
+      dispatch({
+        type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK",
+        payload: { pdfId },
+      }),
     [dispatch]
   );
 
