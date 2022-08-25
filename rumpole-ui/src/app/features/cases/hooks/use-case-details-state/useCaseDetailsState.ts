@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect } from "react";
 import { useApi } from "../../../../common/hooks/useApi";
 import {
   getCaseDetails,
@@ -11,6 +11,8 @@ import { reducer } from "./reducer";
 import { searchCaseWhenReady } from "./search-case-when-ready";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
+import { useReducerAsync } from "use-reducer-async";
+import { reducerAsyncActionHandlers } from "./reducer-async-action-handlers";
 
 export type CaseDetailsState = ReturnType<typeof useCaseDetailsState>;
 
@@ -32,7 +34,7 @@ export const initialState = {
     missingDocs: [],
     results: { status: "loading" },
   },
-} as CombinedState;
+} as Omit<CombinedState, "caseId">;
 
 export const useCaseDetailsState = (id: string) => {
   const caseState = useApi(getCaseDetails, id);
@@ -40,26 +42,30 @@ export const useCaseDetailsState = (id: string) => {
   const pipelineState = usePipelineApi(id);
   const headers = useApi(getHeaders);
 
-  const [combinedState, dispatch] = useReducer(reducer, initialState);
+  const [combinedState, dispatch] = useReducerAsync(
+    reducer,
+    { ...initialState, caseId: id },
+    reducerAsyncActionHandlers
+  );
 
   useEffect(
     () => dispatch({ type: "UPDATE_CASE_DETAILS", payload: caseState }),
-    [caseState]
+    [caseState, dispatch]
   );
 
   useEffect(
     () => dispatch({ type: "UPDATE_CASE_DOCUMENTS", payload: documentsState }),
-    [documentsState]
+    [documentsState, dispatch]
   );
 
   useEffect(
     () => dispatch({ type: "UPDATE_PIPELINE", payload: pipelineState }),
-    [pipelineState]
+    [pipelineState, dispatch]
   );
 
   useEffect(
     () => dispatch({ type: "UPDATE_AUTH_TOKEN", payload: headers }),
-    [headers]
+    [headers, dispatch]
   );
 
   const searchResults = useApi(
@@ -85,7 +91,7 @@ export const useCaseDetailsState = (id: string) => {
 
   useEffect(
     () => dispatch({ type: "UPDATE_SEARCH_RESULTS", payload: searchResults }),
-    [searchResults]
+    [searchResults, dispatch]
   );
 
   const handleOpenPdf = useCallback(
@@ -161,25 +167,28 @@ export const useCaseDetailsState = (id: string) => {
       id: string;
       isSelected: boolean;
     }) => dispatch({ type: "UPDATE_FILTER", payload }),
-    []
+    [dispatch]
   );
 
   const handleAddRedaction = useCallback(
     (pdfId: string, redaction: NewPdfHighlight) =>
-      dispatch({ type: "ADD_REDACTION", payload: { pdfId, redaction } }),
-    []
+      dispatch({
+        type: "ADD_REDACTION_AND_ATTEMPT_LOCK",
+        payload: { pdfId, redaction },
+      }),
+    [dispatch]
   );
 
   const handleRemoveRedaction = useCallback(
     (pdfId: string, redactionId: string) =>
       dispatch({ type: "REMOVE_REDACTION", payload: { pdfId, redactionId } }),
-    []
+    [dispatch]
   );
 
   const handleRemoveAllRedactions = useCallback(
     (pdfId: string) =>
       dispatch({ type: "REMOVE_ALL_REDACTIONS", payload: { pdfId } }),
-    []
+    [dispatch]
   );
 
   return {

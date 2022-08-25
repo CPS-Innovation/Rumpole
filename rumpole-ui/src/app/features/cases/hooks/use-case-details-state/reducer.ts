@@ -93,16 +93,10 @@ export const reducer = (
         };
       }
     | {
-        type: "CHECKOUT_DOCUMENT";
+        type: "UPDATE_DOCUMENT_LOCK_STATE";
         payload: {
           pdfId: string;
-          isCheckoutSuccess: boolean;
-        };
-      }
-    | {
-        type: "CHECKIN_DOCUMENT";
-        payload: {
-          pdfId: string;
+          lockedState: CaseDocumentViewModel["lockedState"];
         };
       }
 ): CombinedState => {
@@ -246,6 +240,7 @@ export const reducer = (
 
       const coreItem = {
         ...foundDocument,
+        lockedState: "not-yet-locked" as const,
         url,
         tabSafeId,
         redactionHighlights: redactionsHighlightsToRetain,
@@ -571,6 +566,25 @@ export const reducer = (
         },
       };
     }
+    case "UPDATE_DOCUMENT_LOCK_STATE": {
+      const { pdfId, lockedState } = action.payload;
+
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: state.tabsState.items.map((item) =>
+            item.documentId === pdfId
+              ? {
+                  ...item,
+                  lockedState,
+                }
+              : item
+          ),
+        },
+      };
+    }
+
     default:
       throw new Error("Unknown action passed to case details reducer");
   }
