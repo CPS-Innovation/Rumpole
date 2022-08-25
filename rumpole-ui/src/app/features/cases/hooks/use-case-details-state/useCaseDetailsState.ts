@@ -3,7 +3,7 @@ import { useApi } from "../../../../common/hooks/useApi";
 import {
   getCaseDetails,
   getCaseDocumentsList,
-  getHeaders,
+  getCoreHeaders,
 } from "../../api/gateway-api";
 import { usePipelineApi } from "../use-pipeline-api/usePipelineApi";
 import { CombinedState } from "../../domain/CombinedState";
@@ -40,7 +40,7 @@ export const useCaseDetailsState = (id: string) => {
   const caseState = useApi(getCaseDetails, id);
   const documentsState = useApi(getCaseDocumentsList, id);
   const pipelineState = usePipelineApi(id);
-  const headers = useApi(getHeaders);
+  const headers = useApi(getCoreHeaders);
 
   const [combinedState, dispatch] = useReducerAsync(
     reducer,
@@ -197,6 +197,12 @@ export const useCaseDetailsState = (id: string) => {
     [dispatch]
   );
 
+  const handleSavedRedactions = useCallback(
+    (pdfId: string) =>
+      dispatch({ type: "SAVE_REDACTIONS", payload: { pdfId } }),
+    [dispatch]
+  );
+
   return {
     ...combinedState,
     handleOpenPdf,
@@ -209,5 +215,6 @@ export const useCaseDetailsState = (id: string) => {
     handleAddRedaction,
     handleRemoveRedaction,
     handleRemoveAllRedactions,
+    handleSavedRedactions,
   };
 };

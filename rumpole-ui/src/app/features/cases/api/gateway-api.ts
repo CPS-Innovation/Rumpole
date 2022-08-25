@@ -5,12 +5,14 @@ import { CaseDocument } from "../domain/CaseDocument";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 import { PipelineResults } from "../domain/PipelineResults";
 import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
+import { RedactionSaveRequest } from "../domain/RedactionSaveRequest";
+import { RedactionSaveResponse } from "../domain/RedactionSaveResponse";
 
 const getFullUrl = (path: string) => {
   return new URL(path, GATEWAY_BASE_URL).toString();
 };
 
-export const getHeaders = async () => {
+export const getCoreHeaders = async () => {
   if (!GATEWAY_SCOPE) {
     // if we are dev test mode with mocked auth we don't want to try to
     //  get a token
@@ -27,7 +29,7 @@ export const resolvePdfUrl = (blobName: string) =>
   getFullUrl(`/api/pdfs/${blobName}`);
 
 export const searchUrn = async (urn: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/case-information-by-urn/${urn}`);
   const response = await fetch(path, {
     headers,
@@ -47,7 +49,7 @@ export const searchUrn = async (urn: string) => {
 };
 
 export const getCaseDetails = async (caseId: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/case-details/${caseId}`);
   const response = await fetch(path, {
     headers,
@@ -62,7 +64,7 @@ export const getCaseDetails = async (caseId: string) => {
 };
 
 export const getCaseDocumentsList = async (caseId: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/case-documents/${caseId}`);
   const response = await fetch(path, {
     headers,
@@ -79,7 +81,7 @@ export const getCaseDocumentsList = async (caseId: string) => {
 };
 
 export const initiatePipeline = async (caseId: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/cases/${caseId}?force=true`);
   const response = await fetch(path, {
     headers,
@@ -96,7 +98,7 @@ export const initiatePipeline = async (caseId: string) => {
 };
 
 export const getPipelinePdfResults = async (trackerUrl: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const response = await fetch(trackerUrl, {
     headers,
     method: "GET",
@@ -106,7 +108,7 @@ export const getPipelinePdfResults = async (trackerUrl: string) => {
 };
 
 export const searchCase = async (caseId: string, searchTerm: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/cases/${caseId}/query/${searchTerm}`);
   const response = await fetch(path, {
     headers,
@@ -121,7 +123,7 @@ export const searchCase = async (caseId: string, searchTerm: string) => {
 };
 
 export const checkoutDocument = async (caseId: string, docId: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/documents/checkout/${caseId}/${docId}`);
   const response = await fetch(path, {
     headers,
@@ -129,14 +131,14 @@ export const checkoutDocument = async (caseId: string, docId: string) => {
   });
 
   if (!response.ok) {
-    throw new ApiError("Check out document failed", path, response);
+    throw new ApiError("Checkout document failed", path, response);
   }
 
   return true; // unhappy path not known yet
 };
 
 export const checkinDocument = async (caseId: string, docId: string) => {
-  const headers = await getHeaders();
+  const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/documents/checkin/${caseId}/${docId}`);
   const response = await fetch(path, {
     headers,
@@ -144,8 +146,30 @@ export const checkinDocument = async (caseId: string, docId: string) => {
   });
 
   if (!response.ok) {
-    throw new ApiError("Check out document failed", path, response);
+    throw new ApiError("Checkin document failed", path, response);
   }
 
   return true; // unhappy path not known yet
+};
+
+export const saveRedactions = async (
+  caseId: string,
+  docId: string,
+  redactionSaveRequest: RedactionSaveRequest
+) => {
+  const headers = await getCoreHeaders();
+  const path = getFullUrl(
+    `/api/documents/saveRedactions/${caseId}/${docId}/some-file-name`
+  );
+  const response = await fetch(path, {
+    headers: { ...headers, "Content-Type": "application/json" },
+    method: "PUT",
+    body: JSON.stringify(redactionSaveRequest),
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Save redactions failed", path, response);
+  }
+
+  return (await response.json()) as RedactionSaveResponse;
 };

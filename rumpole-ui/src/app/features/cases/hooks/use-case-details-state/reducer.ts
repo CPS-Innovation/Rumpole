@@ -15,7 +15,7 @@ import { mapFilters } from "./map-filters";
 import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
 import { isDocumentVisible } from "./is-document-visible";
 import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
-import { mapHighlights } from "./map-highlights";
+import { mapSearchHighlights } from "./map-search-highlights";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 
 export const reducer = (
@@ -97,6 +97,12 @@ export const reducer = (
         payload: {
           pdfId: string;
           lockedState: CaseDocumentViewModel["lockedState"];
+        };
+      }
+    | {
+        type: "UPDATE_SAVED_STATE";
+        payload: {
+          savedState: "saving" | "saved" | "failed";
         };
       }
 ): CombinedState => {
@@ -281,7 +287,7 @@ export const reducer = (
             }, [] as { pageIndex: number; boundingBoxes: number[][] }[])
           : /* istanbul ignore next */ [];
 
-        const searchHighlights = mapHighlights(pageOccurrences);
+        const searchHighlights = mapSearchHighlights(pageOccurrences);
 
         item = {
           ...coreItem,
@@ -584,7 +590,9 @@ export const reducer = (
         },
       };
     }
-
+    case "UPDATE_SAVED_STATE": {
+      return state;
+    }
     default:
       throw new Error("Unknown action passed to case details reducer");
   }

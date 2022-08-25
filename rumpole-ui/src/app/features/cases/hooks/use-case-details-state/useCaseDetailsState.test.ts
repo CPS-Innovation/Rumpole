@@ -38,7 +38,7 @@ describe("useCaseDetailsState", () => {
       );
 
     const mockGetHeaders = jest
-      .spyOn(api, "getHeaders")
+      .spyOn(api, "getCoreHeaders")
       .mockImplementation(
         () =>
           new Promise((resolve) =>

@@ -1,8 +1,14 @@
 import { Reducer } from "react";
 import { AsyncActionHandlers } from "use-reducer-async";
-import { checkinDocument, checkoutDocument } from "../../api/gateway-api";
+import {
+  checkinDocument,
+  checkoutDocument,
+  saveRedactions,
+} from "../../api/gateway-api";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
+import { RedactionSaveRequest } from "../../domain/RedactionSaveRequest";
+import { mapRedactionSaveRequest } from "./map-redaction-save-request";
 import { reducer } from "./reducer";
 
 const LOCK_STATES_REQUIRING_UNLOCK: CaseDocumentViewModel["lockedState"][] = [
@@ -27,6 +33,12 @@ type AsyncActions =
     }
   | {
       type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK";
+      payload: {
+        pdfId: string;
+      };
+    }
+  | {
+      type: "SAVE_REDACTIONS";
       payload: {
         pdfId: string;
       };
@@ -152,6 +164,45 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
           pdfId,
           lockedState: "unlocked",
         },
+      });
+    },
+
+  SAVE_REDACTIONS:
+    ({ dispatch, getState }) =>
+    async (action) => {
+      const { payload } = action;
+      const { pdfId } = payload;
+
+      const {
+        tabsState: { items },
+        caseId,
+      } = getState();
+
+      const { redactionHighlights } = items.find(
+        (item) => item.documentId === pdfId
+      )!;
+
+      const redactionSaveRequest = mapRedactionSaveRequest(
+        pdfId,
+        redactionHighlights
+      );
+
+      dispatch({
+        type: "UPDATE_SAVED_STATE",
+        payload: { savedState: "saving" },
+      });
+
+      const response = await saveRedactions(
+        caseId,
+        pdfId,
+        redactionSaveRequest
+      );
+
+      console.log(response);
+
+      dispatch({
+        type: "UPDATE_SAVED_STATE",
+        payload: { savedState: "saved" },
       });
     },
 };

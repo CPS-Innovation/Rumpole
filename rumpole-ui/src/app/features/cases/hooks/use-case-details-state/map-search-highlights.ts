@@ -4,7 +4,7 @@ const PDF_HEIGHT_INCHES = 11.69; //todo: this needs to come from caseDocumentPar
 const PDF_WIDTH_INCHES = 8.27;
 const PADDING_INCHES = 0.03;
 
-export const mapHighlights = (
+export const mapSearchHighlights = (
   pageOccurrences: { pageIndex: number; boundingBoxes: number[][] }[]
 ): IPdfHighlight[] => {
   const results: IPdfHighlight[] = [];

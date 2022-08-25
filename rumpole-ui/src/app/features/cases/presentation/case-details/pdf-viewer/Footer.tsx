@@ -6,11 +6,13 @@ import classes from "./Footer.module.scss";
 type Props = {
   redactionHighlights: IPdfHighlight[];
   handleRemoveAllRedactions: () => void;
+  handleSavedRedactions: () => void;
 };
 
 export const Footer: React.FC<Props> = ({
   redactionHighlights,
   handleRemoveAllRedactions,
+  handleSavedRedactions,
 }) => {
   return (
     <div className={classes.footer}>
@@ -28,7 +30,9 @@ export const Footer: React.FC<Props> = ({
         )}
       </div>
 
-      <Button className={classes.saveButton}>Save all redactions</Button>
+      <Button className={classes.saveButton} onClick={handleSavedRedactions}>
+        Save all redactions
+      </Button>
     </div>
   );
 };

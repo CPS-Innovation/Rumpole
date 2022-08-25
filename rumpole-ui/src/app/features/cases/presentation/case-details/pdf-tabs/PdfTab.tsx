@@ -15,6 +15,7 @@ type PdfTabProps = {
   handleAddRedaction: CaseDetailsState["handleAddRedaction"];
   handleRemoveRedaction: CaseDetailsState["handleRemoveRedaction"];
   handleRemoveAllRedactions: CaseDetailsState["handleRemoveAllRedactions"];
+  handleSavedRedactions: CaseDetailsState["handleSavedRedactions"];
 };
 
 export const PdfTab: React.FC<PdfTabProps> = ({
@@ -24,6 +25,7 @@ export const PdfTab: React.FC<PdfTabProps> = ({
   handleAddRedaction,
   handleRemoveRedaction,
   handleRemoveAllRedactions,
+  handleSavedRedactions,
 }) => {
   const [focussedHighlightIndex, setFocussedHighlightIndex] =
     useState<number>(1);
@@ -47,6 +49,12 @@ export const PdfTab: React.FC<PdfTabProps> = ({
     () => handleRemoveAllRedactions(documentId),
     [documentId, handleRemoveAllRedactions]
   );
+
+  const localHandleSavedRedactions = useCallback(
+    () => handleSavedRedactions(documentId),
+    [documentId, handleSavedRedactions]
+  );
+
   return (
     <>
       {mode === "search" ? (
@@ -70,6 +78,7 @@ export const PdfTab: React.FC<PdfTabProps> = ({
           handleAddRedaction={localHandleAddRedaction}
           handleRemoveRedaction={localHandleRemoveRedaction}
           handleRemoveAllRedactions={localHandleRemoveAllRedactions}
+          handleSavedRedactions={localHandleSavedRedactions}
         />
       ) : (
         <Wait />
