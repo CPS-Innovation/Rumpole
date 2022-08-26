@@ -1,6 +1,10 @@
 import classes from "./RemoveButton.module.scss";
 
-export const RemoveButton = ({ onClick }: { onClick: () => void }) => (
+type Props = {
+  onClick: () => void;
+};
+
+export const RemoveButton: React.FC<Props> = ({ onClick }) => (
   <div className="Tip">
     <div className={classes.button} onClick={onClick}>
       Remove redaction

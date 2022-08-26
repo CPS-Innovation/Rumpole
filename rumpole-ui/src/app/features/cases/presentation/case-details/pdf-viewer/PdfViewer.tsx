@@ -115,7 +115,6 @@ export const PdfViewer: React.FC<Props> = ({
                     />
                   ) : (
                     <PdfAreaHighlight
-                      type={highlight.type}
                       isScrolledTo={isScrolledTo}
                       position={highlight.position}
                     />
