@@ -6,32 +6,30 @@
     <InformationalVersion Condition=" '$(BUILD_BUILDNUMBER)' == '' ">dev</InformationalVersion>
     <InformationalVersion Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</InformationalVersion>
 	  <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+	  <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.1.1" />
+    <PackageReference Include="FluentValidation" Version="11.2.1" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
-    <PackageReference Include="GraphQL.Client" Version="4.0.2" />
-    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="4.0.2" />
-    <PackageReference Include="GraphQL.Client.Serializer.SystemTextJson" Version="4.0.2" />
+    <PackageReference Include="GraphQL.Client" Version="5.1.0" />
+    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="5.1.0" />
+    <PackageReference Include="GraphQL.Client.Serializer.SystemTextJson" Version="5.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.4.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.39.0" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.46.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="6.22.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.22.1" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.4.0" />
     <PackageReference Include="Azure.Search.Documents" Version="11.3.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
     <PackageReference Include="Microsoft.Azure.Core.NewtonsoftJson" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="local.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>local.settings.json</DependentUpon>
-    </Compile>
-    <Compile Update="local.settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>local.settings.json</DependentUpon>

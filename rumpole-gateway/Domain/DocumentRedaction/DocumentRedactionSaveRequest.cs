@@ -6,7 +6,7 @@ namespace RumpoleGateway.Domain.DocumentRedaction
     public class DocumentRedactionSaveRequest
     {
         [JsonProperty("docId")]
-        public int DocId { get; set; }
+        public string DocId { get; set; }
 
         [JsonProperty("redactions")]
         public List<RedactionDefinition> Redactions { get; set; }

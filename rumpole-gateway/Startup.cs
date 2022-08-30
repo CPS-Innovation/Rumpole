@@ -18,6 +18,7 @@ using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using RumpoleGateway.Mappers;
@@ -52,6 +53,7 @@ namespace RumpoleGateway
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
+            builder.Services.AddTransient<ITokenValidator, TokenValidator>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();

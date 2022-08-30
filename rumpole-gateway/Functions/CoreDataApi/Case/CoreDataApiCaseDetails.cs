@@ -11,6 +11,7 @@ using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.CoreDataApi.Case
 {
@@ -21,8 +22,8 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         private readonly IConfiguration _configuration;
 
         public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
-                                 IConfiguration configuration)
-        : base(logger)
+                                 IConfiguration configuration, ITokenValidator tokenValidator)
+        : base(logger, tokenValidator)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
@@ -35,13 +36,14 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         {
             try
             {
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse();
+                var tokenAssessment = await AssessTokenAsync(req);
+                if (tokenAssessment is not {Item1: null})
+                    return tokenAssessment.Item1;
                 
                 if (!int.TryParse(caseId, out _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
                 
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(tokenAssessment.Item2.ToJwtString(), _configuration["CoreDataApiScope"]);
 
                 var caseDetails = await _coreDataApiClient.GetCaseDetailsByIdAsync(caseId, onBehalfOfAccessToken);
 
