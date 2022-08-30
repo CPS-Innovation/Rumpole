@@ -12,7 +12,7 @@ namespace RumpoleGateway.Domain.DocumentRedaction
         public double Width { get; set; }
 
         [JsonProperty("height")]
-        public int Height { get; set; }
+        public double Height { get; set; }
 
         [JsonProperty("redactionCoordinates")]
         public List<RedactionCoordinates> RedactionCoordinates { get; set; }

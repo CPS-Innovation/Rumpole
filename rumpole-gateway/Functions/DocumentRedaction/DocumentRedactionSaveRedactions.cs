@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -64,7 +65,8 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineRedactPdfScope"]);
 
-                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, documentId, fileName, redactions.Value, onBehalfOfAccessToken);
+                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, HttpUtility.UrlDecode(documentId), HttpUtility.UrlDecode(fileName), 
+                    redactions.Value, onBehalfOfAccessToken);
                 return saveRedactionResult is {Succeeded: true} ? new OkObjectResult(saveRedactionResult)
                     : string.IsNullOrWhiteSpace(saveRedactionResult.Message) 
                         ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.") : BadRequestErrorResponse(saveRedactionResult.Message);
