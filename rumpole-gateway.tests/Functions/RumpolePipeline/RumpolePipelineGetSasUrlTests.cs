@@ -6,6 +6,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.RumpolePipeline;
@@ -33,7 +34,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             var mockTokenValidator = new Mock<ITokenValidator>();
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetSasUrl>>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<string>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
             _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName)).ReturnsAsync(_fakeSasUrl);
 
             _rumpolePipelineGetSasUrl = new RumpolePipelineGetSasUrl(mockTokenValidator.Object, mockLogger.Object, _mockSasGeneratorService.Object);

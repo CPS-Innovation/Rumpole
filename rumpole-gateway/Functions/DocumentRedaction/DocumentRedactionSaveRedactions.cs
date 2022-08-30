@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,12 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Helpers.Extension;
-using Microsoft.Identity.Client;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -23,7 +24,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
         private readonly IConfiguration _configuration;
         private readonly ITokenValidator _tokenValidator;
 
-        public DocumentRedactionSaveRedactions(IConfidentialClientApplication application, ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
+        public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
             IConfiguration configuration, ITokenValidator tokenValidator)
             : base(logger)
         {
@@ -75,6 +76,8 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             {
                 return exception switch
                 {
+                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred."),
+                    HttpRequestException => InternalServerErrorResponse(exception, "A document redaction client http exception occurred."),
                     _ => InternalServerErrorResponse(exception, $"An unhandled exception occurred - \"{exception.Message}\"")
                 };
             }

@@ -19,19 +19,6 @@ namespace RumpoleGateway.Tests.Validators
         }
 
         [Fact]
-        public async Task DocId_WhenEmpty_ReturnsValidationError()
-        {
-            var saveRequest = _fixture.Create<DocumentRedactionSaveRequest>();
-            saveRequest.DocId = string.Empty;
-
-            var redactionValidator = new DocumentRedactionSaveRequestValidator();
-            var validationResult = await redactionValidator.TestValidateAsync(saveRequest);
-
-            validationResult.ShouldHaveValidationErrorFor(x => x.DocId);
-        }
-
-
-        [Fact]
         public async Task Redactions_WhenEmpty_ReturnsValidationError()
         {
             var saveRequest = _fixture.Create<DocumentRedactionSaveRequest>();

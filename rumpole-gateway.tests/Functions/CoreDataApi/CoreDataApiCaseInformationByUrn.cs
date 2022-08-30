@@ -30,7 +30,9 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         public CoreDataApiCaseInformationByUrnTests(CaseInformationFake caseInformationFake)
         {
-            _caseInformationFake = caseInformationFake; 
+            _caseInformationFake = caseInformationFake;
+
+            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>()).ReturnsForAnyArgs(true);
         }
         [Fact]
         public async Task CoreDataApiCaseInformationByUrnFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
