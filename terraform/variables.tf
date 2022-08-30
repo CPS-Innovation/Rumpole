@@ -59,6 +59,13 @@ variable "redact_pdf_scope_details" {
   })
 }
 
+variable "rumpole_webapp_details" {
+  type = object({
+    client_id = string
+    calling_scopes = string
+  })
+}
+
 variable "stub_blob_storage_connection_string" {
   type = string
 }
