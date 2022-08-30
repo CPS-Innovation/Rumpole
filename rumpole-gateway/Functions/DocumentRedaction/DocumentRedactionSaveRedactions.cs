@@ -57,7 +57,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineRedactPdfScope"]);
 
-                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, documentId, fileName, redactions.Value, accessToken);
+                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, documentId, fileName, redactions.Value, onBehalfOfAccessToken);
                 return saveRedactionResult is {Succeeded: true} ? new OkObjectResult(saveRedactionResult)
                     : string.IsNullOrWhiteSpace(saveRedactionResult.Message) 
                         ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.") : BadRequestErrorResponse(saveRedactionResult.Message);
