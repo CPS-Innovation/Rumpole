@@ -38,10 +38,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     //TODO put in keyvault rather than hardcoded as a variable
     "searchClient__AuthorizationKey"                 = var.search_client_authorization_key
     "searchClient__IndexName"                        = "lines-index"
-    "StorageConnectionAppSetting"                    = "DefaultEndpointsProtocol=https;AccountName=sacpsdevrumpole;AccountKey=zDU7UqwHgLtPymQ2xaIyy5MNHZycl1a26h/UwGv9WKbL3uM5jvuUEJRXneo6/ihQcXQwx3dVR9pmiN+ry4XJcQ==;EndpointSuffix=core.windows.net"
-    "CallingAppClientId"                             = "ecc7fb92-796a-4421-816f-d385b9e4bbfc"
-    "CallingAppTenantId"                             = "00dd0d1d-d7e6-4338-ac51-565339c7088c"
-    "CallingAppValidScopes"                          = "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway"
+    "CallingAppClientId"                             = var.rumpole_webapp_details.client_id
+    "CallingAppTenantId"                             = data.azurerm_client_config.current.tenant_id
+    "CallingAppValidScopes"                          = var.rumpole_webapp_details.calling_scopes
   }
   site_config {
     always_on        = true
