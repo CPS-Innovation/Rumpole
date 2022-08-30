@@ -20,14 +20,16 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
+        private readonly ITokenValidator _tokenValidator;
 
         public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
                                  IConfiguration configuration, ITokenValidator tokenValidator)
-        : base(logger, tokenValidator)
+        : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
             _configuration = configuration;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("CoreDataApiCaseDetails")]
@@ -36,14 +38,14 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         {
             try
             {
-                var tokenAssessment = await AssessTokenAsync(req);
-                if (tokenAssessment is not {Item1: null})
-                    return tokenAssessment.Item1;
-                
-                if (!int.TryParse(caseId, out _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
-                
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(tokenAssessment.Item2.ToJwtString(), _configuration["CoreDataApiScope"]);
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                    return AuthorizationErrorResponse();
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
+
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
                 var caseDetails = await _coreDataApiClient.GetCaseDetailsByIdAsync(caseId, onBehalfOfAccessToken);
 

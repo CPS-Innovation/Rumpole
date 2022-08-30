@@ -11,7 +11,6 @@ using RumpoleGateway.Factories;
 using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.Validators;
 
