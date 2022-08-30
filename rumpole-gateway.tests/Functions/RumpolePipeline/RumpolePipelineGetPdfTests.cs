@@ -6,8 +6,10 @@ using Azure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.RumpolePipeline;
 using Xunit;
 
@@ -31,11 +33,14 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_blobStream = new MemoryStream();
 
 			_mockBlobStorageClient = new Mock<IBlobStorageClient>();
-			_mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
+            _mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
+            var mockTokenValidator = new Mock<ITokenValidator>();
 
-			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(_blobStream);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 
-			RumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, _mockLogger.Object);
+            _mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(_blobStream);
+
+			RumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, _mockLogger.Object, mockTokenValidator.Object);
 		}
 
 		[Fact]

@@ -6,11 +6,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Identity.Client;
 using Moq;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.RumpolePipeline;
 using Xunit;
 
@@ -43,14 +45,16 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
 			_mockPipelineClient = new Mock<IPipelineClient>();
 			_mockConfiguration = new Mock<IConfiguration>();
+            var mockTokenValidator = new Mock<ITokenValidator>();
 
-			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
 				.ReturnsAsync(_onBehalfOfAccessToken);
 			_mockPipelineClient.Setup(client => client.GetTrackerAsync(_caseId, _onBehalfOfAccessToken))
 				.ReturnsAsync(_tracker);
 			_mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
 
-			RumpolePipelineGetTracker = new RumpolePipelineGetTracker(_mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, _mockConfiguration.Object);
+			RumpolePipelineGetTracker = new RumpolePipelineGetTracker(_mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, _mockConfiguration.Object, mockTokenValidator.Object);
 		}
 
 		[Fact]

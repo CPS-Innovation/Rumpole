@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Domain.CoreDataApi;
 using System;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.CoreDataApi.Case;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
@@ -24,6 +25,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
+        private readonly ITokenValidator _mockTokenValidator = Substitute.For<ITokenValidator>();
 
         public CoreDataApiCaseDetailsFunctionTests(CaseInformationFake caseInformationFake)
         {
@@ -139,7 +141,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         private CoreDataApiCaseDetails GetCoreDataApiCaseDetailsFunction()
         {
-            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration);
+            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration, _mockTokenValidator);
         }
     }
 }
