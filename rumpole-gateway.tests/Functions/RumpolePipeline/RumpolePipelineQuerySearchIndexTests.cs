@@ -5,9 +5,11 @@ using Azure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.RumpolePipeline;
 using Xunit;
 
@@ -15,38 +17,40 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 {
 	public class RumpolePipelineQuerySearchIndexTests : SharedMethods.SharedMethods
 	{
-		private Fixture _fixture;
-		private int _caseIdInt;
-		private string _caseId;
-		private string _searchTerm;
-		private IList<StreamlinedSearchLine> _searchResults;
+        private readonly int _caseIdInt;
+		private readonly string _caseId;
+		private readonly string _searchTerm;
+		private readonly IList<StreamlinedSearchLine> _searchResults;
 
-		private Mock<ILogger<RumpolePipelineQuerySearchIndex>> _mockLogger;
-		private Mock<ISearchIndexClient> _searchIndexClient;
+        private readonly Mock<ISearchIndexClient> _searchIndexClient;
 
-		private RumpolePipelineQuerySearchIndex RumpolePipelineQuerySearchIndex;
+		private readonly RumpolePipelineQuerySearchIndex _rumpolePipelineQuerySearchIndex;
 
 		public RumpolePipelineQuerySearchIndexTests()
 		{
-			_fixture = new Fixture();
-			_caseIdInt = _fixture.Create<int>();
+            var fixture = new Fixture();
+			_caseIdInt = fixture.Create<int>();
 			_caseId = _caseIdInt.ToString();
-			_searchTerm = _fixture.Create<string>();
-			_searchResults = _fixture.Create<IList<StreamlinedSearchLine>>();
+			_searchTerm = fixture.Create<string>();
+			_searchResults = fixture.Create<IList<StreamlinedSearchLine>>();
 
-			_mockLogger = new Mock<ILogger<RumpolePipelineQuerySearchIndex>>();
+			var mockLogger = new Mock<ILogger<RumpolePipelineQuerySearchIndex>>();
 			_searchIndexClient = new Mock<ISearchIndexClient>();
 
 			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
 				.ReturnsAsync(_searchResults);
 
-			RumpolePipelineQuerySearchIndex = new RumpolePipelineQuerySearchIndex(_mockLogger.Object, _searchIndexClient.Object);
+            var mockTokenValidator = new Mock<ITokenValidator>();
+
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+
+            _rumpolePipelineQuerySearchIndex = new RumpolePipelineQuerySearchIndex(mockLogger.Object, _searchIndexClient.Object, mockTokenValidator.Object);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
         {
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequestWithoutToken(), _caseId, _searchTerm);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequestWithoutToken(), _caseId, _searchTerm);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
         }
@@ -54,7 +58,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
 		{
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), "Not an integer", _searchTerm);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), "Not an integer", _searchTerm);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -65,7 +69,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[InlineData(" ")]
 		public async Task Run_ReturnsBadRequestWhenSearchTermIsInvalid(string searchTerm)
 		{
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, searchTerm);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, searchTerm);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -73,7 +77,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsOk()
 		{
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm);
 
 			response.Should().BeOfType<OkObjectResult>();
 		}
@@ -81,7 +85,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsSearchResults()
 		{
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as OkObjectResult;
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as OkObjectResult;
 
 			response?.Value.Should().Be(_searchResults);
 		}
@@ -92,7 +96,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
 
 			response?.StatusCode.Should().Be(500);
 		}
@@ -104,7 +108,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
-			var response = await RumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
 
 			response?.StatusCode.Should().Be(500);
 		}

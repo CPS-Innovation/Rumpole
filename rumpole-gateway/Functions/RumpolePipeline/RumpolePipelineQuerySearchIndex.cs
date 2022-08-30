@@ -7,16 +7,19 @@ using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.RumpolePipeline;
 using System;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
     public class RumpolePipelineQuerySearchIndex : BaseRumpoleFunction
     {
         private readonly ISearchIndexClient _searchIndexClient;
+        private readonly ITokenValidator _tokenValidator;
 
-        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient) : base(logger)
+        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, ITokenValidator tokenValidator) : base(logger)
         {
             _searchIndexClient = searchIndexClient;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("RumpolePipelineQuerySearchIndex")]
@@ -27,6 +30,10 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
 
                 if (!int.TryParse(caseId, out var caseIdInt))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");

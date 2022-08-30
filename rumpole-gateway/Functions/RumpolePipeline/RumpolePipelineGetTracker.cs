@@ -11,6 +11,7 @@ using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -19,14 +20,16 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
+        private readonly ITokenValidator _tokenValidator;
 
         public RumpolePipelineGetTracker(ILogger<RumpolePipelineGetTracker> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IPipelineClient pipelineClient,
-                                 IConfiguration configuration)
+                                 IConfiguration configuration, ITokenValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _pipelineClient = pipelineClient;
             _configuration = configuration;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("RumpolePipelineGetTracker")]
@@ -37,6 +40,10 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
 
                 if (!int.TryParse(caseId, out var _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");

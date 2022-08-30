@@ -14,6 +14,7 @@ using Microsoft.Identity.Client;
 using NSubstitute.ExceptionExtensions;
 using RumpoleGateway.Domain.CoreDataApi;
 using System;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.CoreDataApi.Case;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
@@ -25,10 +26,13 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
+        private readonly ITokenValidator _mockTokenValidator = Substitute.For<ITokenValidator>();
 
         public CoreDataApiCaseInformationByUrnTests(CaseInformationFake caseInformationFake)
         {
-            _caseInformationFake = caseInformationFake; 
+            _caseInformationFake = caseInformationFake;
+
+            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>()).ReturnsForAnyArgs(true);
         }
         [Fact]
         public async Task CoreDataApiCaseInformationByUrnFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
@@ -138,7 +142,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         private CoreDataApiCaseInformationByUrn GetCoreDataApiCaseInformationByUrnFunction()
         {
-            return new CoreDataApiCaseInformationByUrn(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration);
+            return new CoreDataApiCaseInformationByUrn(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration, _mockTokenValidator);
         }
     }
 }

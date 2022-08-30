@@ -4,9 +4,11 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Domain.DocumentRedaction;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.DocumentRedaction;
 using Xunit;
 
@@ -29,12 +31,15 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
             _mockDocumentRedactionClient = new Mock<IDocumentRedactionClient>();
             var mockLogger = new Mock<ILogger<DocumentRedactionCheckOutDocument>>();
+            var mockTokenValidator = new Mock<ITokenValidator>();
+
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 
             _mockDocumentRedactionClient
                 .Setup(s => s.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>()))
                 .ReturnsAsync(DocumentRedactionStatus.CheckedOut);
 
-            _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object);
+            _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object, mockTokenValidator.Object);
         }
 
         [Fact]

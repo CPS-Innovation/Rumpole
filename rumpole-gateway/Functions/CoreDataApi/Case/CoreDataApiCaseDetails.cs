@@ -11,6 +11,7 @@ using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.CoreDataApi.Case
 {
@@ -19,14 +20,16 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
+        private readonly ITokenValidator _tokenValidator;
 
         public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
-                                 IConfiguration configuration)
+                                 IConfiguration configuration, ITokenValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
             _configuration = configuration;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("CoreDataApiCaseDetails")]
@@ -37,10 +40,11 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
-                
-                if (!int.TryParse(caseId, out _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
-                
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
+
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["CoreDataApiScope"]);
 
                 var caseDetails = await _coreDataApiClient.GetCaseDetailsByIdAsync(caseId, onBehalfOfAccessToken);

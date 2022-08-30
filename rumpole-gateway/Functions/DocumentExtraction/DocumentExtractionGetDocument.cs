@@ -6,17 +6,20 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.DocumentExtraction;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.DocumentExtraction
 {
     public class DocumentExtractionGetDocument : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        
-        public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger)
+        private readonly ITokenValidator _tokenValidator;
+
+        public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger, ITokenValidator tokenValidator)
             : base(logger)
         {
             _documentExtractionClient = documentExtractionClient;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("DocumentExtractionGetDocument")]
@@ -27,7 +30,11 @@ namespace RumpoleGateway.Functions.DocumentExtraction
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
-                
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
+
                 if (string.IsNullOrWhiteSpace(documentId))
                     return BadRequestErrorResponse("Document id is not supplied.");
                 

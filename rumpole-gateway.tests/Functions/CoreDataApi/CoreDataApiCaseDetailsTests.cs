@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Domain.CoreDataApi;
 using System;
+using NSubstitute.Extensions;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.CoreDataApi.Case;
 
 namespace RumpoleGateway.Tests.Functions.CoreDataApi
@@ -24,10 +26,13 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
+        private readonly ITokenValidator _mockTokenValidator = Substitute.For<ITokenValidator>();
 
         public CoreDataApiCaseDetailsFunctionTests(CaseInformationFake caseInformationFake)
         {
-            _caseInformationFake = caseInformationFake; 
+            _caseInformationFake = caseInformationFake;
+
+            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>()).ReturnsForAnyArgs(true);
         }
         [Fact]
         public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
@@ -45,16 +50,16 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         [Theory]
         [InlineData("")]
         [InlineData("Not an int")]
-        public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_400_When_Case_Id_Is_Invalid(string caseId)
+        public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_404_When_Case_Id_Is_Invalid(string caseId)
         {
             //Arrange
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
-
+            
             //Act
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(400, results.StatusCode);
+            Assert.Equal(404, results.StatusCode);
         }
 
         [Fact]
@@ -139,7 +144,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
 
         private CoreDataApiCaseDetails GetCoreDataApiCaseDetailsFunction()
         {
-            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration);
+            return new CoreDataApiCaseDetails(_mockLogger, _mockOnBehalfOfTokenClient, _mockCoreDataApiClient, _mockConfiguration, _mockTokenValidator);
         }
     }
 }

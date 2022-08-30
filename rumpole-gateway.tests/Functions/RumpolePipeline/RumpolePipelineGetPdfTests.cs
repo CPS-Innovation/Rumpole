@@ -6,8 +6,10 @@ using Azure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.RumpolePipeline;
 using Xunit;
 
@@ -15,33 +17,34 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 {
 	public class RumpolePipelineGetPdfTests : SharedMethods.SharedMethods
 	{
-		private Fixture _fixture;
-		private string _blobName;
-		private Stream _blobStream;
+        private readonly string _blobName;
+		private readonly Stream _blobStream;
 
-		private Mock<IBlobStorageClient> _mockBlobStorageClient;
-		private Mock<ILogger<RumpolePipelineGetPdf>> _mockLogger;
+		private readonly Mock<IBlobStorageClient> _mockBlobStorageClient;
 
-		private RumpolePipelineGetPdf RumpolePipelineGetPdf;
+        private readonly RumpolePipelineGetPdf _rumpolePipelineGetPdf;
 
 		public RumpolePipelineGetPdfTests()
 		{
-			_fixture = new Fixture();
-			_blobName = _fixture.Create<string>();
+            var fixture = new Fixture();
+			_blobName = fixture.Create<string>();
 			_blobStream = new MemoryStream();
 
 			_mockBlobStorageClient = new Mock<IBlobStorageClient>();
-			_mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
+            var mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
+            var mockTokenValidator = new Mock<ITokenValidator>();
 
-			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(_blobStream);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 
-			RumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, _mockLogger.Object);
+            _mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(_blobStream);
+
+			_rumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, mockLogger.Object, mockTokenValidator.Object);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
         {
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequestWithoutToken(), _blobName);
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequestWithoutToken(), _blobName);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}
@@ -52,7 +55,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[InlineData(" ")]
 		public async Task Run_ReturnsBadRequestWhenBlobNameIsInvalid(string blobName)
 		{
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), blobName);
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), blobName);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -62,7 +65,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(default(Stream));
 
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
 
 			response.Should().BeOfType<NotFoundObjectResult>();
 		}
@@ -70,7 +73,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsOk()
 		{
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
 
 			response.Should().BeOfType<OkObjectResult>();
 		}
@@ -78,7 +81,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsBlobStream()
 		{
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as OkObjectResult;
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as OkObjectResult;
 
 			response.Value.Should().Be(_blobStream);
 		}
@@ -89,7 +92,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
 				.ThrowsAsync(new RequestFailedException(500, "Test request failed exception"));
 
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
 
 			response.StatusCode.Should().Be(500);
 		}
@@ -100,7 +103,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
 				.ThrowsAsync(new Exception());
 
-			var response = await RumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
 
 			response.StatusCode.Should().Be(500);
 		}

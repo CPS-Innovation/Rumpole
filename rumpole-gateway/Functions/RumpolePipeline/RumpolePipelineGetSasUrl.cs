@@ -7,17 +7,20 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Services;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
     public class RumpolePipelineGetSasUrl : BaseRumpoleFunction
     {
         private readonly ISasGeneratorService _sasGeneratorService;
+        private readonly ITokenValidator _tokenValidator;
 
-        public RumpolePipelineGetSasUrl(ILogger<RumpolePipelineGetSasUrl> logger, ISasGeneratorService sasGeneratorService)
+        public RumpolePipelineGetSasUrl(ITokenValidator tokenValidator, ILogger<RumpolePipelineGetSasUrl> logger, ISasGeneratorService sasGeneratorService)
             : base(logger)
         {
-            _sasGeneratorService = sasGeneratorService;
+            _sasGeneratorService = sasGeneratorService ?? throw new ArgumentNullException(nameof(sasGeneratorService));
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("RumpolePipelineGetSasUrl")]
@@ -29,6 +32,10 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
+                
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
 
                 if (string.IsNullOrWhiteSpace(blobName))
                     return BadRequestErrorResponse("Blob name is not supplied.");

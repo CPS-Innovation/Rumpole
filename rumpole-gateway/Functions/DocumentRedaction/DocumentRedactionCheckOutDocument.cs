@@ -7,17 +7,20 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Domain.DocumentRedaction;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
     public class DocumentRedactionCheckOutDocument : BaseRumpoleFunction
     {
         private readonly IDocumentRedactionClient _documentRedactionClient;
+        private readonly ITokenValidator _tokenValidator;
 
-        public DocumentRedactionCheckOutDocument(ILogger<DocumentRedactionCheckOutDocument> logger, IDocumentRedactionClient documentRedactionClient)
+        public DocumentRedactionCheckOutDocument(ILogger<DocumentRedactionCheckOutDocument> logger, IDocumentRedactionClient documentRedactionClient, ITokenValidator tokenValidator)
             : base(logger)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("DocumentRedactionCheckOutDocument")]
@@ -28,6 +31,10 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
 
                 if (string.IsNullOrWhiteSpace(documentId))
                     return BadRequestErrorResponse("Document id is not supplied.");

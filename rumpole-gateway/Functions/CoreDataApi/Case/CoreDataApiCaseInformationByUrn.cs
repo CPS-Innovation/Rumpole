@@ -11,6 +11,7 @@ using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.CoreDataApi;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.CoreDataApi.Case
@@ -20,14 +21,16 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
+        private readonly ITokenValidator _tokenValidator;
 
         public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
-                                 IConfiguration configuration)
+                                 IConfiguration configuration, ITokenValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _coreDataApiClient = coreDataApiClient;
             _configuration = configuration;
+            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
         [FunctionName("CoreDataApiCaseInformationByUrn")]
@@ -39,7 +42,11 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
-                
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
+
                 if (string.IsNullOrEmpty(urn))
                     return BadRequestErrorResponse("Urn is not supplied.");
                 
