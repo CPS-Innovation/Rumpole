@@ -1,29 +1,7 @@
-import { PdfDocument } from "../../app/features/cases/domain/PdfDocument";
 import { PipelineResults } from "../../app/features/cases/domain/PipelineResults";
 import { PipelinePdfResultsDataSource } from "./types/PipelinePdfResultsDataSource";
 
-let callIndex = 0;
-const dataSource: PipelinePdfResultsDataSource = () => {
-  if (callIndex > pipelinePdfResults.documents.length) {
-    callIndex = 0;
-  }
-
-  const incrementingData = pipelinePdfResults.documents.reduce(
-    (prev, curr, index) => {
-      if (index >= callIndex) {
-        // whilst callIndex grows, any documents at positions greater or equal
-        // to callIndex will return a not ready record (empty pdfBlobName)
-        return [...prev, { ...curr, pdfBlobName: "" }];
-      } else {
-        return [...prev, curr];
-      }
-    },
-    [] as PdfDocument[]
-  );
-
-  callIndex += 1;
-  return { ...pipelinePdfResults, documents: incrementingData };
-};
+const dataSource: PipelinePdfResultsDataSource = () => pipelinePdfResults;
 
 export default dataSource;
 
