@@ -175,7 +175,10 @@ export const reducer = (
 
         if (matchingFreshPdfRecord) {
           const url = resolvePdfUrl(matchingFreshPdfRecord.pdfBlobName);
-          return [...prev, { ...curr, url }];
+          return [
+            ...prev,
+            { ...curr, url, pdfBlobName: matchingFreshPdfRecord.pdfBlobName },
+          ];
         }
         return [...prev, curr];
       }, [] as CaseDocumentViewModel[]);
