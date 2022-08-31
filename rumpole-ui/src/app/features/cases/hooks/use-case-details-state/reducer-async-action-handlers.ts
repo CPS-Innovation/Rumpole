@@ -198,7 +198,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         redactionSaveRequest
       );
 
-      console.log(response.redactedDocumentUrl);
+      window.open(response.redactedDocumentUrl);
 
       // todo: does a save automatically check a document in?
       await checkinDocument(caseId, pdfId);
