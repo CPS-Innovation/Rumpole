@@ -7,17 +7,20 @@ using Microsoft.Extensions.Logging;
 using RumpoleGateway.Clients.RumpolePipeline;
 using System;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
     public class RumpolePipelineGetPdf : BaseRumpoleFunction
     {
         private readonly IBlobStorageClient _blobStorageClient;
+        private readonly ITokenValidator _tokenValidator;
 
-        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger)
+        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger, ITokenValidator tokenValidator)
         : base(logger)
         {
             _blobStorageClient = blobStorageClient;
+            _tokenValidator = tokenValidator;
         }
 
         [FunctionName("RumpolePipelineGetPdf")]
@@ -28,6 +31,10 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!validToken)
+                    return BadRequestErrorResponse("Token validation failed");
 
                 if (string.IsNullOrWhiteSpace(blobName))
                     return BadRequestErrorResponse("Blob name is not supplied.");

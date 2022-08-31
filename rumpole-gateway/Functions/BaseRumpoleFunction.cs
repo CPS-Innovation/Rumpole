@@ -7,10 +7,10 @@ namespace RumpoleGateway.Functions
     public abstract class BaseRumpoleFunction
     {
         private readonly ILogger _logger;
-
+        
         protected BaseRumpoleFunction(ILogger logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         protected IActionResult AuthorizationErrorResponse()

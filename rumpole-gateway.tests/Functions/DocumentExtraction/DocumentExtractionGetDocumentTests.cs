@@ -5,8 +5,10 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using RumpoleGateway.Clients.DocumentExtraction;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.DocumentExtraction;
 using Xunit;
 
@@ -31,11 +33,14 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
+            var mockTokenValidator = new Mock<ITokenValidator>();
 
-			_mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+
+            _mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
 				.ReturnsAsync(_stream);
 
-			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object);
+			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object, mockTokenValidator.Object);
 		}
 
 		[Fact]

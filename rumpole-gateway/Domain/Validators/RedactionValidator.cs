@@ -7,7 +7,7 @@ namespace RumpoleGateway.Domain.Validators
     {
         public RedactionValidator()
         {
-            RuleFor(x => x.PageIndex).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.PageIndex).GreaterThanOrEqualTo(1);
             RuleFor(x => x.Width).GreaterThan(0);
             RuleFor(x => x.Height).GreaterThan(0);
             RuleFor(x => x.RedactionCoordinates).NotEmpty();
