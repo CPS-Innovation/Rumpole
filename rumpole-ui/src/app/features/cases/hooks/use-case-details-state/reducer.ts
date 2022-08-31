@@ -248,6 +248,7 @@ export const reducer = (
         ...foundDocument,
         lockedState: "unlocked" as const,
         url,
+        pdfBlobName: blobName,
         tabSafeId,
         redactionHighlights: redactionsHighlightsToRetain,
       };

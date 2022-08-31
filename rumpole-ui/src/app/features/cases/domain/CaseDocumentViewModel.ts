@@ -3,6 +3,7 @@ import { MappedCaseDocument } from "./MappedCaseDocument";
 
 export type CaseDocumentViewModel = MappedCaseDocument & {
   url: string | undefined;
+  pdfBlobName: string | undefined;
   tabSafeId: string;
   redactionHighlights: IPdfHighlight[];
   lockedState: // note: unlocked is just the state where the client doesn't know yet

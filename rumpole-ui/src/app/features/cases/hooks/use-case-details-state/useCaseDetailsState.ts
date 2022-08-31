@@ -173,7 +173,7 @@ export const useCaseDetailsState = (id: string) => {
   const handleAddRedaction = useCallback(
     (pdfId: string, redaction: NewPdfHighlight) =>
       dispatch({
-        type: "ADD_REDACTION_AND_ATTEMPT_LOCK",
+        type: "ADD_REDACTION_AND_POTENTIALLY_LOCK",
         payload: { pdfId, redaction },
       }),
     [dispatch]

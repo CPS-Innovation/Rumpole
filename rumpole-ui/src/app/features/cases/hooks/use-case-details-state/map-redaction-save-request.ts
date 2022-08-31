@@ -8,37 +8,42 @@ export const mapRedactionSaveRequest = (
 ) => {
   const redactionSaveRequest = redactionHighlights.reduce(
     (acc, curr) => {
-      let redactionPage = acc.redactionPages.find(
-        (item) => item.pageIndex === curr.position.pageNumber
+      const { position, highlightType } = curr;
+
+      let redactionPage = acc.redactions.find(
+        (item) => item.pageIndex === position.pageNumber
       );
 
+      const { height, width } = position.boundingRect;
       if (!redactionPage) {
-        const { pageNumber: pageIndex } = curr.position;
-        const { height, width } = curr.position.boundingRect;
+        const { pageNumber: pageIndex } = position;
 
         redactionPage = {
-          pageIndex,
+          pageIndex: pageIndex,
           height,
           width,
           redactionCoordinates: [],
         };
-        acc.redactionPages.push(redactionPage);
+        acc.redactions.push(redactionPage);
       }
 
+      const rects =
+        highlightType === "area" ? [position.boundingRect] : position.rects;
+
       redactionPage.redactionCoordinates.push(
-        ...curr.position.rects.map((item) => ({
+        ...rects.map((item) => ({
           x1: item.x1,
-          y1: item.y1,
+          y1: height - item.y1,
           x2: item.x2,
-          y2: item.y2,
+          y2: height - item.y2,
         }))
       );
 
       return acc;
     },
     {
-      docId: +pdfId,
-      redactionPages: [] as RedactionSavePage[],
+      docId: pdfId,
+      redactions: [] as RedactionSavePage[],
     } as RedactionSaveRequest
   );
 

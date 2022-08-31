@@ -155,14 +155,16 @@ export const checkinDocument = async (caseId: string, docId: string) => {
 export const saveRedactions = async (
   caseId: string,
   docId: string,
+  fileName: string,
   redactionSaveRequest: RedactionSaveRequest
 ) => {
   const headers = await getCoreHeaders();
   const path = getFullUrl(
-    `/api/documents/saveRedactions/${caseId}/${docId}/some-file-name`
+    `/api/documents/saveRedactions/${caseId}/${docId}/${fileName}`
   );
+
   const response = await fetch(path, {
-    headers: { ...headers, "Content-Type": "application/json" },
+    headers,
     method: "PUT",
     body: JSON.stringify(redactionSaveRequest),
   });

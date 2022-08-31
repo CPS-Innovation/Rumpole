@@ -7,7 +7,6 @@ import {
 } from "../../api/gateway-api";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
-import { RedactionSaveRequest } from "../../domain/RedactionSaveRequest";
 import { mapRedactionSaveRequest } from "./map-redaction-save-request";
 import { reducer } from "./reducer";
 
@@ -21,7 +20,7 @@ type Action = Parameters<typeof reducer>[1];
 
 type AsyncActions =
   | {
-      type: "ADD_REDACTION_AND_ATTEMPT_LOCK";
+      type: "ADD_REDACTION_AND_POTENTIALLY_LOCK";
       payload: { pdfId: string; redaction: NewPdfHighlight };
     }
   | {
@@ -48,7 +47,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
   Reducer<State, Action>,
   AsyncActions
 > = {
-  ADD_REDACTION_AND_ATTEMPT_LOCK:
+  ADD_REDACTION_AND_POTENTIALLY_LOCK:
     ({ dispatch, getState }) =>
     async (action) => {
       const { payload } = action;
@@ -178,7 +177,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         caseId,
       } = getState();
 
-      const { redactionHighlights } = items.find(
+      const { redactionHighlights, pdfBlobName } = items.find(
         (item) => item.documentId === pdfId
       )!;
 
@@ -195,10 +194,14 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const response = await saveRedactions(
         caseId,
         pdfId,
+        pdfBlobName!, // todo: better typing, but we're guaranteed to have a pdfBlobName anyhow
         redactionSaveRequest
       );
 
-      console.log(response);
+      console.log(response.redactedDocumentUrl);
+
+      // todo: does a save automatically check a document in?
+      await checkinDocument(caseId, pdfId);
 
       dispatch({
         type: "UPDATE_SAVED_STATE",
