@@ -8,18 +8,13 @@ interface Props {
     boundingRect: LTWHP;
     rects: Array<LTWHP>;
   };
-  onClick?: () => void;
-  onMouseOver?: () => void;
-  onMouseOut?: () => void;
+
   type: "search" | "redaction";
   isScrolledTo: boolean;
 }
 
 export const PdfLinearHighlight: React.FC<Props> = ({
   position: { rects },
-  onClick,
-  onMouseOver,
-  onMouseOut,
   isScrolledTo,
   type,
 }) => (
@@ -31,9 +26,6 @@ export const PdfLinearHighlight: React.FC<Props> = ({
     <div className={classes["Highlight__parts"]}>
       {rects.map((rect, index) => (
         <div
-          onMouseOver={onMouseOver}
-          onMouseOut={onMouseOut}
-          onClick={onClick}
           key={index}
           style={rect}
           className={classes[`Highlight__part__${type}`]}

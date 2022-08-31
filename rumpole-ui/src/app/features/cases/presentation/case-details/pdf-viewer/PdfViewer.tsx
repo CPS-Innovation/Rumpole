@@ -1,10 +1,12 @@
-import React, { useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 
 import {
   PdfLoader,
   PdfHighlighter,
   Popup,
   ScaledPosition,
+  LTWHP,
+  Scaled,
 } from "../../../../../../react-pdf-highlighter";
 
 import classes from "./PdfViewer.module.scss";
@@ -53,20 +55,23 @@ export const PdfViewer: React.FC<Props> = ({
     [searchHighlights, redactionHighlights]
   );
 
-  const addRedaction = (position: ScaledPosition, isAreaHighlight: boolean) => {
-    const newRedaction: NewPdfHighlight = {
-      type: "redaction",
-      position,
-      highlightType: isAreaHighlight ? "area" : "linear",
-    };
+  const addRedaction = useCallback(
+    (position: ScaledPosition, isAreaHighlight: boolean) => {
+      const newRedaction: NewPdfHighlight = {
+        type: "redaction",
+        position,
+        highlightType: isAreaHighlight ? "area" : "linear",
+      };
 
-    // const isFirstRedaction = !redactionHighlights.length;
-    // if (isFirstRedaction) {
-    //   scrollAllPdfIntoView();
-    // }
+      // const isFirstRedaction = !redactionHighlights.length;
+      // if (isFirstRedaction) {
+      //   scrollAllPdfIntoView();
+      // }
 
-    handleAddRedaction(newRedaction);
-  };
+      handleAddRedaction(newRedaction);
+    },
+    [handleAddRedaction]
+  );
 
   return (
     <>
@@ -102,7 +107,7 @@ export const PdfViewer: React.FC<Props> = ({
                 index,
                 setTip,
                 hideTip,
-                _,
+                viewportToScaled,
                 __,
                 isScrolledTo
               ) => {
@@ -121,7 +126,41 @@ export const PdfViewer: React.FC<Props> = ({
                   );
 
                 return highlight.type === "search" ? (
-                  { ...component, key: index }
+                  <Popup
+                    popupContent={
+                      <RedactButton
+                        onConfirm={() => {
+                          const scaledPosn = viewportToScaled(
+                            highlight.position.boundingRect
+                          );
+                          const padding = 3;
+                          const expandedScaledPosn: Scaled = {
+                            ...scaledPosn,
+                            x1: scaledPosn.x1 - padding,
+                            x2: scaledPosn.x2 + padding,
+                            y1: scaledPosn.y1 - padding,
+                            y2: scaledPosn.y2 + padding,
+                          };
+
+                          const scaledPosition: ScaledPosition = {
+                            boundingRect: expandedScaledPosn,
+                            rects: [expandedScaledPosn],
+                            pageNumber: highlight.position.pageNumber,
+                          };
+
+                          addRedaction(scaledPosition, false);
+
+                          hideTip();
+                        }}
+                      />
+                    }
+                    onMouseOver={(popupContent) =>
+                      setTip(highlight, (highlight) => popupContent)
+                    }
+                    onMouseOut={hideTip}
+                    key={index}
+                    children={component}
+                  />
                 ) : (
                   <Popup
                     popupContent={
