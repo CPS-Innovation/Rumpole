@@ -56,11 +56,11 @@ steps:
       customCommand: "run build"
     displayName: "npm build"
 
-  # - task: PublishBuildArtifacts@1
-  #   inputs:
-  #     PathtoPublish: "rumpole-ui/build"
-  #     ArtifactName: "rumpole-ui-drop"
-  #     publishLocation: "Container"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "rumpole-ui/build"
+      ArtifactName: "rumpole-ui-drop"
+      publishLocation: "Container"
 
   # - task: Npm@1
   #   inputs:
