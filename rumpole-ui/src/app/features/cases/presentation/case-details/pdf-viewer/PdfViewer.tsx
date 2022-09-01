@@ -5,8 +5,6 @@ import {
   PdfHighlighter,
   Popup,
   ScaledPosition,
-  LTWHP,
-  Scaled,
 } from "../../../../../../react-pdf-highlighter";
 
 import classes from "./PdfViewer.module.scss";
@@ -126,41 +124,7 @@ export const PdfViewer: React.FC<Props> = ({
                   );
 
                 return highlight.type === "search" ? (
-                  <Popup
-                    popupContent={
-                      <RedactButton
-                        onConfirm={() => {
-                          const scaledPosn = viewportToScaled(
-                            highlight.position.boundingRect
-                          );
-                          const padding = 3;
-                          const expandedScaledPosn: Scaled = {
-                            ...scaledPosn,
-                            x1: scaledPosn.x1 - padding,
-                            x2: scaledPosn.x2 + padding,
-                            y1: scaledPosn.y1 - padding,
-                            y2: scaledPosn.y2 + padding,
-                          };
-
-                          const scaledPosition: ScaledPosition = {
-                            boundingRect: expandedScaledPosn,
-                            rects: [expandedScaledPosn],
-                            pageNumber: highlight.position.pageNumber,
-                          };
-
-                          addRedaction(scaledPosition, false);
-
-                          hideTip();
-                        }}
-                      />
-                    }
-                    onMouseOver={(popupContent) =>
-                      setTip(highlight, (highlight) => popupContent)
-                    }
-                    onMouseOut={hideTip}
-                    key={index}
-                    children={component}
-                  />
+                  { ...component, key: index }
                 ) : (
                   <Popup
                     popupContent={
