@@ -1,16 +1,28 @@
 {
-    "version": "2.0",
+  "version": "2.0",
   "logging": {
     "applicationInsights": {
       "samplingSettings": {
-        "isEnabled": true
+        "isEnabled": true,
+        "maxTelemetryItemsPerSecond": 20,
+        "excludedTypes": "Request;Exception;Dependency;Event",
+        "includedTypes": "PageView;Trace"
       }
     },
+    "enableLiveMetrics": true,
+    "enableDependencyTracking": true,
+    "enablePerformanceCountersCollection": true,
+    "httpAutoCollectionOptions": {
+      "enableHttpTriggerExtendedInfoCollection": true,
+      "enableW3CDistributedTracing": true,
+      "enableResponseHeaderInjection": true
+    },
+    "fileLoggingMode": "always",
     "logLevel": {
-      "default": "Information",
-      "Host.Results": "Error",
-      "Function": "Trace",
-      "Host.Aggregator": "Trace"
+      "default": "Warning",
+      "Host.Results": "Information",
+      "Function": "Information",
+      "Host.Aggregator": "Warning"
     }
   }
 }
