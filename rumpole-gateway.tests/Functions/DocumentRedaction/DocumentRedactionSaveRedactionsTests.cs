@@ -194,7 +194,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope))
                 .ThrowsAsync(new MsalException());
 
-            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as StatusCodeResult;
+            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;
 
             using (new AssertionScope())
             {
@@ -209,7 +209,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken))
                 .ThrowsAsync(new HttpRequestException());
 
-            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as StatusCodeResult;
+            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;
 
             using (new AssertionScope())
             {
@@ -224,7 +224,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken))
                 .ThrowsAsync(new Exception());
 
-            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as StatusCodeResult;
+            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;
 
             using (new AssertionScope())
             {

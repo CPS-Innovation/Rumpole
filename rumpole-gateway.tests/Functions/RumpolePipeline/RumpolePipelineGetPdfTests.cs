@@ -92,7 +92,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
 				.ThrowsAsync(new RequestFailedException(500, "Test request failed exception"));
 
-			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
 			response.StatusCode.Should().Be(500);
 		}
@@ -103,7 +103,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
 				.ThrowsAsync(new Exception());
 
-			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
 			response.StatusCode.Should().Be(500);
 		}
