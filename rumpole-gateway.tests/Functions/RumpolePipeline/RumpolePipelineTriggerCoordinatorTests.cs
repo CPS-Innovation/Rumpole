@@ -119,7 +119,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
 				.ThrowsAsync(new MsalException());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as StatusCodeResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
 			response.StatusCode.Should().Be(500);
 		}
@@ -130,7 +130,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
 				.ThrowsAsync(new HttpRequestException());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as StatusCodeResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
 			response.StatusCode.Should().Be(500);
 		}
@@ -141,7 +141,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
 				.ThrowsAsync(new Exception());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as StatusCodeResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
 			response.StatusCode.Should().Be(500);
 		}

@@ -95,7 +95,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName))
 				.ThrowsAsync(new RequestFailedException(500, "Test request failed exception"));
 
-			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
             using (new AssertionScope())
             {
@@ -110,7 +110,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName))
 				.ThrowsAsync(new Exception());
 
-			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as StatusCodeResult;
+			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
             using (new AssertionScope())
             {

@@ -104,7 +104,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             _mockOnBehalfOfTokenClient.GetAccessTokenAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new MsalException());
 
             //Act
-            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.StatusCodeResult;
+            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
             Assert.Equal(500, results.StatusCode);
@@ -119,7 +119,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             _mockCoreDataApiClient.GetCaseInformationByUrnAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new CoreDataApiException("Test core data api exception", new Exception()));
 
             //Act
-            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.StatusCodeResult;
+            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
             Assert.Equal(500, results.StatusCode);
@@ -134,7 +134,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             _mockCoreDataApiClient.GetCaseInformationByUrnAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new Exception());
 
             //Act
-            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.StatusCodeResult;
+            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
             Assert.Equal(500, results.StatusCode);
