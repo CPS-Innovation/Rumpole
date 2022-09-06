@@ -40,7 +40,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     "searchClient__IndexName"                        = "lines-index"
     "CallingAppClientId"                             = var.rumpole_webapp_details.client_id
     "CallingAppTenantId"                             = data.azurerm_client_config.current.tenant_id
+	"CallingAppValidAudience"                        = var.rumpole_webapp_details.calling_audience
     "CallingAppValidScopes"                          = var.rumpole_webapp_details.calling_scopes
+	"CallingAppValidRoles"                           = var.rumpole_webapp_details.calling_roles
   }
   site_config {
     always_on        = true

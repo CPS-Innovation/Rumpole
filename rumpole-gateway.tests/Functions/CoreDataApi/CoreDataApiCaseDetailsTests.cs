@@ -13,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Domain.CoreDataApi;
 using System;
-using NSubstitute.Extensions;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Functions.CoreDataApi.Case;
 
