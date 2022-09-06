@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace RumpoleGateway.Domain.Validators
 {
-    public interface ITokenValidator
+    public interface IJwtBearerValidator
     {
         public Task<bool> ValidateTokenAsync(StringValues token);
     }

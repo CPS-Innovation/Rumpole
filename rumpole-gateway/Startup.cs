@@ -53,7 +53,7 @@ namespace RumpoleGateway
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
-            builder.Services.AddTransient<ITokenValidator, TokenValidator>();
+            builder.Services.AddTransient<IJwtBearerValidator, JwtBearerValidator>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();

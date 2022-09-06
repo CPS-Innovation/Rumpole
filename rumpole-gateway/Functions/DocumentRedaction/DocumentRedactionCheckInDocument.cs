@@ -14,9 +14,9 @@ namespace RumpoleGateway.Functions.DocumentRedaction
     public class DocumentRedactionCheckInDocument : BaseRumpoleFunction
     {
         private readonly IDocumentRedactionClient _documentRedactionClient;
-        private readonly ITokenValidator _tokenValidator;
+        private readonly IJwtBearerValidator _tokenValidator;
 
-        public DocumentRedactionCheckInDocument(ILogger<DocumentRedactionCheckInDocument> logger, IDocumentRedactionClient documentRedactionClient, ITokenValidator tokenValidator)
+        public DocumentRedactionCheckInDocument(ILogger<DocumentRedactionCheckInDocument> logger, IDocumentRedactionClient documentRedactionClient, IJwtBearerValidator tokenValidator)
             : base(logger)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));

@@ -31,7 +31,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             _fakeSasUrl = fixture.Create<string>();
 
 			_mockSasGeneratorService = new Mock<ISasGeneratorService>();
-            var mockTokenValidator = new Mock<ITokenValidator>();
+            var mockTokenValidator = new Mock<IJwtBearerValidator>();
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetSasUrl>>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);

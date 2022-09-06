@@ -32,7 +32,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			_mockBlobStorageClient = new Mock<IBlobStorageClient>();
             var mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
-            var mockTokenValidator = new Mock<ITokenValidator>();
+            var mockTokenValidator = new Mock<IJwtBearerValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 
