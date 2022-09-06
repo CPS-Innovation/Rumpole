@@ -55,8 +55,8 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             {
                 return exception switch
                 {
-                    MsalException => InternalServerErrorResponse(exception, "An MSAL exception occurred."),
-                    CoreDataApiException => InternalServerErrorResponse(exception, "A core data api exception occurred."),
+                    MsalException msalException => MsalExceptionErrorResponse(msalException, "An MSAL exception occurred."),
+                    CoreDataApiException apiException => CoreDataApiErrorResponse(apiException, "A core data api exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Net.Http;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
+using RumpoleGateway.Domain.CoreDataApi;
 
 namespace RumpoleGateway.Functions
 {
@@ -35,7 +39,31 @@ namespace RumpoleGateway.Functions
         protected IActionResult InternalServerErrorResponse(Exception exception, string additionalMessage)
         {
             _logger.LogError(exception, additionalMessage);
-            return new StatusCodeResult(500);
+            return new ObjectResult(additionalMessage) { StatusCode = 500 };
+        }
+
+        protected IActionResult MsalExceptionErrorResponse(MsalException exception, string additionalMessage)
+        {
+            _logger.LogError(exception, additionalMessage);
+            return new ObjectResult(additionalMessage) { StatusCode = 500 };
+        }
+
+        protected IActionResult CoreDataApiErrorResponse(CoreDataApiException exception, string additionalMessage)
+        {
+            _logger.LogError(exception, additionalMessage);
+            return new ObjectResult(additionalMessage) { StatusCode = 500 };
+        }
+
+        protected IActionResult RequestFailedErrorResponse(RequestFailedException exception, string additionalMessage)
+        {
+            _logger.LogError(exception, additionalMessage);
+            return new ObjectResult(additionalMessage) { StatusCode = 500 };
+        }
+
+        protected IActionResult HttpRequestErrorResponse(HttpRequestException exception, string additionalMessage)
+        {
+            _logger.LogError(exception, additionalMessage);
+            return new ObjectResult(additionalMessage) { StatusCode = 500 };
         }
 
         protected void LogInformation(string message)

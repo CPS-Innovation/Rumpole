@@ -47,7 +47,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 return exception switch
                 {
-                    RequestFailedException => InternalServerErrorResponse(exception, "A blob storage exception occurred."),
+                    RequestFailedException requestFailedException => RequestFailedErrorResponse(requestFailedException, "A blob storage exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
