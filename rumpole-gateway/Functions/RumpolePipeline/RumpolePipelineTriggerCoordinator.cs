@@ -66,8 +66,8 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 return exception switch
                 {
-                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred."),
-                    HttpRequestException => InternalServerErrorResponse(exception, "A pipeline client http exception occurred."),
+                    MsalException msalException => MsalExceptionErrorResponse(msalException, "An onBehalfOfToken exception occurred."),
+                    HttpRequestException httpRequestException => HttpRequestErrorResponse(httpRequestException, "A pipeline client http exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
