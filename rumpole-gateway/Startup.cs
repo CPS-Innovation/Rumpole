@@ -53,9 +53,9 @@ namespace RumpoleGateway
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
-            builder.Services.AddTransient<ITokenValidator, TokenValidator>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
+            builder.Services.AddTransient<IJwtBearerValidator, JwtBearerValidator>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
             builder.Services.AddTransient<ITriggerCoordinatorResponseFactory, TriggerCoordinatorResponseFactory>();
             builder.Services.AddTransient<ITrackerUrlMapper, TrackerUrlMapper>();
@@ -107,7 +107,6 @@ namespace RumpoleGateway
                 configuration["BlobServiceContainerName"]));
 
             builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider => new DocumentExtractionClientStub(configuration["StubBlobStorageConnectionString"]));
-
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();

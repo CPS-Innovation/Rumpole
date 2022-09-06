@@ -55,7 +55,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
 			mockTriggerCoordinatorResponseFactory.Setup(factory => factory.Create(_request)).Returns(_triggerCoordinatorResponse);
 
-            var mockTokenValidator = new Mock<ITokenValidator>();
+            var mockTokenValidator = new Mock<IJwtBearerValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 

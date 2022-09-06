@@ -22,10 +22,10 @@ namespace RumpoleGateway.Functions.DocumentRedaction
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IDocumentRedactionClient _documentRedactionClient;
         private readonly IConfiguration _configuration;
-        private readonly ITokenValidator _tokenValidator;
+        private readonly IJwtBearerValidator _tokenValidator;
 
         public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
-            IConfiguration configuration, ITokenValidator tokenValidator)
+            IConfiguration configuration, IJwtBearerValidator tokenValidator)
             : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient ?? throw new ArgumentNullException(nameof(onBehalfOfTokenClient));

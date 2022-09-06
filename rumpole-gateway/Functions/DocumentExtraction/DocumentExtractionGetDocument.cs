@@ -13,9 +13,9 @@ namespace RumpoleGateway.Functions.DocumentExtraction
     public class DocumentExtractionGetDocument : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        private readonly ITokenValidator _tokenValidator;
+        private readonly IJwtBearerValidator _tokenValidator;
 
-        public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger, ITokenValidator tokenValidator)
+        public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger, IJwtBearerValidator tokenValidator)
             : base(logger)
         {
             _documentExtractionClient = documentExtractionClient;

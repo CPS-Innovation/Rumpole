@@ -40,7 +40,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
 				.ReturnsAsync(_searchResults);
 
-            var mockTokenValidator = new Mock<ITokenValidator>();
+            var mockTokenValidator = new Mock<IJwtBearerValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 
