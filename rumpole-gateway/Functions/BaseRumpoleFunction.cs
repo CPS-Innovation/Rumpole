@@ -42,30 +42,6 @@ namespace RumpoleGateway.Functions
             return new ObjectResult(additionalMessage) { StatusCode = 500 };
         }
 
-        protected IActionResult MsalExceptionErrorResponse(MsalException exception, string additionalMessage)
-        {
-            _logger.LogError(exception, additionalMessage);
-            return new ObjectResult(additionalMessage) { StatusCode = 500 };
-        }
-
-        protected IActionResult CoreDataApiErrorResponse(CoreDataApiException exception, string additionalMessage)
-        {
-            _logger.LogError(exception, additionalMessage);
-            return new ObjectResult(additionalMessage) { StatusCode = 500 };
-        }
-
-        protected IActionResult RequestFailedErrorResponse(RequestFailedException exception, string additionalMessage)
-        {
-            _logger.LogError(exception, additionalMessage);
-            return new ObjectResult(additionalMessage) { StatusCode = 500 };
-        }
-
-        protected IActionResult HttpRequestErrorResponse(HttpRequestException exception, string additionalMessage)
-        {
-            _logger.LogError(exception, additionalMessage);
-            return new ObjectResult(additionalMessage) { StatusCode = 500 };
-        }
-
         protected void LogInformation(string message)
         {
             _logger.LogInformation(message);
