@@ -49,7 +49,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             {
                 return exception switch
                 {
-                    RequestFailedException requestFailedException => RequestFailedErrorResponse(requestFailedException, "A search client index exception occurred."),
+                    RequestFailedException => InternalServerErrorResponse(exception, "A search client index exception occurred."),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
                 };
             }
