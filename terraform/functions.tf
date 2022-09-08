@@ -38,11 +38,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     //TODO put in keyvault rather than hardcoded as a variable
     "searchClient__AuthorizationKey"                 = var.search_client_authorization_key
     "searchClient__IndexName"                        = "lines-index"
-    "CallingAppClientId"                             = var.rumpole_webapp_details.client_id
-    "CallingAppTenantId"                             = data.azurerm_client_config.current.tenant_id
-	"CallingAppValidAudience"                        = var.rumpole_webapp_details.calling_audience
-    "CallingAppValidScopes"                          = var.rumpole_webapp_details.calling_scopes
-	"CallingAppValidRoles"                           = var.rumpole_webapp_details.calling_roles
+    "CallingAppValidAudience"                        = var.rumpole_webapp_details.valid_audience
+    "CallingAppValidScopes"                          = var.rumpole_webapp_details.valid_scopes
+	"CallingAppValidRoles"                           = var.rumpole_webapp_details.valid_roles
   }
   site_config {
     always_on        = true

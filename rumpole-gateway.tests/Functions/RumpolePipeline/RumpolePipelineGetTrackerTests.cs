@@ -42,7 +42,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
 			_mockPipelineClient = new Mock<IPipelineClient>();
 			var mockConfiguration = new Mock<IConfiguration>();
-            var mockTokenValidator = new Mock<IJwtBearerValidator>();
+            var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
             _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))

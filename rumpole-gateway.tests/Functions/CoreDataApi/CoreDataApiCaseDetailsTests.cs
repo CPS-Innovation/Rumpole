@@ -25,7 +25,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         private readonly ICoreDataApiClient _mockCoreDataApiClient = Substitute.For<ICoreDataApiClient>();
         private readonly IConfiguration _mockConfiguration = Substitute.For<IConfiguration>();
         private readonly CaseInformationFake _caseInformationFake;
-        private readonly IJwtBearerValidator _mockTokenValidator = Substitute.For<IJwtBearerValidator>();
+        private readonly IAuthorizationValidator _mockTokenValidator = Substitute.For<IAuthorizationValidator>();
 
         public CoreDataApiCaseDetailsFunctionTests(CaseInformationFake caseInformationFake)
         {

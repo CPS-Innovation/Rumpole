@@ -61,10 +61,9 @@ variable "redact_pdf_scope_details" {
 
 variable "rumpole_webapp_details" {
   type = object({
-    client_id = string
-	calling_audience = string
-    calling_scopes = string
-	calling_roles = string
+    valid_audience = string
+    valid_scopes = string
+	valid_roles = string
   })
 }
 

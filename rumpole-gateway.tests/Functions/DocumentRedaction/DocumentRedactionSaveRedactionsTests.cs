@@ -27,7 +27,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         private readonly string _fileName;
         private readonly string _onBehalfOfAccessToken;
         private readonly string _scope;
-        private readonly Mock<IJwtBearerValidator> _mockTokenValidator;
+        private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
         private readonly Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;
         private readonly Mock<IDocumentRedactionClient> _mockDocumentRedactionClient;
         private readonly DocumentRedactionSaveRequest _saveRequest;
@@ -49,7 +49,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
             _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope))
                 .ReturnsAsync(_onBehalfOfAccessToken);
-            _mockTokenValidator = new Mock<IJwtBearerValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
             var mockConfiguration = new Mock<IConfiguration>();
             
             _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);

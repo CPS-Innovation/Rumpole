@@ -55,7 +55,7 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
-            builder.Services.AddTransient<IJwtBearerValidator, JwtBearerValidator>();
+            builder.Services.AddTransient<IAuthorizationValidator, AuthorizationValidator>();
             builder.Services.AddTransient<IJsonConvertWrapper, JsonConvertWrapper>();
             builder.Services.AddTransient<ITriggerCoordinatorResponseFactory, TriggerCoordinatorResponseFactory>();
             builder.Services.AddTransient<ITrackerUrlMapper, TrackerUrlMapper>();
@@ -79,7 +79,7 @@ namespace RumpoleGateway
 
             builder.Services.AddSingleton(_ =>
             {
-                var instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
+                const string instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
                 var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
                 var onBehalfOfTokenClientId = GetValueFromConfig(configuration, "OnBehalfOfTokenClientId");
                 var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, "OnBehalfOfTokenClientSecret");

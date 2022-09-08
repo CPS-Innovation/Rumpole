@@ -3,8 +3,8 @@ using Microsoft.Extensions.Primitives;
 
 namespace RumpoleGateway.Domain.Validators
 {
-    public interface IJwtBearerValidator
+    public interface IAuthorizationValidator
     {
-        public Task<bool> ValidateTokenAsync(StringValues token);
+        Task<bool> ValidateTokenAsync(StringValues token);
     }
 }

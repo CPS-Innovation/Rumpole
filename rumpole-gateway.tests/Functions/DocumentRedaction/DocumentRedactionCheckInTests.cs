@@ -31,7 +31,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
             _mockDocumentRedactionClient = new Mock<IDocumentRedactionClient>();
             var mockLogger = new Mock<ILogger<DocumentRedactionCheckInDocument>>();
-            var mockTokenValidator = new Mock<IJwtBearerValidator>();
+            var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 

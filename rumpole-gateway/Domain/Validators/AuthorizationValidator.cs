@@ -3,27 +3,36 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Domain.Validators
 {
-    public class JwtBearerValidator : IJwtBearerValidator
+    [ExcludeFromCodeCoverage]
+    public class AuthorizationValidator : IAuthorizationValidator
     {
+        private readonly ILogger<AuthorizationValidator> _log;
         private const string ScopeType = @"http://schemas.microsoft.com/identity/claims/scope";
-        
+
+        public AuthorizationValidator(ILogger<AuthorizationValidator> log)
+        {
+            _log = log;
+        }
+
         public async Task<bool> ValidateTokenAsync(StringValues token)
         {
-            var issuer = $"https://sts.windows.net/{Environment.GetEnvironmentVariable("CallingAppTenantId")}/";
+            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+            
+            var issuer = $"https://sts.windows.net/{Environment.GetEnvironmentVariable("OnBehalfOfTokenTenantId")}/";
             var audience = Environment.GetEnvironmentVariable("CallingAppValidAudience");
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(issuer + "/.well-known/openid-configuration", new OpenIdConnectConfigurationRetriever(),
                 new HttpDocumentRetriever());
-
-            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
 
             var discoveryDocument = await configurationManager.GetConfigurationAsync(default);
             var signingKeys = discoveryDocument.SigningKeys;
@@ -47,13 +56,19 @@ namespace RumpoleGateway.Domain.Validators
                 var tokenValidator = new JwtSecurityTokenHandler(); 
                 var claimsPrincipal = tokenValidator.ValidateToken(token.ToJwtString(), validationParameters, out _);
                 
-                var requiredScopes = Environment.GetEnvironmentVariable("CallingAppValidScopes")?.Replace(" ", string.Empty)?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)?.ToList();
-                var requiredRoles = Environment.GetEnvironmentVariable("CallingAppValidRoles")?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)?.ToList();
+                var requiredScopes = Environment.GetEnvironmentVariable("CallingAppValidScopes")?.Replace(" ", string.Empty).Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var requiredRoles = Environment.GetEnvironmentVariable("CallingAppValidRoles")?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
                 
                 return IsValid(claimsPrincipal, requiredScopes, requiredRoles);
             }
-            catch (SecurityTokenValidationException)
+            catch (SecurityTokenValidationException securityException)
             {
+                _log.LogError(securityException, "A security exception was caught");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "An unexpected error was caught");
                 return false;
             }
         }
@@ -73,18 +88,15 @@ namespace RumpoleGateway.Domain.Validators
                 return true;
             }
 
-            var hasAccessToRoles = false;
-            var hasAccessToScopes = false;
-
-            hasAccessToRoles = !requiredRoles.Any() || requiredRoles.All(claimsPrincipal.IsInRole);
+            var hasAccessToRoles = !requiredRoles.Any() || requiredRoles.All(claimsPrincipal.IsInRole);
 
             if (!requiredScopes.Any()) return false;
             var scopeClaim = claimsPrincipal.HasClaim(x => x.Type == ScopeType)
                 ? claimsPrincipal.Claims.First(x => x.Type == ScopeType).Value
                 : string.Empty;
 
-            var tokenScopes = scopeClaim.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries)?.ToList() ?? new List<string>();
-            hasAccessToScopes = requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
+            var tokenScopes = scopeClaim.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var hasAccessToScopes = requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
 
             return hasAccessToRoles && hasAccessToScopes;
         }
