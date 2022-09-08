@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 namespace RumpoleGateway.Helpers.Extension
 {
     [ExcludeFromCodeCoverage]
-    public static class StringValuesHelper
+    public static class StringValuesExtensions
     {
         public static string ToJwtString(this StringValues values)
         {

@@ -21,10 +21,10 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICoreDataApiClient _coreDataApiClient;
         private readonly IConfiguration _configuration;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
         public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICoreDataApiClient coreDataApiClient,
-                                 IConfiguration configuration, IJwtBearerValidator tokenValidator)
+                                 IConfiguration configuration, IAuthorizationValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;

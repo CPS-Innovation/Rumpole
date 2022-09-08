@@ -1,11 +1,7 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -14,6 +10,10 @@ using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Helpers.Extension;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -22,10 +22,10 @@ namespace RumpoleGateway.Functions.DocumentRedaction
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IDocumentRedactionClient _documentRedactionClient;
         private readonly IConfiguration _configuration;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
         public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
-            IConfiguration configuration, IJwtBearerValidator tokenValidator)
+            IConfiguration configuration, IAuthorizationValidator tokenValidator)
             : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient ?? throw new ArgumentNullException(nameof(onBehalfOfTokenClient));

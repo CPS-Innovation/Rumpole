@@ -14,9 +14,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
     public class RumpolePipelineGetSasUrl : BaseRumpoleFunction
     {
         private readonly ISasGeneratorService _sasGeneratorService;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
-        public RumpolePipelineGetSasUrl(IJwtBearerValidator tokenValidator, ILogger<RumpolePipelineGetSasUrl> logger, ISasGeneratorService sasGeneratorService)
+        public RumpolePipelineGetSasUrl(IAuthorizationValidator tokenValidator, ILogger<RumpolePipelineGetSasUrl> logger, ISasGeneratorService sasGeneratorService)
             : base(logger)
         {
             _sasGeneratorService = sasGeneratorService ?? throw new ArgumentNullException(nameof(sasGeneratorService));

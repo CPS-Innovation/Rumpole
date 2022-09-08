@@ -33,7 +33,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
-            var mockTokenValidator = new Mock<IJwtBearerValidator>();
+            var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
             mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
 

@@ -12,10 +12,9 @@ app_service_plan_sku = {
 }
 
 rumpole_webapp_details = {
-	client_id = "ecc7fb92-796a-4421-816f-d385b9e4bbfc"
-	calling_audience = "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway"
-	calling_scopes = "user_impersonation"
-	calling_roles = ""
+	valid_audience = "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway"
+	valid_scopes = "user_impersonation"
+	valid_roles = ""
 }
 
 core_data_api_details = {

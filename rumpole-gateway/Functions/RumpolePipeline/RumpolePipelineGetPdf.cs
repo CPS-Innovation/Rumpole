@@ -14,9 +14,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
     public class RumpolePipelineGetPdf : BaseRumpoleFunction
     {
         private readonly IBlobStorageClient _blobStorageClient;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
-        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger, IJwtBearerValidator tokenValidator)
+        public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger, IAuthorizationValidator tokenValidator)
         : base(logger)
         {
             _blobStorageClient = blobStorageClient;

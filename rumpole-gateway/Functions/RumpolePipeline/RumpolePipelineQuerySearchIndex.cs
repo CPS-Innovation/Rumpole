@@ -14,9 +14,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
     public class RumpolePipelineQuerySearchIndex : BaseRumpoleFunction
     {
         private readonly ISearchIndexClient _searchIndexClient;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
-        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IJwtBearerValidator tokenValidator) : base(logger)
+        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IAuthorizationValidator tokenValidator) : base(logger)
         {
             _searchIndexClient = searchIndexClient;
             _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));

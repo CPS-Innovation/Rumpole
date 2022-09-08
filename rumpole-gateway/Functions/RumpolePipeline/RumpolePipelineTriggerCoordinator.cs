@@ -22,11 +22,11 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
         private readonly ITriggerCoordinatorResponseFactory _triggerCoordinatorResponseFactory;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
         public RumpolePipelineTriggerCoordinator(ILogger<RumpolePipelineTriggerCoordinator> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  IPipelineClient pipelineClient, IConfiguration configuration,
-                                 ITriggerCoordinatorResponseFactory triggerCoordinatorResponseFactory, IJwtBearerValidator tokenValidator)
+                                 ITriggerCoordinatorResponseFactory triggerCoordinatorResponseFactory, IAuthorizationValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;

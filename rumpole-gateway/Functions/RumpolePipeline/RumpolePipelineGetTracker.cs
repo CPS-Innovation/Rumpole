@@ -20,10 +20,10 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
-        private readonly IJwtBearerValidator _tokenValidator;
+        private readonly IAuthorizationValidator _tokenValidator;
 
         public RumpolePipelineGetTracker(ILogger<RumpolePipelineGetTracker> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IPipelineClient pipelineClient,
-                                 IConfiguration configuration, IJwtBearerValidator tokenValidator)
+                                 IConfiguration configuration, IAuthorizationValidator tokenValidator)
         : base(logger)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
