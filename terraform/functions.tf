@@ -66,9 +66,10 @@ resource "azurerm_function_app" "fa_rumpole" {
     unauthenticated_client_action = "RedirectToLoginPage"
     default_provider              = "AzureActiveDirectory"
     active_directory {
-      client_id         = azuread_application.fa_rumpole.application_id
-      client_secret     = azuread_application_password.faap_rumpole_app_service.value
-      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
+      client_id                   = azuread_application.fa_rumpole.application_id
+      client_secret               = azuread_application_password.faap_rumpole_app_service.value
+      client_secret_setting_name  = ""
+      allowed_audiences           = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
     }
   }
 
