@@ -12,7 +12,7 @@ app_service_plan_sku = {
 }
 
 rumpole_webapp_details = {
-	valid_audience = "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway"
+    valid_audience = "https://CPSGOVUK.onmicrosoft.com/fa-rumpole-dev-gateway"
 	valid_scopes = "user_impersonation"
 	valid_roles = ""
 }
@@ -29,5 +29,5 @@ coordinator_scope_details = {
 
 redact_pdf_scope_details = {
     app_registration_application_id = "6cda2834-224f-4578-9b4f-2792102411c9"
-    user_impersonation_scope_id = "a7aca134-aee0-424e-860e-d25ee1559fa3"
+    user_impersonation_scope_id = "9da85336-7f4c-4f7f-b8cb-6b791e754a8d"
 }
