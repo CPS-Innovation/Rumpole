@@ -1,4 +1,4 @@
-export const PipelineStatuses = [
+const InProgressPipelineStatusesArray = [
   "NotStarted",
   "Running",
   "NoDocumentsFoundInCDE",
@@ -6,16 +6,35 @@ export const PipelineStatuses = [
   "Failed",
 ] as const;
 
-export const isPipelineFinished = (status: PipelineStatus) => {
-  return pipelineFinishedStatuses.includes(status);
-};
-
-const pipelineFinishedStatuses: PipelineStatus[] = [
-  "NoDocumentsFoundInCDE",
+const SummaryPipelineStatusesArray = [
+  "Running",
   "Completed",
   "Failed",
+] as const;
+
+export const getPipelinpipelineCompletionStatus = (
+  status: InProgressPipelineStatus
+): SummaryPipelineStatus => {
+  if (pipelineSucceededStatuses.includes(status)) {
+    return "Completed";
+  }
+  if (pipelineFailedStatuses.includes(status)) {
+    return "Failed";
+  }
+  return "Running";
+};
+
+const pipelineFailedStatuses: InProgressPipelineStatus[] = ["Failed"];
+
+const pipelineSucceededStatuses: InProgressPipelineStatus[] = [
+  "NoDocumentsFoundInCDE",
+  "Completed",
 ];
 
-type PipelineStatusesTuple = typeof PipelineStatuses;
+type PipelineStatusesTuple = typeof InProgressPipelineStatusesArray;
 
-export type PipelineStatus = PipelineStatusesTuple[number];
+export type InProgressPipelineStatus = PipelineStatusesTuple[number];
+
+type SummaryPipelineStatusesTuple = typeof SummaryPipelineStatusesArray;
+
+export type SummaryPipelineStatus = SummaryPipelineStatusesTuple[number];
