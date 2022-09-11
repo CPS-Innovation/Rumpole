@@ -89,14 +89,13 @@ namespace RumpoleGateway.Domain.Validators
             }
 
             var hasAccessToRoles = !requiredRoles.Any() || requiredRoles.All(claimsPrincipal.IsInRole);
-
-            if (!requiredScopes.Any()) return false;
+            
             var scopeClaim = claimsPrincipal.HasClaim(x => x.Type == ScopeType)
                 ? claimsPrincipal.Claims.First(x => x.Type == ScopeType).Value
                 : string.Empty;
 
-            var tokenScopes = scopeClaim.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var hasAccessToScopes = requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
+            var tokenScopes = scopeClaim.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var hasAccessToScopes = !requiredScopes.Any() || requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
 
             return hasAccessToRoles && hasAccessToScopes;
         }
