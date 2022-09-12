@@ -10,6 +10,7 @@ import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
 import { renderHook } from "@testing-library/react-hooks";
 import * as useApi from "../../../../common/hooks/useApi";
 import * as reducer from "./reducer";
+
 import { act } from "react-dom/test-utils";
 
 type ReducerParams = Parameters<typeof reducer.reducer>;
@@ -155,7 +156,7 @@ describe("useCaseDetailsState", () => {
     });
   });
 
-  describe("handlers", () => {
+  describe("synchronous action handlers", () => {
     it("can open a pdf", () => {
       const {
         result: {

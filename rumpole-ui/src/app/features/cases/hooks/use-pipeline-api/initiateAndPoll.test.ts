@@ -14,7 +14,7 @@ const ensureHasStoppedPollingHelper = async (
 ) => {
   quitFn();
   const callsMadeSoFar = spy.mock.calls.length;
-  await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS * 3));
+  await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS * 5));
   expect(spy.mock.calls.length).toEqual(callsMadeSoFar);
 };
 
@@ -55,6 +55,7 @@ describe("initiateAndPoll", () => {
       .mockImplementation((caseId) => Promise.reject(expectedError));
 
     let results: AsyncPipelineResult<PipelineResults>;
+
     const quitFn = initiateAndPoll(
       "1",
       POLLING_INTERVAL_MS,
@@ -66,6 +67,41 @@ describe("initiateAndPoll", () => {
         status: "failed",
         error: expectedError,
         httpStatusCode: 100,
+        haveData: false,
+      } as ApiResult<PipelineResults>)
+    );
+
+    ensureHasStoppedPollingHelper(quitFn, spy);
+  });
+
+  it("can return failed if and stop polling if getPipelinePdfResults returns failed", async () => {
+    jest
+      .spyOn(api, "initiatePipeline")
+      .mockImplementation((caseId) => Promise.resolve("foo"));
+
+    const spy = jest
+      .spyOn(api, "getPipelinePdfResults")
+      .mockImplementation((caseId) =>
+        Promise.resolve({
+          transactionId: "",
+          status: "Failed",
+          documents: [{ pdfBlobName: "foo", status: "PdfUploadedToBlob" }],
+        } as PipelineResults)
+      );
+
+    let results: AsyncPipelineResult<PipelineResults>;
+
+    const quitFn = initiateAndPoll(
+      "1",
+      POLLING_INTERVAL_MS,
+      (res) => (results = res)
+    );
+
+    await waitFor(() =>
+      expect(results).toEqual({
+        status: "failed",
+        error: expect.any(Error),
+        httpStatusCode: undefined,
         haveData: false,
       } as ApiResult<PipelineResults>)
     );

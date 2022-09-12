@@ -30,7 +30,6 @@ export const initiateAndPoll = (
       });
       keepPolling = false;
     } else if (completionStatus === "Failed") {
-      keepPolling = false;
       throw new Error(
         `Document processing pipeline returned with "Failed" status after ${trackingCallCount} polling attempts`
       );
@@ -44,14 +43,13 @@ export const initiateAndPoll = (
   };
 
   const handleApiCallError = (error: any) => {
+    keepPolling = false;
     del({
       status: "failed",
       error,
       httpStatusCode: error instanceof ApiError ? error.code : undefined,
       haveData: false,
     });
-
-    keepPolling = false;
   };
 
   const doWork = async () => {
