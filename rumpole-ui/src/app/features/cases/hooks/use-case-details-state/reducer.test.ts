@@ -266,7 +266,7 @@ describe("useCaseDetailsState reducer", () => {
       expect(nextState.tabsState).toEqual({
         items: [
           { documentId: "d1", url: undefined },
-          { documentId: "d2", url: "baz" },
+          { documentId: "d2", url: "baz", pdfBlobName: "foo" },
           { documentId: "d3", url: undefined },
         ],
       });
@@ -335,7 +335,10 @@ describe("useCaseDetailsState reducer", () => {
         items: [
           {
             documentId: "d1",
+            lockedState: "unlocked",
             mode: "read",
+            pdfBlobName: "foo",
+            redactionHighlights: [],
             url: "baz",
             tabSafeId: "t1",
           },
@@ -375,7 +378,10 @@ describe("useCaseDetailsState reducer", () => {
         items: [
           {
             documentId: "d1",
+            lockedState: "unlocked",
             url: undefined,
+
+            redactionHighlights: [],
             mode: "read",
             tabSafeId: "t1",
           },
@@ -462,7 +468,10 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   documentId: "d1",
                   occurrences: [
-                    { pageIndex: 0, occurrencesInLine: [[1, 2, 3]] },
+                    {
+                      pageIndex: 0,
+                      occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
+                    },
                   ] as MappedDocumentResult["occurrences"],
                   occurrencesInDocumentCount: 3,
                 },
@@ -487,9 +496,28 @@ describe("useCaseDetailsState reducer", () => {
         );
 
         expect(nextState).toEqual({
-          documentsState: existingDocumentsState,
-          searchState: { ...existingSearchState, isResultsVisible: false },
-          pipelineState: existingPipelineState,
+          searchState: {
+            submittedSearchTerm: "foo",
+            results: {
+              status: "succeeded",
+              data: {
+                documentResults: [
+                  {
+                    documentId: "d1",
+                    occurrences: [
+                      {
+                        pageIndex: 0,
+                        occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
+                      },
+                    ],
+                    occurrencesInDocumentCount: 3,
+                  },
+                ],
+              },
+            },
+            isResultsVisible: false,
+          },
+          documentsState: { status: "succeeded", data: [] },
           tabsState: {
             authToken: "authtoken",
             items: [
@@ -497,20 +525,43 @@ describe("useCaseDetailsState reducer", () => {
               {
                 documentId: "d1",
                 mode: "search",
+                lockedState: "unlocked",
+                tabSafeId: "t1",
+                searchTerm: "foo",
                 occurrencesInDocumentCount: 3,
-                pageOccurrences: [
+                searchHighlights: [
                   {
-                    boundingBoxes: [[1, 2, 3]],
-                    pageIndex: 0,
+                    id: "0",
+                    type: "search",
+                    highlightType: "linear",
+                    position: {
+                      pageNumber: 0,
+                      boundingRect: {
+                        x1: 20.97,
+                        x2: 23.03,
+                        y1: 20.97,
+                        y2: 23.03,
+                        width: 8.27,
+                        height: 11.69,
+                      },
+                      rects: [
+                        {
+                          x1: 20.97,
+                          x2: 23.03,
+                          y1: 20.97,
+                          y2: 23.03,
+                          width: 8.27,
+                          height: 11.69,
+                        },
+                      ],
+                    },
                   },
                 ],
-                searchTerm: "foo",
-                tabSafeId: "t1",
-                url: undefined,
               },
               { documentId: "d2", mode: "read" },
             ],
           },
+          pipelineState: {},
         });
       });
 
@@ -561,6 +612,7 @@ describe("useCaseDetailsState reducer", () => {
               { documentId: "d0", mode: "read" },
               {
                 documentId: "d1",
+                lockedState: "unlocked",
                 mode: "read",
                 tabSafeId: "t1",
                 url: undefined,
@@ -606,9 +658,9 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   documentId: "d1",
                   occurrences: [
-                    { pageIndex: 1, occurrencesInLine: [[4, 5, 6]] },
-                    { pageIndex: 2, occurrencesInLine: [[7, 8, 9]] },
-                    { pageIndex: 2, occurrencesInLine: [[10, 11, 12]] },
+                    { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
+                    { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
+                    { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
                   ] as MappedDocumentResult["occurrences"],
                   occurrencesInDocumentCount: 4,
                 },
@@ -633,9 +685,27 @@ describe("useCaseDetailsState reducer", () => {
         );
 
         expect(nextState).toEqual({
-          documentsState: existingDocumentsState,
-          searchState: { ...existingSearchState, isResultsVisible: false },
-          pipelineState: existingPipelineState,
+          searchState: {
+            submittedSearchTerm: "bar",
+            results: {
+              status: "succeeded",
+              data: {
+                documentResults: [
+                  {
+                    documentId: "d1",
+                    occurrences: [
+                      { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
+                      { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
+                      { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
+                    ],
+                    occurrencesInDocumentCount: 4,
+                  },
+                ],
+              },
+            },
+            isResultsVisible: false,
+          },
+          documentsState: { status: "succeeded", data: [] },
           tabsState: {
             authToken: "authtoken",
             items: [
@@ -643,27 +713,96 @@ describe("useCaseDetailsState reducer", () => {
               {
                 documentId: "d1",
                 mode: "search",
+                searchTerm: "bar",
                 occurrencesInDocumentCount: 4,
-                pageOccurrences: [
+                pageOccurrences: [{ boundingBoxes: [[1, 2, 3]], pageIndex: 0 }],
+                lockedState: "unlocked",
+                tabSafeId: "t1",
+                searchHighlights: [
                   {
-                    boundingBoxes: [[4, 5, 6]],
-                    pageIndex: 1,
+                    id: "0",
+                    type: "search",
+                    highlightType: "linear",
+                    position: {
+                      pageNumber: 1,
+                      boundingRect: {
+                        x1: 0.97,
+                        y1: 0.97,
+                        x2: 2.03,
+                        y2: 2.03,
+                        width: 8.27,
+                        height: 11.69,
+                      },
+                      rects: [
+                        {
+                          x1: 0.97,
+                          y1: 0.97,
+                          x2: 2.03,
+                          y2: 2.03,
+                          width: 8.27,
+                          height: 11.69,
+                        },
+                      ],
+                    },
                   },
                   {
-                    boundingBoxes: [
-                      [7, 8, 9],
-                      [10, 11, 12],
-                    ],
-                    pageIndex: 2,
+                    id: "1",
+                    type: "search",
+                    highlightType: "linear",
+                    position: {
+                      pageNumber: 2,
+                      boundingRect: {
+                        x1: 1.97,
+                        y1: 1.97,
+                        x2: 3.03,
+                        y2: 3.03,
+                        width: 8.27,
+                        height: 11.69,
+                      },
+                      rects: [
+                        {
+                          x1: 1.97,
+                          y1: 1.97,
+                          x2: 3.03,
+                          y2: 3.03,
+                          width: 8.27,
+                          height: 11.69,
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    id: "2",
+                    type: "search",
+                    highlightType: "linear",
+                    position: {
+                      pageNumber: 2,
+                      boundingRect: {
+                        x1: 2.97,
+                        y1: 2.97,
+                        x2: 4.03,
+                        y2: 4.03,
+                        width: 8.27,
+                        height: 11.69,
+                      },
+                      rects: [
+                        {
+                          x1: 2.97,
+                          y1: 2.97,
+                          x2: 4.03,
+                          y2: 4.03,
+                          width: 8.27,
+                          height: 11.69,
+                        },
+                      ],
+                    },
                   },
                 ],
-                searchTerm: "bar",
-                tabSafeId: "t1",
-                url: undefined,
               },
               { documentId: "d2", mode: "read" },
             ],
           },
+          pipelineState: {},
         });
       });
     });

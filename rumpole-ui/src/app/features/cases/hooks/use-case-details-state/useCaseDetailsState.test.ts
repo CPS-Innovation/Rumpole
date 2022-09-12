@@ -112,10 +112,14 @@ describe("useCaseDetailsState", () => {
         handleCloseSearchResults,
         handleChangeResultsOrder,
         handleUpdateFilter,
+        handleAddRedaction,
+        handleRemoveRedaction,
+        handleRemoveAllRedactions,
+        handleSavedRedactions,
         ...stateProperties
       } = result.current;
 
-      expect(stateProperties).toEqual(initialState);
+      expect(stateProperties).toEqual({ caseId: "foo", ...initialState });
     });
 
     it("can update state according to the api call results", async () => {

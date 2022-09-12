@@ -29,13 +29,17 @@ export const initiateAndPoll = (
         haveData: true,
       });
       keepPolling = false;
-    }
-
-    if (completionStatus === "Failed") {
+    } else if (completionStatus === "Failed") {
       keepPolling = false;
       throw new Error(
         `Document processing pipeline returned with "Failed" status after ${trackingCallCount} polling attempts`
       );
+    } else {
+      del({
+        status: "incomplete",
+        data: pipelineResult,
+        haveData: true,
+      });
     }
   };
 
