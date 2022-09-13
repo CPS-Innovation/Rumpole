@@ -10,10 +10,11 @@ import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 import { mapRedactionSaveRequest } from "./map-redaction-save-request";
 import { reducer } from "./reducer";
 
-const LOCK_STATES_REQUIRING_UNLOCK: CaseDocumentViewModel["lockedState"][] = [
-  "locked",
-  "locking",
-];
+const LOCKED_STATES_REQUIRING_UNLOCK: CaseDocumentViewModel["clientLockedState"][] =
+  ["locked", "locking"];
+
+const UNLOCKED_STATES_REQUIRING_LOCK: CaseDocumentViewModel["clientLockedState"][] =
+  ["unlocked", "unlocking"];
 
 type State = Parameters<typeof reducer>[0];
 type Action = Parameters<typeof reducer>[1];
@@ -58,9 +59,12 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         caseId,
       } = getState();
 
+      const { clientLockedState } = items.find(
+        (item) => item.documentId === pdfId
+      )!;
+
       const documentRequiresLocking =
-        items.find((item) => item.documentId === pdfId)?.lockedState ===
-        "unlocked";
+        UNLOCKED_STATES_REQUIRING_LOCK.includes(clientLockedState);
 
       dispatch({ type: "ADD_REDACTION", payload });
 
@@ -97,14 +101,14 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { redactionHighlights, lockedState } = document;
+      const { redactionHighlights, clientLockedState: lockedState } = document;
+
+      dispatch({ type: "REMOVE_REDACTION", payload });
 
       const requiresCheckIn =
         // this is the last existing highlight
         redactionHighlights.length === 1 &&
-        LOCK_STATES_REQUIRING_UNLOCK.includes(lockedState);
-
-      dispatch({ type: "REMOVE_REDACTION", payload });
+        LOCKED_STATES_REQUIRING_UNLOCK.includes(lockedState);
 
       if (!requiresCheckIn) {
         return;
@@ -139,10 +143,10 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { lockedState } = document;
+      const { clientLockedState: lockedState } = document;
 
       const requiresCheckIn =
-        LOCK_STATES_REQUIRING_UNLOCK.includes(lockedState);
+        LOCKED_STATES_REQUIRING_UNLOCK.includes(lockedState);
 
       dispatch({ type: "REMOVE_ALL_REDACTIONS", payload });
 
@@ -200,7 +204,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
 
       window.open(response.redactedDocumentUrl);
 
-      // todo: does a save automatically check a document in?
+      // todo: does a save IN THE CGI API check a document in automatically?
       await checkinDocument(caseId, pdfId);
 
       dispatch({

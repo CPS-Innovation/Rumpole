@@ -96,7 +96,7 @@ export const reducer = (
         type: "UPDATE_DOCUMENT_LOCK_STATE";
         payload: {
           pdfId: string;
-          lockedState: CaseDocumentViewModel["lockedState"];
+          lockedState: CaseDocumentViewModel["clientLockedState"];
         };
       }
     | {
@@ -587,7 +587,7 @@ export const reducer = (
             item.documentId === pdfId
               ? {
                   ...item,
-                  lockedState,
+                  clientLockedState: lockedState,
                 }
               : item
           ),

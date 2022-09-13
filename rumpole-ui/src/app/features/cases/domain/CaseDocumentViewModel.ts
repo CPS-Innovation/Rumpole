@@ -6,7 +6,7 @@ export type CaseDocumentViewModel = MappedCaseDocument & {
   pdfBlobName: string | undefined;
   tabSafeId: string;
   redactionHighlights: IPdfHighlight[];
-  lockedState: // note: unlocked is just the state where the client doesn't know yet
+  clientLockedState: // note: unlocked is just the state where the client doesn't know yet
   //  (might be locked on the server, we haven't interacted yet)
   "unlocked" | "locking" | "locked" | "unlocking" | "locked-by-other-user";
 } & (
