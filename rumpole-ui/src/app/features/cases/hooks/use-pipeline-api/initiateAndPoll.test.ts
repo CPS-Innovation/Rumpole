@@ -74,7 +74,7 @@ describe("initiateAndPoll", () => {
     ensureHasStoppedPollingHelper(quitFn, spy);
   });
 
-  it("can return failed if and stop polling if getPipelinePdfResults returns failed", async () => {
+  it("can return failed and stop polling if getPipelinePdfResults returns failed", async () => {
     jest
       .spyOn(api, "initiatePipeline")
       .mockImplementation((caseId) => Promise.resolve("foo"));

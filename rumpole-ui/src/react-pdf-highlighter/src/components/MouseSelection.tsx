@@ -81,7 +81,7 @@ class MouseSelection extends Component<Props, State> {
 
     // Note: a CPS customisation here.  By caching containerBoundingRect the library
     //  makes the assumption that the pdf viewing control is always rooted at the same spot
-    //  in the window.  In our use case, thew page can scroll up and down and hence move
+    //  in the window.  In our use case, the page can scroll up and down and hence move
     //  the pdf control.  So we fix the bug by always calculating containerBoundingRect
     //  on demand and removing the use of the caching variable.
 

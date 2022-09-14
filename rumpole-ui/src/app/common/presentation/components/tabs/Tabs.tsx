@@ -32,14 +32,8 @@ export const Tabs: React.FC<TabsProps> = ({
   const activeTabRef = useRef<HTMLAnchorElement>(null);
   const { hash } = useLocation();
 
-  const initiatedTabs = useRef<string[]>([]);
-
   useEffect(() => {
     activeTabRef.current?.focus();
-    const id = getIdFromHash(hash);
-
-    if (!initiatedTabs.current.includes(id)) {
-    }
   }, [hash]);
 
   const activeTabArrayPos = items.findIndex(
