@@ -5,6 +5,8 @@ export type MappedDocumentResult = MappedCaseDocument & {
   occurrences: {
     id: string;
     pageIndex: number;
+    pageHeight: number;
+    pageWidth: number;
     contextTextChunks: { text: string; isHighlighted?: boolean }[];
     occurrencesInLine: number[][];
   }[];

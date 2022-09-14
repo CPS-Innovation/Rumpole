@@ -263,26 +263,39 @@ export const reducer = (
           )!;
 
         const pageOccurrences = foundDocumentSearchResult
-          ? foundDocumentSearchResult.occurrences.reduce((acc, curr) => {
-              let foundPage = acc.find(
-                (item) => item.pageIndex === curr.pageIndex
-              );
+          ? foundDocumentSearchResult.occurrences.reduce(
+              (
+                acc,
+                { pageIndex, pageHeight, pageWidth, occurrencesInLine }
+              ) => {
+                let foundPage = acc.find(
+                  (item) => item.pageIndex === pageIndex
+                );
 
-              if (!foundPage) {
-                foundPage = {
-                  pageIndex: curr.pageIndex,
-                  boundingBoxes: [],
-                };
-                acc.push(foundPage);
-              }
+                if (!foundPage) {
+                  foundPage = {
+                    pageIndex,
+                    pageHeight,
+                    pageWidth,
+                    boundingBoxes: [],
+                  };
+                  acc.push(foundPage);
+                }
 
-              foundPage.boundingBoxes = [
-                ...foundPage.boundingBoxes,
-                ...curr.occurrencesInLine,
-              ];
+                foundPage.boundingBoxes = [
+                  ...foundPage.boundingBoxes,
+                  ...occurrencesInLine,
+                ];
 
-              return acc;
-            }, [] as { pageIndex: number; boundingBoxes: number[][] }[])
+                return acc;
+              },
+              [] as {
+                pageIndex: number;
+                pageHeight: number;
+                pageWidth: number;
+                boundingBoxes: number[][];
+              }[]
+            )
           : /* istanbul ignore next */ [];
 
         const searchHighlights = mapSearchHighlights(pageOccurrences);
