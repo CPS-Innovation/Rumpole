@@ -31,6 +31,11 @@ body {
   margin: 0;
 }
 
+// todo: not sure why hyperlink color is not working out of the box?
+a {
+  color: $govuk-link-colour;
+}
+
 .perma-scrollbar::-webkit-scrollbar {
   -webkit-appearance: none;
   width: 7px;

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import * as GDS from "govuk-react-jsx";
 import { CommonTabsProps } from "./types";
 

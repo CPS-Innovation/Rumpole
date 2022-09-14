@@ -11,6 +11,8 @@ const ARROW_KEY_SHIFTS = {
   ArrowDown: 1,
 };
 
+const getIdFromHash = (hash: string) => hash.replace("#", "");
+
 // try and stay as close to GDS...
 export type TabsProps = CommonTabsProps & {
   // ...but we extend to allow the tabs to have a close icon
@@ -35,7 +37,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }, [hash]);
 
   const activeTabArrayPos = items.findIndex(
-    (item) => item.id === hash.replace("#", "")
+    (item) => item.id === getIdFromHash(hash)
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 

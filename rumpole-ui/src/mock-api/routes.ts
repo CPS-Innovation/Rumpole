@@ -5,3 +5,7 @@ export const INITIATE_PIPELINE_ROUTE = "api/cases/:caseId";
 export const TRACKER_ROUTE = "api/cases/:caseId/tracker";
 export const FILE_ROUTE = "api/pdfs/:blobName";
 export const TEXT_SEARCH_ROUTE = "api/cases/:caseId/query/:query";
+export const DOCUMENT_CHECKOUT_ROUTE =
+  "api/documents/checkout/:caseId/:documentId";
+export const DOCUMENT_CHECKIN_ROUTE =
+  "api/documents/checkin/:caseId/:documentId";

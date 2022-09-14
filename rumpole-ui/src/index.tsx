@@ -17,7 +17,9 @@ if (process.env.REACT_APP_MOCK_API_SOURCE === "dev") {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <div className="govuk-body">
+      <App />
+    </div>
   </React.StrictMode>,
   document.getElementById("root")
 );

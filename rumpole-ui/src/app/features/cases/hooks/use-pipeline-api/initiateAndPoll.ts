@@ -2,7 +2,7 @@ import { ApiError } from "../../../../common/errors/ApiError";
 import { AsyncPipelineResult } from "./AsyncPipelineResult";
 import { getPipelinePdfResults, initiatePipeline } from "../../api/gateway-api";
 import { PipelineResults } from "../../domain/PipelineResults";
-import { isPipelineFinished } from "../../domain/PipelineStatus";
+import { getPipelinpipelineCompletionStatus } from "../../domain/PipelineStatus";
 
 const delay = (delayMs: number) =>
   new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -13,29 +13,43 @@ export const initiateAndPoll = (
   del: (pipelineResults: AsyncPipelineResult<PipelineResults>) => void
 ) => {
   let keepPolling = true;
+  let trackingCallCount = 0;
 
-  const handleSuccess = (pipelineResult: PipelineResults) => {
-    const isComplete = isPipelineFinished(pipelineResult.status);
-    del({
-      status: isComplete ? "complete" : "incomplete",
-      data: pipelineResult,
-      haveData: true,
-    });
+  const handleApiCallSuccess = (pipelineResult: PipelineResults) => {
+    trackingCallCount += 1;
 
-    if (isComplete) {
+    const completionStatus = getPipelinpipelineCompletionStatus(
+      pipelineResult.status
+    );
+
+    if (completionStatus === "Completed") {
+      del({
+        status: "complete",
+        data: pipelineResult,
+        haveData: true,
+      });
       keepPolling = false;
+    } else if (completionStatus === "Failed") {
+      throw new Error(
+        `Document processing pipeline returned with "Failed" status after ${trackingCallCount} polling attempts`
+      );
+    } else {
+      del({
+        status: "incomplete",
+        data: pipelineResult,
+        haveData: true,
+      });
     }
   };
 
-  const handleError = (error: any) => {
+  const handleApiCallError = (error: any) => {
+    keepPolling = false;
     del({
       status: "failed",
       error,
       httpStatusCode: error instanceof ApiError ? error.code : undefined,
       haveData: false,
     });
-
-    keepPolling = false;
   };
 
   const doWork = async () => {
@@ -44,7 +58,7 @@ export const initiateAndPoll = (
     try {
       trackerUrl = await initiatePipeline(caseId);
     } catch (error) {
-      handleError(error);
+      handleApiCallError(error);
     }
 
     while (keepPolling) {
@@ -52,9 +66,9 @@ export const initiateAndPoll = (
         await delay(delayMs);
 
         const pipelineResult = await getPipelinePdfResults(trackerUrl);
-        handleSuccess(pipelineResult);
+        handleApiCallSuccess(pipelineResult);
       } catch (error) {
-        handleError(error);
+        handleApiCallError(error);
       }
     }
   };

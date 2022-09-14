@@ -1,17 +1,13 @@
-import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
-import { IHighlight } from "../../../../../../react-pdf-highlighter";
+import { IPdfHighlight } from "../../domain/IPdfHighlight";
 
 const PDF_HEIGHT_INCHES = 11.69; //todo: this needs to come from caseDocumentParameter
 const PDF_WIDTH_INCHES = 8.27;
 const PADDING_INCHES = 0.03;
 
-export const mapHighlights = ({
-  pageOccurrences,
-  searchTerm,
-}: Extract<CaseDocumentViewModel, { mode: "search" }>): IHighlight[] => {
-  type NewType = IHighlight;
-
-  const results: NewType[] = [];
+export const mapSearchHighlights = (
+  pageOccurrences: { pageIndex: number; boundingBoxes: number[][] }[]
+): IPdfHighlight[] => {
+  const results: IPdfHighlight[] = [];
 
   let i = 0;
   for (const { boundingBoxes, pageIndex } of pageOccurrences) {
@@ -26,8 +22,8 @@ export const mapHighlights = ({
       };
       results.push({
         id: String(i++),
-        content: { text: searchTerm },
-        comment: { text: "", emoji: "" },
+        type: "search",
+        highlightType: "linear",
         position: {
           pageNumber: pageIndex,
           boundingRect: rect,

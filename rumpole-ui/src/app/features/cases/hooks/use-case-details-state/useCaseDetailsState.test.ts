@@ -11,6 +11,8 @@ import { renderHook } from "@testing-library/react-hooks";
 import * as useApi from "../../../../common/hooks/useApi";
 import * as reducer from "./reducer";
 import { act } from "react-dom/test-utils";
+import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
+import { reducerAsyncActionHandlers } from "./reducer-async-action-handlers";
 
 type ReducerParams = Parameters<typeof reducer.reducer>;
 let reducerSpy: jest.SpyInstance<ReducerParams[0]>;
@@ -38,7 +40,7 @@ describe("useCaseDetailsState", () => {
       );
 
     const mockGetHeaders = jest
-      .spyOn(api, "getHeaders")
+      .spyOn(api, "getCoreHeaders")
       .mockImplementation(
         () =>
           new Promise((resolve) =>
@@ -98,7 +100,7 @@ describe("useCaseDetailsState", () => {
       .mockImplementation((state) => state);
   });
 
-  afterEach(jest.restoreAllMocks);
+  afterEach(() => jest.restoreAllMocks());
 
   describe("initialisation", () => {
     it("initialises to the expected state", () => {
@@ -112,10 +114,14 @@ describe("useCaseDetailsState", () => {
         handleCloseSearchResults,
         handleChangeResultsOrder,
         handleUpdateFilter,
+        handleAddRedaction,
+        handleRemoveRedaction,
+        handleRemoveAllRedactions,
+        handleSavedRedactions,
         ...stateProperties
       } = result.current;
 
-      expect(stateProperties).toEqual(initialState);
+      expect(stateProperties).toEqual({ caseId: "foo", ...initialState });
     });
 
     it("can update state according to the api call results", async () => {
@@ -151,7 +157,7 @@ describe("useCaseDetailsState", () => {
     });
   });
 
-  describe("handlers", () => {
+  describe("synchronous action handlers", () => {
     it("can open a pdf", () => {
       const {
         result: {
@@ -258,6 +264,98 @@ describe("useCaseDetailsState", () => {
       expect(reducerSpy).toBeCalledWith(expect.anything(), {
         type: "UPDATE_FILTER",
         payload: { filter: "category", id: "1", isSelected: true },
+      });
+    });
+
+    describe("async action handlers", () => {
+      it("can add a redaction", () => {
+        const mockHandler = jest.fn();
+
+        jest
+          .spyOn(
+            reducerAsyncActionHandlers,
+            "ADD_REDACTION_AND_POTENTIALLY_LOCK"
+          )
+          .mockImplementation(() => mockHandler);
+
+        const {
+          result: {
+            current: { handleAddRedaction },
+          },
+        } = renderHook(() => useCaseDetailsState("foo"));
+
+        handleAddRedaction("bar", { type: "redaction" } as NewPdfHighlight);
+
+        expect(mockHandler).toBeCalledWith({
+          type: "ADD_REDACTION_AND_POTENTIALLY_LOCK",
+          payload: { pdfId: "bar", redaction: { type: "redaction" } },
+        });
+      });
+
+      it("can remove a redaction", () => {
+        const mockHandler = jest.fn();
+
+        jest
+          .spyOn(
+            reducerAsyncActionHandlers,
+            "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK"
+          )
+          .mockImplementation(() => mockHandler);
+
+        const {
+          result: {
+            current: { handleRemoveRedaction },
+          },
+        } = renderHook(() => useCaseDetailsState("foo"));
+
+        handleRemoveRedaction("bar", "baz");
+
+        expect(mockHandler).toBeCalledWith({
+          type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK",
+          payload: { pdfId: "bar", redactionId: "baz" },
+        });
+      });
+
+      it("can remove all redactions", () => {
+        const mockHandler = jest.fn();
+
+        jest
+          .spyOn(reducerAsyncActionHandlers, "REMOVE_ALL_REDACTIONS_AND_UNLOCK")
+          .mockImplementation(() => mockHandler);
+
+        const {
+          result: {
+            current: { handleRemoveAllRedactions },
+          },
+        } = renderHook(() => useCaseDetailsState("foo"));
+
+        handleRemoveAllRedactions("bar");
+
+        expect(mockHandler).toBeCalledWith({
+          type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK",
+          payload: { pdfId: "bar" },
+        });
+      });
+
+      it("can save all redactions", () => {
+        const mockHandler = jest.fn();
+
+        jest
+          .spyOn(reducerAsyncActionHandlers, "SAVE_REDACTIONS")
+          .mockImplementation(() => mockHandler);
+
+        const {
+          result: {
+            current: { handleSavedRedactions },
+          },
+        } = renderHook(() => useCaseDetailsState("foo"));
+
+        handleSavedRedactions("bar");
+
+        expect(mockHandler).toBeCalledWith({
+          type: "SAVE_REDACTIONS",
+          payload: { pdfId: "bar" },
+        });
       });
     });
   });

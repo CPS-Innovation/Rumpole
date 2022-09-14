@@ -125,6 +125,14 @@ export const setupHandlers = ({
 
       return res(delay(ctx), ctx.json(results));
     }),
+
+    rest.put(makeApiPath(routes.DOCUMENT_CHECKOUT_ROUTE), (req, res, ctx) => {
+      return res(ctx.json({ successful: true, documentStatus: "CheckedIn" }));
+    }),
+
+    rest.put(makeApiPath(routes.DOCUMENT_CHECKIN_ROUTE), (req, res, ctx) => {
+      return res(ctx.json({ successful: true, documentStatus: "CheckedOut" }));
+    }),
   ];
 };
 

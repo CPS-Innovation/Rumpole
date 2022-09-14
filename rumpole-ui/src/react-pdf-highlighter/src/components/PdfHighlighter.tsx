@@ -6,7 +6,9 @@ import {
   EventBus,
   PDFViewer,
   PDFLinkService,
-} from "pdfjs-dist/legacy/web/pdf_viewer";
+  // Note: for our purposes switch this away from leagcy to mainstream,
+  //  we only have modern browsers at CPS
+} from "pdfjs-dist/web/pdf_viewer"; //"pdfjs-dist/legacy/web/pdf_viewer";
 
 import "pdfjs-dist/web/pdf_viewer.css";
 import "../style/pdf_viewer.css";
@@ -146,7 +148,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       doc.defaultView?.addEventListener("resize", this.debouncedScaleValue);
       if (observer) observer.observe(ref);
 
-      ref.addEventListener("wheel", this.handleWheel)
+      ref.addEventListener("wheel", this.handleWheel, {passive: true})
 
       this.unsubscribe = () => {
         eventBus.off("pagesinit", this.onDocumentReady);

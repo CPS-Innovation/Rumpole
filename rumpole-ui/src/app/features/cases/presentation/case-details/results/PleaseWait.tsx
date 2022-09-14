@@ -1,3 +1,4 @@
+import { Spinner } from "../../../../../common/presentation/components/Spinner";
 import classes from "./PleaseWait.module.scss";
 type Props = {
   handleClose: () => void;
@@ -20,7 +21,7 @@ export const PleaseWait: React.FC<Props> = ({ handleClose }) => {
 
       <div className={classes.content}>
         <h1 className="govuk-heading-l ">Loading search results</h1>
-        <div className={classes["ccms-loader"]}></div>
+        <Spinner diameterPx={80} />
       </div>
     </div>
   );
