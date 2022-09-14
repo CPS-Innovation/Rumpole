@@ -709,7 +709,7 @@ describe("useCaseDetailsState reducer", () => {
             payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
           }
         );
-        console.log(JSON.stringify(nextState));
+
         expect(nextState).toEqual({
           searchState: {
             submittedSearchTerm: "bar",
