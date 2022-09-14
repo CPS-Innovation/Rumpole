@@ -466,16 +466,6 @@ describe("reducerAsyncActionHandlers", () => {
         mockRedactionSaveRequest
       );
       expect(checkInSpy).toBeCalledWith("bar", "foo");
-
-      expect(dispatchMock.mock.calls.length).toBe(2);
-      expect(dispatchMock.mock.calls[0][0]).toEqual({
-        type: "UPDATE_SAVED_STATE",
-        payload: { savedState: "saving" },
-      });
-      expect(dispatchMock.mock.calls[1][0]).toEqual({
-        type: "UPDATE_SAVED_STATE",
-        payload: { savedState: "saved" },
-      });
     });
   });
 });

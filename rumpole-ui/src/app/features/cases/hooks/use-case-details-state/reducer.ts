@@ -99,12 +99,6 @@ export const reducer = (
           lockedState: CaseDocumentViewModel["clientLockedState"];
         };
       }
-    | {
-        type: "UPDATE_SAVED_STATE";
-        payload: {
-          savedState: "saving" | "saved" | "failed";
-        };
-      }
 ): CombinedState => {
   switch (action.type) {
     case "UPDATE_CASE_DETAILS":
@@ -249,7 +243,7 @@ export const reducer = (
 
       const coreItem = {
         ...foundDocument,
-        lockedState: "unlocked" as const,
+        clientLockedState: "unlocked" as const,
         url,
         pdfBlobName: blobName,
         tabSafeId,
@@ -594,9 +588,7 @@ export const reducer = (
         },
       };
     }
-    case "UPDATE_SAVED_STATE": {
-      return state;
-    }
+
     default:
       throw new Error("Unknown action passed to case details reducer");
   }

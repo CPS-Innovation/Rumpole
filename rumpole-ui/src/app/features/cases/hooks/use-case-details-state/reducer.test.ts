@@ -15,12 +15,15 @@ import * as textSearchMapper from "./map-text-search";
 import * as filters from "./map-filters";
 import * as missingDocuments from "./map-missing-documents";
 import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
+import { IPdfHighlight } from "../../domain/IPdfHighlight";
+import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 
 const ERROR = new Error();
 
 describe("useCaseDetailsState reducer", () => {
   afterEach(() => {
     jest.restoreAllMocks();
+    jest.useRealTimers();
   });
 
   describe("UPDATE_CASE_DETAILS", () => {
@@ -335,7 +338,7 @@ describe("useCaseDetailsState reducer", () => {
         items: [
           {
             documentId: "d1",
-            lockedState: "unlocked",
+            clientLockedState: "unlocked",
             mode: "read",
             pdfBlobName: "foo",
             redactionHighlights: [],
@@ -378,7 +381,7 @@ describe("useCaseDetailsState reducer", () => {
         items: [
           {
             documentId: "d1",
-            lockedState: "unlocked",
+            clientLockedState: "unlocked",
             url: undefined,
 
             redactionHighlights: [],
@@ -525,7 +528,7 @@ describe("useCaseDetailsState reducer", () => {
               {
                 documentId: "d1",
                 mode: "search",
-                lockedState: "unlocked",
+                clientLockedState: "unlocked",
                 tabSafeId: "t1",
                 searchTerm: "foo",
                 occurrencesInDocumentCount: 3,
@@ -612,7 +615,7 @@ describe("useCaseDetailsState reducer", () => {
               { documentId: "d0", mode: "read" },
               {
                 documentId: "d1",
-                lockedState: "unlocked",
+                clientLockedState: "unlocked",
                 mode: "read",
                 tabSafeId: "t1",
                 url: undefined,
@@ -716,7 +719,7 @@ describe("useCaseDetailsState reducer", () => {
                 searchTerm: "bar",
                 occurrencesInDocumentCount: 4,
                 pageOccurrences: [{ boundingBoxes: [[1, 2, 3]], pageIndex: 0 }],
-                lockedState: "unlocked",
+                clientLockedState: "unlocked",
                 tabSafeId: "t1",
                 searchHighlights: [
                   {
@@ -1380,6 +1383,229 @@ describe("useCaseDetailsState reducer", () => {
           existingSearchState.results.data.documentResults[2]
       );
     });
+  });
+
+  describe("ADD_REDACTION", () => {
+    it("can add a redaction", () => {
+      jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
+
+      const existingTabsState = {
+        items: [
+          {
+            documentId: "foo",
+            redactionHighlights: [
+              {
+                type: "redaction",
+                position: { pageNumber: 2 },
+                id: "1640995199999",
+              },
+            ] as IPdfHighlight[],
+          },
+          { documentId: "bar", redactionHighlights: [] as IPdfHighlight[] },
+        ],
+      } as CombinedState["tabsState"];
+
+      const result = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "ADD_REDACTION",
+          payload: {
+            pdfId: "foo",
+            redaction: {
+              type: "redaction",
+              position: { pageNumber: 1 },
+            } as NewPdfHighlight,
+          },
+        }
+      );
+
+      expect(result).toEqual({
+        tabsState: {
+          items: [
+            {
+              documentId: "foo",
+              redactionHighlights: [
+                {
+                  type: "redaction",
+                  position: { pageNumber: 2 },
+                  id: "1640995199999",
+                },
+                {
+                  type: "redaction",
+                  position: { pageNumber: 1 },
+                  id: "1640995200000",
+                },
+              ],
+            },
+            { documentId: "bar", redactionHighlights: [] },
+          ],
+        },
+      });
+    });
+  });
+
+  describe("REMOVE_REDACTION", () => {
+    it("can remove a redaction", () => {
+      jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
+
+      const existingTabsState = {
+        items: [
+          {
+            documentId: "foo",
+            redactionHighlights: [
+              {
+                type: "redaction",
+                position: { pageNumber: 2 },
+                id: "1640995199999",
+              },
+              {
+                type: "redaction",
+                position: { pageNumber: 1 },
+                id: "1640995200000",
+              },
+            ] as IPdfHighlight[],
+          },
+          { documentId: "bar", redactionHighlights: [] as IPdfHighlight[] },
+        ],
+      } as CombinedState["tabsState"];
+
+      const result = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "REMOVE_REDACTION",
+          payload: {
+            pdfId: "foo",
+            redactionId: "1640995200000",
+          },
+        }
+      );
+
+      expect(result).toEqual({
+        tabsState: {
+          items: [
+            {
+              documentId: "foo",
+              redactionHighlights: [
+                {
+                  type: "redaction",
+                  position: { pageNumber: 2 },
+                  id: "1640995199999",
+                },
+              ],
+            },
+            { documentId: "bar", redactionHighlights: [] },
+          ],
+        },
+      });
+    });
+  });
+
+  describe("REMOVE_ALL_REDACTIONS", () => {
+    it("can remove all redactions", () => {
+      jest.useFakeTimers().setSystemTime(new Date("2022-01-01"));
+
+      const existingTabsState = {
+        items: [
+          {
+            documentId: "foo",
+            redactionHighlights: [
+              {
+                type: "redaction",
+                position: { pageNumber: 2 },
+                id: "1640995199999",
+              },
+              {
+                type: "redaction",
+                position: { pageNumber: 1 },
+                id: "1640995200000",
+              },
+            ] as IPdfHighlight[],
+          },
+          {
+            documentId: "bar",
+            redactionHighlights: [
+              {
+                type: "redaction",
+                position: { pageNumber: 3 },
+                id: "1640995199998",
+              },
+            ] as IPdfHighlight[],
+          },
+        ],
+      } as CombinedState["tabsState"];
+
+      const result = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "REMOVE_ALL_REDACTIONS",
+          payload: {
+            pdfId: "foo",
+          },
+        }
+      );
+
+      expect(result).toEqual({
+        tabsState: {
+          items: [
+            {
+              documentId: "foo",
+              redactionHighlights: [],
+            },
+            {
+              documentId: "bar",
+              redactionHighlights: [
+                {
+                  type: "redaction",
+                  position: { pageNumber: 3 },
+                  id: "1640995199998",
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+  });
+
+  describe("UPDATE_DOCUMENT_LOCK_STATE", () => {
+    it("can update document locked state", () => {
+      const existingTabsState = {
+        items: [
+          {
+            documentId: "foo",
+            clientLockedState: "unlocked",
+          },
+          {
+            documentId: "bar",
+            clientLockedState: "unlocking",
+          },
+        ],
+      } as CombinedState["tabsState"];
+
+      const result = reducer(
+        { tabsState: existingTabsState } as CombinedState,
+        {
+          type: "UPDATE_DOCUMENT_LOCK_STATE",
+          payload: {
+            pdfId: "foo",
+            lockedState: "locked",
+          },
+        }
+      );
+
+      expect(result).toEqual({
+        tabsState: {
+          items: [
+            { documentId: "foo", clientLockedState: "locked" },
+            { documentId: "bar", clientLockedState: "unlocking" },
+          ],
+        },
+      });
+    });
+  });
+
+  describe("UPDATE_SAVED_STATE", () => {
+    it("can update ssaved state", () => {});
   });
 
   it("can not handle an unknown action", () => {

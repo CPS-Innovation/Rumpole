@@ -190,10 +190,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         redactionHighlights
       );
 
-      dispatch({
-        type: "UPDATE_SAVED_STATE",
-        payload: { savedState: "saving" },
-      });
+      // todo: make sure UI knows we are saving
 
       const response = await saveRedactions(
         caseId,
@@ -207,9 +204,6 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       // todo: does a save IN THE CGI API check a document in automatically?
       await checkinDocument(caseId, pdfId);
 
-      dispatch({
-        type: "UPDATE_SAVED_STATE",
-        payload: { savedState: "saved" },
-      });
+      // todo: make sure UI knows we are saved
     },
 };
