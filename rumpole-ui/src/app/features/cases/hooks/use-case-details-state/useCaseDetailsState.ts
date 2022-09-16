@@ -1,10 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useApi } from "../../../../common/hooks/useApi";
-import {
-  getCaseDetails,
-  getCaseDocumentsList,
-  getCoreHeaders,
-} from "../../api/gateway-api";
+import { getCaseDetails, getCaseDocumentsList } from "../../api/gateway-api";
 import { usePipelineApi } from "../use-pipeline-api/usePipelineApi";
 import { CombinedState } from "../../domain/CombinedState";
 import { reducer } from "./reducer";
@@ -40,7 +36,7 @@ export const useCaseDetailsState = (id: string) => {
   const caseState = useApi(getCaseDetails, id);
   const documentsState = useApi(getCaseDocumentsList, id);
   const pipelineState = usePipelineApi(id);
-  const headers = useApi(getCoreHeaders);
+  // const headers = useApi(getCoreHeaders);
 
   const [combinedState, dispatch] = useReducerAsync(
     reducer,
@@ -61,11 +57,6 @@ export const useCaseDetailsState = (id: string) => {
   useEffect(
     () => dispatch({ type: "UPDATE_PIPELINE", payload: pipelineState }),
     [pipelineState, dispatch]
-  );
-
-  useEffect(
-    () => dispatch({ type: "UPDATE_AUTH_TOKEN", payload: headers }),
-    [headers, dispatch]
   );
 
   const searchResults = useApi(
@@ -101,7 +92,7 @@ export const useCaseDetailsState = (id: string) => {
       mode: CaseDocumentViewModel["mode"];
     }) => {
       dispatch({
-        type: "OPEN_PDF",
+        type: "REQUEST_OPEN_PDF",
         payload: {
           pdfId: caseDocument.documentId,
           tabSafeId: caseDocument.tabSafeId,

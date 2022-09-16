@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { LTWHP } from "../../../../../../react-pdf-highlighter";
 
 import classes from "./PdfLinearHighlight.module.scss";
