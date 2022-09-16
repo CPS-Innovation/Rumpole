@@ -3,6 +3,7 @@ import { AsyncActionHandlers } from "use-reducer-async";
 import {
   checkinDocument,
   checkoutDocument,
+  getCoreHeaders,
   saveRedactions,
 } from "../../api/gateway-api";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
@@ -42,12 +43,38 @@ type AsyncActions =
       payload: {
         pdfId: string;
       };
+    }
+  | {
+      type: "REQUEST_OPEN_PDF";
+      payload: {
+        tabSafeId: string;
+        pdfId: string;
+        mode: CaseDocumentViewModel["mode"];
+      };
     };
 
 export const reducerAsyncActionHandlers: AsyncActionHandlers<
   Reducer<State, Action>,
   AsyncActions
 > = {
+  REQUEST_OPEN_PDF:
+    ({ dispatch }) =>
+    async (action) => {
+      const { payload } = action;
+
+      const headers = await getCoreHeaders();
+      const authToken = headers.get("Authorization");
+
+      if (!authToken) {
+        throw new Error("Auth token not found when opening pdf.");
+      }
+
+      dispatch({
+        type: "OPEN_PDF",
+        payload: { ...payload, authToken },
+      });
+    },
+
   ADD_REDACTION_AND_POTENTIALLY_LOCK:
     ({ dispatch, getState }) =>
     async (action) => {
@@ -171,7 +198,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     },
 
   SAVE_REDACTIONS:
-    ({ dispatch, getState }) =>
+    ({ getState }) =>
     async (action) => {
       const { payload } = action;
       const { pdfId } = payload;
