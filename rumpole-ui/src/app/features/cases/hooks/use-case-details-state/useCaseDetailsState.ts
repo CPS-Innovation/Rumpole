@@ -36,7 +36,6 @@ export const useCaseDetailsState = (id: string) => {
   const caseState = useApi(getCaseDetails, id);
   const documentsState = useApi(getCaseDocumentsList, id);
   const pipelineState = usePipelineApi(id);
-  // const headers = useApi(getCoreHeaders);
 
   const [combinedState, dispatch] = useReducerAsync(
     reducer,

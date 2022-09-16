@@ -277,7 +277,7 @@ describe("useCaseDetailsState reducer", () => {
   });
 
   describe("OPEN_PDF", () => {
-    fit("can try to open a tab when the documents are unknown", () => {
+    it("can try to open a tab when the documents are unknown", () => {
       const nextState = reducer(
         {
           documentsState: { status: "loading" },
@@ -895,81 +895,6 @@ describe("useCaseDetailsState reducer", () => {
     });
   });
 
-  /*
-  describe("UPDATE_AUTH_TOKEN", () => {
-    it("throws if update auth token fails", () => {
-      expect(() =>
-        reducer({} as CombinedState, {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: {
-            status: "failed",
-            error: ERROR,
-            httpStatusCode: undefined,
-          },
-        })
-      ).toThrowError(ERROR);
-    });
-
-    it("can not update auth token if headers are not ready", () => {
-      const existingState = {} as CombinedState;
-      const newHeaders = { status: "loading" } as ApiResult<Headers>;
-
-      const nextState = reducer(existingState, {
-        type: "UPDATE_AUTH_TOKEN",
-        payload: newHeaders,
-      });
-      expect(nextState).toBe(existingState);
-    });
-
-    it("can not update auth token if headers are not present", () => {
-      const existingTabsState = {
-        items: [],
-        authToken: undefined,
-      } as CombinedState["tabsState"];
-
-      const newHeadersApiResult = {
-        status: "succeeded",
-        data: new Headers(),
-      } as ApiResult<Headers>;
-
-      const nextState = reducer(
-        { tabsState: existingTabsState } as CombinedState,
-        {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: newHeadersApiResult,
-        }
-      );
-      expect(nextState.tabsState).toEqual({ items: [], authToken: undefined });
-    });
-
-    it("can update auth token if headers are present", () => {
-      const existingTabsState = {
-        items: [],
-        authToken: undefined,
-      } as CombinedState["tabsState"];
-
-      const headers = new Headers();
-      headers.append("Authorization", "auth-token");
-
-      const newHeadersApiResult = {
-        status: "succeeded",
-        data: headers,
-      } as ApiResult<Headers>;
-
-      const nextState = reducer(
-        { tabsState: existingTabsState } as CombinedState,
-        {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: newHeadersApiResult,
-        }
-      );
-      expect(nextState.tabsState).toEqual({
-        items: [],
-        authToken: "auth-token",
-      });
-    });
-  });
-*/
   describe("UPDATE_SEARCH_TERM", () => {
     it("can update search term", () => {
       const existingState = { searchTerm: "foo" } as CombinedState;
