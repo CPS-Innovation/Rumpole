@@ -6,7 +6,7 @@ type Props = {
 
 export const ContextText: React.FC<Props> = ({ contextTextChunks }) => {
   return (
-    <div className="govuk-details__text govuk-body">
+    <div className="govuk-details__text">
       {contextTextChunks.map((chunk, index) => (
         <span key={index}>
           {chunk.isHighlighted ? (

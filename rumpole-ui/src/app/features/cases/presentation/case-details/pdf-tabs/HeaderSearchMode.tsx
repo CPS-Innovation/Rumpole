@@ -16,7 +16,7 @@ export const HeaderSearchMode: React.FC<Props> = ({
   handleLaunchSearchResults,
 }) => {
   return (
-    <div className={`govuk-body ${classes.content}`}>
+    <div className={classes.content}>
       <div className={classes.heavyText}>
         <LinkButton onClick={handleLaunchSearchResults}>
           Back to search results
