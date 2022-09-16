@@ -473,6 +473,9 @@ describe("useCaseDetailsState reducer", () => {
                   occurrences: [
                     {
                       pageIndex: 0,
+                      pageHeight: 11.69,
+                      pageWidth: 8.27,
+
                       occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
                     },
                   ] as MappedDocumentResult["occurrences"],
@@ -510,6 +513,9 @@ describe("useCaseDetailsState reducer", () => {
                     occurrences: [
                       {
                         pageIndex: 0,
+                        pageHeight: 11.69,
+                        pageWidth: 8.27,
+
                         occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
                       },
                     ],
@@ -640,6 +646,8 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   boundingBoxes: [[1, 2, 3]],
                   pageIndex: 0,
+                  pageHeight: 11.69,
+                  pageWidth: 8.27,
                 },
               ],
             },
@@ -661,9 +669,24 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   documentId: "d1",
                   occurrences: [
-                    { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
-                    { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
-                    { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
+                    {
+                      pageIndex: 1,
+                      pageHeight: 8,
+                      pageWidth: 7,
+                      occurrencesInLine: [[1, 1, 9, 9, 2, 2]],
+                    },
+                    {
+                      pageIndex: 2,
+                      pageHeight: 9,
+                      pageWidth: 8,
+                      occurrencesInLine: [[2, 2, 9, 9, 3, 3]],
+                    },
+                    {
+                      pageIndex: 2,
+                      pageHeight: 10,
+                      pageWidth: 9,
+                      occurrencesInLine: [[3, 3, 9, 9, 4, 4]],
+                    },
                   ] as MappedDocumentResult["occurrences"],
                   occurrencesInDocumentCount: 4,
                 },
@@ -697,9 +720,24 @@ describe("useCaseDetailsState reducer", () => {
                   {
                     documentId: "d1",
                     occurrences: [
-                      { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
-                      { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
-                      { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
+                      {
+                        pageIndex: 1,
+                        pageHeight: 8,
+                        pageWidth: 7,
+                        occurrencesInLine: [[1, 1, 9, 9, 2, 2]],
+                      },
+                      {
+                        pageIndex: 2,
+                        pageHeight: 9,
+                        pageWidth: 8,
+                        occurrencesInLine: [[2, 2, 9, 9, 3, 3]],
+                      },
+                      {
+                        pageIndex: 2,
+                        pageHeight: 10,
+                        pageWidth: 9,
+                        occurrencesInLine: [[3, 3, 9, 9, 4, 4]],
+                      },
                     ],
                     occurrencesInDocumentCount: 4,
                   },
@@ -718,7 +756,14 @@ describe("useCaseDetailsState reducer", () => {
                 mode: "search",
                 searchTerm: "bar",
                 occurrencesInDocumentCount: 4,
-                pageOccurrences: [{ boundingBoxes: [[1, 2, 3]], pageIndex: 0 }],
+                pageOccurrences: [
+                  {
+                    boundingBoxes: [[1, 2, 3]],
+                    pageIndex: 0,
+                    pageHeight: 11.69,
+                    pageWidth: 8.27,
+                  },
+                ],
                 clientLockedState: "unlocked",
                 tabSafeId: "t1",
                 searchHighlights: [
@@ -733,8 +778,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 0.97,
                         x2: 2.03,
                         y2: 2.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 7,
+                        height: 8,
                       },
                       rects: [
                         {
@@ -742,8 +787,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 0.97,
                           x2: 2.03,
                           y2: 2.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 7,
+                          height: 8,
                         },
                       ],
                     },
@@ -759,8 +804,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 1.97,
                         x2: 3.03,
                         y2: 3.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 8,
+                        height: 9,
                       },
                       rects: [
                         {
@@ -768,8 +813,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 1.97,
                           x2: 3.03,
                           y2: 3.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 8,
+                          height: 9,
                         },
                       ],
                     },
@@ -785,8 +830,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 2.97,
                         x2: 4.03,
                         y2: 4.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 8,
+                        height: 9,
                       },
                       rects: [
                         {
@@ -794,8 +839,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 2.97,
                           x2: 4.03,
                           y2: 4.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 8,
+                          height: 9,
                         },
                       ],
                     },
