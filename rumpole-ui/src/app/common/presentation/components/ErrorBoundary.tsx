@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
             >
               Sorry, there is a problem with the service
             </h1>
-            <p className="govuk-body">
+            <p>
               Try again later, or{" "}
               <a href="/" className="govuk-link">
                 click here to start a new search

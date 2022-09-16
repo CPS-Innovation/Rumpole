@@ -44,7 +44,7 @@ export const Header: React.FC<Props> = ({
   return (
     <>
       <div className={classes.container}>
-        <div className={`govuk-body ${classes.textSection}`}>
+        <div className={classes.textSection}>
           <div data-testid="div-results-header">
             {!!filteredDocumentCount ? (
               <>

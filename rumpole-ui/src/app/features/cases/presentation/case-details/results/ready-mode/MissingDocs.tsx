@@ -14,7 +14,7 @@ export const MissingDocs: React.FC<Props> = ({ missingDocs }) => {
 
   return (
     <>
-      <div className="govuk-body">
+      <div>
         <p>Technical problems stopped us from searching these documents:</p>
         <ul className={classes.docList}>
           {firstFourDocs.map(({ documentId, fileName }) => (

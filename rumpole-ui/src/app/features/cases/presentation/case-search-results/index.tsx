@@ -107,7 +107,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
             </div>
 
             <div className={classes.results}>
-              <p className="govuk-body">
+              <p>
                 We've found <b data-testid="txt-result-count">{data.length}</b>
                 {data.length !== 1
                   ? " cases that match "
@@ -141,7 +141,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       marginBottom={0}
                     />
                   </h2>
-                  <div className="govuk-body">
+                  <div>
                     {item.offences.map((offence, index) => (
                       <div key={index} className={classes["result-offence"]}>
                         <div className={classes["result-offence-line"]}>
