@@ -118,6 +118,7 @@ describe("useCaseDetailsState", () => {
         handleRemoveRedaction,
         handleRemoveAllRedactions,
         handleSavedRedactions,
+        handleOpenPdfInNewTab,
         ...stateProperties
       } = result.current;
 
@@ -246,6 +247,27 @@ describe("useCaseDetailsState", () => {
     });
   });
   describe("async action handlers", () => {
+    it("can open a pdf in a new tab", () => {
+      const mockHandler = jest.fn();
+
+      jest
+        .spyOn(reducerAsyncActionHandlers, "REQUEST_OPEN_PDF_IN_NEW_TAB")
+        .mockImplementation(() => mockHandler);
+
+      const {
+        result: {
+          current: { handleOpenPdfInNewTab },
+        },
+      } = renderHook(() => useCaseDetailsState("foo"));
+
+      act(() => handleOpenPdfInNewTab("bar"));
+
+      expect(mockHandler).toBeCalledWith({
+        type: "REQUEST_OPEN_PDF_IN_NEW_TAB",
+        payload: { pdfId: "bar" },
+      });
+    });
+
     it("can open a pdf", () => {
       const mockHandler = jest.fn();
 

@@ -82,10 +82,10 @@ export const getCaseDocumentsList = async (caseId: string) => {
 
 export const getPdfSasUrl = async (pdfBlobName: string) => {
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/pdf/sasUrl/${pdfBlobName}"`);
+  const path = getFullUrl(`/api/pdf/sasUrl/${pdfBlobName}`);
   const response = await fetch(path, {
     headers,
-    method: "POST",
+    method: "GET",
   });
 
   if (!response.ok) {

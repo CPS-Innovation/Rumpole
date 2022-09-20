@@ -1,4 +1,29 @@
+import { useEffect } from "react";
+import { LinkButton } from "../../../../../common/presentation/components/LinkButton";
+import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 import classes from "./HeaderReadMode.module.scss";
-export const HeaderReadMode: React.FC = () => {
-  return <div className={classes.content}></div>;
+
+type Props = {
+  caseDocumentViewModel: Extract<CaseDocumentViewModel, { mode: "read" }>;
+  handleOpenPdfInNewTab: (pdfId: string) => void;
+};
+
+export const HeaderReadMode: React.FC<Props> = ({
+  caseDocumentViewModel: { fileName, sasUrl, documentId },
+  handleOpenPdfInNewTab,
+}) => {
+  useEffect(() => {
+    if (sasUrl) {
+      //window.open(sasUrl, "_blank");
+    }
+  }, [sasUrl]);
+
+  return (
+    <div className={classes.content}>
+      <LinkButton onClick={() => handleOpenPdfInNewTab(documentId)}>
+        {fileName} (opens in a new window)
+      </LinkButton>
+      {sasUrl}
+    </div>
+  );
 };

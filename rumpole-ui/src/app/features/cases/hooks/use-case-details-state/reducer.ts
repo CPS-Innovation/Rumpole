@@ -31,6 +31,13 @@ export const reducer = (
         payload: AsyncPipelineResult<PipelineResults>;
       }
     | {
+        type: "OPEN_PDF_IN_NEW_TAB";
+        payload: {
+          pdfId: string;
+          sasUrl: string;
+        };
+      }
+    | {
         type: "OPEN_PDF";
         payload: {
           tabSafeId: string;
@@ -178,7 +185,20 @@ export const reducer = (
         ...coreNextPipelineState,
         tabsState: { ...state.tabsState, items: nextOpenTabs },
       };
-
+    case "OPEN_PDF_IN_NEW_TAB": {
+      const { pdfId, sasUrl } = action.payload;
+      return {
+        ...state,
+        tabsState: {
+          ...state.tabsState,
+          items: [
+            ...state.tabsState.items.map((item) =>
+              item.documentId === pdfId ? { ...item, sasUrl } : item
+            ),
+          ],
+        },
+      };
+    }
     case "OPEN_PDF":
       const { pdfId, tabSafeId, mode, authToken } = action.payload;
 
@@ -254,6 +274,7 @@ export const reducer = (
       if (mode === "read") {
         item = {
           ...coreItem,
+          sasUrl: undefined,
           mode: "read",
         };
       } else {
@@ -304,6 +325,7 @@ export const reducer = (
         item = {
           ...coreItem,
           mode: "search",
+          sasUrl: undefined,
           searchTerm: state.searchState.submittedSearchTerm!,
           occurrencesInDocumentCount: foundDocumentSearchResult
             ? foundDocumentSearchResult.occurrencesInDocumentCount
