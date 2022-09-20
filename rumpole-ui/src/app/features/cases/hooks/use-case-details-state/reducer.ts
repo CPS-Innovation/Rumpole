@@ -36,15 +36,12 @@ export const reducer = (
           tabSafeId: string;
           pdfId: string;
           mode: CaseDocumentViewModel["mode"];
+          authToken: string;
         };
       }
     | {
         type: "CLOSE_PDF";
         payload: { tabSafeId: string };
-      }
-    | {
-        type: "UPDATE_AUTH_TOKEN";
-        payload: ApiResult<Headers>;
       }
     | {
         type: "UPDATE_SEARCH_TERM";
@@ -183,13 +180,17 @@ export const reducer = (
       };
 
     case "OPEN_PDF":
-      const { pdfId, tabSafeId, mode } = action.payload;
+      const { pdfId, tabSafeId, mode, authToken } = action.payload;
 
       const coreNewState = {
         ...state,
         searchState: {
           ...state.searchState,
           isResultsVisible: false,
+        },
+        tabsState: {
+          ...state.tabsState,
+          authToken,
         },
       };
 
@@ -200,7 +201,7 @@ export const reducer = (
         return coreNewState;
       }
 
-      const tabAlreadyOpenedInRequiredState = state.tabsState.items.some(
+      const isTabAlreadyOpenedInRequiredState = state.tabsState.items.some(
         (item) =>
           item.documentId === pdfId &&
           // we have found the tab already exists in read mode and we are trying to
@@ -213,7 +214,7 @@ export const reducer = (
               item.searchTerm === state.searchState.submittedSearchTerm))
       );
 
-      if (tabAlreadyOpenedInRequiredState) {
+      if (isTabAlreadyOpenedInRequiredState) {
         // there is nothing more to do, the tab control will show the appropriate tab
         //  via the url hash functionality
         return coreNewState;
@@ -263,26 +264,39 @@ export const reducer = (
           )!;
 
         const pageOccurrences = foundDocumentSearchResult
-          ? foundDocumentSearchResult.occurrences.reduce((acc, curr) => {
-              let foundPage = acc.find(
-                (item) => item.pageIndex === curr.pageIndex
-              );
+          ? foundDocumentSearchResult.occurrences.reduce(
+              (
+                acc,
+                { pageIndex, pageHeight, pageWidth, occurrencesInLine }
+              ) => {
+                let foundPage = acc.find(
+                  (item) => item.pageIndex === pageIndex
+                );
 
-              if (!foundPage) {
-                foundPage = {
-                  pageIndex: curr.pageIndex,
-                  boundingBoxes: [],
-                };
-                acc.push(foundPage);
-              }
+                if (!foundPage) {
+                  foundPage = {
+                    pageIndex,
+                    pageHeight,
+                    pageWidth,
+                    boundingBoxes: [],
+                  };
+                  acc.push(foundPage);
+                }
 
-              foundPage.boundingBoxes = [
-                ...foundPage.boundingBoxes,
-                ...curr.occurrencesInLine,
-              ];
+                foundPage.boundingBoxes = [
+                  ...foundPage.boundingBoxes,
+                  ...occurrencesInLine,
+                ];
 
-              return acc;
-            }, [] as { pageIndex: number; boundingBoxes: number[][] }[])
+                return acc;
+              },
+              [] as {
+                pageIndex: number;
+                pageHeight: number;
+                pageWidth: number;
+                boundingBoxes: number[][];
+              }[]
+            )
           : /* istanbul ignore next */ [];
 
         const searchHighlights = mapSearchHighlights(pageOccurrences);
@@ -313,7 +327,7 @@ export const reducer = (
       return {
         ...coreNewState,
         tabsState: {
-          ...state.tabsState,
+          ...coreNewState.tabsState,
           items: nextItemsArray,
         },
         searchState: {
@@ -335,17 +349,6 @@ export const reducer = (
         },
       };
     }
-    case "UPDATE_AUTH_TOKEN":
-      if (action.payload.status === "failed") {
-        throw action.payload.error;
-      }
-
-      if (action.payload.status === "succeeded") {
-        const authToken = action.payload.data.get("Authorization") || undefined;
-        return { ...state, tabsState: { ...state.tabsState, authToken } };
-      }
-
-      return state;
     case "UPDATE_SEARCH_TERM":
       return {
         ...state,

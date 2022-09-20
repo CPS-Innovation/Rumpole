@@ -35,7 +35,7 @@ export const mapTextSearch = (
         accumulator.push(documentResult);
       }
 
-      const { id, pageIndex, words } = apiResultDocument;
+      const { id, pageIndex, words, pageHeight, pageWidth } = apiResultDocument;
 
       const occurrencesInLine = words
         .filter(
@@ -56,6 +56,8 @@ export const mapTextSearch = (
       const thisOccurrence = {
         id,
         pageIndex,
+        pageHeight,
+        pageWidth,
         contextTextChunks: words.map((word) => ({
           text: word.text,
           isHighlighted: areAlphanumericallyEqual(word.text, searchTerm),

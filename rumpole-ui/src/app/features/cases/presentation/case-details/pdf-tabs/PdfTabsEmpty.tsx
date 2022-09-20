@@ -6,10 +6,7 @@ export const PdfTabsEmpty: React.FC = () => (
     >
       View your documents
     </h2>
-    <p
-      className="govuk-body"
-      style={{ margin: "margin:10px 0 0 0", textAlign: "center" }}
-    >
+    <p style={{ margin: "margin:10px 0 0 0", textAlign: "center" }}>
       Search or choose a file to start reviewing documents
     </p>
   </div>

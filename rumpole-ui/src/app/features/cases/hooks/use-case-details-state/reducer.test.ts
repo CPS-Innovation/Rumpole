@@ -281,10 +281,18 @@ describe("useCaseDetailsState reducer", () => {
       const nextState = reducer(
         {
           documentsState: { status: "loading" },
+          tabsState: {
+            authToken: "foo",
+          },
         } as CombinedState,
         {
           type: "OPEN_PDF",
-          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+          payload: {
+            pdfId: "d1",
+            tabSafeId: "t1",
+            mode: "read",
+            authToken: "bar",
+          },
         }
       );
 
@@ -293,12 +301,15 @@ describe("useCaseDetailsState reducer", () => {
         searchState: {
           isResultsVisible: false,
         },
-      });
+        tabsState: {
+          authToken: "bar",
+        },
+      } as CombinedState);
     });
 
     it("can open a tab when the pdf details are known", () => {
       const existingTabsState = {
-        authToken: "authtoken",
+        authToken: "foo",
         items: [],
       } as CombinedState["tabsState"];
 
@@ -329,12 +340,17 @@ describe("useCaseDetailsState reducer", () => {
         } as CombinedState,
         {
           type: "OPEN_PDF",
-          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+          payload: {
+            pdfId: "d1",
+            tabSafeId: "t1",
+            mode: "read",
+            authToken: "bar",
+          },
         }
       );
 
       expect(nextState.tabsState).toEqual({
-        authToken: "authtoken",
+        authToken: "bar",
         items: [
           {
             documentId: "d1",
@@ -351,7 +367,7 @@ describe("useCaseDetailsState reducer", () => {
 
     it("can open a tab when the pdf details are not known", () => {
       const existingTabsState = {
-        authToken: "authtoken",
+        authToken: "foo",
         items: [],
       } as CombinedState["tabsState"];
 
@@ -372,12 +388,17 @@ describe("useCaseDetailsState reducer", () => {
         } as CombinedState,
         {
           type: "OPEN_PDF",
-          payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+          payload: {
+            pdfId: "d1",
+            tabSafeId: "t1",
+            mode: "read",
+            authToken: "bar",
+          },
         }
       );
 
       expect(nextState.tabsState).toEqual({
-        authToken: "authtoken",
+        authToken: "bar",
         items: [
           {
             documentId: "d1",
@@ -395,7 +416,7 @@ describe("useCaseDetailsState reducer", () => {
     describe("reopening pdfs", () => {
       it("can reopen a read mode pdf and show the previously visible document", () => {
         const existingTabsState = {
-          authToken: "authtoken",
+          authToken: "foo",
           items: [{ documentId: "d1", mode: "read" }],
         } as CombinedState["tabsState"];
 
@@ -406,7 +427,12 @@ describe("useCaseDetailsState reducer", () => {
           } as CombinedState,
           {
             type: "OPEN_PDF",
-            payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+            payload: {
+              pdfId: "d1",
+              tabSafeId: "t1",
+              mode: "read",
+              authToken: "bar",
+            },
           }
         );
 
@@ -415,13 +441,13 @@ describe("useCaseDetailsState reducer", () => {
           searchState: {
             isResultsVisible: false,
           },
-          tabsState: existingTabsState,
+          tabsState: { ...existingTabsState, authToken: "bar" },
         });
       });
 
       it("can reopen a search mode pdf and show the previously visible document", () => {
         const existingTabsState = {
-          authToken: "authtoken",
+          authToken: "foo",
           items: [{ documentId: "d1", mode: "search", searchTerm: "foo" }],
         } as CombinedState["tabsState"];
 
@@ -433,7 +459,12 @@ describe("useCaseDetailsState reducer", () => {
           } as CombinedState,
           {
             type: "OPEN_PDF",
-            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+            payload: {
+              pdfId: "d1",
+              tabSafeId: "t1",
+              mode: "search",
+              authToken: "bar",
+            },
           }
         );
 
@@ -443,13 +474,13 @@ describe("useCaseDetailsState reducer", () => {
             submittedSearchTerm: "foo",
             isResultsVisible: false,
           },
-          tabsState: existingTabsState,
+          tabsState: { ...existingTabsState, authToken: "bar" },
         });
       });
 
       it("can reopen a read mode pdf in search mode", () => {
         const existingTabsState = {
-          authToken: "authtoken",
+          authToken: "foo",
           items: [
             { documentId: "d0", mode: "read" },
             { documentId: "d1", mode: "read" },
@@ -473,6 +504,9 @@ describe("useCaseDetailsState reducer", () => {
                   occurrences: [
                     {
                       pageIndex: 0,
+                      pageHeight: 11.69,
+                      pageWidth: 8.27,
+
                       occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
                     },
                   ] as MappedDocumentResult["occurrences"],
@@ -494,7 +528,12 @@ describe("useCaseDetailsState reducer", () => {
           } as CombinedState,
           {
             type: "OPEN_PDF",
-            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+            payload: {
+              pdfId: "d1",
+              tabSafeId: "t1",
+              mode: "search",
+              authToken: "bar",
+            },
           }
         );
 
@@ -510,6 +549,9 @@ describe("useCaseDetailsState reducer", () => {
                     occurrences: [
                       {
                         pageIndex: 0,
+                        pageHeight: 11.69,
+                        pageWidth: 8.27,
+
                         occurrencesInLine: [[21, 21, 9, 9, 23, 23, 9, 9]],
                       },
                     ],
@@ -522,7 +564,7 @@ describe("useCaseDetailsState reducer", () => {
           },
           documentsState: { status: "succeeded", data: [] },
           tabsState: {
-            authToken: "authtoken",
+            authToken: "bar",
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -570,7 +612,7 @@ describe("useCaseDetailsState reducer", () => {
 
       it("can reopen a search mode pdf in read mode", () => {
         const existingTabsState = {
-          authToken: "authtoken",
+          authToken: "foo",
           items: [
             { documentId: "d0", mode: "read" },
             { documentId: "d1", mode: "search" },
@@ -601,7 +643,12 @@ describe("useCaseDetailsState reducer", () => {
           } as CombinedState,
           {
             type: "OPEN_PDF",
-            payload: { pdfId: "d1", tabSafeId: "t1", mode: "read" },
+            payload: {
+              pdfId: "d1",
+              tabSafeId: "t1",
+              mode: "read",
+              authToken: "bar",
+            },
           }
         );
 
@@ -610,7 +657,7 @@ describe("useCaseDetailsState reducer", () => {
           searchState: { ...existingSearchState, isResultsVisible: false },
           pipelineState: existingPipelineState,
           tabsState: {
-            authToken: "authtoken",
+            authToken: "bar",
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -628,7 +675,7 @@ describe("useCaseDetailsState reducer", () => {
 
       it("can reopen a search mode pdf in search mode with a different search term", () => {
         const existingTabsState = {
-          authToken: "authtoken",
+          authToken: "foo",
           items: [
             { documentId: "d0", mode: "read" },
             {
@@ -640,6 +687,8 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   boundingBoxes: [[1, 2, 3]],
                   pageIndex: 0,
+                  pageHeight: 11.69,
+                  pageWidth: 8.27,
                 },
               ],
             },
@@ -661,9 +710,24 @@ describe("useCaseDetailsState reducer", () => {
                 {
                   documentId: "d1",
                   occurrences: [
-                    { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
-                    { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
-                    { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
+                    {
+                      pageIndex: 1,
+                      pageHeight: 8,
+                      pageWidth: 7,
+                      occurrencesInLine: [[1, 1, 9, 9, 2, 2]],
+                    },
+                    {
+                      pageIndex: 2,
+                      pageHeight: 9,
+                      pageWidth: 8,
+                      occurrencesInLine: [[2, 2, 9, 9, 3, 3]],
+                    },
+                    {
+                      pageIndex: 2,
+                      pageHeight: 10,
+                      pageWidth: 9,
+                      occurrencesInLine: [[3, 3, 9, 9, 4, 4]],
+                    },
                   ] as MappedDocumentResult["occurrences"],
                   occurrencesInDocumentCount: 4,
                 },
@@ -683,7 +747,12 @@ describe("useCaseDetailsState reducer", () => {
           } as CombinedState,
           {
             type: "OPEN_PDF",
-            payload: { pdfId: "d1", tabSafeId: "t1", mode: "search" },
+            payload: {
+              pdfId: "d1",
+              tabSafeId: "t1",
+              mode: "search",
+              authToken: "bar",
+            },
           }
         );
 
@@ -697,9 +766,24 @@ describe("useCaseDetailsState reducer", () => {
                   {
                     documentId: "d1",
                     occurrences: [
-                      { pageIndex: 1, occurrencesInLine: [[1, 1, 9, 9, 2, 2]] },
-                      { pageIndex: 2, occurrencesInLine: [[2, 2, 9, 9, 3, 3]] },
-                      { pageIndex: 2, occurrencesInLine: [[3, 3, 9, 9, 4, 4]] },
+                      {
+                        pageIndex: 1,
+                        pageHeight: 8,
+                        pageWidth: 7,
+                        occurrencesInLine: [[1, 1, 9, 9, 2, 2]],
+                      },
+                      {
+                        pageIndex: 2,
+                        pageHeight: 9,
+                        pageWidth: 8,
+                        occurrencesInLine: [[2, 2, 9, 9, 3, 3]],
+                      },
+                      {
+                        pageIndex: 2,
+                        pageHeight: 10,
+                        pageWidth: 9,
+                        occurrencesInLine: [[3, 3, 9, 9, 4, 4]],
+                      },
                     ],
                     occurrencesInDocumentCount: 4,
                   },
@@ -710,7 +794,7 @@ describe("useCaseDetailsState reducer", () => {
           },
           documentsState: { status: "succeeded", data: [] },
           tabsState: {
-            authToken: "authtoken",
+            authToken: "bar",
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -718,7 +802,14 @@ describe("useCaseDetailsState reducer", () => {
                 mode: "search",
                 searchTerm: "bar",
                 occurrencesInDocumentCount: 4,
-                pageOccurrences: [{ boundingBoxes: [[1, 2, 3]], pageIndex: 0 }],
+                pageOccurrences: [
+                  {
+                    boundingBoxes: [[1, 2, 3]],
+                    pageIndex: 0,
+                    pageHeight: 11.69,
+                    pageWidth: 8.27,
+                  },
+                ],
                 clientLockedState: "unlocked",
                 tabSafeId: "t1",
                 searchHighlights: [
@@ -733,8 +824,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 0.97,
                         x2: 2.03,
                         y2: 2.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 7,
+                        height: 8,
                       },
                       rects: [
                         {
@@ -742,8 +833,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 0.97,
                           x2: 2.03,
                           y2: 2.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 7,
+                          height: 8,
                         },
                       ],
                     },
@@ -759,8 +850,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 1.97,
                         x2: 3.03,
                         y2: 3.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 8,
+                        height: 9,
                       },
                       rects: [
                         {
@@ -768,8 +859,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 1.97,
                           x2: 3.03,
                           y2: 3.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 8,
+                          height: 9,
                         },
                       ],
                     },
@@ -785,8 +876,8 @@ describe("useCaseDetailsState reducer", () => {
                         y1: 2.97,
                         x2: 4.03,
                         y2: 4.03,
-                        width: 8.27,
-                        height: 11.69,
+                        width: 8,
+                        height: 9,
                       },
                       rects: [
                         {
@@ -794,8 +885,8 @@ describe("useCaseDetailsState reducer", () => {
                           y1: 2.97,
                           x2: 4.03,
                           y2: 4.03,
-                          width: 8.27,
-                          height: 11.69,
+                          width: 8,
+                          height: 9,
                         },
                       ],
                     },
@@ -845,80 +936,6 @@ describe("useCaseDetailsState reducer", () => {
             tabSafeId: "t1",
           },
         ],
-      });
-    });
-  });
-
-  describe("UPDATE_AUTH_TOKEN", () => {
-    it("throws if update auth token fails", () => {
-      expect(() =>
-        reducer({} as CombinedState, {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: {
-            status: "failed",
-            error: ERROR,
-            httpStatusCode: undefined,
-          },
-        })
-      ).toThrowError(ERROR);
-    });
-
-    it("can not update auth token if headers are not ready", () => {
-      const existingState = {} as CombinedState;
-      const newHeaders = { status: "loading" } as ApiResult<Headers>;
-
-      const nextState = reducer(existingState, {
-        type: "UPDATE_AUTH_TOKEN",
-        payload: newHeaders,
-      });
-      expect(nextState).toBe(existingState);
-    });
-
-    it("can not update auth token if headers are not present", () => {
-      const existingTabsState = {
-        items: [],
-        authToken: undefined,
-      } as CombinedState["tabsState"];
-
-      const newHeadersApiResult = {
-        status: "succeeded",
-        data: new Headers(),
-      } as ApiResult<Headers>;
-
-      const nextState = reducer(
-        { tabsState: existingTabsState } as CombinedState,
-        {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: newHeadersApiResult,
-        }
-      );
-      expect(nextState.tabsState).toEqual({ items: [], authToken: undefined });
-    });
-
-    it("can update auth token if headers are present", () => {
-      const existingTabsState = {
-        items: [],
-        authToken: undefined,
-      } as CombinedState["tabsState"];
-
-      const headers = new Headers();
-      headers.append("Authorization", "auth-token");
-
-      const newHeadersApiResult = {
-        status: "succeeded",
-        data: headers,
-      } as ApiResult<Headers>;
-
-      const nextState = reducer(
-        { tabsState: existingTabsState } as CombinedState,
-        {
-          type: "UPDATE_AUTH_TOKEN",
-          payload: newHeadersApiResult,
-        }
-      );
-      expect(nextState.tabsState).toEqual({
-        items: [],
-        authToken: "auth-token",
       });
     });
   });
