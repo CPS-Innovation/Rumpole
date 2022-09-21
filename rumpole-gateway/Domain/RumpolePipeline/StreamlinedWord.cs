@@ -13,5 +13,8 @@ namespace RumpoleGateway.Domain.RumpolePipeline
 
         [JsonProperty(PropertyName = "weighting")]
         public int Weighting { get; set; }
+        
+        [JsonProperty(PropertyName = "matchType")]
+        public StreamlinedMatchType StreamlinedMatchType { get; set; }
     }
 }
