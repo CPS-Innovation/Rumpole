@@ -1,4 +1,4 @@
-import { isUrnValid } from "./isUrnValid";
+import { isUrnValid } from "./is-urn-valid";
 
 describe("urnRegex", () => {
   it("will pass for correctly formatted values", () => {

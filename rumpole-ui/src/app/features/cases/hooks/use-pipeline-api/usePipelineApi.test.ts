@@ -1,5 +1,5 @@
 import { usePipelineApi } from "./usePipelineApi";
-import * as polling from "./initiateAndPoll";
+import * as polling from "./initiate-and-poll";
 import { PipelineResults } from "../../domain/PipelineResults";
 import { renderHook } from "@testing-library/react-hooks";
 import { AsyncPipelineResult } from "./AsyncPipelineResult";
