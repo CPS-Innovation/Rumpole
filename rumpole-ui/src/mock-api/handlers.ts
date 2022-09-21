@@ -142,13 +142,6 @@ export const setupHandlers = ({
         )
       );
     }),
-    rest.get(makeApiPath(routes.SAS_URL_ROUTE), (req, res, ctx) => {
-      const { blobName } = req.params;
-
-      const fileBase64 = (pdfStrings as { [key: string]: string })[blobName];
-
-      return res(delay(ctx), ctx.body(_base64ToArrayBuffer(fileBase64)));
-    }),
   ];
 };
 
