@@ -15,6 +15,8 @@ export const HeaderSearchMode: React.FC<Props> = ({
   handleSetFocussedHighlightIndex,
   handleLaunchSearchResults,
 }) => {
+  const oneBasedFocussedHighlightIndex = focussedHighlightIndex + 1;
+
   return (
     <div className={classes.content}>
       <div className={classes.heavyText}>
@@ -29,27 +31,25 @@ export const HeaderSearchMode: React.FC<Props> = ({
       </div>
 
       <div>
-        <div style={{ display: "none" }}>
-          {focussedHighlightIndex > 1 && (
-            <LinkButton
-              onClick={() =>
-                handleSetFocussedHighlightIndex(focussedHighlightIndex - 1)
-              }
-            >
-              Previous
-            </LinkButton>
-          )}{" "}
-          {focussedHighlightIndex}/{occurrencesInDocumentCount}{" "}
-          {focussedHighlightIndex < occurrencesInDocumentCount && (
-            <LinkButton
-              onClick={() =>
-                handleSetFocussedHighlightIndex(focussedHighlightIndex + 1)
-              }
-            >
-              Next
-            </LinkButton>
-          )}
-        </div>
+        {focussedHighlightIndex > 0 && (
+          <LinkButton
+            onClick={() =>
+              handleSetFocussedHighlightIndex(focussedHighlightIndex - 1)
+            }
+          >
+            Previous
+          </LinkButton>
+        )}{" "}
+        {oneBasedFocussedHighlightIndex}/{occurrencesInDocumentCount}{" "}
+        {focussedHighlightIndex < occurrencesInDocumentCount - 1 && (
+          <LinkButton
+            onClick={() =>
+              handleSetFocussedHighlightIndex(focussedHighlightIndex + 1)
+            }
+          >
+            Next
+          </LinkButton>
+        )}
       </div>
     </div>
   );

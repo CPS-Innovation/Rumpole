@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   PdfLoader,
   PdfHighlighter,
   Popup,
   ScaledPosition,
+  IHighlight,
 } from "../../../../../../react-pdf-highlighter";
 
 import classes from "./PdfViewer.module.scss";
@@ -45,13 +46,20 @@ export const PdfViewer: React.FC<Props> = ({
   handleRemoveRedaction,
   handleRemoveAllRedactions,
   handleSavedRedactions,
+  focussedHighlightIndex,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollToFnRef = useRef<(highlight: IHighlight) => void>();
 
   const highlights = useMemo(
     () => [...(searchHighlights || []), ...redactionHighlights],
     [searchHighlights, redactionHighlights]
   );
+
+  useEffect(() => {
+    scrollToFnRef.current &&
+      scrollToFnRef.current(highlights[focussedHighlightIndex]);
+  }, [highlights, focussedHighlightIndex]);
 
   const addRedaction = useCallback(
     (position: ScaledPosition, isAreaHighlight: boolean) => {
@@ -60,11 +68,6 @@ export const PdfViewer: React.FC<Props> = ({
         position,
         highlightType: isAreaHighlight ? "area" : "linear",
       };
-
-      // const isFirstRedaction = !redactionHighlights.length;
-      // if (isFirstRedaction) {
-      //   scrollAllPdfIntoView();
-      // }
 
       handleAddRedaction(newRedaction);
     },
@@ -89,8 +92,9 @@ export const PdfViewer: React.FC<Props> = ({
               onScrollChange={() => {}}
               pdfScaleValue="page-width"
               scrollRef={(scrollTo) => {
-                //this.scrollViewerTo = scrollTo;
-                //this.scrollToHighlightFromHash();
+                scrollToFnRef.current = scrollTo;
+                // imperatively trigger as soon as we have reference to the scrollTo function
+                scrollTo(highlights[0]);
               }}
               onSelectionFinished={(position, content, hideTipAndSelection) => (
                 <RedactButton
@@ -105,7 +109,7 @@ export const PdfViewer: React.FC<Props> = ({
                 index,
                 setTip,
                 hideTip,
-                viewportToScaled,
+                _,
                 __,
                 isScrolledTo
               ) => {
