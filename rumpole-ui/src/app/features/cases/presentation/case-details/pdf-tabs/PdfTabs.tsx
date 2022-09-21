@@ -33,7 +33,7 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
       idPrefix="pdf"
       items={items.map((item) => ({
         id: item.tabSafeId,
-        label: item.fileName,
+        label: item.presentationFileName,
         panel: {
           children: (
             <PdfTab
