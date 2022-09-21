@@ -65,7 +65,7 @@ describe("case details page", () => {
         .contains("REPORT TO CROWN PROSECUTOR FOR CHARGING DECISION,");
     });
 
-    it.only("can open a pdf in a new tab", () => {
+    it("can open a pdf in a new tab", () => {
       cy.visit("/case-details/13401", {
         onBeforeLoad(window) {
           cy.stub(window, "open");

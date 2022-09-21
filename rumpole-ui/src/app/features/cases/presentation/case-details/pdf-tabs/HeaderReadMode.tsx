@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const HeaderReadMode: React.FC<Props> = ({
-  caseDocumentViewModel: { fileName, sasUrl, documentId },
+  caseDocumentViewModel: { presentationFileName, sasUrl, documentId },
   handleOpenPdfInNewTab,
 }) => {
   useEffect(() => {
@@ -24,7 +24,7 @@ export const HeaderReadMode: React.FC<Props> = ({
         data-testid="btn-open-pdf"
         onClick={() => handleOpenPdfInNewTab(documentId)}
       >
-        {fileName} (opens in a new window)
+        {presentationFileName} (opens in a new window)
       </LinkButton>
     </div>
   );
