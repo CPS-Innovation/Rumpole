@@ -14,16 +14,18 @@ export const HeaderReadMode: React.FC<Props> = ({
 }) => {
   useEffect(() => {
     if (sasUrl) {
-      //window.open(sasUrl, "_blank");
+      window.open(sasUrl, "_blank");
     }
   }, [sasUrl]);
 
   return (
     <div className={classes.content}>
-      <LinkButton onClick={() => handleOpenPdfInNewTab(documentId)}>
+      <LinkButton
+        data-testid="btn-open-pdf"
+        onClick={() => handleOpenPdfInNewTab(documentId)}
+      >
         {fileName} (opens in a new window)
       </LinkButton>
-      {sasUrl}
     </div>
   );
 };

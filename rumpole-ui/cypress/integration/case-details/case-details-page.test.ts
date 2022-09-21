@@ -64,6 +64,28 @@ describe("case details page", () => {
         .should("exist")
         .contains("REPORT TO CROWN PROSECUTOR FOR CHARGING DECISION,");
     });
+
+    it.only("can open a pdf in a new tab", () => {
+      cy.visit("/case-details/13401", {
+        onBeforeLoad(window) {
+          cy.stub(window, "open");
+        },
+      });
+
+      cy.findByTestId("btn-accordion-open-close-all").click();
+
+      cy.findByTestId("link-document-d1").click();
+
+      cy.findByTestId("btn-open-pdf").click();
+
+      cy.window()
+        .its("open")
+        .should(
+          "be.calledWith",
+          "https://mocked-out-api/api/some-complicated-sas-url/MCLOVEMG3",
+          "_blank"
+        );
+    });
   });
 });
 

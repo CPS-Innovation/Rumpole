@@ -133,6 +133,22 @@ export const setupHandlers = ({
     rest.put(makeApiPath(routes.DOCUMENT_CHECKIN_ROUTE), (req, res, ctx) => {
       return res(ctx.json({ successful: true, documentStatus: "CheckedOut" }));
     }),
+
+    rest.get(makeApiPath(routes.GET_SAS_URL_ROUTE), (req, res, ctx) => {
+      const { blobName } = req.params;
+      return res(
+        ctx.text(
+          makeApiPath(routes.SAS_URL_ROUTE).replace(":blobName", blobName)
+        )
+      );
+    }),
+    rest.get(makeApiPath(routes.SAS_URL_ROUTE), (req, res, ctx) => {
+      const { blobName } = req.params;
+
+      const fileBase64 = (pdfStrings as { [key: string]: string })[blobName];
+
+      return res(delay(ctx), ctx.body(_base64ToArrayBuffer(fileBase64)));
+    }),
   ];
 };
 
