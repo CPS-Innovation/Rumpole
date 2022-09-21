@@ -25,7 +25,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineGetSasUrl")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdf/sas-url/{*blobName}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdf/sasUrl/{*blobName}")]
             HttpRequest req, string blobName)
         {
             try
