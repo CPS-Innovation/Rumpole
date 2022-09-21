@@ -15,7 +15,6 @@ namespace RumpoleGateway.Mappers
             {
                 Text = word.Text,
                 BoundingBox = searchTermLookup.TermFound ? word.BoundingBox : null,
-                Weighting = searchTermLookup.Weighting,
                 StreamlinedMatchType = searchTermLookup.SearchMatchType
             };
 
@@ -26,17 +25,17 @@ namespace RumpoleGateway.Mappers
         {
             var tidiedText = wordText.Replace(" ", "");
             if (searchTerm.Equals(tidiedText, StringComparison.CurrentCultureIgnoreCase))
-                return new SearchTermResult(true, 100, StreamlinedMatchType.Exact);
+                return new SearchTermResult(true, StreamlinedMatchType.Exact);
 
             var partialWeighting = Fuzz.PartialRatio(tidiedText, searchTerm);
             if (partialWeighting >= 95)
             {
                 return Regex.IsMatch(wordText, @"\b" + searchTerm + @"\b", RegexOptions.IgnoreCase) 
-                    ? new SearchTermResult(true, 100, StreamlinedMatchType.Exact) 
-                    : new SearchTermResult(true, partialWeighting, StreamlinedMatchType.Fuzzy);
+                    ? new SearchTermResult(true, StreamlinedMatchType.Exact) 
+                    : new SearchTermResult(true, StreamlinedMatchType.Fuzzy);
             }
 
-            return new SearchTermResult(false, 0, StreamlinedMatchType.None);
+            return new SearchTermResult(false, StreamlinedMatchType.None);
         }
     }
 }
