@@ -76,5 +76,13 @@ namespace RumpoleGateway.Tests.Factories
 
             sasBuilder.Permissions.Should().Be("r");
         }
+
+        [Fact]
+        public void Create_ReturnsSasBuilderWithExpectedContentType()
+        {
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+
+            sasBuilder.ContentType.Should().Be("application/pdf");
+        }
     }
 }

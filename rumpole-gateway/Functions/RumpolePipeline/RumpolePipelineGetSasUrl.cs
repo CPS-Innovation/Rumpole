@@ -25,21 +25,21 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineGetSasUrl")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdf/sasUrl/{*blobName}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "pdf/sas-url/{*blobName}")]
             HttpRequest req, string blobName)
         {
             try
             {
                 if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
                     return AuthorizationErrorResponse();
-                
+
                 var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
                 if (!validToken)
                     return BadRequestErrorResponse("Token validation failed");
 
                 if (string.IsNullOrWhiteSpace(blobName))
                     return BadRequestErrorResponse("Blob name is not supplied.");
-                
+
                 var sasUrl = await _sasGeneratorService.GenerateSasUrlAsync(blobName);
 
                 return !string.IsNullOrWhiteSpace(sasUrl) ? new OkObjectResult(sasUrl) : NotFoundErrorResponse($"No pdf document found for blob name '{blobName}'.");

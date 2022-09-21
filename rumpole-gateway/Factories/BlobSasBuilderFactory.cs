@@ -25,7 +25,7 @@ namespace RumpoleGateway.Factories
             };
             sasBuilder.ExpiresOn = sasBuilder.StartsOn.AddSeconds(_blobOptions.BlobExpirySecs);
             sasBuilder.SetPermissions(BlobSasPermissions.Read);
-
+            sasBuilder.ContentType = "application/pdf";
             return sasBuilder;
         }
     }
