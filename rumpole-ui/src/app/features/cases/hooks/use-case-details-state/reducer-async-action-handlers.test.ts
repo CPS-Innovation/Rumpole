@@ -13,6 +13,117 @@ describe("reducerAsyncActionHandlers", () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    combinedStateMock = {} as CombinedState;
+  });
+
+  describe("REQUEST_OPEN_PDF_IN_NEW_TAB", () => {
+    it("can open a pdf in a new tab", async () => {
+      // arrange
+      const getPdfSasUrlSpy = jest
+        .spyOn(api, "getPdfSasUrl")
+        .mockImplementation(() => Promise.resolve("baz"));
+
+      combinedStateMock = {
+        tabsState: {
+          items: [
+            { documentId: "foo1", pdfBlobName: "bar1" },
+            { documentId: "foo2", pdfBlobName: "bar2" },
+          ] as CaseDocumentViewModel[],
+        },
+      } as CombinedState;
+
+      const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF_IN_NEW_TAB({
+        dispatch: dispatchMock,
+        getState: () => combinedStateMock,
+        signal: new AbortController().signal,
+      });
+
+      // act
+      await handler({
+        type: "REQUEST_OPEN_PDF_IN_NEW_TAB",
+        payload: {
+          pdfId: "foo1",
+        },
+      });
+
+      // assert
+      expect(getPdfSasUrlSpy).toBeCalledWith("bar1");
+
+      expect(dispatchMock.mock.calls.length).toBe(1);
+      expect(dispatchMock.mock.calls[0][0]).toEqual({
+        type: "OPEN_PDF_IN_NEW_TAB",
+        payload: {
+          pdfId: "foo1",
+          sasUrl: "baz",
+        },
+      });
+    });
+  });
+
+  describe("REQUEST_OPEN_PDF", () => {
+    it("can open a pdf when auth token is retrieved", async () => {
+      // arrange
+      jest
+        .spyOn(api, "getCoreHeaders")
+        .mockImplementation(() =>
+          Promise.resolve(new Headers({ Authorization: "baz" }))
+        );
+
+      const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
+        dispatch: dispatchMock,
+        getState: () => combinedStateMock,
+        signal: new AbortController().signal,
+      });
+
+      // act
+      await handler({
+        type: "REQUEST_OPEN_PDF",
+        payload: {
+          pdfId: "foo",
+          tabSafeId: "bar",
+          mode: "read",
+        },
+      });
+
+      // assert
+      expect(dispatchMock.mock.calls.length).toBe(1);
+      expect(dispatchMock.mock.calls[0][0]).toEqual({
+        type: "OPEN_PDF",
+        payload: {
+          pdfId: "foo",
+          tabSafeId: "bar",
+          mode: "read",
+          authToken: "baz",
+        },
+      });
+    });
+
+    it("can throw when auth token is not retrieved", async () => {
+      // arrange
+      jest
+        .spyOn(api, "getCoreHeaders")
+        .mockImplementation(() => Promise.resolve(new Headers()));
+
+      const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
+        dispatch: dispatchMock,
+        getState: () => combinedStateMock,
+        signal: new AbortController().signal,
+      });
+
+      // act
+      const act = async () =>
+        await handler({
+          type: "REQUEST_OPEN_PDF",
+          payload: {
+            pdfId: "foo",
+            tabSafeId: "bar",
+            mode: "read",
+          },
+        });
+
+      // assert
+      await expect(act()).rejects.toThrow("Auth token");
+    });
   });
 
   describe("ADD_REDACTION_AND_POTENTIALLY_LOCK", () => {

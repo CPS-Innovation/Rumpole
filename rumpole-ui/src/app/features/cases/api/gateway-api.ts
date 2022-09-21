@@ -80,6 +80,21 @@ export const getCaseDocumentsList = async (caseId: string) => {
   return apiReponse.caseDocuments;
 };
 
+export const getPdfSasUrl = async (pdfBlobName: string) => {
+  const headers = await getCoreHeaders();
+  const path = getFullUrl(`/api/pdf/sasUrl/${pdfBlobName}`);
+  const response = await fetch(path, {
+    headers,
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Get Pdf SasUrl failed", path, response);
+  }
+
+  return await response.text();
+};
+
 export const initiatePipeline = async (caseId: string) => {
   const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/cases/${caseId}?force=true`);

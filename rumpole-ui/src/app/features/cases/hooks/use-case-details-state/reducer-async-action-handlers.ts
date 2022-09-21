@@ -4,6 +4,7 @@ import {
   checkinDocument,
   checkoutDocument,
   getCoreHeaders,
+  getPdfSasUrl,
   saveRedactions,
 } from "../../api/gateway-api";
 import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
@@ -51,12 +52,36 @@ type AsyncActions =
         pdfId: string;
         mode: CaseDocumentViewModel["mode"];
       };
+    }
+  | {
+      type: "REQUEST_OPEN_PDF_IN_NEW_TAB";
+      payload: {
+        pdfId: string;
+      };
     };
 
 export const reducerAsyncActionHandlers: AsyncActionHandlers<
   Reducer<State, Action>,
   AsyncActions
 > = {
+  REQUEST_OPEN_PDF_IN_NEW_TAB:
+    ({ dispatch, getState }) =>
+    async (action) => {
+      const {
+        payload: { pdfId },
+      } = action;
+
+      const pdfBlobName = getState().tabsState.items.find(
+        (item) => item.documentId === pdfId
+      )!.pdfBlobName!;
+
+      const sasUrl = await getPdfSasUrl(pdfBlobName);
+
+      dispatch({
+        type: "OPEN_PDF_IN_NEW_TAB",
+        payload: { pdfId, sasUrl },
+      });
+    },
   REQUEST_OPEN_PDF:
     ({ dispatch }) =>
     async (action) => {

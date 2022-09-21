@@ -193,8 +193,14 @@ export const useCaseDetailsState = (id: string) => {
     [dispatch]
   );
 
+  const handleOpenPdfInNewTab = useCallback(
+    (pdfId: string) =>
+      dispatch({ type: "REQUEST_OPEN_PDF_IN_NEW_TAB", payload: { pdfId } }),
+    [dispatch]
+  );
   return {
     ...combinedState,
+    handleOpenPdfInNewTab,
     handleOpenPdf,
     handleClosePdf,
     handleSearchTermChange,
