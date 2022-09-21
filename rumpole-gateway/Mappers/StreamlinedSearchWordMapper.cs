@@ -30,9 +30,10 @@ namespace RumpoleGateway.Mappers
             var partialWeighting = Fuzz.PartialRatio(tidiedText, searchTerm);
             if (partialWeighting >= 95)
             {
-                return Regex.IsMatch(wordText, @"\b" + searchTerm + @"\b", RegexOptions.IgnoreCase) 
-                    ? new SearchTermResult(true, StreamlinedMatchType.Exact) 
-                    : new SearchTermResult(true, StreamlinedMatchType.Fuzzy);
+                return Regex.IsMatch(wordText, @"\b" + searchTerm + @"\b", RegexOptions.IgnoreCase)
+                    ? new SearchTermResult(true, StreamlinedMatchType.Exact)
+                    //: new SearchTermResult(true, StreamlinedMatchType.Fuzzy); commented out fuzzy matches for now until we support them when searching the index
+                    : new SearchTermResult(false, StreamlinedMatchType.None);
             }
 
             return new SearchTermResult(false, StreamlinedMatchType.None);

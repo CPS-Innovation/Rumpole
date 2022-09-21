@@ -66,6 +66,7 @@ namespace RumpoleGateway.Tests.Mappers
             result.BoundingBox.Should().NotBeNull();
         }
         
+        //tests expect fuzzy matches to return "None" for now
         [Theory]
         [InlineData("friends", "then I will", false, StreamlinedMatchType.None)]
         [InlineData("friends", "the trouble with Scotland is that is full of Scots", false, StreamlinedMatchType.None)]
@@ -79,20 +80,20 @@ namespace RumpoleGateway.Tests.Mappers
         [InlineData("friends", "she was awfully friendly for a presbyterian", false, StreamlinedMatchType.None)]
         [InlineData("friend", "then I will", false, StreamlinedMatchType.None)]
         [InlineData("friend", "the trouble with Scotland is that is full of Scots", false, StreamlinedMatchType.None)]
-        [InlineData("friend", "suspect/friends/family", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("friend", "suspect/friends/family", false, StreamlinedMatchType.None)]
         [InlineData("friend", "William the Conqueror", false, StreamlinedMatchType.None)]
         [InlineData("friend", "suspect/enemies/family", false, StreamlinedMatchType.None)]
-        [InlineData("friend", "friends, romans, countrymen", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("friend", "friends, romans, countrymen", false, StreamlinedMatchType.None)]
         [InlineData("friend", "my friend's dog bit me on the rear", true, StreamlinedMatchType.Exact)]
-        [InlineData("friend", "my friends' cars are posh", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("friend", "my friends' cars are posh", false, StreamlinedMatchType.None)]
         [InlineData("friend", "my friend told me she loved me!", true, StreamlinedMatchType.Exact)]
-        [InlineData("friend", "she was awfully friendly for a presbyterian", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("friend", "she was awfully friendly for a presbyterian", false, StreamlinedMatchType.None)]
         [InlineData("then", "then I will", true, StreamlinedMatchType.Exact)]
         [InlineData("then", "the trouble with Scotland is that is full of Scots", false, StreamlinedMatchType.None)]
-        [InlineData("the", "then I will", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("the", "then I will", false, StreamlinedMatchType.None)]
         [InlineData("the", "the trouble with Scotland is that is full of Scots", true, StreamlinedMatchType.Exact)]
         [InlineData("friend", "you are my best-friend", true, StreamlinedMatchType.Exact)]
-        [InlineData("friend", "we are best-friends", true, StreamlinedMatchType.Fuzzy)]
+        [InlineData("friend", "we are best-friends", false, StreamlinedMatchType.None)]
         [InlineData("friends", "we are best-friends.", true, StreamlinedMatchType.Exact)]
         [InlineData("friends", "we are best-fwiends.", false, StreamlinedMatchType.None)]
         public void Query_TestSearchResultsSelection_For_ExpectedIdentifiers(string searchTerm, string searchText, bool isBoundingBoxSet, StreamlinedMatchType expectedMatchType)
