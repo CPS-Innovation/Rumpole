@@ -1,6 +1,6 @@
 import { ApiResult } from "../../../../common/types/ApiResult";
 import { PipelineResults } from "../../domain/PipelineResults";
-import { initiateAndPoll } from "./initiateAndPoll";
+import { initiateAndPoll } from "./initiate-and-poll";
 import * as api from "../../api/gateway-api";
 import { waitFor } from "@testing-library/react";
 import { ApiError } from "../../../../common/errors/ApiError";

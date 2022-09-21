@@ -1,12 +1,16 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import { useSearchInputLogic } from "./useSearchInputLogic";
+import * as isUrnValid from "../logic/is-urn-valid";
 
-let mockIsValidValue: boolean | undefined;
-jest.mock("../logic/isUrnValid", () => ({
-  isUrnValid: () => mockIsValidValue,
-}));
+let mockIsValidValue: boolean;
 
 describe("useSearchInputLogic", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(isUrnValid, "isUrnValid")
+      .mockImplementation((urn: string) => mockIsValidValue);
+  });
+
   it("can set URN values", async () => {
     const { result } = renderHook(() =>
       useSearchInputLogic({ initialUrn: "A", setParams: (params) => {} })

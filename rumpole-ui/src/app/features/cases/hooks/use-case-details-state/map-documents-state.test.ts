@@ -2,16 +2,20 @@ import { AsyncResult } from "../../../../common/types/AsyncResult";
 import { CaseDocument } from "../../domain/CaseDocument";
 import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
 import { mapDocumentsState } from "./map-documents-state";
-
-jest.mock("./document-category-definitions", () => ({
-  getCategory: (item: CaseDocument) => "category" + item.documentId,
-}));
-
-jest.mock("../../logic/get-file-name-without-extension", () => ({
-  getFileNameWithoutExtension: (filename: string) => filename + "!",
-}));
+import * as documentCategoryDefinitions from "./document-category-definitions";
+import * as getFileNameWithoutExtension from "../../logic/get-file-name-without-extension";
 
 describe("mapDocumentsState", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(documentCategoryDefinitions, "getCategory")
+      .mockImplementation((item: CaseDocument) => "category" + item.documentId);
+
+    jest
+      .spyOn(getFileNameWithoutExtension, "getFileNameWithoutExtension")
+      .mockImplementation((filename: string | undefined) => filename + "!");
+  });
+
   it("can leave the input alone if status is loading", () => {
     const input = { status: "loading" } as AsyncResult<CaseDocument[]>;
 

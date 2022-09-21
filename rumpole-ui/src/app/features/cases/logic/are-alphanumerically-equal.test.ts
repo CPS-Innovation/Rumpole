@@ -1,4 +1,4 @@
-import { areAlphanumericallyEqual } from "./areAlphanumericallyEqual";
+import { areAlphanumericallyEqual } from "./are-alphanumerically-equal";
 
 describe("areAlphanumericallyEqual", () => {
   it("can match values and ignore punctuation", () => {
