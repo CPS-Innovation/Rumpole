@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   PdfLoader,
   PdfHighlighter,
   Popup,
   ScaledPosition,
+  IHighlight,
 } from "../../../../../../react-pdf-highlighter";
 
 import classes from "./PdfViewer.module.scss";
@@ -17,6 +18,7 @@ import { RemoveButton } from "./RemoveButton";
 import { IPdfHighlight } from "../../../domain/IPdfHighlight";
 import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
 import { Footer } from "./Footer";
+import { PdfHighlight } from "./PdfHighlifght";
 
 const SCROLL_TO_OFFSET = 120;
 
@@ -39,19 +41,29 @@ const ensureAllPdfInView = () =>
 export const PdfViewer: React.FC<Props> = ({
   url,
   authToken,
-  searchHighlights,
+  searchHighlights = [],
   redactionHighlights,
   handleAddRedaction,
   handleRemoveRedaction,
   handleRemoveAllRedactions,
   handleSavedRedactions,
+  focussedHighlightIndex,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollToFnRef = useRef<(highlight: IHighlight) => void>();
 
   const highlights = useMemo(
-    () => [...(searchHighlights || []), ...redactionHighlights],
+    () => [...searchHighlights, ...redactionHighlights],
     [searchHighlights, redactionHighlights]
   );
+
+  useEffect(() => {
+    scrollToFnRef.current &&
+      // searchHighlights *not* highlights, as the reference to highlights
+      //  changes every time we make a redaction. We are only bothered
+      //  about focussing search highlights anyway, so this works all round.
+      scrollToFnRef.current(searchHighlights[focussedHighlightIndex]);
+  }, [searchHighlights, focussedHighlightIndex]);
 
   const addRedaction = useCallback(
     (position: ScaledPosition, isAreaHighlight: boolean) => {
@@ -60,11 +72,6 @@ export const PdfViewer: React.FC<Props> = ({
         position,
         highlightType: isAreaHighlight ? "area" : "linear",
       };
-
-      // const isFirstRedaction = !redactionHighlights.length;
-      // if (isFirstRedaction) {
-      //   scrollAllPdfIntoView();
-      // }
 
       handleAddRedaction(newRedaction);
     },
@@ -89,8 +96,9 @@ export const PdfViewer: React.FC<Props> = ({
               onScrollChange={() => {}}
               pdfScaleValue="page-width"
               scrollRef={(scrollTo) => {
-                //this.scrollViewerTo = scrollTo;
-                //this.scrollToHighlightFromHash();
+                scrollToFnRef.current = scrollTo;
+                // imperatively trigger as soon as we have reference to the scrollTo function
+                scrollTo(highlights[0]);
               }}
               onSelectionFinished={(position, content, hideTipAndSelection) => (
                 <RedactButton
@@ -105,42 +113,18 @@ export const PdfViewer: React.FC<Props> = ({
                 index,
                 setTip,
                 hideTip,
-                viewportToScaled,
+                _,
                 __,
                 isScrolledTo
               ) => {
-                const component =
-                  highlight.highlightType === "linear" ? (
-                    <PdfLinearHighlight
-                      type={highlight.type}
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                    />
-                  ) : (
-                    <PdfAreaHighlight
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                    />
-                  );
-
-                return highlight.type === "search" ? (
-                  { ...component, key: index }
-                ) : (
-                  <Popup
-                    popupContent={
-                      <RemoveButton
-                        onClick={() => {
-                          handleRemoveRedaction(highlight.id);
-                          hideTip();
-                        }}
-                      />
-                    }
-                    onMouseOver={(popupContent) =>
-                      setTip(highlight, (highlight) => popupContent)
-                    }
-                    onMouseOut={hideTip}
-                    key={index}
-                    children={component}
+                return (
+                  <PdfHighlight
+                    highlight={highlight}
+                    index={index}
+                    setTip={setTip}
+                    hideTip={hideTip}
+                    isScrolledTo={isScrolledTo}
+                    handleRemoveRedaction={handleRemoveRedaction}
                   />
                 );
               }}

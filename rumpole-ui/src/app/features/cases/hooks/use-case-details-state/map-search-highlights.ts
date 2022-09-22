@@ -29,6 +29,8 @@ export const mapSearchHighlights = (
         height: pageHeight,
       };
       results.push({
+        // note: subsequent sorting means that the ids emerging from this function
+        //  are not in regular ascending order
         id: String(i++),
         type: "search",
         highlightType: "linear",

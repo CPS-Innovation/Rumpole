@@ -30,7 +30,7 @@ export const PdfTab: React.FC<PdfTabProps> = ({
   handleOpenPdfInNewTab,
 }) => {
   const [focussedHighlightIndex, setFocussedHighlightIndex] =
-    useState<number>(1);
+    useState<number>(0);
 
   const { url, mode, redactionHighlights, documentId } = caseDocumentViewModel;
 

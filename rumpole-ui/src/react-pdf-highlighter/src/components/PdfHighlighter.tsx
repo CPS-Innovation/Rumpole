@@ -43,7 +43,7 @@ import type {
 } from "../types";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
-type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
+export type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
 interface State<T_HT> {
   ghostHighlight: {

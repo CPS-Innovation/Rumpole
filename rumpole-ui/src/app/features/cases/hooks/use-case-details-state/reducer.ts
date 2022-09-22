@@ -17,6 +17,7 @@ import { isDocumentVisible } from "./is-document-visible";
 import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
 import { mapSearchHighlights } from "./map-search-highlights";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
+import { sortSearchHighlights } from "./sort-search-highlights";
 
 export const reducer = (
   state: CombinedState,
@@ -320,7 +321,9 @@ export const reducer = (
             )
           : /* istanbul ignore next */ [];
 
-        const searchHighlights = mapSearchHighlights(pageOccurrences);
+        const unsortedSearchHighlights = mapSearchHighlights(pageOccurrences);
+
+        const sortedHighlights = sortSearchHighlights(unsortedSearchHighlights);
 
         item = {
           ...coreItem,
@@ -330,7 +333,7 @@ export const reducer = (
           occurrencesInDocumentCount: foundDocumentSearchResult
             ? foundDocumentSearchResult.occurrencesInDocumentCount
             : /* istanbul ignore next */ 0,
-          searchHighlights,
+          searchHighlights: sortedHighlights,
         };
       }
 
