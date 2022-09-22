@@ -18,6 +18,7 @@ import { RemoveButton } from "./RemoveButton";
 import { IPdfHighlight } from "../../../domain/IPdfHighlight";
 import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
 import { Footer } from "./Footer";
+import { PdfHighlight } from "./PdfHighlifght";
 
 const SCROLL_TO_OFFSET = 120;
 
@@ -116,38 +117,14 @@ export const PdfViewer: React.FC<Props> = ({
                 __,
                 isScrolledTo
               ) => {
-                const component =
-                  highlight.highlightType === "linear" ? (
-                    <PdfLinearHighlight
-                      type={highlight.type}
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                    />
-                  ) : (
-                    <PdfAreaHighlight
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                    />
-                  );
-
-                return highlight.type === "search" ? (
-                  { ...component, key: index }
-                ) : (
-                  <Popup
-                    popupContent={
-                      <RemoveButton
-                        onClick={() => {
-                          handleRemoveRedaction(highlight.id);
-                          hideTip();
-                        }}
-                      />
-                    }
-                    onMouseOver={(popupContent) =>
-                      setTip(highlight, (highlight) => popupContent)
-                    }
-                    onMouseOut={hideTip}
-                    key={index}
-                    children={component}
+                return (
+                  <PdfHighlight
+                    highlight={highlight}
+                    index={index}
+                    setTip={setTip}
+                    hideTip={hideTip}
+                    isScrolledTo={isScrolledTo}
+                    handleRemoveRedaction={handleRemoveRedaction}
                   />
                 );
               }}

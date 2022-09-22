@@ -1,22 +1,22 @@
 import React from "react";
-import { LTWHP } from "../../../../../../react-pdf-highlighter";
+import { T_ViewportHighlight } from "../../../../../../react-pdf-highlighter/src/components/PdfHighlighter";
+import { IPdfHighlight } from "../../../domain/IPdfHighlight";
 
 import classes from "./PdfLinearHighlight.module.scss";
 import { PdfLinearHighlightPartRedaction } from "./PdfLinearHighlightPartRedaction";
 import { PdfLinearHighlightPartSearch } from "./PdfLinearHighlightPartSearch";
 
 interface Props {
-  position: {
-    boundingRect: LTWHP;
-    rects: Array<LTWHP>;
-  };
-
   type: "search" | "redaction";
   isScrolledTo: boolean;
+  highlight: T_ViewportHighlight<IPdfHighlight>;
 }
 
 export const PdfLinearHighlight: React.FC<Props> = ({
-  position: { rects },
+  highlight: {
+    position: { rects },
+    id,
+  },
   isScrolledTo,
   type,
 }) => {
@@ -25,7 +25,11 @@ export const PdfLinearHighlight: React.FC<Props> = ({
   }`;
 
   return (
-    <div className={className}>
+    <div
+      className={className}
+      data-testid={`div-highlight-${id}`}
+      data-test-isfocussed={isScrolledTo}
+    >
       <div className={classes["Highlight__parts"]}>
         {rects.map((rect, index) =>
           type === "search" ? (

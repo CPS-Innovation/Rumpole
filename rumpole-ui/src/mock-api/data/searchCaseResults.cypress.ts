@@ -354,6 +354,13 @@ const searchResults = [
         text: "DRINK",
         confidence: 0.0,
       },
+      {
+        boundingBox: [
+          4.0021, 5.494, 4.3822, 5.494, 4.3822, 5.5798, 4.0021, 5.5798,
+        ],
+        text: "DRINK",
+        confidence: 0.0,
+      },
     ],
   },
 ];
