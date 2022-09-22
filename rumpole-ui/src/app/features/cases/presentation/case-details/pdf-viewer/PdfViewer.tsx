@@ -40,7 +40,7 @@ const ensureAllPdfInView = () =>
 export const PdfViewer: React.FC<Props> = ({
   url,
   authToken,
-  searchHighlights,
+  searchHighlights = [],
   redactionHighlights,
   handleAddRedaction,
   handleRemoveRedaction,
@@ -52,14 +52,17 @@ export const PdfViewer: React.FC<Props> = ({
   const scrollToFnRef = useRef<(highlight: IHighlight) => void>();
 
   const highlights = useMemo(
-    () => [...(searchHighlights || []), ...redactionHighlights],
+    () => [...searchHighlights, ...redactionHighlights],
     [searchHighlights, redactionHighlights]
   );
 
   useEffect(() => {
     scrollToFnRef.current &&
-      scrollToFnRef.current(highlights[focussedHighlightIndex]);
-  }, [highlights, focussedHighlightIndex]);
+      // searchHighlights *not* highlights, as the reference to highlights
+      //  changes every time we make a redaction. We are only bothered
+      //  about focussing search highlights anyway, so this works all round.
+      scrollToFnRef.current(searchHighlights[focussedHighlightIndex]);
+  }, [searchHighlights, focussedHighlightIndex]);
 
   const addRedaction = useCallback(
     (position: ScaledPosition, isAreaHighlight: boolean) => {
