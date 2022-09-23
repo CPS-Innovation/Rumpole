@@ -10,8 +10,8 @@ describe("mapTextSearch", () => {
         documentId: "1",
         pageIndex: 0,
         words: [
-          { boundingBox: [1], text: "foo", confidence: 1 },
-          { boundingBox: null, text: "bar", confidence: 1 },
+          { boundingBox: [1], text: "foo", confidence: 1, matchType: "Exact" },
+          { boundingBox: null, text: "bar", confidence: 1, matchType: "None" },
         ],
       },
       {
@@ -19,8 +19,8 @@ describe("mapTextSearch", () => {
         documentId: "2",
         pageIndex: 0,
         words: [
-          { boundingBox: null, text: "baz", confidence: 1 },
-          { boundingBox: [1], text: "foo", confidence: 1 },
+          { boundingBox: null, text: "baz", confidence: 1, matchType: "None" },
+          { boundingBox: [1], text: "foo", confidence: 1, matchType: "Exact" },
         ],
       },
       {
@@ -28,8 +28,8 @@ describe("mapTextSearch", () => {
         documentId: "2",
         pageIndex: 0,
         words: [
-          { boundingBox: [1], text: "foo", confidence: 1 },
-          { boundingBox: [1], text: "foo", confidence: 1 },
+          { boundingBox: [1], text: "foo", confidence: 1, matchType: "Fuzzy" },
+          { boundingBox: [1], text: "foo", confidence: 1, matchType: "Exact" },
         ],
       },
       {
@@ -37,11 +37,12 @@ describe("mapTextSearch", () => {
         documentId: "2",
         pageIndex: 1,
         words: [
-          { boundingBox: [1], text: "foo", confidence: 1 },
-          { boundingBox: null, text: "baz", confidence: 1 },
+          { boundingBox: [1], text: "foo", confidence: 1, matchType: "Exact" },
+          { boundingBox: null, text: "baz", confidence: 1, matchType: "None" },
         ],
       },
     ] as ApiTextSearchResult[];
+
     const caseDocuments = [
       { documentId: "1" },
       { documentId: "2" },

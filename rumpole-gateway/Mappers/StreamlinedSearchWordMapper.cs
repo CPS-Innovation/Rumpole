@@ -14,24 +14,29 @@ namespace RumpoleGateway.Mappers
             var result = new StreamlinedWord
             {
                 Text = word.Text,
-                BoundingBox = searchTermLookup.Item1 ? word.BoundingBox : null,
-                Weighting = searchTermLookup.Item2
+                BoundingBox = searchTermLookup.TermFound ? word.BoundingBox : null,
+                StreamlinedMatchType = searchTermLookup.SearchMatchType
             };
 
             return result;
         }
 
-        public Tuple<bool, int> SearchTermIncluded(string wordText, string searchTerm)
+        public SearchTermResult SearchTermIncluded(string wordText, string searchTerm)
         {
-            const string pattern1 = @"[.,/#!$%^&*;:{}=\-_`~()…”]";
-            
-            var tidiedText = Regex.Replace(wordText, pattern1, "", RegexOptions.IgnoreCase).Replace(" ", "");
-            var searchTermTidied = Regex.Replace(searchTerm, pattern1, "", RegexOptions.IgnoreCase).Replace(" ", "");
+            var tidiedText = wordText.Replace(" ", "");
+            if (searchTerm.Equals(tidiedText, StringComparison.CurrentCultureIgnoreCase))
+                return new SearchTermResult(true, StreamlinedMatchType.Exact);
 
-            var fuzzyWeighting = Fuzz.Ratio(tidiedText, searchTerm);
-            return tidiedText.Equals(searchTermTidied, StringComparison.CurrentCultureIgnoreCase) 
-                ? new Tuple<bool, int>(true, fuzzyWeighting) 
-                : new Tuple<bool, int>(!string.IsNullOrEmpty(tidiedText) && fuzzyWeighting >= 90, fuzzyWeighting);
+            var partialWeighting = Fuzz.PartialRatio(tidiedText, searchTerm);
+            if (partialWeighting >= 95)
+            {
+                return Regex.IsMatch(wordText, @"\b" + searchTerm + @"\b", RegexOptions.IgnoreCase)
+                    ? new SearchTermResult(true, StreamlinedMatchType.Exact)
+                    //: new SearchTermResult(true, StreamlinedMatchType.Fuzzy); commented out fuzzy matches for now until we support them when searching the index
+                    : new SearchTermResult(false, StreamlinedMatchType.None);
+            }
+
+            return new SearchTermResult(false, StreamlinedMatchType.None);
         }
     }
 }

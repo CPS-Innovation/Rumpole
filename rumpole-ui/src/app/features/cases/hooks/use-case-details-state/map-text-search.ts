@@ -2,7 +2,6 @@ import { ApiTextSearchResult } from "../../domain/ApiTextSearchResult";
 import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
 import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
 import { MappedTextSearchResult } from "../../domain/MappedTextSearchResult";
-import { areAlphanumericallyEqual } from "../../logic/are-alphanumerically-equal";
 
 type TDocument = MappedTextSearchResult["documentResults"][number];
 
@@ -38,20 +37,12 @@ export const mapTextSearch = (
       const { id, pageIndex, words, pageHeight, pageWidth } = apiResultDocument;
 
       const occurrencesInLine = words
-        .filter(
-          (word) =>
-            !!word.boundingBox && // backend sends null for bounding box if not matched word
-            areAlphanumericallyEqual(word.text, searchTerm)
-        )
-        .map(
-          (word) =>
-            word.boundingBox ||
-            // this || clause keeps typescript happy, by this point we are guaranteed to have an array,
-            //  with stuff in rather than null, but typescript doen't think so, and I can't find a
-            //  type-guard-y kind of way to convince typescript.
-            /* istanbul ignore next */
-            []
-        );
+        .filter((word) => word.matchType !== "None")
+        // this || clause keeps typescript happy, by this point we are guaranteed to have an array,
+        //  with stuff in rather than null, but typescript doen't think so, and I can't find a
+        //  type-guard-y kind of way to convince typescript.
+        /* istanbul ignore next */
+        .map(({ boundingBox }) => boundingBox || []);
 
       const thisOccurrence = {
         id,
@@ -60,7 +51,7 @@ export const mapTextSearch = (
         pageWidth,
         contextTextChunks: words.map((word) => ({
           text: word.text,
-          isHighlighted: areAlphanumericallyEqual(word.text, searchTerm),
+          isHighlighted: word.matchType !== "None",
         })),
         occurrencesInLine: occurrencesInLine,
       };

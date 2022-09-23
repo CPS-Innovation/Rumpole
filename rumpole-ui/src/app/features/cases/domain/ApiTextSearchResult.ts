@@ -9,6 +9,7 @@ export type ApiTextSearchResult = {
   text: string;
   words: {
     boundingBox: number[] | null;
+    matchType: "None" | "Exact" | "Fuzzy";
     text: string;
     confidence: number;
   }[];

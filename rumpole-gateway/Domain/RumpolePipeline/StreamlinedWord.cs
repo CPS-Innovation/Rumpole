@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace RumpoleGateway.Domain.RumpolePipeline
 {
@@ -11,7 +12,8 @@ namespace RumpoleGateway.Domain.RumpolePipeline
         [JsonProperty(PropertyName = "text")]
         public string Text { get; set; }
 
-        [JsonProperty(PropertyName = "weighting")]
-        public int Weighting { get; set; }
+        [JsonProperty(PropertyName = "matchType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public StreamlinedMatchType StreamlinedMatchType { get; set; }
     }
 }

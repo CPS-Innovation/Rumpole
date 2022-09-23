@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Net.Http;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
-using RumpoleGateway.Domain.CoreDataApi;
 
 namespace RumpoleGateway.Functions
 {
