@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   PdfLoader,
   PdfHighlighter,
-  Popup,
   ScaledPosition,
   IHighlight,
 } from "../../../../../../react-pdf-highlighter";
@@ -12,9 +11,6 @@ import classes from "./PdfViewer.module.scss";
 import { Wait } from "./Wait";
 import { RedactButton } from "./RedactButton";
 
-import { PdfLinearHighlight } from "./PdfLinearHighlight";
-import { PdfAreaHighlight } from "./PdfAreaHighlight";
-import { RemoveButton } from "./RemoveButton";
 import { IPdfHighlight } from "../../../domain/IPdfHighlight";
 import { NewPdfHighlight } from "../../../domain/NewPdfHighlight";
 import { Footer } from "./Footer";
@@ -113,8 +109,8 @@ export const PdfViewer: React.FC<Props> = ({
                 index,
                 setTip,
                 hideTip,
-                _,
-                __,
+                _, // viewPortToScaled helper function
+                __, // screenshot (an image if this is an area highlight)
                 isScrolledTo
               ) => {
                 return (
