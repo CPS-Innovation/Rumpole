@@ -9,8 +9,8 @@
 .Highlight__part__search {
   cursor: pointer;
   position: absolute;
-  background: yellow; /*rgba(255, 226, 143, 1);*/
-  border: 1px solid red;
+  background: rgba(255, 226, 143, 1);
+
   transition: background 0.3s;
 }
 
@@ -22,17 +22,7 @@
   transition: background 0.3s;
 }
 
-// .Highlight__popup {
-//   background-color: #3d464d;
-//   border: 1px solid rgba(255, 255, 255, 0.25);
-//   color: white;
-//   padding: 0.5rem 1rem;
-//   border-radius: 3px;
-//   max-width: 300px;
-//   max-height: 100px;
-//   overflow-y: scroll;
-// }
-
-.Highlight--scrolledTo .Highlight__part {
+.Highlight--scrolledTo .Highlight__part__search,
+.Highlight--scrolledTo .Highlight__part__redaction {
   background: #ff4141;
 }

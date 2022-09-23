@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AsyncPipelineResult } from "./AsyncPipelineResult";
 import { PipelineResults } from "../../domain/PipelineResults";
-import { initiateAndPoll } from "./initiateAndPoll";
+import { initiateAndPoll } from "./initiate-and-poll";
 import { PIPELINE_POLLING_DELAY } from "../../../../config";
 
 export const usePipelineApi = (

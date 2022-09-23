@@ -39,6 +39,7 @@ describe("mapAccordionState", () => {
           tabSafeId: "d0",
           category: "category-a",
           fileName: "foo",
+          presentationFileName: "foo!",
           cmsDocType: {
             code: "MG11",
             name: "MG11 File",
@@ -50,6 +51,7 @@ describe("mapAccordionState", () => {
           tabSafeId: "d1",
           category: "category-b",
           fileName: "bar",
+          presentationFileName: "bar!",
           cmsDocType: {
             code: "MG12",
             name: "MG12 File",
@@ -73,6 +75,7 @@ describe("mapAccordionState", () => {
               tabSafeId: "d0",
               category: "category-a",
               fileName: "foo",
+              presentationFileName: "foo!",
               cmsDocType: {
                 code: "MG11",
                 name: "MG11 File",
@@ -90,6 +93,7 @@ describe("mapAccordionState", () => {
               tabSafeId: "d1",
               category: "category-b",
               fileName: "bar",
+              presentationFileName: "bar!",
               cmsDocType: {
                 code: "MG12",
                 name: "MG12 File",

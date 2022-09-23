@@ -2,7 +2,7 @@ import { ApiTextSearchResult } from "../../domain/ApiTextSearchResult";
 import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
 import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
 import { MappedTextSearchResult } from "../../domain/MappedTextSearchResult";
-import { areAlphanumericallyEqual } from "../../logic/areAlphanumericallyEqual";
+import { areAlphanumericallyEqual } from "../../logic/are-alphanumerically-equal";
 
 type TDocument = MappedTextSearchResult["documentResults"][number];
 

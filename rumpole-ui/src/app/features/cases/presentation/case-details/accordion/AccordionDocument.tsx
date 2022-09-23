@@ -31,7 +31,7 @@ export const AccordionDocument: React.FC<Props> = ({
           }}
           data-testid={`link-document-${caseDocument.documentId}`}
         >
-          {caseDocument.fileName}
+          {caseDocument.presentationFileName}
         </a>
       </td>
       <td className={`govuk-table__cell govuk-body-s ${classes.date}`}>

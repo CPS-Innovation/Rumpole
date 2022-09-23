@@ -1,5 +1,5 @@
 import { useState, KeyboardEvent } from "react";
-import { isUrnValid } from "../logic/isUrnValid";
+import { isUrnValid } from "../logic/is-urn-valid";
 import { CaseSearchQueryParams } from "../types/CaseSearchQueryParams";
 
 export const useSearchInputLogic = ({

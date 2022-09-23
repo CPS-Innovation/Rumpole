@@ -1,6 +1,7 @@
 import { LinkButton } from "../../../../../common/presentation/components/LinkButton";
 import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 import classes from "./HeaderSearchMode.module.scss";
+import { HeaderSearchModeNavigation } from "./HeaderSearchModeNavigation";
 
 type Props = {
   caseDocumentViewModel: Extract<CaseDocumentViewModel, { mode: "search" }>;
@@ -10,7 +11,11 @@ type Props = {
 };
 
 export const HeaderSearchMode: React.FC<Props> = ({
-  caseDocumentViewModel: { searchTerm, occurrencesInDocumentCount, fileName },
+  caseDocumentViewModel: {
+    searchTerm,
+    occurrencesInDocumentCount,
+    presentationFileName,
+  },
   focussedHighlightIndex,
   handleSetFocussedHighlightIndex,
   handleLaunchSearchResults,
@@ -25,32 +30,14 @@ export const HeaderSearchMode: React.FC<Props> = ({
       <div className={classes.heavyText}>
         {occurrencesInDocumentCount}{" "}
         {occurrencesInDocumentCount === 1 ? "match" : "matches"} for "
-        {searchTerm}" in {fileName}
+        {searchTerm}" in {presentationFileName}
       </div>
 
-      <div>
-        <div style={{ display: "none" }}>
-          {focussedHighlightIndex > 1 && (
-            <LinkButton
-              onClick={() =>
-                handleSetFocussedHighlightIndex(focussedHighlightIndex - 1)
-              }
-            >
-              Previous
-            </LinkButton>
-          )}{" "}
-          {focussedHighlightIndex}/{occurrencesInDocumentCount}{" "}
-          {focussedHighlightIndex < occurrencesInDocumentCount && (
-            <LinkButton
-              onClick={() =>
-                handleSetFocussedHighlightIndex(focussedHighlightIndex + 1)
-              }
-            >
-              Next
-            </LinkButton>
-          )}
-        </div>
-      </div>
+      <HeaderSearchModeNavigation
+        occurrencesInDocumentCount={occurrencesInDocumentCount}
+        focussedHighlightIndex={focussedHighlightIndex}
+        handleSetFocussedHighlightIndex={handleSetFocussedHighlightIndex}
+      />
     </div>
   );
 };
