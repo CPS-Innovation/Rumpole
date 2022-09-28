@@ -46,6 +46,11 @@ export const Header: React.FC<Props> = ({
       <div className={classes.container}>
         <div className={classes.textSection}>
           <div data-testid="div-results-header">
+            <div className={classes.singleWordSearchWarning}>
+              Search can only use the first word of your search and may no have
+              found all instances of '{submittedSearchTerm}' in this case.
+            </div>
+
             {!!filteredDocumentCount ? (
               <>
                 {" "}

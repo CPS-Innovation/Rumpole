@@ -33,6 +33,16 @@ describe("Case Details Search", () => {
 
       cy.findByTestId("div-modal").should("exist");
     });
+
+    it("can not accept a space", () => {
+      cy.visit("/case-details/13401");
+
+      cy.findByTestId("input-search-case")
+        .type("there are no spaces")
+        .should(($input) => {
+          expect(($input[0] as HTMLInputElement).value).eq("therearenospaces");
+        });
+    });
   });
 
   describe("Search results", () => {
@@ -52,7 +62,7 @@ describe("Case Details Search", () => {
 
         cy.findByTestId("div-search-result-d2").should("not.exist");
         cy.findByTestId("input-results-search-case").type("drink");
-        cy.findByTestId("btn-results-search-case").type("drink");
+        cy.findByTestId("btn-results-search-case").click();
 
         cy.findByTestId("div-search-result-d2").should("exist");
       });
@@ -64,7 +74,7 @@ describe("Case Details Search", () => {
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("div-results-header").contains(
-          "6 results in 3 documents"
+          "8 results in 3 documents"
         );
       });
 
@@ -108,14 +118,14 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-search-result-d1")
           .findByTestId("details-expand-search-results")
           .should("exist")
-          .contains("View 2 more")
+          .contains("View 3 more")
           .should(
             "not.contain",
             "Drink xrive xorms xoadside / hospital / station"
           )
           .should(
             "not.contain",
-            "Drink zrive zorms zoadside / hospital / station"
+            "Drink drink zorms zoadside / hospital / station"
           );
 
         cy.findByTestId("div-search-result-d1")
@@ -126,7 +136,7 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-search-result-d1")
           .findByTestId("details-expand-search-results")
           .should("contain", "Drink xrive xorms xoadside / hospital / station")
-          .should("contain", "Drink zrive zorms zoadside / hospital / station");
+          .should("contain", "Drink drink zorms zoadside / hospital / station");
       });
     });
 
@@ -135,9 +145,10 @@ describe("Case Details Search", () => {
         cy.get("[data-testid^=div-search-result-")
           .should("have.length", 3)
           .then(($items) => {
-            return $items
-              .toArray()
-              .map((item) => item.getAttribute("data-testid"));
+            return $items.toArray().map((item) => {
+              console.log(item.getAttribute("data-testid"));
+              return item.getAttribute("data-testid");
+            });
           })
           .should("deep.eq", idsInExpectedOrder);
       };
@@ -236,7 +247,7 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-search-result-d3");
       });
 
-      it.only("can combine filters across both filter types and show results that match any filter", () => {
+      it("can combine filters across both filter types and show results that match any filter", () => {
         cy.visit("/case-details/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
@@ -390,7 +401,7 @@ describe("Case Details Search", () => {
     });
 
     describe("Loading... (long running calls)", () => {
-      it.only("can show the user the 'Loading...' content for a long running search call", () => {
+      it("can show the user the 'Loading...' content for a long running search call", () => {
         cy.overrideRoute(TEXT_SEARCH_ROUTE, { type: "delay", timeMs: 1500 });
         cy.visit("/case-details/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
@@ -398,7 +409,7 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-please-wait");
       });
 
-      it.only("can show the user the 'Loading...' content for a long running pipeline call", () => {
+      it("can show the user the 'Loading...' content for a long running pipeline call", () => {
         cy.overrideRoute(TRACKER_ROUTE, { type: "delay", timeMs: 1500 });
         cy.visit("/case-details/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");

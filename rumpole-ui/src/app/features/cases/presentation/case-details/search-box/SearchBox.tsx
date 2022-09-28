@@ -1,4 +1,4 @@
-import { KeyboardEvent } from "react";
+import { KeyboardEvent, useCallback } from "react";
 import { Input } from "../../../../../common/presentation/components";
 import classes from "./SearchBox.module.scss";
 
@@ -17,11 +17,18 @@ export const SearchBox: React.FC<Props> = ({
   labelText,
   "data-testid": dataTestId,
 }) => {
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+  const localHandleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSubmit();
     }
   };
+
+  const localHandleChange = useCallback(
+    (val) => {
+      handleChange(val.replace(/\s/g, ""));
+    },
+    [handleChange]
+  );
 
   return (
     <div className={classes.container}>
@@ -29,8 +36,8 @@ export const SearchBox: React.FC<Props> = ({
         autoFocus
         data-testid={dataTestId && `input-${dataTestId}`}
         value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyPress}
+        onChange={localHandleChange}
+        onKeyDown={localHandleKeyDown}
         label={{ children: labelText, className: "govuk-label--s" }}
         suffix={{
           children: (

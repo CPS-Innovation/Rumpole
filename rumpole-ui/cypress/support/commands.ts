@@ -58,7 +58,7 @@ Cypress.Commands.add("overrideRoute", (apiRoute, response) => {
           case "delay":
             return res.once(ctx.delay(response.timeMs));
           default:
-            return res.once(response.body);
+            return res.once(ctx.json(response.body));
         }
       })
     );

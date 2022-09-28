@@ -21,6 +21,7 @@ export const initialState = {
   searchTerm: "",
   searchState: {
     isResultsVisible: false,
+    requestedSearchTerm: undefined,
     submittedSearchTerm: undefined,
     resultsOrder: "byDateDesc",
     filterOptions: {
