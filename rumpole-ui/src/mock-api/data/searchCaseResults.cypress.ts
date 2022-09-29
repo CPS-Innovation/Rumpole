@@ -77,7 +77,7 @@ const searchResults: ApiTextSearchResult[] = [
     lineIndex: 34,
     pageHeight: 11.6806,
     pageWidth: 8.2639,
-    text: "Drink zrive zorms zoadside / hospital / station",
+    text: "Drink drink zorms zoadside / hospital / station",
     words: [
       {
         boundingBox: [
@@ -89,8 +89,8 @@ const searchResults: ApiTextSearchResult[] = [
       },
       {
         boundingBox: null,
-        text: "zrive",
-        matchType: "None",
+        text: "drink",
+        matchType: "Exact",
         confidence: 0.0,
       },
       {
@@ -257,7 +257,7 @@ const searchResults: ApiTextSearchResult[] = [
     lineIndex: 44,
     pageHeight: 11.6806,
     pageWidth: 8.2639,
-    text: "DRINK THE SCENE IN HER CAR IN DRINK",
+    text: "DRINK THE SCENE IN HER CAR IN DRINK DRINK",
     words: [
       {
         boundingBox: [

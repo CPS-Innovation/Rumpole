@@ -30,6 +30,7 @@ export const Content: React.FC<Props> = ({
   searchState: {
     results,
     submittedSearchTerm,
+    requestedSearchTerm,
     missingDocs,
     resultsOrder,
     filterOptions,
@@ -57,12 +58,15 @@ export const Content: React.FC<Props> = ({
       </div>
 
       <div className="govuk-grid-row">
-        {submittedSearchTerm && results.status === "succeeded" ? (
+        {submittedSearchTerm &&
+        requestedSearchTerm &&
+        results.status === "succeeded" ? (
           <MemoizedResults
             {...{
               missingDocs,
               searchResult: results.data,
               submittedSearchTerm,
+              requestedSearchTerm,
               resultsOrder,
               filterOptions,
               handleChangeResultsOrder,

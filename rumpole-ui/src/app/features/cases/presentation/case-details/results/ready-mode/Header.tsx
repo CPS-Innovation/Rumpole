@@ -12,6 +12,7 @@ type ResultsOrder = CaseDetailsState["searchState"]["resultsOrder"];
 
 type Props = {
   submittedSearchTerm: string;
+  requestedSearchTerm: string;
   searchResult: MappedTextSearchResult;
   missingDocs: CombinedState["searchState"]["missingDocs"];
   resultsOrder: ResultsOrder;
@@ -22,6 +23,7 @@ export const Header: React.FC<Props> = ({
   searchResult: { filteredDocumentCount, filteredOccurrencesCount },
   missingDocs,
   submittedSearchTerm,
+  requestedSearchTerm,
   handleChangeResultsOrder,
   resultsOrder,
 }) => {
@@ -46,6 +48,17 @@ export const Header: React.FC<Props> = ({
       <div className={classes.container}>
         <div className={classes.textSection}>
           <div data-testid="div-results-header">
+            {submittedSearchTerm !== requestedSearchTerm ? (
+              <div
+                className={classes.singleWordSearchWarning}
+                data-testid="div-sanitized-search"
+              >
+                The service currently recognises only the first term entered in
+                to the search box. The results shown below are matches found for
+                '{submittedSearchTerm}'.
+              </div>
+            ) : null}
+
             {!!filteredDocumentCount ? (
               <>
                 {" "}

@@ -7,6 +7,7 @@ import { List } from "./List";
 
 type Props = {
   submittedSearchTerm: string;
+  requestedSearchTerm: string;
   searchResult: MappedTextSearchResult;
   missingDocs: CombinedState["searchState"]["missingDocs"];
   resultsOrder: CaseDetailsState["searchState"]["resultsOrder"];
@@ -19,6 +20,7 @@ type Props = {
 export const Results: React.FC<Props> = ({
   searchResult,
   submittedSearchTerm,
+  requestedSearchTerm,
   missingDocs,
   resultsOrder,
   handleChangeResultsOrder,
@@ -39,6 +41,7 @@ export const Results: React.FC<Props> = ({
           {...{
             searchResult,
             submittedSearchTerm,
+            requestedSearchTerm,
             missingDocs,
             resultsOrder,
             handleChangeResultsOrder,

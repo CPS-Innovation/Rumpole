@@ -7,8 +7,7 @@ type TDocument = MappedTextSearchResult["documentResults"][number];
 
 export const mapTextSearch = (
   apiResults: ApiTextSearchResult[],
-  caseDocuments: MappedCaseDocument[],
-  searchTerm: string
+  caseDocuments: MappedCaseDocument[]
 ): MappedTextSearchResult => {
   let totalOccurrencesCount = 0;
 
@@ -31,6 +30,7 @@ export const mapTextSearch = (
           occurrences: [],
           isVisible: true,
         } as TDocument;
+
         accumulator.push(documentResult);
       }
 
@@ -41,8 +41,13 @@ export const mapTextSearch = (
         // this || clause keeps typescript happy, by this point we are guaranteed to have an array,
         //  with stuff in rather than null, but typescript doen't think so, and I can't find a
         //  type-guard-y kind of way to convince typescript.
-        /* istanbul ignore next */
-        .map(({ boundingBox }) => boundingBox || []);
+
+        .map(
+          ({ boundingBox }) =>
+            boundingBox ||
+            /* istanbul ignore next */
+            []
+        );
 
       const thisOccurrence = {
         id,

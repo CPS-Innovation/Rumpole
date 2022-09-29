@@ -17,6 +17,7 @@ import * as missingDocuments from "./map-missing-documents";
 import { MappedCaseDocument } from "../../domain/MappedCaseDocument";
 import { IPdfHighlight } from "../../domain/IPdfHighlight";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
+import * as sanitizeSearchTerm from "./sanitizeSearchTerm";
 
 const ERROR = new Error();
 
@@ -998,6 +999,17 @@ describe("useCaseDetailsState reducer", () => {
   });
 
   describe("LAUNCH_SEARCH_RESULTS", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(sanitizeSearchTerm, "sanitizeSearchTerm")
+        .mockImplementation((input) => {
+          if (input === "foo") {
+            return "bar";
+          }
+          throw new Error("Should not be here");
+        });
+    });
+
     it("can open search results", () => {
       const existingSearchState = {
         isResultsVisible: false,
@@ -1012,7 +1024,28 @@ describe("useCaseDetailsState reducer", () => {
       );
 
       expect(nextState.searchState).toEqual({
-        submittedSearchTerm: "foo",
+        submittedSearchTerm: "bar",
+        requestedSearchTerm: "foo",
+        isResultsVisible: true,
+      } as CombinedState["searchState"]);
+    });
+
+    it("can trim spaces from the search term", () => {
+      const existingSearchState = {
+        isResultsVisible: false,
+      } as CombinedState["searchState"];
+
+      const nextState = reducer(
+        {
+          searchTerm: " foo ",
+          searchState: existingSearchState,
+        } as CombinedState,
+        { type: "LAUNCH_SEARCH_RESULTS" }
+      );
+
+      expect(nextState.searchState).toEqual({
+        submittedSearchTerm: "bar",
+        requestedSearchTerm: "foo",
         isResultsVisible: true,
       } as CombinedState["searchState"]);
     });
@@ -1138,21 +1171,17 @@ describe("useCaseDetailsState reducer", () => {
 
       jest
         .spyOn(textSearchMapper, "mapTextSearch")
-        .mockImplementation(
-          (textSearchResult, mappedCaseDocuments, submittedSearchTerm) => {
-            if (
-              inputPayload.status === "succeeded" &&
-              textSearchResult === inputPayload.data &&
-              existingState.documentsState.status === "succeeded" &&
-              mappedCaseDocuments === existingState.documentsState.data &&
-              submittedSearchTerm ===
-                existingState.searchState.submittedSearchTerm
-            ) {
-              return mockUnsortedData;
-            }
-            throw new Error("Unexpected mock function arguments");
+        .mockImplementation((textSearchResult, mappedCaseDocuments) => {
+          if (
+            inputPayload.status === "succeeded" &&
+            textSearchResult === inputPayload.data &&
+            existingState.documentsState.status === "succeeded" &&
+            mappedCaseDocuments === existingState.documentsState.data
+          ) {
+            return mockUnsortedData;
           }
-        );
+          throw new Error("Unexpected mock function arguments");
+        });
 
       jest
         .spyOn(sorter, "sortMappedTextSearchResult")

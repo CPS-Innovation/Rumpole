@@ -18,6 +18,7 @@ import { AsyncPipelineResult } from "../use-pipeline-api/AsyncPipelineResult";
 import { mapSearchHighlights } from "./map-search-highlights";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 import { sortSearchHighlights } from "./sort-search-highlights";
+import { sanitizeSearchTerm } from "./sanitizeSearchTerm";
 
 export const reducer = (
   state: CombinedState,
@@ -388,12 +389,17 @@ export const reducer = (
         },
       };
     case "LAUNCH_SEARCH_RESULTS":
+      const { searchState, searchTerm } = state;
+      const requestedSearchTerm = searchTerm.trim();
+      const submittedSearchTerm = sanitizeSearchTerm(requestedSearchTerm);
+
       return {
         ...state,
         searchState: {
-          ...state.searchState,
+          ...searchState,
           isResultsVisible: true,
-          submittedSearchTerm: state.searchTerm,
+          requestedSearchTerm,
+          submittedSearchTerm,
         },
       };
 
@@ -420,8 +426,7 @@ export const reducer = (
       ) {
         const unsortedData = mapTextSearch(
           action.payload.data,
-          state.documentsState.data,
-          state.searchState.submittedSearchTerm
+          state.documentsState.data
         );
 
         const sortedData = sortMappedTextSearchResult(

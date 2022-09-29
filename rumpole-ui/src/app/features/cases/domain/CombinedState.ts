@@ -25,6 +25,7 @@ export type CombinedState = {
   searchTerm: string;
   searchState: {
     isResultsVisible: boolean;
+    requestedSearchTerm: undefined | string;
     submittedSearchTerm: undefined | string;
     resultsOrder: "byDateDesc" | "byOccurancesPerDocumentDesc";
     filterOptions: {
