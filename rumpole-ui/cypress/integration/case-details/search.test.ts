@@ -33,16 +33,6 @@ describe("Case Details Search", () => {
 
       cy.findByTestId("div-modal").should("exist");
     });
-
-    it("can not accept a space", () => {
-      cy.visit("/case-details/13401");
-
-      cy.findByTestId("input-search-case")
-        .type("there are no spaces")
-        .should(($input) => {
-          expect(($input[0] as HTMLInputElement).value).eq("therearenospaces");
-        });
-    });
   });
 
   describe("Search results", () => {
@@ -76,6 +66,8 @@ describe("Case Details Search", () => {
         cy.findByTestId("div-results-header").contains(
           "8 results in 3 documents"
         );
+
+        cy.findByTestId("div-sanitized-search").should("not.exist");
       });
 
       it("can display header information when there are no results", () => {
@@ -83,6 +75,17 @@ describe("Case Details Search", () => {
         cy.findByTestId("input-search-case").type("DOES-NOT-EXIST{enter}");
 
         cy.contains("No documents found matching 'DOES-NOT-EXIST'");
+      });
+
+      it("can display header warning if user has attempted to use multiple wards", () => {
+        cy.visit("/case-details/13401");
+        cy.findByTestId("input-search-case").type("drink drive{enter}");
+
+        cy.findByTestId("div-results-header").contains(
+          "8 results in 3 documents"
+        );
+
+        cy.findByTestId("div-sanitized-search").should("exist");
       });
 
       it("can display results context line and meta data", () => {
@@ -146,7 +149,6 @@ describe("Case Details Search", () => {
           .should("have.length", 3)
           .then(($items) => {
             return $items.toArray().map((item) => {
-              console.log(item.getAttribute("data-testid"));
               return item.getAttribute("data-testid");
             });
           })

@@ -21,7 +21,7 @@ export const initiateAndPoll = (
     const completionStatus = getPipelinpipelineCompletionStatus(
       pipelineResult.status
     );
-    console.log(pipelineResult, completionStatus);
+
     if (completionStatus === "Completed") {
       del({
         status: "complete",

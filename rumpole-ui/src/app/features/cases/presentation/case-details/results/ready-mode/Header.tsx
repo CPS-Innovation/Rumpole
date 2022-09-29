@@ -12,6 +12,7 @@ type ResultsOrder = CaseDetailsState["searchState"]["resultsOrder"];
 
 type Props = {
   submittedSearchTerm: string;
+  requestedSearchTerm: string;
   searchResult: MappedTextSearchResult;
   missingDocs: CombinedState["searchState"]["missingDocs"];
   resultsOrder: ResultsOrder;
@@ -22,6 +23,7 @@ export const Header: React.FC<Props> = ({
   searchResult: { filteredDocumentCount, filteredOccurrencesCount },
   missingDocs,
   submittedSearchTerm,
+  requestedSearchTerm,
   handleChangeResultsOrder,
   resultsOrder,
 }) => {
@@ -46,10 +48,16 @@ export const Header: React.FC<Props> = ({
       <div className={classes.container}>
         <div className={classes.textSection}>
           <div data-testid="div-results-header">
-            <div className={classes.singleWordSearchWarning}>
-              Search can only use the first word of your search and may no have
-              found all instances of '{submittedSearchTerm}' in this case.
-            </div>
+            {submittedSearchTerm !== requestedSearchTerm ? (
+              <div
+                className={classes.singleWordSearchWarning}
+                data-testid="div-sanitized-search"
+              >
+                BETTER COPY REQUIRED!! Search can only use the first word of
+                your search and may not have found all instances of '
+                {submittedSearchTerm}' in this case. BETTER COPY REQUIRED!!
+              </div>
+            ) : null}
 
             {!!filteredDocumentCount ? (
               <>

@@ -47,9 +47,8 @@ describe("mapTextSearch", () => {
       { documentId: "1" },
       { documentId: "2" },
     ] as MappedCaseDocument[];
-    const searchTerm = "foo";
 
-    const result = mapTextSearch(apiResults, caseDocuments, searchTerm);
+    const result = mapTextSearch(apiResults, caseDocuments);
 
     expect(result).toEqual({
       documentResults: [

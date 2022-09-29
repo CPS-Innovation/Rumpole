@@ -7,8 +7,7 @@ type TDocument = MappedTextSearchResult["documentResults"][number];
 
 export const mapTextSearch = (
   apiResults: ApiTextSearchResult[],
-  caseDocuments: MappedCaseDocument[],
-  searchTerm: string
+  caseDocuments: MappedCaseDocument[]
 ): MappedTextSearchResult => {
   let totalOccurrencesCount = 0;
 
@@ -31,6 +30,7 @@ export const mapTextSearch = (
           occurrences: [],
           isVisible: true,
         } as TDocument;
+
         accumulator.push(documentResult);
       }
 
