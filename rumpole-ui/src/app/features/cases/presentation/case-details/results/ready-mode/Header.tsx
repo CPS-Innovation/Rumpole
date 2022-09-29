@@ -53,9 +53,9 @@ export const Header: React.FC<Props> = ({
                 className={classes.singleWordSearchWarning}
                 data-testid="div-sanitized-search"
               >
-                BETTER COPY REQUIRED!! Search can only use the first word of
-                your search and may not have found all instances of '
-                {submittedSearchTerm}' in this case. BETTER COPY REQUIRED!!
+                The service currently recognises only the first term entered in
+                to the search box. The results shown below are matches found for
+                '{submittedSearchTerm}'.
               </div>
             ) : null}
 
