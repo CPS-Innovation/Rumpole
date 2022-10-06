@@ -41,12 +41,11 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 };
 
                 var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query, correlationId);
-                authenticatedRequest.Add("X-Correlation-ID", correlationId.ToString());
                 
                 _logger.LogMethodFlow(correlationId, nameof(GetCaseDetailsByIdAsync), $"Sending the following query to the Core Data API: {query.ToJson()}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseDetails>(authenticatedRequest);
                 
-                if (response.Data == null || response.Data?.CaseDetails == null) return null;
+                if (response.Data?.CaseDetails == null) return null;
 
                 caseDetails = response.Data.CaseDetails;
                 return caseDetails;

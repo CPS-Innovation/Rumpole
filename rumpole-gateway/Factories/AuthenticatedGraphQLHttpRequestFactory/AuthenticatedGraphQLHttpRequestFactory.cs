@@ -18,8 +18,7 @@ namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
         public AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(Create), graphQlHttpRequest.ToJson());
-            
-            var authRequest = new AuthenticatedGraphQlHttpRequest(accessToken, graphQlHttpRequest);
+            var authRequest = new AuthenticatedGraphQlHttpRequest(accessToken, correlationId, graphQlHttpRequest);
             _logger.LogMethodExit(correlationId, nameof(Create), string.Empty);
             return authRequest;
         }
