@@ -1,7 +1,10 @@
-﻿using Microsoft.Identity.Client;
+﻿using System;
+using Microsoft.Identity.Client;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.Logging;
 
 namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
 {
@@ -9,18 +12,23 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
     public class OnBehalfOfTokenClient : IOnBehalfOfTokenClient
     {
         private readonly IConfidentialClientApplication _application;
+        private readonly ILogger<OnBehalfOfTokenClient> _logger;
      
-        public OnBehalfOfTokenClient(IConfidentialClientApplication application)
+        public OnBehalfOfTokenClient(IConfidentialClientApplication application, ILogger<OnBehalfOfTokenClient> logger)
         {
             _application = application;
+            _logger = logger;
         }
 
-        public async Task<string> GetAccessTokenAsync(string accessToken, string scope)
+        public async Task<string> GetAccessTokenAsync(string accessToken, string scope, Guid correlationId)
         {
+            _logger.LogMethodEntry(correlationId, nameof(GetAccessTokenAsync), scope);
             var scopes = new Collection<string> { scope };
             var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);
             var result = await _application.AcquireTokenOnBehalfOf(scopes, userAssertion).ExecuteAsync();
-            return result.AccessToken;
+            var generatedToken = result.AccessToken;
+            _logger.LogMethodExit(correlationId, nameof(GetAccessTokenAsync), generatedToken);
+            return generatedToken;
         }
     }
 }

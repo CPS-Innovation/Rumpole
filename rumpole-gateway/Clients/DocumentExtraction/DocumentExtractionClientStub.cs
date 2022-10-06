@@ -3,7 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.DocumentExtraction;
+using RumpoleGateway.Domain.Logging;
 
 namespace RumpoleGateway.Clients.DocumentExtraction
 {
@@ -11,25 +13,31 @@ namespace RumpoleGateway.Clients.DocumentExtraction
     public class DocumentExtractionClientStub : IDocumentExtractionClient
     {
         private readonly string _blobStorageConnectionString;
+        private readonly ILogger<DocumentExtractionClientStub> _logger;
 
-        public DocumentExtractionClientStub(string blobStorageConnectionString)
+        public DocumentExtractionClientStub(string blobStorageConnectionString, ILogger<DocumentExtractionClientStub> logger)
         {
             _blobStorageConnectionString = blobStorageConnectionString;
+            _logger = logger;
         }
 
-        public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
+        public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken, Guid correlationId)
         {
-            return Task.FromResult(caseId switch
+            _logger.LogMethodEntry(correlationId, nameof(GetCaseDocumentsAsync), $"CaseId: {caseId}");
+            var result = Task.FromResult(caseId switch
             {
                 "18846" => McLoveCase(caseId),
                 "1000000" => McLoveCase(caseId),
                 "1000001" => MultipleFileTypeCase(caseId),
                 _ => null
             });
+            _logger.LogMethodExit(correlationId, nameof(GetCaseDocumentsAsync), string.Empty);
+            return result;
         }
 
-        public async Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken)
+        public async Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken, Guid correlationId)
         {
+            _logger.LogMethodEntry(correlationId, nameof(GetDocumentAsync), $"DocumentId: {documentId}, FileName: {fileName}");
             var blobClient = new BlobClient(_blobStorageConnectionString, "cms-documents", fileName);
 
             if (!await blobClient.ExistsAsync())
@@ -39,6 +47,7 @@ namespace RumpoleGateway.Clients.DocumentExtraction
 
             var blob = await blobClient.DownloadContentAsync();
 
+            _logger.LogMethodExit(correlationId, nameof(GetDocumentAsync), string.Empty);
             return blob.Value.Content.ToStream();
         }
 

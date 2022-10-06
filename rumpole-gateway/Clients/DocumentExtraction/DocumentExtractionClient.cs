@@ -13,15 +13,13 @@ namespace RumpoleGateway.Clients.DocumentExtraction
 		{
 		}
 
-        public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken)
+        public Task<Case> GetCaseDocumentsAsync(string caseId, string accessToken, Guid correlationId)
         {
-            // TODO
             throw new NotImplementedException();
         }
 
-        public Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken)
+        public Task<Stream> GetDocumentAsync(string documentId, string fileName, string accessToken, Guid correlationId)
         {
-            // TODO
             throw new NotImplementedException();
         }
     }

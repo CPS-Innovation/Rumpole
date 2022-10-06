@@ -12,6 +12,7 @@ using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
@@ -23,6 +24,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IConfiguration _configuration;
         private readonly ITriggerCoordinatorResponseFactory _triggerCoordinatorResponseFactory;
         private readonly IAuthorizationValidator _tokenValidator;
+        private readonly ILogger<RumpolePipelineTriggerCoordinator> _logger;
 
         public RumpolePipelineTriggerCoordinator(ILogger<RumpolePipelineTriggerCoordinator> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  IPipelineClient pipelineClient, IConfiguration configuration,
@@ -34,42 +36,63 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             _configuration = configuration;
             _triggerCoordinatorResponseFactory = triggerCoordinatorResponseFactory;
             _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
+            _logger = logger;
         }
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseId}")] HttpRequest request, string caseId)
         {
+            Guid currentCorrelationId = default;
+            const string loggingName = "RumpolePipelineTriggerCoordinator - Run";
+
             try
             {
-                if (!request.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse();
+                if (!request.Headers.TryGetValue("X-Correlation-ID", out var correlationId) ||
+                    string.IsNullOrWhiteSpace(correlationId))
+                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
 
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!Guid.TryParse(correlationId, out currentCorrelationId))
+                    if (currentCorrelationId == Guid.Empty)
+                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
+
+                _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
+
+                if (!request.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
                 if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed");
+                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (!int.TryParse(caseId, out var _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
-                
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
+
                 var force = false;
                 if (request.Query.ContainsKey("force") && !bool.TryParse(request.Query["force"], out force))
-                    return BadRequestErrorResponse("Invalid query string. Force value must be a boolean.");
-                
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineCoordinatorScope"]);
+                    return BadRequestErrorResponse("Invalid query string. Force value must be a boolean.", currentCorrelationId, loggingName);
 
-                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken, force);
+                var scopes = _configuration["RumpolePipelineCoordinatorScope"];
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), scopes, currentCorrelationId);
 
-                return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(request));
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Triggering the pipeline for caseId: {caseId}, forceRefresh: {force}");
+                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken, force, currentCorrelationId);
+
+                return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(request, currentCorrelationId));
             }
             catch (Exception exception)
             {
                 return exception switch
                 {
-                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred."),
-                    HttpRequestException => InternalServerErrorResponse(exception, "A pipeline client http exception occurred."),
-                    _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.")
+                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred.", currentCorrelationId, loggingName),
+                    HttpRequestException => InternalServerErrorResponse(exception, "A pipeline client http exception occurred.", currentCorrelationId, loggingName),
+                    _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.", currentCorrelationId, loggingName)
                 };
+            }
+            finally
+            {
+                _logger.LogMethodExit(currentCorrelationId, loggingName, string.Empty);
             }
         }
     }

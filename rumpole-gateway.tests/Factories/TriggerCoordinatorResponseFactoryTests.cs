@@ -1,6 +1,8 @@
 ﻿using System;
+using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Mappers;
@@ -10,30 +12,33 @@ namespace RumpoleGateway.Tests.Factories
 {
 	public class TriggerCoordinatorResponseFactoryTests
 	{
-		private HttpRequest _httpRequest;
-		private Uri _trackerUrl;
+		private readonly HttpRequest _httpRequest;
+		private readonly Uri _trackerUrl;
+		private readonly Guid _correlationId;
 
-		private Mock<ITrackerUrlMapper> _mockTrackerUrlMapper;
-
-		private TriggerCoordinatorResponseFactory TriggerCoordinatorResponseFactory;
+		private readonly TriggerCoordinatorResponseFactory _triggerCoordinatorResponseFactory;
 
 		public TriggerCoordinatorResponseFactoryTests()
 		{
+			var fixture = new Fixture();
+			_correlationId = fixture.Create<Guid>();
+		
 			var context = new DefaultHttpContext();
 			_httpRequest = context.Request;
 			_trackerUrl = new Uri("http://www.test.co.uk");
 
-			_mockTrackerUrlMapper = new Mock<ITrackerUrlMapper>();
+			var mockTrackerUrlMapper = new Mock<ITrackerUrlMapper>();
+			var mockLogger = new Mock<ILogger<TriggerCoordinatorResponseFactory>>();
 
-			_mockTrackerUrlMapper.Setup(mapper => mapper.Map(_httpRequest)).Returns(_trackerUrl);
+			mockTrackerUrlMapper.Setup(mapper => mapper.Map(_httpRequest, It.IsAny<Guid>())).Returns(_trackerUrl);
 
-			TriggerCoordinatorResponseFactory = new TriggerCoordinatorResponseFactory(_mockTrackerUrlMapper.Object);
+			_triggerCoordinatorResponseFactory = new TriggerCoordinatorResponseFactory(mockTrackerUrlMapper.Object, mockLogger.Object);
 		}
 
 		[Fact]
 		public void Map_ReturnsTrackerUrl()
 		{
-			var response = TriggerCoordinatorResponseFactory.Create(_httpRequest);
+			var response = _triggerCoordinatorResponseFactory.Create(_httpRequest, _correlationId);
 
 			response.TrackerUrl.Should().Be(_trackerUrl);
 		}

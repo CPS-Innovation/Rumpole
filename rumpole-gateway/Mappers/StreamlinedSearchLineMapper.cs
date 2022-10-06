@@ -1,12 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Mappers
 {
     public class StreamlinedSearchLineMapper : IStreamlinedSearchLineMapper
     {
-        public StreamlinedSearchLine Map(SearchLine searchLine)
+        private readonly ILogger<StreamlinedSearchLineMapper> _logger;
+
+        public StreamlinedSearchLineMapper(ILogger<StreamlinedSearchLineMapper> logger)
         {
+            _logger = logger;
+        }
+        
+        public StreamlinedSearchLine Map(SearchLine searchLine, Guid correlationId)
+        {
+            _logger.LogMethodEntry(correlationId, nameof(Map), searchLine.ToJson());
+            
             var streamlinedSearchLine = new StreamlinedSearchLine
             {
                 Text = searchLine.Text,
@@ -20,6 +33,7 @@ namespace RumpoleGateway.Mappers
                 Words = new List<StreamlinedWord>()
             };
 
+            _logger.LogMethodExit(correlationId, nameof(Map), streamlinedSearchLine.ToJson());
             return streamlinedSearchLine;
         }
     }

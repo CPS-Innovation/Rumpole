@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Domain.Validators
@@ -19,15 +20,18 @@ namespace RumpoleGateway.Domain.Validators
     {
         private readonly ILogger<AuthorizationValidator> _log;
         private const string ScopeType = @"http://schemas.microsoft.com/identity/claims/scope";
+        private Guid _correlationId;
 
         public AuthorizationValidator(ILogger<AuthorizationValidator> log)
         {
             _log = log;
         }
 
-        public async Task<bool> ValidateTokenAsync(StringValues token)
+        public async Task<bool> ValidateTokenAsync(StringValues token, Guid correlationId)
         {
+            _log.LogMethodEntry(correlationId, nameof(ValidateTokenAsync), string.Empty);
             if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+            _correlationId = correlationId;
             
             var issuer = $"https://sts.windows.net/{Environment.GetEnvironmentVariable("OnBehalfOfTokenTenantId")}/";
             var audience = Environment.GetEnvironmentVariable("CallingAppValidAudience");
@@ -63,20 +67,27 @@ namespace RumpoleGateway.Domain.Validators
             }
             catch (SecurityTokenValidationException securityException)
             {
-                _log.LogError(securityException, "A security exception was caught");
+                _log.LogMethodError(correlationId, nameof(ValidateTokenAsync), "A security exception was caught", securityException);
                 return false;
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "An unexpected error was caught");
+                _log.LogMethodError(correlationId, nameof(ValidateTokenAsync), "An unexpected error was caught", ex);
                 return false;
+            }
+            finally
+            {
+                _log.LogMethodExit(correlationId, nameof(ValidateTokenAsync), string.Empty);
             }
         }
 
-        private static bool IsValid(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes = null, List<string> requiredRoles = null)
+        private bool IsValid(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes = null, List<string> requiredRoles = null)
         {
+            _log.LogMethodEntry(_correlationId, nameof(IsValid), string.Empty);
+            
             if (claimsPrincipal == null)
             {
+                _log.LogMethodFlow(_correlationId, nameof(IsValid), "Claims Principal not found - returning 'false' indicating an authorization failure");
                 return false;
             }
 
@@ -85,6 +96,7 @@ namespace RumpoleGateway.Domain.Validators
 
             if (!requiredScopes.Any() && !requiredRoles.Any())
             {
+                _log.LogMethodFlow(_correlationId, nameof(IsValid), "No required scopes or roles found - allowing access - returning");
                 return true;
             }
 
@@ -97,6 +109,7 @@ namespace RumpoleGateway.Domain.Validators
             var tokenScopes = scopeClaim.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
             var hasAccessToScopes = !requiredScopes.Any() || requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
 
+            _log.LogMethodExit(_correlationId, nameof(IsValid), $"Outcome role and scope checks - hasAccessToRoles: {hasAccessToRoles}, hasAccessToScopes: {hasAccessToScopes}");
             return hasAccessToRoles && hasAccessToScopes;
         }
     }

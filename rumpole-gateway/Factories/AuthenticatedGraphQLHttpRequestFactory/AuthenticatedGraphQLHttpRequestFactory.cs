@@ -1,13 +1,27 @@
-﻿using GraphQL.Client.Http;
+﻿using System;
+using GraphQL.Client.Http;
+using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
 {
-    public class AuthenticatedGraphQLHttpRequestFactory : IAuthenticatedGraphQLHttpRequestFactory
+    public class AuthenticatedGraphQlHttpRequestFactory : IAuthenticatedGraphQlHttpRequestFactory
     {
-        public AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQLHttpRequest)
+        private readonly ILogger<AuthenticatedGraphQlHttpRequestFactory> _logger;
+
+        public AuthenticatedGraphQlHttpRequestFactory(ILogger<AuthenticatedGraphQlHttpRequestFactory> logger)
         {
-            return new AuthenticatedGraphQlHttpRequest(accessToken, graphQLHttpRequest);
+            _logger = logger;
+        }
+
+        public AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId)
+        {
+            _logger.LogMethodEntry(correlationId, nameof(Create), graphQlHttpRequest.ToJson());
+            
+            var authRequest = new AuthenticatedGraphQlHttpRequest(accessToken, graphQlHttpRequest);
+            _logger.LogMethodExit(correlationId, nameof(Create), string.Empty);
+            return authRequest;
         }
     }
 }

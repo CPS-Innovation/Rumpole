@@ -7,6 +7,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using RumpoleGateway.Domain.Config;
@@ -20,6 +21,7 @@ namespace RumpoleGateway.Tests.Services
     public class SasGeneratorServiceTests
     {
         private readonly string _blobName;
+        private readonly Guid _correlationId;
         private readonly BlobUriBuilder _blobUriBuilder;
 
         private readonly ISasGeneratorService _sasGeneratorService;
@@ -29,6 +31,7 @@ namespace RumpoleGateway.Tests.Services
             var fixture = new Fixture();
             var blobOptions = fixture.Create<BlobOptions>();
             _blobName = fixture.Create<string>();
+            _correlationId = fixture.Create<Guid>();
             var blobSasBuilder = fixture.Create<BlobSasBuilder>();
 
             var mockBlobServiceClient = new Mock<BlobServiceClient>();
@@ -46,18 +49,19 @@ namespace RumpoleGateway.Tests.Services
             mockBlobServiceClient.Setup(client => client.Uri).Returns(fixture.Create<Uri>());
 
             _blobUriBuilder = new BlobUriBuilder(new Uri($"{mockBlobServiceClient.Object.Uri}{blobOptions.BlobContainerName}/{_blobName}"));
-            mockBlobSasBuilderFactory.Setup(factory => factory.Create(_blobUriBuilder.BlobName)).Returns(blobSasBuilder);
-            mockBlobSasBuilderWrapper.Setup(wrapper => wrapper.ToSasQueryParameters(mockUserDelegationKey.Object, mockBlobServiceClient.Object.AccountName))
+            mockBlobSasBuilderFactory.Setup(factory => factory.Create(_blobUriBuilder.BlobName, _correlationId)).Returns(blobSasBuilder);
+            mockBlobSasBuilderWrapper.Setup(wrapper => wrapper.ToSasQueryParameters(mockUserDelegationKey.Object, mockBlobServiceClient.Object.AccountName, _correlationId))
                 .Returns(new Mock<SasQueryParameters>().Object.As<BlobSasQueryParameters>());
-            mockBlobSasBuilderWrapperFactory.Setup(factory => factory.Create(blobSasBuilder)).Returns(mockBlobSasBuilderWrapper.Object);
+            mockBlobSasBuilderWrapperFactory.Setup(factory => factory.Create(blobSasBuilder, _correlationId)).Returns(mockBlobSasBuilderWrapper.Object);
 
-            _sasGeneratorService = new SasGeneratorService(mockBlobServiceClient.Object, mockBlobSasBuilderFactory.Object, mockBlobSasBuilderWrapperFactory.Object, mockBlobOptions.Object);
+            var loggerMock = new Mock<ILogger<SasGeneratorService>>();
+            _sasGeneratorService = new SasGeneratorService(mockBlobServiceClient.Object, mockBlobSasBuilderFactory.Object, mockBlobSasBuilderWrapperFactory.Object, mockBlobOptions.Object, loggerMock.Object);
         }
 
         [Fact]
         public async Task GenerateSasUrl_ReturnsExpectedUri()
         {
-            var response = await _sasGeneratorService.GenerateSasUrlAsync(_blobName);
+            var response = await _sasGeneratorService.GenerateSasUrlAsync(_blobName, _correlationId);
 
             response.Should().Be(_blobUriBuilder.ToUri().ToString());
         }

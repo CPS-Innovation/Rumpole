@@ -10,6 +10,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.DocumentExtraction;
@@ -52,7 +53,7 @@ namespace RumpoleGateway
             builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
             builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
-            builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
+            builder.Services.AddTransient<IAuthenticatedGraphQlHttpRequestFactory, AuthenticatedGraphQlHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IAuthorizationValidator, AuthorizationValidator>();
@@ -102,11 +103,18 @@ namespace RumpoleGateway
                     .WithCredential(new DefaultAzureCredential());
             });
 
-            builder.Services.AddTransient<IBlobStorageClient>(serviceProvider => new BlobStorageClient(
-                serviceProvider.GetRequiredService<BlobServiceClient>(),
-                configuration["BlobServiceContainerName"]));
+            builder.Services.AddTransient<IBlobStorageClient>(serviceProvider =>
+            {
+                var logger = serviceProvider.GetService<ILogger<BlobStorageClient>>();
+                return new BlobStorageClient(serviceProvider.GetRequiredService<BlobServiceClient>(),
+                    configuration["BlobServiceContainerName"], logger);
+            });
 
-            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider => new DocumentExtractionClientStub(configuration["StubBlobStorageConnectionString"]));
+            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
+            {
+                var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
+                return new DocumentExtractionClientStub(configuration["StubBlobStorageConnectionString"], logger);
+            });
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();

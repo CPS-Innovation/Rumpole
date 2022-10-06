@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using RumpoleGateway.Domain.Config;
@@ -13,6 +14,7 @@ namespace RumpoleGateway.Tests.Factories
     {
         private readonly BlobOptions _blobOptions;
         private readonly string _blobName;
+        private Guid _correlationId;
 
         private readonly IBlobSasBuilderFactory _blobSasBuilderFactory;
 
@@ -21,18 +23,20 @@ namespace RumpoleGateway.Tests.Factories
             var fixture = new Fixture();
             _blobOptions = fixture.Create<BlobOptions>();
             _blobName = fixture.Create<string>();
+            _correlationId = fixture.Create<Guid>();
 
             var mockBlobOptions = new Mock<IOptions<BlobOptions>>();
+            var loggerMock = new Mock<ILogger<BlobSasBuilderFactory>>();
 
             mockBlobOptions.Setup(options => options.Value).Returns(_blobOptions);
 
-            _blobSasBuilderFactory = new BlobSasBuilderFactory(mockBlobOptions.Object);
+            _blobSasBuilderFactory = new BlobSasBuilderFactory(mockBlobOptions.Object, loggerMock.Object);
         }
 
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedBlobContainerName()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.BlobContainerName.Should().Be(_blobOptions.BlobContainerName);
         }
@@ -40,7 +44,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedBlobName()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.BlobName.Should().Be(_blobName);
         }
@@ -48,7 +52,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedResource()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.Resource.Should().Be("b");
         }
@@ -56,7 +60,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithStartTimeBeforeNow()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.StartsOn.Should().BeBefore(DateTimeOffset.UtcNow);
         }
@@ -64,7 +68,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedExpiresOn()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.ExpiresOn.Should().Be(sasBuilder.StartsOn.AddSeconds(_blobOptions.BlobExpirySecs));
         }
@@ -72,7 +76,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedPermissions()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.Permissions.Should().Be("r");
         }
@@ -80,7 +84,7 @@ namespace RumpoleGateway.Tests.Factories
         [Fact]
         public void Create_ReturnsSasBuilderWithExpectedContentType()
         {
-            var sasBuilder = _blobSasBuilderFactory.Create(_blobName);
+            var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
             sasBuilder.ContentType.Should().Be("application/pdf");
         }

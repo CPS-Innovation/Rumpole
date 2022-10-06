@@ -9,7 +9,7 @@ namespace RumpoleGateway.Factories
 	public class SearchClientFactory : ISearchClientFactory
 	{
         private readonly Domain.RumpolePipeline.SearchClientOptions _options;
-
+        
         public SearchClientFactory(IOptions<Domain.RumpolePipeline.SearchClientOptions> options)
         {
             _options = options.Value;
@@ -17,11 +17,13 @@ namespace RumpoleGateway.Factories
 
 		public SearchClient Create()
         {
-            return new SearchClient(
+            var sc = new SearchClient(
                 new Uri(_options.EndpointUrl),
                 _options.IndexName,
                 new AzureKeyCredential(_options.AuthorizationKey),
                 new SearchClientOptions { Serializer = new NewtonsoftJsonObjectSerializer() });
+            
+            return sc;
         }
 	}
 }
