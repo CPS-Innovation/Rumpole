@@ -41,7 +41,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
 
         [FunctionName("CoreDataApiCaseInformationByUrn")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{urn}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "case-information-by-urn/{*urn}")] HttpRequest req,
             string urn)
         {
             Guid currentCorrelationId = default;
