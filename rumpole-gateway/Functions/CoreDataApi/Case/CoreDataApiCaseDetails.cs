@@ -47,7 +47,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
 
             try
             {
-                if (!req.Headers.TryGetValue("X-Correlation-ID", out var correlationId) ||
+                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
                     string.IsNullOrWhiteSpace(correlationId))
                     return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
 

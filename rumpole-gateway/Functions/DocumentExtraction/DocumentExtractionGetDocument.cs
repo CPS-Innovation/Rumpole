@@ -34,7 +34,7 @@ namespace RumpoleGateway.Functions.DocumentExtraction
 
             try
             {
-                if (!req.Headers.TryGetValue("X-Correlation-ID", out var correlationId) || string.IsNullOrWhiteSpace(correlationId))
+                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) || string.IsNullOrWhiteSpace(correlationId))
                     return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
 
                 if (!Guid.TryParse(correlationId, out currentCorrelationId))
