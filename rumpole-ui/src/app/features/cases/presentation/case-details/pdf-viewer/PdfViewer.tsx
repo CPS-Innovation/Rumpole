@@ -55,6 +55,7 @@ export const PdfViewer: React.FC<Props> = ({
 
   useEffect(() => {
     scrollToFnRef.current &&
+      searchHighlights.length &&
       // searchHighlights *not* highlights, as the reference to highlights
       //  changes every time we make a redaction. We are only bothered
       //  about focussing search highlights anyway, so this works all round.
@@ -94,7 +95,9 @@ export const PdfViewer: React.FC<Props> = ({
               scrollRef={(scrollTo) => {
                 scrollToFnRef.current = scrollTo;
                 // imperatively trigger as soon as we have reference to the scrollTo function
-                scrollTo(highlights[0]);
+                if (highlights.length) {
+                  scrollTo(highlights[0]);
+                }
               }}
               onSelectionFinished={(position, content, hideTipAndSelection) => (
                 <RedactButton
