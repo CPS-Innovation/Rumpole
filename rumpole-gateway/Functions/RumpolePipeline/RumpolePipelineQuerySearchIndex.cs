@@ -30,7 +30,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineQuerySearchIndex")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/query/{searchTerm}")] HttpRequest req, string caseId, string searchTerm)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/query/{*searchTerm}")] HttpRequest req, string caseId, string searchTerm)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineQuerySearchIndex - Run";
