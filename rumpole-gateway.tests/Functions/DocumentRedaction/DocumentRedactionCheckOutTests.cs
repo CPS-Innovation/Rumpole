@@ -33,13 +33,21 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             var mockLogger = new Mock<ILogger<DocumentRedactionCheckOutDocument>>();
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _mockDocumentRedactionClient
-                .Setup(s => s.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>()))
+                .Setup(s => s.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>(), It.IsAny<Guid>()))
                 .ReturnsAsync(DocumentRedactionStatus.CheckedOut);
 
             _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object, mockTokenValidator.Object);
+        }
+        
+        [Fact]
+        public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+        {
+            var response = await _documentRedactionCheckOutFunction.Run(CreateHttpRequestWithoutCorrelationId(), _caseId, _documentId);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
@@ -83,7 +91,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
         {
-            _mockDocumentRedactionClient.Setup(client => client.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>()))
+            _mockDocumentRedactionClient.Setup(client => client.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             var response = await _documentRedactionCheckOutFunction.Run(CreateHttpRequest(), _caseId, _documentId) as StatusCodeResult;

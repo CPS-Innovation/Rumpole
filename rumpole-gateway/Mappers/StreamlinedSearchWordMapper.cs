@@ -2,15 +2,27 @@
 using System.Text.RegularExpressions;
 using FuzzySharp;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
+using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Mappers
 {
     public class StreamlinedSearchWordMapper : IStreamlinedSearchWordMapper
     {
-        public StreamlinedWord Map(Word word, string searchTerm)
+        private readonly ILogger<StreamlinedSearchWordMapper> _logger;
+
+        public StreamlinedSearchWordMapper(ILogger<StreamlinedSearchWordMapper> logger)
         {
-            var searchTermLookup = SearchTermIncluded(word.Text, searchTerm);
+            _logger = logger;
+        }
+
+        public StreamlinedWord Map(Word word, string searchTerm, Guid correlationId)
+        {
+            _logger.LogMethodEntry(correlationId, nameof(Map), $"Word object: {word.ToJson()}, Search Term: {searchTerm}");
+            
+            var searchTermLookup = SearchTermIncluded(word.Text, searchTerm, correlationId);
             var result = new StreamlinedWord
             {
                 Text = word.Text,
@@ -18,11 +30,14 @@ namespace RumpoleGateway.Mappers
                 StreamlinedMatchType = searchTermLookup.SearchMatchType
             };
 
+            _logger.LogMethodExit(correlationId, nameof(Map), result.ToJson());
             return result;
         }
 
-        public SearchTermResult SearchTermIncluded(string wordText, string searchTerm)
+        private SearchTermResult SearchTermIncluded(string wordText, string searchTerm, Guid correlationId)
         {
+            _logger.LogMethodEntry(correlationId, nameof(SearchTermIncluded), $"Word Text: {wordText}, Search Term: {searchTerm}");
+            
             var tidiedText = wordText.Replace(" ", "");
             if (searchTerm.Equals(tidiedText, StringComparison.CurrentCultureIgnoreCase))
                 return new SearchTermResult(true, StreamlinedMatchType.Exact);
@@ -36,7 +51,9 @@ namespace RumpoleGateway.Mappers
                     : new SearchTermResult(false, StreamlinedMatchType.None);
             }
 
-            return new SearchTermResult(false, StreamlinedMatchType.None);
+            var result = new SearchTermResult(false, StreamlinedMatchType.None);
+            _logger.LogMethodExit(correlationId, nameof(SearchTermIncluded), $"result: {result.ToJson()}");
+            return result;
         }
     }
 }

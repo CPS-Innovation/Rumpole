@@ -1,14 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.DocumentRedaction;
+using RumpoleGateway.Domain.Logging;
+using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Mappers
 {
     public class RedactPdfRequestMapper : IRedactPdfRequestMapper
     {
-        public RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, string caseId, string documentId, string fileName)
+        private readonly ILogger<RedactPdfRequestMapper> _logger;
+
+        public RedactPdfRequestMapper(ILogger<RedactPdfRequestMapper> logger)
         {
+            _logger = logger;
+        }
+        
+        public RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, string caseId, string documentId, string fileName, Guid correlationId)
+        {
+            _logger.LogMethodEntry(correlationId, nameof(Map), $"SaveRequest: '{saveRequest.ToJson()}', CaseId: {caseId}, DocumentId: {documentId}, FileName: {fileName}");
+            
             if (saveRequest == null) throw new ArgumentNullException(nameof(saveRequest));
 
             var result = new RedactPdfRequest
@@ -19,6 +31,7 @@ namespace RumpoleGateway.Mappers
                 RedactionDefinitions = new List<RedactionDefinition>()
             };
 
+            _logger.LogMethodFlow(correlationId, nameof(Map), "Mapping each set of redaction details (co-ordinates and page info) to an object that the PDFGenerator pipeline API expects");
             foreach (var item in saveRequest.Redactions)
             {
                 var redactionDefinition = new RedactionDefinition
@@ -42,6 +55,7 @@ namespace RumpoleGateway.Mappers
                 result.RedactionDefinitions.Add(redactionDefinition);
             }
 
+            _logger.LogMethodExit(correlationId, nameof(Map), result.ToJson());
             return result;
         }
     }

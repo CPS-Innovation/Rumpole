@@ -5,7 +5,7 @@ namespace RumpoleGateway.Mappers
 {
 	public interface ITrackerUrlMapper
 	{
-		Uri Map(HttpRequest request);
+		Uri Map(HttpRequest request, Guid correlationId);
 	}
 }
 

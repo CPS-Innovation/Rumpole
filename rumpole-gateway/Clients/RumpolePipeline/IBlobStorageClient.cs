@@ -1,13 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace RumpoleGateway.Clients.RumpolePipeline
 {
 	public interface IBlobStorageClient
 	{
-		Task<Stream> GetDocumentAsync(string blobName);
+		Task<Stream> GetDocumentAsync(string blobName, Guid correlationId);
 
-        Task UploadDocumentAsync(Stream stream, string blobName);
+        Task UploadDocumentAsync(Stream stream, string blobName, Guid correlationId);
     }
 }
 

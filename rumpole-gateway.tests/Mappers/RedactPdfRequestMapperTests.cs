@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Mappers;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace RumpoleGateway.Tests.Mappers
@@ -11,10 +14,14 @@ namespace RumpoleGateway.Tests.Mappers
     public class RedactPdfRequestMapperTests
     {
         private readonly Fixture _fixture;
+        private readonly Guid _correlationId;
+        private readonly Mock<ILogger<RedactPdfRequestMapper>> _loggerMock;
 
         public RedactPdfRequestMapperTests()
         {
             _fixture = new Fixture();
+            _correlationId = _fixture.Create<Guid>();
+            _loggerMock = new Mock<ILogger<RedactPdfRequestMapper>>();
         }
 
         [Fact]
@@ -26,8 +33,8 @@ namespace RumpoleGateway.Tests.Mappers
             var testDocumentId = _fixture.Create<string>();
             var testFileName = _fixture.Create<string>();
 
-            IRedactPdfRequestMapper mapper = new RedactPdfRequestMapper();
-            var result = mapper.Map(testRequest, testCaseId, testDocumentId, testFileName);
+            IRedactPdfRequestMapper mapper = new RedactPdfRequestMapper(_loggerMock.Object);
+            var result = mapper.Map(testRequest, testCaseId, testDocumentId, testFileName, _correlationId);
 
             using (new AssertionScope())
             {

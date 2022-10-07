@@ -8,21 +8,18 @@ namespace RumpoleGateway.Clients.DocumentRedaction
     [ExcludeFromCodeCoverage]
     public class DocumentRedactionClient : IDocumentRedactionClient
     {
-        public Task<DocumentRedactionStatus> CheckInDocumentAsync(string caseId, string documentId, string accessToken)
+        public Task<DocumentRedactionStatus> CheckInDocumentAsync(string caseId, string documentId, string accessToken, Guid correlationId)
         {
-            // TODO
             throw new NotImplementedException();
         }
 
-        public Task<DocumentRedactionSaveResult> SaveRedactionsAsync(string caseId, string documentId, string fileName, DocumentRedactionSaveRequest saveRequest, string accessToken)
+        public Task<DocumentRedactionSaveResult> SaveRedactionsAsync(string caseId, string documentId, string fileName, DocumentRedactionSaveRequest saveRequest, string accessToken, Guid correlationId)
         {
-            // TODO
             throw new NotImplementedException();
         }
 
-        Task<DocumentRedactionStatus> IDocumentRedactionClient.CheckOutDocumentAsync(string caseId, string documentId, string accessToken)
+        Task<DocumentRedactionStatus> IDocumentRedactionClient.CheckOutDocumentAsync(string caseId, string documentId, string accessToken, Guid correlationId)
         {
-            // TODO
             throw new NotImplementedException();
         }
     }

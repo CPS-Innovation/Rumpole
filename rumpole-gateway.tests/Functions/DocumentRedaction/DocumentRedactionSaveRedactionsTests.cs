@@ -47,17 +47,25 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockDocumentRedactionClient = new Mock<IDocumentRedactionClient>();
             var mockLogger = new Mock<ILogger<DocumentRedactionSaveRedactions>>();
             _mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
-            _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope))
+            _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope, It.IsAny<Guid>()))
                 .ReturnsAsync(_onBehalfOfAccessToken);
             _mockTokenValidator = new Mock<IAuthorizationValidator>();
             var mockConfiguration = new Mock<IConfiguration>();
             
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
             mockConfiguration.Setup(config => config["RumpolePipelineRedactPdfScope"]).Returns(_scope);
 
             _documentRedactionSaveRedactions = new DocumentRedactionSaveRedactions(mockLogger.Object,
                 _mockOnBehalfOfTokenClient.Object, _mockDocumentRedactionClient.Object, mockConfiguration.Object,
                 _mockTokenValidator.Object);
+        }
+        
+        [Fact]
+        public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+        {
+            var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequestWithoutCorrelationId(), _caseId, _documentId, _fileName);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
@@ -71,7 +79,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_WhenValidationTokenIsInvalid_ReturnsBadRequest()
         {
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(false);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName);
 
             response.Should().BeOfType<BadRequestObjectResult>();
@@ -112,7 +120,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
                 Succeeded = true
             };
             _mockDocumentRedactionClient.Setup(x => x.SaveRedactionsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentRedactionSaveRequest>(), 
-                It.IsAny<string>())).ReturnsAsync(validSaveResult);
+                It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(validSaveResult);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(_saveRequest), _caseId, _documentId, _fileName) as OkObjectResult;
 
             using (new AssertionScope())
@@ -138,7 +146,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
                 Succeeded = false
             };
             _mockDocumentRedactionClient.Setup(x => x.SaveRedactionsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentRedactionSaveRequest>(),
-                It.IsAny<string>())).ReturnsAsync(validSaveResult);
+                It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(validSaveResult);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(_saveRequest), _caseId, _documentId, _fileName) as BadRequestObjectResult;
 
             response.Should().BeOfType<BadRequestObjectResult>();
@@ -155,7 +163,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
                 Succeeded = false
             };
             _mockDocumentRedactionClient.Setup(x => x.SaveRedactionsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentRedactionSaveRequest>(),
-                It.IsAny<string>())).ReturnsAsync(invalidSaveResult);
+                It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(invalidSaveResult);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(_saveRequest), _caseId, _documentId, _fileName) as BadRequestObjectResult;
 
             using (new AssertionScope())
@@ -177,7 +185,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             };
             var defaultMessage = $"The redaction request could not be processed for file name '{_fileName}'.";
             _mockDocumentRedactionClient.Setup(x => x.SaveRedactionsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentRedactionSaveRequest>(),
-                It.IsAny<string>())).ReturnsAsync(invalidSaveResult);
+                It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(invalidSaveResult);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(_saveRequest), _caseId, _documentId, _fileName) as BadRequestObjectResult;
 
             using (new AssertionScope())
@@ -191,7 +199,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_ReturnsInternalServerErrorWhenMsalExceptionOccurs()
         {
-            _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope))
+            _mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _scope, It.IsAny<Guid>()))
                 .ThrowsAsync(new MsalException());
 
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;
@@ -206,7 +214,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_ReturnsInternalServerErrorWhenHttpExceptionOccurs()
         {
-            _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken))
+            _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken, It.IsAny<Guid>()))
                 .ThrowsAsync(new HttpRequestException());
 
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;
@@ -221,7 +229,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
         {
-            _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken))
+            _mockDocumentRedactionClient.Setup(client => client.SaveRedactionsAsync(_caseId, _documentId, _fileName, _saveRequest, _onBehalfOfAccessToken, It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName) as ObjectResult;

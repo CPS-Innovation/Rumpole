@@ -9,6 +9,19 @@ namespace RumpoleGateway.Tests.Functions.Status
 		private readonly ILogger<RumpoleGateway.Functions.Status.Status> _mockLogger = Substitute.For<ILogger<RumpoleGateway.Functions.Status.Status>>();
 
 		[Fact]
+		public void StatusFunction_Should_Return_Response_400_When_No_CorrelationId_Supplied()
+		{
+			//Arrange
+			var statusFunction = GetStatusFunction();
+
+			//Act
+			var results = statusFunction.Run(CreateHttpRequestWithoutCorrelationId()) as Microsoft.AspNetCore.Mvc.ObjectResult;
+
+			//Assert
+			Assert.Equal(400, results?.StatusCode);
+		}
+		
+		[Fact]
 		public void StatusFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
 		{
 			//Arrange
@@ -18,7 +31,7 @@ namespace RumpoleGateway.Tests.Functions.Status
 			var results = statusFunction.Run(CreateHttpRequestWithoutToken()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
 			//Assert
-			Assert.Equal(401, results.StatusCode);
+			Assert.Equal(401, results?.StatusCode);
 		}
 
 		[Fact]
@@ -31,7 +44,7 @@ namespace RumpoleGateway.Tests.Functions.Status
 			var results = statusFunction.Run(CreateHttpRequest()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
 			//Assert
-			Assert.Equal(200, results.StatusCode);
+			Assert.Equal(200, results?.StatusCode);
 		}
 
 		private RumpoleGateway.Functions.Status.Status GetStatusFunction()

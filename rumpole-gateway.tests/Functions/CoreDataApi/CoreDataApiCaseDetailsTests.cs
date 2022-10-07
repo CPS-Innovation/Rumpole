@@ -31,8 +31,22 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         {
             _caseInformationFake = caseInformationFake;
 
-            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>()).ReturnsForAnyArgs(true);
+            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>(), It.IsAny<Guid>()).ReturnsForAnyArgs(true);
         }
+        
+        [Fact]
+        public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_400_When_No_CorrelationId_Supplied()
+        {
+            //Arrange
+            var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
+
+            //Act
+            var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequestWithoutCorrelationId(), string.Empty) as Microsoft.AspNetCore.Mvc.ObjectResult;
+
+            //Assert
+            Assert.Equal(400, results?.StatusCode);
+        }
+        
         [Fact]
         public async Task CoreDataApiCaseDetailsFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
         {
@@ -43,7 +57,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequestWithoutToken(), string.Empty) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(401, results.StatusCode);
+            Assert.Equal(401, results?.StatusCode);
         }
 
         [Theory]
@@ -58,7 +72,7 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(404, results.StatusCode);
+            Assert.Equal(404, results?.StatusCode);
         }
 
         [Fact]
@@ -72,8 +86,8 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(404, results.StatusCode);
-            Assert.Contains(caseId, results.Value.ToString());
+            Assert.Equal(404, results?.StatusCode);
+            Assert.Contains(caseId, results?.Value?.ToString());
              
         }
 
@@ -84,16 +98,16 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             //Arrange
             var caseId = 18868;
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
-            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload()
+            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()).ReturnsForAnyArgs(_caseInformationFake.GetCaseInformationByURN_Payload()
                                                                                                                    .FirstOrDefault(x=>x.Id == caseId));
 
             //Act
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            var response = results.Value as CaseDetails;
-            Assert.Equal(200, results.StatusCode);
-            Assert.Equal(caseId, response.Id);
+            var response = results?.Value as CaseDetails;
+            Assert.Equal(200, results?.StatusCode);
+            Assert.Equal(caseId, response?.Id);
         }
 
         [Fact]
@@ -102,13 +116,13 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             //Arrange
             var caseId = 18868;
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
-            _mockOnBehalfOfTokenClient.GetAccessTokenAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new MsalException());
+            _mockOnBehalfOfTokenClient.GetAccessTokenAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()).ThrowsForAnyArgs(new MsalException());
 
             //Act
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(500, results.StatusCode);
+            Assert.Equal(500, results?.StatusCode);
         }
 
         [Fact]
@@ -117,13 +131,13 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             //Arrange
             var caseId = 18868;
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
-            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new CoreDataApiException("Test core data api exception", new Exception()));
+            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()).ThrowsForAnyArgs(new CoreDataApiException("Test core data api exception", new Exception()));
 
             //Act
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(500, results.StatusCode);
+            Assert.Equal(500, results?.StatusCode);
         }
 
         [Fact]
@@ -132,13 +146,13 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
             //Arrange
             var caseId = 18868;
             var coreDataApiCaseDetailsFunction = GetCoreDataApiCaseDetailsFunction();
-            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>()).ThrowsForAnyArgs(new Exception());
+            _mockCoreDataApiClient.GetCaseDetailsByIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()).ThrowsForAnyArgs(new Exception());
 
             //Act
             var results = await coreDataApiCaseDetailsFunction.Run(CreateHttpRequest(), caseId.ToString()) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
-            Assert.Equal(500, results.StatusCode);
+            Assert.Equal(500, results?.StatusCode);
         }
 
         private CoreDataApiCaseDetails GetCoreDataApiCaseDetailsFunction()

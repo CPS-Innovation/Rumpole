@@ -34,11 +34,19 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             var mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            _mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(_blobStream);
+            _mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(_blobStream);
 
 			_rumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, mockLogger.Object, mockTokenValidator.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+		{
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequestWithoutCorrelationId(), _blobName);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -63,7 +71,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsNotFoundWhenBlobStorageClientReturnsNull()
 		{
-			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName)).ReturnsAsync(default(Stream));
+			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(default(Stream));
 
 			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
 
@@ -83,29 +91,29 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as OkObjectResult;
 
-			response.Value.Should().Be(_blobStream);
+			response?.Value.Should().Be(_blobStream);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenRequestFailedExceptionOccurs()
 		{
-			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
+			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName, It.IsAny<Guid>()))
 				.ThrowsAsync(new RequestFailedException(500, "Test request failed exception"));
 
 			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName))
+			_mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName, It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
 			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName) as ObjectResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 	}
 }

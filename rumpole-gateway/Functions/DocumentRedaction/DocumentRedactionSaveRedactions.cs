@@ -14,6 +14,8 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using RumpoleGateway.Domain.Logging;
+using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -23,6 +25,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
         private readonly IDocumentRedactionClient _documentRedactionClient;
         private readonly IConfiguration _configuration;
         private readonly IAuthorizationValidator _tokenValidator;
+        private readonly ILogger<DocumentRedactionSaveRedactions> _logger;
 
         public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
             IConfiguration configuration, IAuthorizationValidator tokenValidator)
@@ -32,6 +35,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [FunctionName("DocumentRedactionSaveRedactions")]
@@ -39,47 +43,71 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "documents/saveRedactions/{caseId}/{documentId}/{*fileName}")] HttpRequest req, 
                 string caseId, string documentId, string fileName)
         {
+            Guid currentCorrelationId = default;
+            const string loggingName = "DocumentRedactionSaveRedactions - Run";
+            DocumentRedactionSaveResult saveRedactionResult = null;
+
             try
             {
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse();
+                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
+                    string.IsNullOrWhiteSpace(correlationId))
+                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
 
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken);
+                if (!Guid.TryParse(correlationId, out currentCorrelationId))
+                    if (currentCorrelationId == Guid.Empty)
+                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
+
+                _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
+
+                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
+                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
+
+                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
                 if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed");
+                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(documentId))
-                    return BadRequestErrorResponse("Document id is not supplied.");
+                    return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);
 
                 if (!int.TryParse(caseId, out _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.");
+                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(fileName))
-                    return BadRequestErrorResponse("Invalid filename - not details received");
+                    return BadRequestErrorResponse("Invalid filename - not details received", currentCorrelationId, loggingName);
 
                 var redactions = await req.GetJsonBody<DocumentRedactionSaveRequest, DocumentRedactionSaveRequestValidator>();
                 if (!redactions.IsValid)
                 {
-                    LogInformation("Invalid redaction request");
+                    LogInformation("Invalid redaction request", currentCorrelationId, loggingName);
                     return redactions.ToBadRequest();
                 }
 
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), _configuration["RumpolePipelineRedactPdfScope"]);
-
-                var saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, HttpUtility.UrlDecode(documentId), HttpUtility.UrlDecode(fileName), 
-                    redactions.Value, onBehalfOfAccessToken);
-                return saveRedactionResult is {Succeeded: true} ? new OkObjectResult(saveRedactionResult)
-                    : string.IsNullOrWhiteSpace(saveRedactionResult.Message) 
-                        ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.") : BadRequestErrorResponse(saveRedactionResult.Message);
+                var pdfPipelineScope = _configuration["RumpolePipelineRedactPdfScope"];
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {pdfPipelineScope}");
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), pdfPipelineScope, currentCorrelationId);
+                
+                //exchange access token via on behalf of for ultimate Cde access?
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Saving redaction details to the document for {caseId}, documentId {documentId}, fileName {fileName}");
+                saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, HttpUtility.UrlDecode(documentId), HttpUtility.UrlDecode(fileName),
+                    redactions.Value, onBehalfOfAccessToken, currentCorrelationId);
+                return saveRedactionResult is {Succeeded: true}
+                    ? new OkObjectResult(saveRedactionResult)
+                    : string.IsNullOrWhiteSpace(saveRedactionResult.Message)
+                        ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.", currentCorrelationId, loggingName)
+                        : BadRequestErrorResponse(saveRedactionResult.Message, currentCorrelationId, loggingName);
             }
             catch (Exception exception)
             {
                 return exception switch
                 {
-                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred."),
-                    HttpRequestException => InternalServerErrorResponse(exception, "A document redaction client http exception occurred."),
-                    _ => InternalServerErrorResponse(exception, $"An unhandled exception occurred - \"{exception.Message}\"")
+                    MsalException => InternalServerErrorResponse(exception, "An onBehalfOfToken exception occurred.", currentCorrelationId, loggingName),
+                    HttpRequestException => InternalServerErrorResponse(exception, "A document redaction client http exception occurred.", currentCorrelationId, loggingName),
+                    _ => InternalServerErrorResponse(exception, $"An unhandled exception occurred - \"{exception.Message}\"", currentCorrelationId, loggingName)
                 };
+            }
+            finally
+            {
+                _logger.LogMethodExit(currentCorrelationId, loggingName, saveRedactionResult.ToJson());
             }
         }
     }

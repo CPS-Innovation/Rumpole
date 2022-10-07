@@ -27,9 +27,8 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private readonly string _caseId;
 		private readonly string _onBehalfOfAccessToken;
 		private readonly string _rumpolePipelineCoordinatorScope;
-#pragma warning disable CS0649
-		private TriggerCoordinatorResponse _triggerCoordinatorResponse;
-#pragma warning restore CS0649
+		private readonly Guid _correlationId;
+		private readonly TriggerCoordinatorResponse _triggerCoordinatorResponse;
 
         private readonly Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;
 		private readonly Mock<IPipelineClient> _mockPipelineClient;
@@ -43,6 +42,8 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_onBehalfOfAccessToken = fixture.Create<string>();
 			_rumpolePipelineCoordinatorScope = fixture.Create<string>();
 			_request = CreateHttpRequest();
+			_correlationId = fixture.Create<Guid>();
+			_triggerCoordinatorResponse = fixture.Create<TriggerCoordinatorResponse>();
 
 			var mockLogger = new Mock<ILogger<RumpolePipelineTriggerCoordinator>>();
 			_mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
@@ -50,17 +51,25 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			var mockConfiguration = new Mock<IConfiguration>();
 			var mockTriggerCoordinatorResponseFactory = new Mock<ITriggerCoordinatorResponseFactory>();
 
-			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
+			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope, It.IsAny<Guid>()))
 				.ReturnsAsync(_onBehalfOfAccessToken);
 			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
-			mockTriggerCoordinatorResponseFactory.Setup(factory => factory.Create(_request)).Returns(_triggerCoordinatorResponse);
+			mockTriggerCoordinatorResponseFactory.Setup(factory => factory.Create(_request, It.IsAny<Guid>())).Returns(_triggerCoordinatorResponse);
 
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _rumpolePipelineTriggerCoordinator =
 				new RumpolePipelineTriggerCoordinator(mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, mockConfiguration.Object, mockTriggerCoordinatorResponseFactory.Object, mockTokenValidator.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+		{
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutCorrelationId(), _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -91,9 +100,9 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_TriggersCoordinator()
         {
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId);
+			await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId);
 
-			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false));
+			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()));
 		}
 
 		[Fact]
@@ -109,41 +118,41 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
 			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as OkObjectResult;
 
-			response.Value.Should().Be(_triggerCoordinatorResponse);
+			response?.Value.Should().Be(_triggerCoordinatorResponse);
 		
 		}
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenMsalExceptionOccurs()
 		{
-			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope))
+			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope, It.IsAny<Guid>()))
 				.ThrowsAsync(new MsalException());
 
 			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenHttpExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()))
 				.ThrowsAsync(new HttpRequestException());
 
 			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
 			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
 
-			response.StatusCode.Should().Be(500);
+			response?.StatusCode.Should().Be(500);
 		}
 	}
 }

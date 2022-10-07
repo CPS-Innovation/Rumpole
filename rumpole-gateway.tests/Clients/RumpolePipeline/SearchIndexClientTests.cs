@@ -9,6 +9,7 @@ using Azure.Search.Documents.Models;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
@@ -23,6 +24,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		private readonly Fixture _fixture;
 		private readonly int _caseId;
 		private readonly string _searchTerm;
+		private readonly Guid _correlationId;
 
 		private readonly Mock<SearchClient> _mockSearchClient;
 
@@ -33,24 +35,31 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 			_fixture = new Fixture();
 			_caseId = _fixture.Create<int>();
 			_searchTerm = _fixture.Create<string>();
+			_correlationId = _fixture.Create<Guid>();
 
 			var mockSearchClientFactory = new Mock<ISearchClientFactory>();
 			_mockSearchClient = new Mock<SearchClient>();
 			var mockResponse = new Mock<Response<SearchResults<SearchLine>>>();
 			var mockSearchResults = new Mock<SearchResults<SearchLine>>();
 
+			var mockSearchIndexLogger = new Mock<ILogger<SearchIndexClient>>();
+			var mockSearchLineMapperLogger = new Mock<ILogger<StreamlinedSearchLineMapper>>();
+			var mockSearchWordMapperLogger = new Mock<ILogger<StreamlinedSearchWordMapper>>();
+			var mockSearchResultFactoryLogger = new Mock<ILogger<StreamlinedSearchResultFactory>>();
+
 			mockSearchClientFactory.Setup(factory => factory.Create()).Returns(_mockSearchClient.Object);
 			_mockSearchClient.Setup(client => client.SearchAsync<SearchLine>(_searchTerm, It.Is<SearchOptions>(o => o.Filter == $"caseId eq {_caseId}"), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(mockResponse.Object);
 			mockResponse.Setup(response => response.Value).Returns(mockSearchResults.Object);
 
-			_searchIndexClient = new SearchIndexClient(mockSearchClientFactory.Object, new StreamlinedSearchResultFactory(new StreamlinedSearchLineMapper(), new StreamlinedSearchWordMapper()));
+			_searchIndexClient = new SearchIndexClient(mockSearchClientFactory.Object, new StreamlinedSearchResultFactory(new StreamlinedSearchLineMapper(mockSearchLineMapperLogger.Object), 
+				new StreamlinedSearchWordMapper(mockSearchWordMapperLogger.Object), mockSearchResultFactoryLogger.Object), mockSearchIndexLogger.Object);
 		}
 		
 		[Fact]
 		public async Task Query_ReturnsSearchLines()
         {
-			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
+			var results = await _searchIndexClient.Query(_caseId, _searchTerm, _correlationId);
 
 			results.Should().NotBeNull();
         }
@@ -103,7 +112,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 							SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null)
 						}, 100, null, null, responseMock.Object), responseMock.Object)));
 			
-			var results = await _searchIndexClient.Query(_caseId, _searchTerm);
+			var results = await _searchIndexClient.Query(_caseId, _searchTerm, _correlationId);
 
 			using (new AssertionScope())
 			{
@@ -133,7 +142,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
                             SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null)
                         }, 100, null, null, responseMock.Object), responseMock.Object)));
 
-            var streamlinedResults = await _searchIndexClient.Query(_caseId, _searchTerm);
+            var streamlinedResults = await _searchIndexClient.Query(_caseId, _searchTerm, _correlationId);
 
             using (new AssertionScope())
             {
@@ -166,7 +175,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 					        SearchModelFactory.SearchResult(fakeSearchLines[0], 0.9, null)
 				        }, 100, null, null, responseMock.Object), responseMock.Object)));
 
-	        var streamlinedResults = await _searchIndexClient.Query(_caseId, _searchTerm);
+	        var streamlinedResults = await _searchIndexClient.Query(_caseId, _searchTerm, _correlationId);
 
 	        using (new AssertionScope())
 	        {

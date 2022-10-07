@@ -1,7 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Factories;
 using RumpoleGateway.Wrappers;
@@ -14,31 +17,38 @@ namespace RumpoleGateway.Clients.RumpolePipeline
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IJsonConvertWrapper _jsonConvertWrapper;
+        private readonly ILogger<PipelineClient> _logger;
 
         public PipelineClient(
             IPipelineClientRequestFactory pipelineClientRequestFactory,
             HttpClient httpClient,
             IConfiguration configuration,
-            IJsonConvertWrapper jsonConvertWrapper)
+            IJsonConvertWrapper jsonConvertWrapper,
+            ILogger<PipelineClient> logger)
         {
             _pipelineClientRequestFactory = pipelineClientRequestFactory;
             _httpClient = httpClient;
             _configuration = configuration;
             _jsonConvertWrapper = jsonConvertWrapper;
+            _logger = logger;
         }
 
-        public async Task TriggerCoordinatorAsync(string caseId, string accessToken, bool force)
+        public async Task TriggerCoordinatorAsync(string caseId, string accessToken, bool force, Guid correlationId)
         {
+            _logger.LogMethodEntry(correlationId, nameof(TriggerCoordinatorAsync), $"CaseId: {caseId}, Force?: {force}");
             var forceQuery = force ? "&&force=true" : string.Empty;
-            await SendGetRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}{forceQuery}", accessToken);
+            _logger.LogMethodExit(correlationId, nameof(TriggerCoordinatorAsync), string.Empty);
+            await SendGetRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}{forceQuery}", accessToken, correlationId);
         }
 
-        public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken)
+        public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken, Guid correlationId)
         {
+            _logger.LogMethodEntry(correlationId, nameof(GetTrackerAsync), $"Acquiring the tracker for caseId {caseId}");
+            
             HttpResponseMessage response;
             try
             {
-                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken);
+                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken, correlationId);
             }
             catch (HttpRequestException exception)
             {
@@ -51,18 +61,21 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             }
 
             var stringContent = await response.Content.ReadAsStringAsync();
-            return _jsonConvertWrapper.DeserializeObject<Tracker>(stringContent);
+            
+            _logger.LogMethodExit(correlationId, nameof(GetTrackerAsync), $"Tracker details: {stringContent}");
+            return _jsonConvertWrapper.DeserializeObject<Tracker>(stringContent, correlationId);
         }
 
-        
-
-        private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken)
+        private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken, Guid correlationId)
         {
-            var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken);
+            _logger.LogMethodEntry(correlationId, nameof(SendGetRequestAsync), requestUri);
+            
+            var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken, correlationId);
             var response = await _httpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();
 
+            _logger.LogMethodExit(correlationId, nameof(SendGetRequestAsync), string.Empty);
             return response;
         }
     }

@@ -21,7 +21,7 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithValidParameters_ThenAValidObjectIsCreated()
         {
-            var testInstance = new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
 
             testInstance.Should().NotBeNull();
         }
@@ -29,15 +29,23 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithoutAnAccessToken_ThenAnArgumentExceptionIsThrown()
         {
-            var testInstance = () => new AuthenticatedGraphQlHttpRequest(null, _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = () => new AuthenticatedGraphQlHttpRequest(null, _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
 
             testInstance.Should().Throw<ArgumentException>().WithParameterName("accessToken");
+        }
+        
+        [Fact]
+        public void WhenCallingANewInstance_WithoutACorrelationId_ThenAnArgumentExceptionIsThrown()
+        {
+            var testInstance = () => new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), Guid.Empty, _fixture.Create<GraphQLHttpRequest>());
+
+            testInstance.Should().Throw<ArgumentException>().WithParameterName("correlationId");
         }
 
         [Fact]
         public void WhenCallingANewInstance_WithoutAnEmptyGraphQlRequest_ThenAnArgumentNullExceptionIsThrown()
         {
-            var testInstance = () => new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), null);
+            var testInstance = () => new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), null);
 
             testInstance.Should().Throw<ArgumentNullException>();
         }
@@ -46,7 +54,7 @@ namespace RumpoleGateway.Tests.Extensions
         public void WhenAValidInstanceHasBeenCreated_WhenCallingToHttpRequestMessage_TheResponseContainsTheExpectedHeaders()
         {
             var accessToken = _fixture.Create<string>();
-            var testInstance = new AuthenticatedGraphQlHttpRequest(accessToken, _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = new AuthenticatedGraphQlHttpRequest(accessToken, _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
             var testRequestMessage = testInstance.ToHttpRequestMessage(new GraphQLHttpClientOptions(), new NewtonsoftJsonSerializer());
 
             using (new AssertionScope())

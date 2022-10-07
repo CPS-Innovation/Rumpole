@@ -32,15 +32,23 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			_stream = new MemoryStream();
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
-			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
+			var mockLogger = new Mock<ILogger<DocumentExtractionGetDocument>>();
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            _mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
+            _mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_stream);
 
 			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object, mockTokenValidator.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
+		{
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequestWithoutCorrelationId(), _documentId, _fileName);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -92,7 +100,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>())) //TODO replace It.IsAny
+			_mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
 			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName) as StatusCodeResult;

@@ -34,10 +34,18 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetSasUrl>>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
-            _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName)).ReturnsAsync(_fakeSasUrl);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(_fakeSasUrl);
 
             _rumpolePipelineGetSasUrl = new RumpolePipelineGetSasUrl(mockTokenValidator.Object, mockLogger.Object, _mockSasGeneratorService.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+		{
+			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequestWithoutCorrelationId(), _blobName);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -62,7 +70,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsNotFoundWhenSasUrlGeneratorReturnsNull()
 		{
-			_mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName)).ReturnsAsync((string)null);
+			_mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync((string)null);
 
 			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName);
 
@@ -92,7 +100,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenRequestFailedExceptionOccurs()
 		{
-            _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName))
+            _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>()))
 				.ThrowsAsync(new RequestFailedException(500, "Test request failed exception"));
 
 			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as ObjectResult;
@@ -107,7 +115,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName))
+			_mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
 			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName) as ObjectResult;

@@ -1,10 +1,11 @@
-﻿using GraphQL.Client.Http;
+﻿using System;
+using GraphQL.Client.Http;
 using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
 {
-    public interface IAuthenticatedGraphQLHttpRequestFactory
+    public interface IAuthenticatedGraphQlHttpRequestFactory
     {
-        AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQLHttpRequest);
+        AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId);
     }
 }

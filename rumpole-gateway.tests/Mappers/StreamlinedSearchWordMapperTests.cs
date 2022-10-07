@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.Extensions.Logging;
+using Moq;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Mappers;
 using Xunit;
@@ -13,12 +16,16 @@ namespace RumpoleGateway.Tests.Mappers
     {
         private readonly Fixture _fixture;
         private readonly string _searchTerm;
+        private readonly Guid _correlationId;
+        private readonly Mock<ILogger<StreamlinedSearchWordMapper>> _loggerMock;
 
         public StreamlinedSearchWordMapperTests()
         {
             _fixture = new Fixture();
 
             _searchTerm = _fixture.Create<string>();
+            _correlationId = _fixture.Create<Guid>();
+            _loggerMock = new Mock<ILogger<StreamlinedSearchWordMapper>>();
         }
 
         [Fact]
@@ -28,8 +35,8 @@ namespace RumpoleGateway.Tests.Mappers
             searchLine.Words = _fixture.CreateMany<Word>(1).ToList();
             searchLine.Words[0].Text = _searchTerm;
 
-            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper();
-            var result = mapper.Map(searchLine.Words[0], _searchTerm);
+            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper(_loggerMock.Object);
+            var result = mapper.Map(searchLine.Words[0], _searchTerm, _correlationId);
 
             using (new AssertionScope())
             {
@@ -44,8 +51,8 @@ namespace RumpoleGateway.Tests.Mappers
             var searchLine = _fixture.Create<SearchLine>();
             searchLine.Words = _fixture.CreateMany<Word>(1).ToList();
             
-            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper();
-            var result = mapper.Map(searchLine.Words[0], _searchTerm);
+            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper(_loggerMock.Object);
+            var result = mapper.Map(searchLine.Words[0], _searchTerm, _correlationId);
 
             result.BoundingBox.Should().BeNull();
         }
@@ -60,8 +67,8 @@ namespace RumpoleGateway.Tests.Mappers
             searchLine.Words = _fixture.CreateMany<Word>(1).ToList();
             searchLine.Words[0].Text = searchResultText;
             
-            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper();
-            var result = mapper.Map(searchLine.Words[0], searchTerm);
+            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper(_loggerMock.Object);
+            var result = mapper.Map(searchLine.Words[0], searchTerm, _correlationId);
 
             result.BoundingBox.Should().NotBeNull();
         }
@@ -102,8 +109,8 @@ namespace RumpoleGateway.Tests.Mappers
             searchLine.Words = _fixture.CreateMany<Word>(1).ToList();
             searchLine.Words[0].Text = searchText;
             
-            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper();
-            var result = mapper.Map(searchLine.Words[0], searchTerm);
+            IStreamlinedSearchWordMapper mapper = new StreamlinedSearchWordMapper(_loggerMock.Object);
+            var result = mapper.Map(searchLine.Words[0], searchTerm, _correlationId);
 
             using (new AssertionScope())
             {

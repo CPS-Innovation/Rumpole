@@ -33,11 +33,19 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
-			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_case);
 
 			_documentExtractionGetCaseDocuments = new DocumentExtractionGetCaseDocuments(_mockDocumentExtractionClient.Object, mockLogger.Object, mockTokenValidator.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenCorrelationIdIsMissing()
+		{
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequestWithoutCorrelationId(), _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -59,7 +67,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsNotFoundWhenPipelineClientReturnsNull()
 		{
-			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
+			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(default(Case));
 
 			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
@@ -86,7 +94,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>())) //TODO replace It.IsAny
+			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
 			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId) as StatusCodeResult;

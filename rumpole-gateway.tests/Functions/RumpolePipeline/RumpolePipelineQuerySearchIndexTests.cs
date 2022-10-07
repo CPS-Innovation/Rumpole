@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Azure;
@@ -20,6 +21,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
         private readonly int _caseIdInt;
 		private readonly string _caseId;
 		private readonly string _searchTerm;
+		private readonly Guid _correlationId;
 		private readonly IList<StreamlinedSearchLine> _searchResults;
 
         private readonly Mock<ISearchIndexClient> _searchIndexClient;
@@ -33,18 +35,27 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_caseId = _caseIdInt.ToString();
 			_searchTerm = fixture.Create<string>();
 			_searchResults = fixture.Create<IList<StreamlinedSearchLine>>();
+			_correlationId = fixture.Create<Guid>();
 
 			var mockLogger = new Mock<ILogger<RumpolePipelineQuerySearchIndex>>();
 			_searchIndexClient = new Mock<ISearchIndexClient>();
 
-			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
+			_searchIndexClient.Setup(client => client.Query(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_searchResults);
 
             var mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>())).ReturnsAsync(true);
+            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _rumpolePipelineQuerySearchIndex = new RumpolePipelineQuerySearchIndex(mockLogger.Object, _searchIndexClient.Object, mockTokenValidator.Object);
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
+		{
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequestWithoutCorrelationId(), _caseId, _searchTerm);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
@@ -93,7 +104,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenRequestFailedExceptionOccurs()
         {
-			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
+			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm, _correlationId))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
 			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
@@ -105,7 +116,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm))
+			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm, _correlationId))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
 			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
