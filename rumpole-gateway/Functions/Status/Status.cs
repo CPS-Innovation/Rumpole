@@ -5,7 +5,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using System.Threading.Tasks;
 using RumpoleGateway.Domain.Logging;
+using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Functions.Status
@@ -13,38 +15,29 @@ namespace RumpoleGateway.Functions.Status
 	public class Status : BaseRumpoleFunction
 	{
 		private readonly ILogger<Status> _logger;
-
-		public Status(ILogger<Status> logger)
-			: base(logger)
+		
+		public Status(ILogger<Status> logger, IAuthorizationValidator authorizationValidator)
+			: base(logger, authorizationValidator)
 		{
 			_logger = logger;
 		}
 
 		[FunctionName("Status")]
-		public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status")] HttpRequest req)
+		public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status")] HttpRequest req)
 		{
 			Guid currentCorrelationId = default;
 			const string loggingName = "Status - Run";
 			
-			if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-			    string.IsNullOrWhiteSpace(correlationId))
-				return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-			if (!Guid.TryParse(correlationId, out currentCorrelationId))
-				if (currentCorrelationId == Guid.Empty)
-					return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+			var validationResult = await ValidateRequest(req, loggingName);
+			if (validationResult.InvalidResponseResult != null)
+				return validationResult.InvalidResponseResult;
+			
 			_logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 			
 			var version = Assembly
 				.GetExecutingAssembly()
 				.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 ?.InformationalVersion;
-
-			if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-			{
-				return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-			}
 
 			var response = new Domain.Status.Status
 			{

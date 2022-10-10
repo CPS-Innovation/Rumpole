@@ -19,7 +19,7 @@ namespace RumpoleGateway.Factories
         {
             _logger.LogMethodEntry(correlationId, nameof(CreateGet), requestUri);
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-            request.Headers.Authorization = new AuthenticationHeaderValue(Constants.Authentication.Bearer, accessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue(AuthenticationKeys.Bearer, accessToken);
             request.Headers.Add("Correlation-Id", correlationId.ToString());
             _logger.LogMethodExit(correlationId, nameof(CreateGet), string.Empty);
             return request;
@@ -29,7 +29,7 @@ namespace RumpoleGateway.Factories
         {
             _logger.LogMethodEntry(correlationId, nameof(CreatePut), requestUri);
             var request = new HttpRequestMessage(HttpMethod.Put, requestUri);
-            request.Headers.Authorization = new AuthenticationHeaderValue(Constants.Authentication.Bearer, accessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue(AuthenticationKeys.Bearer, accessToken);
             request.Headers.Add("Correlation-Id", correlationId.ToString());
             _logger.LogMethodExit(correlationId, nameof(CreatePut), string.Empty);
             return request;

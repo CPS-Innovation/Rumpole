@@ -10,20 +10,19 @@ using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Extensions;
+using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
     public class DocumentRedactionCheckOutDocument : BaseRumpoleFunction
     {
         private readonly IDocumentRedactionClient _documentRedactionClient;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<DocumentRedactionCheckOutDocument> _logger;
 
         public DocumentRedactionCheckOutDocument(ILogger<DocumentRedactionCheckOutDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
-            : base(logger)
+            : base(logger, tokenValidator)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
-            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
             _logger = logger;
         }
 
@@ -37,22 +36,11 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
             try
             {
-                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-                    string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
+                
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(documentId))
                     return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);
@@ -62,7 +50,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
                 //exchange access token via on behalf of?
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Checking out document for caseId: {caseId}, documentId: {documentId}");
-                checkoutResult = await _documentRedactionClient.CheckOutDocumentAsync(caseId, documentId, accessToken, currentCorrelationId);
+                checkoutResult = await _documentRedactionClient.CheckOutDocumentAsync(caseId, documentId, validationResult.AccessTokenValue.ToJwtString(), currentCorrelationId);
                 return checkoutResult switch
                 {
                     DocumentRedactionStatus.CheckedOut => new OkObjectResult(new DocumentStatusChangeResult(true, checkoutResult)),

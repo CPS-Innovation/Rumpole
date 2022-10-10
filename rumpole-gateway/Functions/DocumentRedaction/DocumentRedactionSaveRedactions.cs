@@ -24,17 +24,15 @@ namespace RumpoleGateway.Functions.DocumentRedaction
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly IDocumentRedactionClient _documentRedactionClient;
         private readonly IConfiguration _configuration;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<DocumentRedactionSaveRedactions> _logger;
 
         public DocumentRedactionSaveRedactions(ILogger<DocumentRedactionSaveRedactions> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, IDocumentRedactionClient documentRedactionClient,
             IConfiguration configuration, IAuthorizationValidator tokenValidator)
-            : base(logger)
+            : base(logger, tokenValidator)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient ?? throw new ArgumentNullException(nameof(onBehalfOfTokenClient));
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -49,22 +47,11 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
             try
             {
-                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-                    string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
+                
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(documentId))
                     return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);
@@ -82,9 +69,9 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                     return redactions.ToBadRequest();
                 }
 
-                var pdfPipelineScope = _configuration["RumpolePipelineRedactPdfScope"];
+                var pdfPipelineScope = _configuration[ConfigurationKeys.PipelineRedactPdfScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {pdfPipelineScope}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), pdfPipelineScope, currentCorrelationId);
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), pdfPipelineScope, currentCorrelationId);
                 
                 //exchange access token via on behalf of for ultimate Cde access?
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Saving redaction details to the document for {caseId}, documentId {documentId}, fileName {fileName}");

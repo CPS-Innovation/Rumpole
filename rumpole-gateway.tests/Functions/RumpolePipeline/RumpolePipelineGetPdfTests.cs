@@ -21,6 +21,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private readonly Stream _blobStream;
 
 		private readonly Mock<IBlobStorageClient> _mockBlobStorageClient;
+		private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly RumpolePipelineGetPdf _rumpolePipelineGetPdf;
 
@@ -32,13 +33,13 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			_mockBlobStorageClient = new Mock<IBlobStorageClient>();
             var mockLogger = new Mock<ILogger<RumpolePipelineGetPdf>>();
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _mockBlobStorageClient.Setup(client => client.GetDocumentAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(_blobStream);
 
-			_rumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, mockLogger.Object, mockTokenValidator.Object);
+			_rumpolePipelineGetPdf = new RumpolePipelineGetPdf(_mockBlobStorageClient.Object, mockLogger.Object, _mockTokenValidator.Object);
 		}
 		
 		[Fact]
@@ -48,11 +49,20 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
+		{
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequestWithoutToken(), _blobName);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
 
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
         {
-			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequestWithoutToken(), _blobName);
+	        _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _rumpolePipelineGetPdf.Run(CreateHttpRequest(), _blobName);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}

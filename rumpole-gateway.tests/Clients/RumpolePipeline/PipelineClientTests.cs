@@ -66,7 +66,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 
 			var mockPipelineClientLogger = new Mock<ILogger<PipelineClient>>();
 
-			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorFunctionAppKey"]).Returns(_rumpolePipelineFunctionAppKey);
+			mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]).Returns(_rumpolePipelineFunctionAppKey);
 
 			_mockRequestFactory.Setup(factory => factory.CreateGet($"cases/{_caseId}?code={_rumpolePipelineFunctionAppKey}", _accessToken, It.IsAny<Guid>())).Returns(_httpRequestMessage);
 			_mockRequestFactory.Setup(factory => factory.CreateGet($"cases/{_caseId}/tracker?code={_rumpolePipelineFunctionAppKey}", _accessToken, It.IsAny<Guid>())).Returns(_httpRequestMessage);

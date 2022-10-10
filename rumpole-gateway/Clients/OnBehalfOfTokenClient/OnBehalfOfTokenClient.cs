@@ -24,7 +24,7 @@ namespace RumpoleGateway.Clients.OnBehalfOfTokenClient
         {
             _logger.LogMethodEntry(correlationId, nameof(GetAccessTokenAsync), scope);
             var scopes = new Collection<string> { scope };
-            var userAssertion = new UserAssertion(accessToken, Constants.Authentication.AzureAuthenticationAssertionType);
+            var userAssertion = new UserAssertion(accessToken, AuthenticationKeys.AzureAuthenticationAssertionType);
             var result = await _application.AcquireTokenOnBehalfOf(scopes, userAssertion).ExecuteAsync();
             var generatedToken = result.AccessToken;
             _logger.LogMethodExit(correlationId, nameof(GetAccessTokenAsync), generatedToken);

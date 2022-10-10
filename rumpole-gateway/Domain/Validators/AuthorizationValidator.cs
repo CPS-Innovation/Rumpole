@@ -33,8 +33,8 @@ namespace RumpoleGateway.Domain.Validators
             if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
             _correlationId = correlationId;
             
-            var issuer = $"https://sts.windows.net/{Environment.GetEnvironmentVariable("OnBehalfOfTokenTenantId")}/";
-            var audience = Environment.GetEnvironmentVariable("CallingAppValidAudience");
+            var issuer = $"https://sts.windows.net/{Environment.GetEnvironmentVariable(ConfigurationKeys.TenantId)}/";
+            var audience = Environment.GetEnvironmentVariable(ConfigurationKeys.ValidAudience);
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(issuer + "/.well-known/openid-configuration", new OpenIdConnectConfigurationRetriever(),
                 new HttpDocumentRetriever());
 
@@ -60,8 +60,8 @@ namespace RumpoleGateway.Domain.Validators
                 var tokenValidator = new JwtSecurityTokenHandler(); 
                 var claimsPrincipal = tokenValidator.ValidateToken(token.ToJwtString(), validationParameters, out _);
                 
-                var requiredScopes = Environment.GetEnvironmentVariable("CallingAppValidScopes")?.Replace(" ", string.Empty).Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
-                var requiredRoles = Environment.GetEnvironmentVariable("CallingAppValidRoles")?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var requiredScopes = Environment.GetEnvironmentVariable(ConfigurationKeys.ValidScopes)?.Replace(" ", string.Empty).Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var requiredRoles = Environment.GetEnvironmentVariable(ConfigurationKeys.ValidRoles)?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
                 
                 return IsValid(claimsPrincipal, requiredScopes, requiredRoles);
             }

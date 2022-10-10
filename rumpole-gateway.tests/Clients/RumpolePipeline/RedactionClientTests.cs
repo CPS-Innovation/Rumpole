@@ -40,7 +40,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
             var mockConfiguration = new Mock<IConfiguration>();
             var mockJsonConvertWrapper = new Mock<IJsonConvertWrapper>();
 
-            mockConfiguration.Setup(config => config["RumpolePipelineRedactPdfFunctionAppKey"]).Returns(_rumpolePipelineRedactPdfFunctionAppKey);
+            mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineRedactPdfFunctionAppKey]).Returns(_rumpolePipelineRedactPdfFunctionAppKey);
 
             var httpRequestMessage = new HttpRequestMessage
             {

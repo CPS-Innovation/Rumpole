@@ -20,7 +20,8 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		private readonly string _fileName;
 		private readonly Stream _stream;
 
-        private readonly Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
+		private readonly Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
+		private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly DocumentExtractionGetDocument _documentExtractionGetDocument;
 
@@ -33,29 +34,38 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetDocument>>();
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_stream);
 
-			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object, mockTokenValidator.Object);
+			_documentExtractionGetDocument = new DocumentExtractionGetDocument(_mockDocumentExtractionClient.Object, mockLogger.Object, _mockTokenValidator.Object);
 		}
 		
 		[Fact]
-		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsBadRequestWhenCorrelationIdIsMissing()
 		{
 			var response = await _documentExtractionGetDocument.Run(CreateHttpRequestWithoutCorrelationId(), _documentId, _fileName);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
-
+		
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
 		{
 			var response = await _documentExtractionGetDocument.Run(CreateHttpRequestWithoutToken(), _documentId, _fileName);
 
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
+		{
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName);
+			
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}
 

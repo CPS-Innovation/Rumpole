@@ -16,15 +16,13 @@ namespace RumpoleGateway.Functions.DocumentExtraction
     public class DocumentExtractionGetCaseDocuments : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<DocumentExtractionGetCaseDocuments> _logger;
 
         public DocumentExtractionGetCaseDocuments(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger, 
             IAuthorizationValidator tokenValidator)
-            : base(logger)
+            : base(logger, tokenValidator)
         {
             _documentExtractionClient = documentExtractionClient;
-            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
             _logger = logger;
         }
 
@@ -38,24 +36,13 @@ namespace RumpoleGateway.Functions.DocumentExtraction
 
             try
             {
-                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-                    string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
+                
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
-
-                if (!int.TryParse(caseId, out var _))
+                if (!int.TryParse(caseId, out _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 //exchange access token via on behalf of?

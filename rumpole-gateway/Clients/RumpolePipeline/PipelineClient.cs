@@ -38,7 +38,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _logger.LogMethodEntry(correlationId, nameof(TriggerCoordinatorAsync), $"CaseId: {caseId}, Force?: {force}");
             var forceQuery = force ? "&&force=true" : string.Empty;
             _logger.LogMethodExit(correlationId, nameof(TriggerCoordinatorAsync), string.Empty);
-            await SendGetRequestAsync($"cases/{caseId}?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}{forceQuery}", accessToken, correlationId);
+            await SendGetRequestAsync($"cases/{caseId}?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}{forceQuery}", accessToken, correlationId);
         }
 
         public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken, Guid correlationId)
@@ -48,7 +48,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             HttpResponseMessage response;
             try
             {
-                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration["RumpolePipelineCoordinatorFunctionAppKey"]}", accessToken, correlationId);
+                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}", accessToken, correlationId);
             }
             catch (HttpRequestException exception)
             {

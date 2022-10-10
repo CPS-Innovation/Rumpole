@@ -17,7 +17,6 @@ using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
-using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Factories;
@@ -41,17 +40,13 @@ namespace RumpoleGateway
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
+            builder.Services.AddSingleton<IConfiguration>(configuration);
             builder.Services.AddOptions<SearchClientOptions>().Configure<IConfiguration>((settings, _) =>
             {
                 configuration.GetSection("searchClient").Bind(settings);
             });
-            builder.Services.AddOptions<BlobOptions>().Configure<IConfiguration>((settings, _) =>
-            {
-                configuration.GetSection("blob").Bind(settings);
-            });
-
-            builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, "CoreDataApiUrl"), new NewtonsoftJsonSerializer()));
-            builder.Services.AddSingleton<IConfiguration>(configuration);
+            
+            builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, ConfigurationKeys.CoreDataApiUrl), new NewtonsoftJsonSerializer()));
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
             builder.Services.AddTransient<IAuthenticatedGraphQlHttpRequestFactory, AuthenticatedGraphQlHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
@@ -68,22 +63,22 @@ namespace RumpoleGateway
 
             builder.Services.AddHttpClient<IPipelineClient, PipelineClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["RumpolePipelineCoordinatorBaseUrl"]);
+                client.BaseAddress = new Uri(GetValueFromConfig(configuration, ConfigurationKeys.PipelineCoordinatorBaseUrl));
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
 
             builder.Services.AddHttpClient<IRedactionClient, RedactionClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["RumpolePipelineRedactPdfBaseUrl"]);
+                client.BaseAddress = new Uri(GetValueFromConfig(configuration, ConfigurationKeys.PipelineRedactPdfBaseUrl));
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
 
             builder.Services.AddSingleton(_ =>
             {
-                const string instance = Constants.Authentication.AzureAuthenticationInstanceUrl; 
-                var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, "OnBehalfOfTokenTenantId");
-                var onBehalfOfTokenClientId = GetValueFromConfig(configuration, "OnBehalfOfTokenClientId");
-                var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, "OnBehalfOfTokenClientSecret");
+                const string instance = AuthenticationKeys.AzureAuthenticationInstanceUrl; 
+                var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, ConfigurationKeys.TenantId);
+                var onBehalfOfTokenClientId = GetValueFromConfig(configuration, ConfigurationKeys.ClientId);
+                var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, ConfigurationKeys.ClientSecret);
                 var appOptions = new ConfidentialClientApplicationOptions
                 {
                     Instance = instance,
@@ -97,9 +92,9 @@ namespace RumpoleGateway
                 return ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(appOptions).WithAuthority(authority).Build();
             });
 
-            builder.Services.AddAzureClients(builder =>
+            builder.Services.AddAzureClients(azureBuilder =>
             {
-                builder.AddBlobServiceClient(new Uri(configuration["BlobServiceUrl"]))
+                azureBuilder.AddBlobServiceClient(new Uri(GetValueFromConfig(configuration, ConfigurationKeys.BlobServiceUrl)))
                     .WithCredential(new DefaultAzureCredential());
             });
 
@@ -107,13 +102,13 @@ namespace RumpoleGateway
             {
                 var logger = serviceProvider.GetService<ILogger<BlobStorageClient>>();
                 return new BlobStorageClient(serviceProvider.GetRequiredService<BlobServiceClient>(),
-                    configuration["BlobServiceContainerName"], logger);
+                    GetValueFromConfig(configuration, ConfigurationKeys.BlobContainerName), logger);
             });
 
             builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
             {
                 var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
-                return new DocumentExtractionClientStub(configuration["StubBlobStorageConnectionString"], logger);
+                return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
             });
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
