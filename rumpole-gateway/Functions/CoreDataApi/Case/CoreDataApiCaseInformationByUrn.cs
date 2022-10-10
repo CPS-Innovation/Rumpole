@@ -57,7 +57,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                 if (string.IsNullOrEmpty(urn))
                     return BadRequestErrorResponse("Urn is not supplied.", currentCorrelationId, loggingName);
 
-                var cdaScope = _configuration["CoreDataApiScope"]; 
+                var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope]; 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 

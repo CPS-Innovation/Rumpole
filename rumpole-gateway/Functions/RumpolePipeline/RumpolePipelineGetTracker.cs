@@ -54,7 +54,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 if (!int.TryParse(caseId, out _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
-                var coordinatorScope = _configuration["RumpolePipelineCoordinatorScope"];
+                var coordinatorScope = _configuration[ConfigurationKeys.PipelineCoordinatorScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {coordinatorScope}");
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), coordinatorScope, currentCorrelationId);
 

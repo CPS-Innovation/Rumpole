@@ -44,8 +44,8 @@ namespace RumpoleGateway.Tests.Services
             var mockBlobSasBuilderWrapper = new Mock<IBlobSasBuilderWrapper>();
             var mockConfiguration = new Mock<IConfiguration>();
 
-            mockConfiguration.Setup(config => config["BlobContainerName"]).Returns(blobContainerName);
-            mockConfiguration.Setup(config => config["BlobUserDelegationKeyExpirySecs"]).Returns(blobUserDelegationKeyExpirySecs.ToString());
+            mockConfiguration.Setup(config => config[ConfigurationKeys.BlobContainerName]).Returns(blobContainerName);
+            mockConfiguration.Setup(config => config[ConfigurationKeys.BlobUserDelegationKeyExpirySecs]).Returns(blobUserDelegationKeyExpirySecs.ToString());
     
             mockResponse.Setup(response => response.Value).Returns(mockUserDelegationKey.Object);
             mockBlobServiceClient.Setup(client => client.GetUserDelegationKeyAsync(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))

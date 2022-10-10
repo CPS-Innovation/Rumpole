@@ -69,7 +69,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                     return redactions.ToBadRequest();
                 }
 
-                var pdfPipelineScope = _configuration["RumpolePipelineRedactPdfScope"];
+                var pdfPipelineScope = _configuration[ConfigurationKeys.PipelineRedactPdfScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {pdfPipelineScope}");
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), pdfPipelineScope, currentCorrelationId);
                 

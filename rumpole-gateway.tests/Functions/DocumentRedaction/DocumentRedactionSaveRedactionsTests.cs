@@ -53,7 +53,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             var mockConfiguration = new Mock<IConfiguration>();
             
             _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
-            mockConfiguration.Setup(config => config["RumpolePipelineRedactPdfScope"]).Returns(_scope);
+            mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineRedactPdfScope]).Returns(_scope);
 
             _documentRedactionSaveRedactions = new DocumentRedactionSaveRedactions(mockLogger.Object,
                 _mockOnBehalfOfTokenClient.Object, _mockDocumentRedactionClient.Object, mockConfiguration.Object,

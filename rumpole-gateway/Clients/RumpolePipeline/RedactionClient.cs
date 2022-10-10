@@ -42,7 +42,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             try
             {
                 var requestMessage = new StringContent(_jsonConvertWrapper.SerializeObject(redactPdfRequest, correlationId), Encoding.UTF8, "application/json");
-                response = await SendPutRequestAsync($"redactPdf?code={_configuration["RumpolePipelineRedactPdfFunctionAppKey"]}", accessToken, requestMessage, correlationId);
+                response = await SendPutRequestAsync($"redactPdf?code={_configuration[ConfigurationKeys.PipelineRedactPdfFunctionAppKey]}", accessToken, requestMessage, correlationId);
             }
             catch (HttpRequestException exception)
             {

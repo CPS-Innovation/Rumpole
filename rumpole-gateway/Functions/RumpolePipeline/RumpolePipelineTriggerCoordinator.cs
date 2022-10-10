@@ -59,7 +59,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 if (req.Query.ContainsKey("force") && !bool.TryParse(req.Query["force"], out force))
                     return BadRequestErrorResponse("Invalid query string. Force value must be a boolean.", currentCorrelationId, loggingName);
 
-                var scopes = _configuration["RumpolePipelineCoordinatorScope"];
+                var scopes = _configuration[ConfigurationKeys.PipelineCoordinatorScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
 

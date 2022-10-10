@@ -54,7 +54,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope, It.IsAny<Guid>()))
 				.ReturnsAsync(_onBehalfOfAccessToken);
-			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
+			mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineCoordinatorScope]).Returns(_rumpolePipelineCoordinatorScope);
 			mockTriggerCoordinatorResponseFactory.Setup(factory => factory.Create(_request, It.IsAny<Guid>())).Returns(_triggerCoordinatorResponse);
 
             _mockTokenValidator = new Mock<IAuthorizationValidator>();

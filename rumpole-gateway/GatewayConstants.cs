@@ -6,13 +6,21 @@ public static class ConfigurationKeys
     public const string BlobServiceUrl = "BlobServiceUrl";
     public const string BlobExpirySecs = "BlobExpirySecs";
     public const string BlobUserDelegationKeyExpirySecs = "BlobUserDelegationKeyExpirySecs";
-    public const string PipelineCoordinatorBaseUrl = "RumpolePipelineCoordinatorBaseUrl";
-    public const string PipelineRedactPdfBaseUrl = "RumpolePipelineRedactPdfBaseUrl";
     public const string TenantId = "OnBehalfOfTokenTenantId";
     public const string ClientId = "OnBehalfOfTokenClientId";
     public const string ClientSecret = "OnBehalfOfTokenClientSecret";
+    public const string ValidAudience = "CallingAppValidAudience";
+    public const string ValidScopes = "CallingAppValidScopes";
+    public const string ValidRoles = "CallingAppValidRoles";
     public const string CoreDataApiUrl = "CoreDataApiUrl";
+    public const string CoreDataApiScope = "CoreDataApiScope";
     public const string StubBlobStorageConnectionString = "StubBlobStorageConnectionString";
+    public const string PipelineCoordinatorBaseUrl = "RumpolePipelineCoordinatorBaseUrl";
+    public const string PipelineCoordinatorFunctionAppKey = "RumpolePipelineCoordinatorFunctionAppKey";
+    public const string PipelineCoordinatorScope = "RumpolePipelineCoordinatorScope";
+    public const string PipelineRedactPdfScope = "RumpolePipelineRedactPdfScope";
+    public const string PipelineRedactPdfBaseUrl = "RumpolePipelineRedactPdfBaseUrl";
+    public const string PipelineRedactPdfFunctionAppKey = "RumpolePipelineRedactPdfFunctionAppKey";
 }
 
 public static class AuthenticationKeys

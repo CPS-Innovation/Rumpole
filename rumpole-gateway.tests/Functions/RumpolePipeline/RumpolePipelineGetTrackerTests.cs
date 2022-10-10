@@ -21,8 +21,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 	public class RumpolePipelineGetTrackerTests : SharedMethods.SharedMethods
 	{
         private readonly string _caseId;
-        private readonly Guid _correlationId;
-		private readonly Tracker _tracker;
+        private readonly Tracker _tracker;
 
         private readonly Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;
 		private readonly Mock<IPipelineClient> _mockPipelineClient;
@@ -37,7 +36,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			var onBehalfOfAccessToken = fixture.Create<string>();
 			var rumpolePipelineCoordinatorScope = fixture.Create<string>();
 			_tracker = fixture.Create<Tracker>();
-			_correlationId = fixture.Create<Guid>();
+			fixture.Create<Guid>();
 
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetTracker>>();
 			_mockOnBehalfOfTokenClient = new Mock<IOnBehalfOfTokenClient>();
@@ -50,7 +49,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 				.ReturnsAsync(onBehalfOfAccessToken);
 			_mockPipelineClient.Setup(client => client.GetTrackerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_tracker);
-			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(rumpolePipelineCoordinatorScope);
+			mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineCoordinatorScope]).Returns(rumpolePipelineCoordinatorScope);
 
 			_rumpolePipelineGetTracker = new RumpolePipelineGetTracker(mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, mockConfiguration.Object, _mockTokenValidator.Object);
 		}
