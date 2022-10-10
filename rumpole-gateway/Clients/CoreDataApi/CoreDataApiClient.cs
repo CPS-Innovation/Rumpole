@@ -75,8 +75,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
                 };
 
                 var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query, correlationId);
-                authenticatedRequest.Add("Correlation-Id", correlationId.ToString());
-
+                
                 _logger.LogMethodFlow(correlationId, nameof(GetCaseDetailsByIdAsync), $"Sending the following query to the Core Data API: {query.ToJson()}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformationByUrn>(authenticatedRequest);
 

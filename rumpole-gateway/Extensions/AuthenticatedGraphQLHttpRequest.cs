@@ -37,7 +37,7 @@ namespace RumpoleGateway.Extensions
 		{
 			var message = base.ToHttpRequestMessage(options, serializer);
 			message.Headers.Add(AuthenticationKeys.Authorization, $"{AuthenticationKeys.Bearer} {_accessToken}");
-			message.Headers.Add("Correlation-Id", _correlationId.ToString());
+			message.Headers.Add("CorrelationId", _correlationId.ToString());
 			message.Headers.Add("Request-Ip-Address", "0.0.0.0");
 			return message;
 		}
