@@ -17,7 +17,7 @@ const getFullUrl = (path: string) => {
 
 const generateCorrelationId = () => uuidv4();
 
-export const getCoreHeadersInit = async () => {
+export const getCoreHeadersInitObject = async () => {
   return {
     [CORRELATION_ID]: generateCorrelationId(),
     Authorization: `Bearer ${
@@ -28,7 +28,7 @@ export const getCoreHeadersInit = async () => {
 
 const getCoreHeaders = async (init?: HeadersInit | undefined) => {
   return new Headers({
-    ...(await getCoreHeadersInit()),
+    ...(await getCoreHeadersInitObject()),
     // allow init to override any headers created here
     ...init,
   });
