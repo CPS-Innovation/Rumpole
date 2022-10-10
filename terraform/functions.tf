@@ -29,10 +29,9 @@ resource "azurerm_function_app" "fa_rumpole" {
     "RumpolePipelineRedactPdfBaseUrl"                = "https://fa-rumpole-pipeline${local.env_name_suffix}-pdf-generator.azurewebsites.net/api/"
     "RumpolePipelineRedactPdfFunctionAppKey"         = var.rumpole_pipeline_redact_pdf_function_app_key
     "BlobServiceUrl"                                 = "https://sacps${var.env != "prod" ? var.env : ""}rumpolepipeline.blob.core.windows.net/"
-    "BlobServiceContainerName"                       = "documents"
-    "blob__BlobContainerName"                        = "documents"
-    "blob__BlobExpirySecs"                           = 3600
-    "blob__UserDelegationKeyExpirySecs"              = 3600
+    "BlobContainerName"                        = "documents"
+    "BlobExpirySecs"                           = 3600
+    "BlobUserDelegationKeyExpirySecs"              = 3600
     "StubBlobStorageConnectionString"                = var.stub_blob_storage_connection_string
     "searchClient__EndpointUrl"                      = "https://ss-rumpole-pipeline${local.env_name_suffix}.search.windows.net"
     //TODO put in keyvault rather than hardcoded as a variable
