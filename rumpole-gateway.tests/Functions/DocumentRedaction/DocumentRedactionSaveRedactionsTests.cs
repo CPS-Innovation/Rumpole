@@ -69,20 +69,20 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         }
 
         [Fact]
-        public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+        public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
         {
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequestWithoutToken(), _caseId, _documentId, _fileName);
 
-            response.Should().BeOfType<UnauthorizedObjectResult>();
+            response.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Fact]
-        public async Task Run_WhenValidationTokenIsInvalid_ReturnsBadRequest()
+        public async Task Run_WhenValidationTokenIsInvalid_ReturnsUnauthorized()
         {
             _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName);
 
-            response.Should().BeOfType<BadRequestObjectResult>();
+            response.Should().BeOfType<UnauthorizedObjectResult>();
         }
 
         [Fact]

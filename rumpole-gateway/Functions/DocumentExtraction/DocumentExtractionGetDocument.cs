@@ -14,14 +14,12 @@ namespace RumpoleGateway.Functions.DocumentExtraction
     public class DocumentExtractionGetDocument : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<DocumentExtractionGetDocument> _logger;
 
         public DocumentExtractionGetDocument(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetDocument> logger, IAuthorizationValidator tokenValidator)
-            : base(logger)
+            : base(logger, tokenValidator)
         {
             _documentExtractionClient = documentExtractionClient;
-            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
             _logger = logger;
         }
 
@@ -34,21 +32,11 @@ namespace RumpoleGateway.Functions.DocumentExtraction
 
             try
             {
-                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) || string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
 
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(documentId))
                     return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);

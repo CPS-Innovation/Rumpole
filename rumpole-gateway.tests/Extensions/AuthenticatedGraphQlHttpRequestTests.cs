@@ -59,10 +59,10 @@ namespace RumpoleGateway.Tests.Extensions
 
             using (new AssertionScope())
             {
-                testRequestMessage.Headers.Should().Contain(x => x.Key == Constants.Authentication.Authorization);
+                testRequestMessage.Headers.Should().Contain(x => x.Key == AuthenticationKeys.Authorization);
                 
-                var authHeaderValues = testRequestMessage.Headers.GetValues(Constants.Authentication.Authorization);
-                authHeaderValues.Should().Contain(x => x == $"{Constants.Authentication.Bearer} {accessToken}");
+                var authHeaderValues = testRequestMessage.Headers.GetValues(AuthenticationKeys.Authorization);
+                authHeaderValues.Should().Contain(x => x == $"{AuthenticationKeys.Bearer} {accessToken}");
 
                 testRequestMessage.Headers.Should().Contain(x => x.Key == "Correlation-Id");
                 testRequestMessage.Headers.Should().Contain(x => x.Key == "Request-Ip-Address");

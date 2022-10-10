@@ -21,6 +21,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
         private readonly string _fakeSasUrl;
 		
 		private readonly Mock<ISasGeneratorService> _mockSasGeneratorService;
+		private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly RumpolePipelineGetSasUrl _rumpolePipelineGetSasUrl;
 
@@ -31,13 +32,13 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             _fakeSasUrl = fixture.Create<string>();
 
 			_mockSasGeneratorService = new Mock<ISasGeneratorService>();
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetSasUrl>>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
             _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(_fakeSasUrl);
 
-            _rumpolePipelineGetSasUrl = new RumpolePipelineGetSasUrl(mockTokenValidator.Object, mockLogger.Object, _mockSasGeneratorService.Object);
+            _rumpolePipelineGetSasUrl = new RumpolePipelineGetSasUrl(_mockTokenValidator.Object, mockLogger.Object, _mockSasGeneratorService.Object);
 		}
 		
 		[Fact]
@@ -47,11 +48,20 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
+		{
+			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequestWithoutToken(), _blobName);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
 
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
         {
-			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequestWithoutToken(), _blobName);
+	        _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}

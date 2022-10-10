@@ -1,10 +1,9 @@
 ﻿using System;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
-using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Factories;
 using Xunit;
 
@@ -12,25 +11,32 @@ namespace RumpoleGateway.Tests.Factories
 {
     public class BlobSasBuilderFactoryTests
     {
-        private readonly BlobOptions _blobOptions;
         private readonly string _blobName;
-        private Guid _correlationId;
+        private readonly string _blobContainerName;
+        private readonly int _blobExpirySecs;
+        private readonly int _blobUserDelegationKeyExpirySecs;
+        private readonly Guid _correlationId;
 
         private readonly IBlobSasBuilderFactory _blobSasBuilderFactory;
 
         public BlobSasBuilderFactoryTests()
         {
             var fixture = new Fixture();
-            _blobOptions = fixture.Create<BlobOptions>();
             _blobName = fixture.Create<string>();
+            _blobContainerName = fixture.Create<string>();
+            _blobExpirySecs = fixture.Create<int>();
+            _blobUserDelegationKeyExpirySecs = fixture.Create<int>();
             _correlationId = fixture.Create<Guid>();
 
-            var mockBlobOptions = new Mock<IOptions<BlobOptions>>();
+            var mockConfiguration = new Mock<IConfiguration>();
             var loggerMock = new Mock<ILogger<BlobSasBuilderFactory>>();
+            
+            mockConfiguration.Setup(config => config["BlobContainerName"]).Returns(_blobContainerName);
+            mockConfiguration.Setup(config => config["BlobName"]).Returns(_blobContainerName);
+            mockConfiguration.Setup(config => config["BlobExpirySecs"]).Returns(_blobExpirySecs.ToString());
+            mockConfiguration.Setup(config => config["BlobUserDelegationKeyExpirySecs"]).Returns(_blobUserDelegationKeyExpirySecs.ToString());
 
-            mockBlobOptions.Setup(options => options.Value).Returns(_blobOptions);
-
-            _blobSasBuilderFactory = new BlobSasBuilderFactory(mockBlobOptions.Object, loggerMock.Object);
+            _blobSasBuilderFactory = new BlobSasBuilderFactory(mockConfiguration.Object, loggerMock.Object);
         }
 
         [Fact]
@@ -38,7 +44,7 @@ namespace RumpoleGateway.Tests.Factories
         {
             var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
-            sasBuilder.BlobContainerName.Should().Be(_blobOptions.BlobContainerName);
+            sasBuilder.BlobContainerName.Should().Be(_blobContainerName);
         }
 
         [Fact]
@@ -70,7 +76,7 @@ namespace RumpoleGateway.Tests.Factories
         {
             var sasBuilder = _blobSasBuilderFactory.Create(_blobName, _correlationId);
 
-            sasBuilder.ExpiresOn.Should().Be(sasBuilder.StartsOn.AddSeconds(_blobOptions.BlobExpirySecs));
+            sasBuilder.ExpiresOn.Should().Be(sasBuilder.StartsOn.AddSeconds(_blobExpirySecs));
         }
 
         [Fact]

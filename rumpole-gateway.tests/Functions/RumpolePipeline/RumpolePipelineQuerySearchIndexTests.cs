@@ -25,6 +25,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		private readonly IList<StreamlinedSearchLine> _searchResults;
 
         private readonly Mock<ISearchIndexClient> _searchIndexClient;
+        private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
 		private readonly RumpolePipelineQuerySearchIndex _rumpolePipelineQuerySearchIndex;
 
@@ -43,11 +44,11 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_searchIndexClient.Setup(client => client.Query(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_searchResults);
 
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
-            _rumpolePipelineQuerySearchIndex = new RumpolePipelineQuerySearchIndex(mockLogger.Object, _searchIndexClient.Object, mockTokenValidator.Object);
+            _rumpolePipelineQuerySearchIndex = new RumpolePipelineQuerySearchIndex(mockLogger.Object, _searchIndexClient.Object, _mockTokenValidator.Object);
 		}
 		
 		[Fact]
@@ -59,13 +60,22 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		}
 
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
         {
 			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequestWithoutToken(), _caseId, _searchTerm);
 
-			response.Should().BeOfType<UnauthorizedObjectResult>();
+			response.Should().BeOfType<BadRequestObjectResult>();
         }
 
+		[Fact]
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
+		{
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm);
+
+			response.Should().BeOfType<UnauthorizedObjectResult>();
+		}
+		
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
 		{

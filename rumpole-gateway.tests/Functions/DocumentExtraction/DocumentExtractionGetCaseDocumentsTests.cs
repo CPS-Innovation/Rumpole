@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Moq;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Domain.DocumentExtraction;
@@ -20,6 +21,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		private readonly Case _case;
 
         private readonly Mock<IDocumentExtractionClient> _mockDocumentExtractionClient;
+        private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly DocumentExtractionGetCaseDocuments _documentExtractionGetCaseDocuments;
 
@@ -31,13 +33,13 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 
 			_mockDocumentExtractionClient = new Mock<IDocumentExtractionClient>();
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
-
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+			_mockTokenValidator = new Mock<IAuthorizationValidator>();
+            
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_case);
 
-			_documentExtractionGetCaseDocuments = new DocumentExtractionGetCaseDocuments(_mockDocumentExtractionClient.Object, mockLogger.Object, mockTokenValidator.Object);
+			_documentExtractionGetCaseDocuments = new DocumentExtractionGetCaseDocuments(_mockDocumentExtractionClient.Object, mockLogger.Object, _mockTokenValidator.Object);
 		}
 		
 		[Fact]
@@ -47,11 +49,20 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
-
+		
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
 		{
 			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequestWithoutToken(), _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
+
+		[Fact]
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
+		{
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}

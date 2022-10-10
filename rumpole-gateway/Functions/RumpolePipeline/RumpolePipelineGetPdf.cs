@@ -15,14 +15,12 @@ namespace RumpoleGateway.Functions.RumpolePipeline
     public class RumpolePipelineGetPdf : BaseRumpoleFunction
     {
         private readonly IBlobStorageClient _blobStorageClient;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<RumpolePipelineGetPdf> _logger;
 
         public RumpolePipelineGetPdf(IBlobStorageClient blobStorageClient, ILogger<RumpolePipelineGetPdf> logger, IAuthorizationValidator tokenValidator)
-        : base(logger)
+        : base(logger, tokenValidator)
         {
             _blobStorageClient = blobStorageClient;
-            _tokenValidator = tokenValidator;
             _logger = logger;
         }
 
@@ -35,22 +33,11 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
             try
             {
-                if (!req.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-                    string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
+                
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!req.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(blobName))
                     return BadRequestErrorResponse("Blob name is not supplied.", currentCorrelationId, loggingName);

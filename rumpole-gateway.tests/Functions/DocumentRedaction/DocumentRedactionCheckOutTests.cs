@@ -20,6 +20,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         private readonly string _documentId;
 
         private readonly Mock<IDocumentRedactionClient> _mockDocumentRedactionClient;
+        private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly DocumentRedactionCheckOutDocument _documentRedactionCheckOutFunction;
 
@@ -31,15 +32,15 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
             _mockDocumentRedactionClient = new Mock<IDocumentRedactionClient>();
             var mockLogger = new Mock<ILogger<DocumentRedactionCheckOutDocument>>();
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _mockDocumentRedactionClient
                 .Setup(s => s.CheckOutDocumentAsync(_caseId, _documentId, It.IsAny<string>(), It.IsAny<Guid>()))
                 .ReturnsAsync(DocumentRedactionStatus.CheckedOut);
 
-            _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object, mockTokenValidator.Object);
+            _documentRedactionCheckOutFunction = new DocumentRedactionCheckOutDocument(mockLogger.Object, _mockDocumentRedactionClient.Object, _mockTokenValidator.Object);
         }
         
         [Fact]
@@ -49,11 +50,21 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
 
             response.Should().BeOfType<BadRequestObjectResult>();
         }
-
+        
         [Fact]
-        public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+        public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
         {
             var response = await _documentRedactionCheckOutFunction.Run(CreateHttpRequestWithoutToken(), _caseId, _documentId);
+
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
+        {
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+
+            var response = await _documentRedactionCheckOutFunction.Run(CreateHttpRequest(), _caseId, _documentId);
 
             response.Should().BeOfType<UnauthorizedObjectResult>();
         }

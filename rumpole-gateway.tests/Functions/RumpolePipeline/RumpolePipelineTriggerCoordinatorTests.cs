@@ -32,6 +32,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
         private readonly Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;
 		private readonly Mock<IPipelineClient> _mockPipelineClient;
+		private readonly Mock<IAuthorizationValidator> _mockTokenValidator;
 
         private readonly RumpolePipelineTriggerCoordinator _rumpolePipelineTriggerCoordinator;
 
@@ -56,12 +57,12 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			mockConfiguration.Setup(config => config["RumpolePipelineCoordinatorScope"]).Returns(_rumpolePipelineCoordinatorScope);
 			mockTriggerCoordinatorResponseFactory.Setup(factory => factory.Create(_request, It.IsAny<Guid>())).Returns(_triggerCoordinatorResponse);
 
-            var mockTokenValidator = new Mock<IAuthorizationValidator>();
+            _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             _rumpolePipelineTriggerCoordinator =
-				new RumpolePipelineTriggerCoordinator(mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, mockConfiguration.Object, mockTriggerCoordinatorResponseFactory.Object, mockTokenValidator.Object);
+				new RumpolePipelineTriggerCoordinator(mockLogger.Object, _mockOnBehalfOfTokenClient.Object, _mockPipelineClient.Object, mockConfiguration.Object, mockTriggerCoordinatorResponseFactory.Object, _mockTokenValidator.Object);
 		}
 		
 		[Fact]
@@ -71,11 +72,20 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
-
+		
 		[Fact]
-		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsMissing()
+		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
 		{
 			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutToken(), _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
+
+		[Fact]
+		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
+		{
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}

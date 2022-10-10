@@ -1,8 +1,7 @@
 ﻿using System;
 using Azure.Storage.Sas;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using RumpoleGateway.Domain.Config;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Extensions;
 
@@ -11,11 +10,11 @@ namespace RumpoleGateway.Factories
     public class BlobSasBuilderFactory : IBlobSasBuilderFactory
     {
         private readonly ILogger<BlobSasBuilderFactory> _logger;
-        private readonly BlobOptions _blobOptions;
-
-        public BlobSasBuilderFactory(IOptions<BlobOptions> blobOptions, ILogger<BlobSasBuilderFactory> logger)
+        private readonly IConfiguration _configuration;
+        
+        public BlobSasBuilderFactory(IConfiguration configuration, ILogger<BlobSasBuilderFactory> logger)
         {
-            _blobOptions = blobOptions.Value;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -25,12 +24,12 @@ namespace RumpoleGateway.Factories
             
             var sasBuilder = new BlobSasBuilder
             {
-                BlobContainerName = _blobOptions.BlobContainerName,
+                BlobContainerName = _configuration[ConfigurationKeys.BlobContainerName],
                 BlobName = blobName,
                 Resource = "b",
                 StartsOn = DateTimeOffset.UtcNow
             };
-            sasBuilder.ExpiresOn = sasBuilder.StartsOn.AddSeconds(_blobOptions.BlobExpirySecs);
+            sasBuilder.ExpiresOn = sasBuilder.StartsOn.AddSeconds(int.Parse(_configuration[ConfigurationKeys.BlobExpirySecs]));
             sasBuilder.SetPermissions(BlobSasPermissions.Read);
             sasBuilder.ContentType = "application/pdf";
             

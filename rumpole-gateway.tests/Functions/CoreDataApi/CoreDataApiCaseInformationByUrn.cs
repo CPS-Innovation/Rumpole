@@ -49,13 +49,27 @@ namespace RumpoleGateway.Tests.Functions.CoreDataApi
         }
         
         [Fact]
-        public async Task CoreDataApiCaseInformationByUrnFunction_Should_Return_Response_401_When_No_Authorization_Supplied()
+        public async Task CoreDataApiCaseInformationByUrnFunction_Should_Return_Response_400_When_No_Token_Supplied()
         {
             //Arrange
             var coreDataApiCaseInformationByUrnFunction = GetCoreDataApiCaseInformationByUrnFunction();
 
             //Act
             var results = await coreDataApiCaseInformationByUrnFunction.Run(CreateHttpRequestWithoutToken(), string.Empty) as Microsoft.AspNetCore.Mvc.ObjectResult;
+
+            //Assert
+            Assert.Equal(400, results?.StatusCode);
+        }
+        
+        [Fact]
+        public async Task CoreDataApiCaseInformationByUrnFunction_Should_Return_Response_401_When_Invalid_Authorization_Supplied()
+        {
+            //Arrange
+            var coreDataApiCaseInformationByUrnFunction = GetCoreDataApiCaseInformationByUrnFunction();
+            _mockTokenValidator.ValidateTokenAsync(It.IsAny<string>(), It.IsAny<Guid>()).ReturnsForAnyArgs(false);
+
+            //Act
+            var results = await coreDataApiCaseInformationByUrnFunction.Run(CreateHttpRequest(), string.Empty) as Microsoft.AspNetCore.Mvc.ObjectResult;
 
             //Assert
             Assert.Equal(401, results?.StatusCode);

@@ -23,63 +23,50 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly IPipelineClient _pipelineClient;
         private readonly IConfiguration _configuration;
         private readonly ITriggerCoordinatorResponseFactory _triggerCoordinatorResponseFactory;
-        private readonly IAuthorizationValidator _tokenValidator;
         private readonly ILogger<RumpolePipelineTriggerCoordinator> _logger;
 
         public RumpolePipelineTriggerCoordinator(ILogger<RumpolePipelineTriggerCoordinator> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient,
                                  IPipelineClient pipelineClient, IConfiguration configuration,
                                  ITriggerCoordinatorResponseFactory triggerCoordinatorResponseFactory, IAuthorizationValidator tokenValidator)
-        : base(logger)
+        : base(logger, tokenValidator)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _pipelineClient = pipelineClient;
             _configuration = configuration;
             _triggerCoordinatorResponseFactory = triggerCoordinatorResponseFactory;
-            _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
             _logger = logger;
         }
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseId}")] HttpRequest request, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseId}")] HttpRequest req, string caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineTriggerCoordinator - Run";
 
             try
             {
-                if (!request.Headers.TryGetValue("Correlation-Id", out var correlationId) ||
-                    string.IsNullOrWhiteSpace(correlationId))
-                    return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
-                if (!Guid.TryParse(correlationId, out currentCorrelationId))
-                    if (currentCorrelationId == Guid.Empty)
-                        return BadRequestErrorResponse("Invalid correlationId. A valid GUID is required.", currentCorrelationId, loggingName);
-
+                var validationResult = await ValidateRequest(req, loggingName);
+                if (validationResult.InvalidResponseResult != null)
+                    return validationResult.InvalidResponseResult;
+                
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!request.Headers.TryGetValue(Constants.Authentication.Authorization, out var accessToken) || string.IsNullOrWhiteSpace(accessToken))
-                    return AuthorizationErrorResponse(currentCorrelationId, loggingName);
-
-                var validToken = await _tokenValidator.ValidateTokenAsync(accessToken, currentCorrelationId);
-                if (!validToken)
-                    return BadRequestErrorResponse("Token validation failed", currentCorrelationId, loggingName);
 
                 if (!int.TryParse(caseId, out var _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 var force = false;
-                if (request.Query.ContainsKey("force") && !bool.TryParse(request.Query["force"], out force))
+                if (req.Query.ContainsKey("force") && !bool.TryParse(req.Query["force"], out force))
                     return BadRequestErrorResponse("Invalid query string. Force value must be a boolean.", currentCorrelationId, loggingName);
 
                 var scopes = _configuration["RumpolePipelineCoordinatorScope"];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(accessToken.ToJwtString(), scopes, currentCorrelationId);
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Triggering the pipeline for caseId: {caseId}, forceRefresh: {force}");
                 await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken, force, currentCorrelationId);
 
-                return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(request, currentCorrelationId));
+                return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(req, currentCorrelationId));
             }
             catch (Exception exception)
             {
