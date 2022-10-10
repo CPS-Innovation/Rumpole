@@ -52,6 +52,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
 
+                currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
                 if (string.IsNullOrEmpty(urn))

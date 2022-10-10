@@ -25,13 +25,13 @@ namespace RumpoleGateway.Functions.Status
 		[FunctionName("Status")]
 		public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "status")] HttpRequest req)
 		{
-			Guid currentCorrelationId = default;
 			const string loggingName = "Status - Run";
 			
 			var validationResult = await ValidateRequest(req, loggingName);
 			if (validationResult.InvalidResponseResult != null)
 				return validationResult.InvalidResponseResult;
 			
+			var currentCorrelationId = validationResult.CurrentCorrelationId;
 			_logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 			
 			var version = Assembly

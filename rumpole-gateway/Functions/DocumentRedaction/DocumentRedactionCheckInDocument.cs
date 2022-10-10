@@ -40,6 +40,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
                 
+                currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
                 if (string.IsNullOrWhiteSpace(documentId))
