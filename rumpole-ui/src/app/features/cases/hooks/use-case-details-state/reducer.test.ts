@@ -219,7 +219,7 @@ describe("useCaseDetailsState reducer", () => {
 
       const existingTabsState = {
         items: [],
-        authToken: undefined,
+        headers: {},
       } as CombinedState["tabsState"];
 
       const nextState = reducer(
@@ -308,7 +308,10 @@ describe("useCaseDetailsState reducer", () => {
         {
           documentsState: { status: "loading" },
           tabsState: {
-            authToken: "foo",
+            headers: {
+              Authorization: "foo",
+              "Correlation-Id": "foo1",
+            } as HeadersInit,
           },
         } as CombinedState,
         {
@@ -317,7 +320,7 @@ describe("useCaseDetailsState reducer", () => {
             pdfId: "d1",
             tabSafeId: "t1",
             mode: "read",
-            authToken: "bar",
+            headers: { Authorization: "bar", "Correlation-Id": "bar1" },
           },
         }
       );
@@ -328,14 +331,20 @@ describe("useCaseDetailsState reducer", () => {
           isResultsVisible: false,
         },
         tabsState: {
-          authToken: "bar",
+          headers: {
+            Authorization: "bar",
+            "Correlation-Id": "bar1",
+          } as HeadersInit,
         },
       } as CombinedState);
     });
 
     it("can open a tab when the pdf details are known", () => {
       const existingTabsState = {
-        authToken: "foo",
+        headers: {
+          Authorization: "foo",
+          "Correlation-Id": "foo1",
+        } as HeadersInit,
         items: [],
       } as CombinedState["tabsState"];
 
@@ -370,13 +379,19 @@ describe("useCaseDetailsState reducer", () => {
             pdfId: "d1",
             tabSafeId: "t1",
             mode: "read",
-            authToken: "bar",
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
           },
         }
       );
 
       expect(nextState.tabsState).toEqual({
-        authToken: "bar",
+        headers: {
+          Authorization: "bar",
+          "Correlation-Id": "bar1",
+        },
         items: [
           {
             documentId: "d1",
@@ -393,7 +408,10 @@ describe("useCaseDetailsState reducer", () => {
 
     it("can open a tab when the pdf details are not known", () => {
       const existingTabsState = {
-        authToken: "foo",
+        headers: {
+          Authorization: "foo",
+          "Correlation-Id": "foo1",
+        } as HeadersInit,
         items: [],
       } as CombinedState["tabsState"];
 
@@ -418,13 +436,19 @@ describe("useCaseDetailsState reducer", () => {
             pdfId: "d1",
             tabSafeId: "t1",
             mode: "read",
-            authToken: "bar",
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
           },
         }
       );
 
       expect(nextState.tabsState).toEqual({
-        authToken: "bar",
+        headers: {
+          Authorization: "bar",
+          "Correlation-Id": "bar1",
+        } as HeadersInit,
         items: [
           {
             documentId: "d1",
@@ -442,7 +466,10 @@ describe("useCaseDetailsState reducer", () => {
     describe("reopening pdfs", () => {
       it("can reopen a read mode pdf and show the previously visible document", () => {
         const existingTabsState = {
-          authToken: "foo",
+          headers: {
+            Authorization: "foo",
+            "Correlation-Id": "foo1",
+          } as HeadersInit,
           items: [{ documentId: "d1", mode: "read" }],
         } as CombinedState["tabsState"];
 
@@ -457,7 +484,10 @@ describe("useCaseDetailsState reducer", () => {
               pdfId: "d1",
               tabSafeId: "t1",
               mode: "read",
-              authToken: "bar",
+              headers: {
+                Authorization: "bar",
+                "Correlation-Id": "bar1",
+              } as HeadersInit,
             },
           }
         );
@@ -467,13 +497,22 @@ describe("useCaseDetailsState reducer", () => {
           searchState: {
             isResultsVisible: false,
           },
-          tabsState: { ...existingTabsState, authToken: "bar" },
+          tabsState: {
+            ...existingTabsState,
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
+          },
         });
       });
 
       it("can reopen a search mode pdf and show the previously visible document", () => {
         const existingTabsState = {
-          authToken: "foo",
+          headers: {
+            Authorization: "foo",
+            "Correlation-Id": "foo1",
+          } as HeadersInit,
           items: [{ documentId: "d1", mode: "search", searchTerm: "foo" }],
         } as CombinedState["tabsState"];
 
@@ -489,7 +528,10 @@ describe("useCaseDetailsState reducer", () => {
               pdfId: "d1",
               tabSafeId: "t1",
               mode: "search",
-              authToken: "bar",
+              headers: {
+                Authorization: "bar",
+                "Correlation-Id": "bar1",
+              } as HeadersInit,
             },
           }
         );
@@ -500,13 +542,22 @@ describe("useCaseDetailsState reducer", () => {
             submittedSearchTerm: "foo",
             isResultsVisible: false,
           },
-          tabsState: { ...existingTabsState, authToken: "bar" },
+          tabsState: {
+            ...existingTabsState,
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
+          },
         });
       });
 
       it("can reopen a read mode pdf in search mode", () => {
         const existingTabsState = {
-          authToken: "foo",
+          headers: {
+            Authorization: "foo",
+            "Correlation-Id": "foo1",
+          } as HeadersInit,
           items: [
             { documentId: "d0", mode: "read" },
             { documentId: "d1", mode: "read" },
@@ -558,7 +609,10 @@ describe("useCaseDetailsState reducer", () => {
               pdfId: "d1",
               tabSafeId: "t1",
               mode: "search",
-              authToken: "bar",
+              headers: {
+                Authorization: "bar",
+                "Correlation-Id": "bar1",
+              } as HeadersInit,
             },
           }
         );
@@ -590,7 +644,10 @@ describe("useCaseDetailsState reducer", () => {
           },
           documentsState: { status: "succeeded", data: [] },
           tabsState: {
-            authToken: "bar",
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -638,7 +695,10 @@ describe("useCaseDetailsState reducer", () => {
 
       it("can reopen a search mode pdf in read mode", () => {
         const existingTabsState = {
-          authToken: "foo",
+          headers: {
+            Authorization: "foo",
+            "Correlation-Id": "foo1",
+          } as HeadersInit,
           items: [
             { documentId: "d0", mode: "read" },
             { documentId: "d1", mode: "search" },
@@ -673,7 +733,10 @@ describe("useCaseDetailsState reducer", () => {
               pdfId: "d1",
               tabSafeId: "t1",
               mode: "read",
-              authToken: "bar",
+              headers: {
+                Authorization: "bar",
+                "Correlation-Id": "bar1",
+              } as HeadersInit,
             },
           }
         );
@@ -683,7 +746,10 @@ describe("useCaseDetailsState reducer", () => {
           searchState: { ...existingSearchState, isResultsVisible: false },
           pipelineState: existingPipelineState,
           tabsState: {
-            authToken: "bar",
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -701,7 +767,10 @@ describe("useCaseDetailsState reducer", () => {
 
       it("can reopen a search mode pdf in search mode with a different search term", () => {
         const existingTabsState = {
-          authToken: "foo",
+          headers: {
+            Authorization: "foo",
+            "Correlation-Id": "foo1",
+          } as HeadersInit,
           items: [
             { documentId: "d0", mode: "read" },
             {
@@ -777,7 +846,10 @@ describe("useCaseDetailsState reducer", () => {
               pdfId: "d1",
               tabSafeId: "t1",
               mode: "search",
-              authToken: "bar",
+              headers: {
+                Authorization: "bar",
+                "Correlation-Id": "bar1",
+              } as HeadersInit,
             },
           }
         );
@@ -820,7 +892,10 @@ describe("useCaseDetailsState reducer", () => {
           },
           documentsState: { status: "succeeded", data: [] },
           tabsState: {
-            authToken: "bar",
+            headers: {
+              Authorization: "bar",
+              "Correlation-Id": "bar1",
+            } as HeadersInit,
             items: [
               { documentId: "d0", mode: "read" },
               {
@@ -931,7 +1006,10 @@ describe("useCaseDetailsState reducer", () => {
   describe("CLOSE_PDF", () => {
     it("can close a tab", () => {
       const existingTabsState = {
-        authToken: "authtoken",
+        headers: {
+          Authorization: "foo",
+          "Correlation-Id": "foo1",
+        } as HeadersInit,
         items: [
           {
             documentId: "d1",
@@ -954,7 +1032,10 @@ describe("useCaseDetailsState reducer", () => {
       );
 
       expect(nextState.tabsState).toEqual({
-        authToken: "authtoken",
+        headers: {
+          Authorization: "foo",
+          "Correlation-Id": "foo1",
+        } as HeadersInit,
         items: [
           {
             documentId: "d1",

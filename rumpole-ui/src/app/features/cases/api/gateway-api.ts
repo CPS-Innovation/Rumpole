@@ -17,12 +17,18 @@ const getFullUrl = (path: string) => {
 
 const generateCorrelationId = () => uuidv4();
 
-export const getCoreHeaders = async (init?: HeadersInit | undefined) => {
-  return new Headers({
+export const getCoreHeadersInit = async () => {
+  return {
     [CORRELATION_ID]: generateCorrelationId(),
     Authorization: `Bearer ${
       GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
     }`,
+  };
+};
+
+const getCoreHeaders = async (init?: HeadersInit | undefined) => {
+  return new Headers({
+    ...(await getCoreHeadersInit()),
     // allow init to override any headers created here
     ...init,
   });

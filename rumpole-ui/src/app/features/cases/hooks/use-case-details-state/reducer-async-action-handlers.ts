@@ -3,7 +3,7 @@ import { AsyncActionHandlers } from "use-reducer-async";
 import {
   checkinDocument,
   checkoutDocument,
-  getCoreHeaders,
+  getCoreHeadersInit,
   getPdfSasUrl,
   saveRedactions,
 } from "../../api/gateway-api";
@@ -87,16 +87,19 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     async (action) => {
       const { payload } = action;
 
-      const headers = await getCoreHeaders();
-      const authToken = headers.get("Authorization");
+      const headers = await getCoreHeadersInit();
 
-      if (!authToken) {
+      if (!headers.Authorization) {
         throw new Error("Auth token not found when opening pdf.");
+      }
+
+      if (!headers["Correlation-Id"]) {
+        throw new Error("Correlation Id not found when opening pdf.");
       }
 
       dispatch({
         type: "OPEN_PDF",
-        payload: { ...payload, authToken },
+        payload: { ...payload, headers },
       });
     },
 

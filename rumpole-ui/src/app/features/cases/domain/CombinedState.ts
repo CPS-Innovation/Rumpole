@@ -17,7 +17,7 @@ export type CombinedState = {
   accordionState: AsyncResult<AccordionDocumentSection[]>;
   tabsState: {
     items: CaseDocumentViewModel[];
-    authToken: undefined | string;
+    headers: HeadersInit;
   };
   // `searchTerm` is outside of `searchState` as it is more volatile: when
   //  the user is typing away, we prevent `searchState` from continually being

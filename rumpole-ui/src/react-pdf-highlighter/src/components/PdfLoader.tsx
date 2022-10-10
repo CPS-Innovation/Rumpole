@@ -8,7 +8,7 @@ interface Props {
   workerSrc: string;
 
   url: string;
-  authToken: string;
+  headers: HeadersInit;
   beforeLoad: JSX.Element;
   errorMessage?: JSX.Element;
   children: (pdfDocument: PDFDocumentProxy) => JSX.Element;
@@ -63,7 +63,7 @@ export class PdfLoader extends Component<Props, State> {
 
   load() {
     const { ownerDocument = document } = this.documentRef.current || {};
-    const { url, cMapUrl, cMapPacked, workerSrc } = this.props;
+    const { url, cMapUrl, cMapPacked, workerSrc, headers } = this.props;
     const { pdfDocument: discardedDocument } = this.state;
     this.setState({ pdfDocument: null, error: null });
 
@@ -80,9 +80,7 @@ export class PdfLoader extends Component<Props, State> {
   
         return getDocument({
           ...this.props,
-          httpHeaders: {
-            authorization: this.props.authToken
-          },
+          httpHeaders: headers,
           ownerDocument,
           cMapUrl,
           cMapPacked,
