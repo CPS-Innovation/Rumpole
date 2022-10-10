@@ -1,5 +1,6 @@
 ﻿using RumpoleGateway.Extensions;
 using System;
+using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -54,7 +55,8 @@ namespace RumpoleGateway.Tests.Extensions
         public void WhenAValidInstanceHasBeenCreated_WhenCallingToHttpRequestMessage_TheResponseContainsTheExpectedHeaders()
         {
             var accessToken = _fixture.Create<string>();
-            var testInstance = new AuthenticatedGraphQlHttpRequest(accessToken, _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
+            var correlationId = _fixture.Create<Guid>();
+            var testInstance = new AuthenticatedGraphQlHttpRequest(accessToken, correlationId, _fixture.Create<GraphQLHttpRequest>());
             var testRequestMessage = testInstance.ToHttpRequestMessage(new GraphQLHttpClientOptions(), new NewtonsoftJsonSerializer());
 
             using (new AssertionScope())
@@ -64,7 +66,8 @@ namespace RumpoleGateway.Tests.Extensions
                 var authHeaderValues = testRequestMessage.Headers.GetValues(AuthenticationKeys.Authorization);
                 authHeaderValues.Should().Contain(x => x == $"{AuthenticationKeys.Bearer} {accessToken}");
 
-                testRequestMessage.Headers.Should().Contain(x => x.Key == "Correlation-Id");
+                testRequestMessage.Headers.Should().Contain(x => x.Key == "CorrelationId");
+                testRequestMessage.Headers.FirstOrDefault(x => x.Key == "CorrelationId").Value.Should().NotBeNull().And.BeEquivalentTo(correlationId.ToString());
                 testRequestMessage.Headers.Should().Contain(x => x.Key == "Request-Ip-Address");
             }
         }
