@@ -151,7 +151,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
         }
 
         [Fact]
-        public async Task CoreDataApiClient_GetCaseInformationByUrnAsync_WhenResponseData_IsNull_ReturnsNull()
+        public async Task CoreDataApiClient_GetCaseInformationByUrnAsync_WhenBothResponseData_AndErrorsCollection_IsNull_ReturnsNull()
         {
             //Arrange
             _authenticatedGraphQLHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>(), It.IsAny<Guid>()))
@@ -159,6 +159,7 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
 
             var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
             fakedResponse.Data = null;
+            fakedResponse.Errors = null;
             _coreDataApiClientMock.Setup(x => x.SendQueryAsync<ResponseCaseInformationByUrn>(It.IsAny<GraphQLRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(fakedResponse);
 
             var coreDataApiClient = GetCoreDataApiClient();
@@ -168,6 +169,27 @@ namespace RumpoleGateway.Tests.Clients.CoreDataApi
 
             //Assert
             results.Should().BeNull();
+        }
+        
+        [Fact]
+        public async Task CoreDataApiClient_GetCaseInformationByUrnAsync_WhenBothResponseData_AndErrorsCollection_IsNOTNull_ThrowsException()
+        {
+            //Arrange
+            _authenticatedGraphQLHttpRequestFactoryMock.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<GraphQLHttpRequest>(), It.IsAny<Guid>()))
+                .Returns(new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _correlationId, _fixture.Create<GraphQLHttpRequest>()));
+
+            var fakedResponse = _fixture.Create<GraphQLResponse<ResponseCaseInformationByUrn>>();
+            fakedResponse.Data = null;
+            fakedResponse.Errors = _fixture.CreateMany<GraphQLError>(3).ToArray();
+            _coreDataApiClientMock.Setup(x => x.SendQueryAsync<ResponseCaseInformationByUrn>(It.IsAny<GraphQLRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(fakedResponse);
+
+            var coreDataApiClient = GetCoreDataApiClient();
+
+            //Act
+            var results = async () => await coreDataApiClient.GetCaseInformationByUrnAsync(_fixture.Create<string>(), _fixture.Create<string>(), _correlationId);
+
+            //Assert
+            await results.Should().ThrowAsync<Exception>();
         }
 
         [Fact]

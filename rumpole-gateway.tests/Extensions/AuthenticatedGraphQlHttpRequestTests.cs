@@ -66,8 +66,8 @@ namespace RumpoleGateway.Tests.Extensions
                 var authHeaderValues = testRequestMessage.Headers.GetValues(AuthenticationKeys.Authorization);
                 authHeaderValues.Should().Contain(x => x == $"{AuthenticationKeys.Bearer} {accessToken}");
 
-                testRequestMessage.Headers.Should().Contain(x => x.Key == "CorrelationId");
-                testRequestMessage.Headers.FirstOrDefault(x => x.Key == "CorrelationId").Value.Should().NotBeNull().And.BeEquivalentTo(correlationId.ToString());
+                testRequestMessage.Headers.Should().Contain(x => x.Key == "Correlation-Id");
+                testRequestMessage.Headers.FirstOrDefault(x => x.Key == "Correlation-Id").Value.Should().NotBeNull().And.BeEquivalentTo(correlationId.ToString());
                 testRequestMessage.Headers.Should().Contain(x => x.Key == "Request-Ip-Address");
             }
         }
