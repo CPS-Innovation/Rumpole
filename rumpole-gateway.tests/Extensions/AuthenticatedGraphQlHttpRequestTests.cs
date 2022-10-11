@@ -22,7 +22,7 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithValidParameters_ThenAValidObjectIsCreated()
         {
-            var testInstance = new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
 
             testInstance.Should().NotBeNull();
         }
@@ -30,7 +30,7 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithoutAnAccessToken_ThenAnArgumentExceptionIsThrown()
         {
-            var testInstance = () => new AuthenticatedGraphQlHttpRequest(null, _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = () => new AuthenticatedGraphQLHttpRequest(null, _fixture.Create<Guid>(), _fixture.Create<GraphQLHttpRequest>());
 
             testInstance.Should().Throw<ArgumentException>().WithParameterName("accessToken");
         }
@@ -38,7 +38,7 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithoutACorrelationId_ThenAnArgumentExceptionIsThrown()
         {
-            var testInstance = () => new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), Guid.Empty, _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = () => new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), Guid.Empty, _fixture.Create<GraphQLHttpRequest>());
 
             testInstance.Should().Throw<ArgumentException>().WithParameterName("correlationId");
         }
@@ -46,7 +46,7 @@ namespace RumpoleGateway.Tests.Extensions
         [Fact]
         public void WhenCallingANewInstance_WithoutAnEmptyGraphQlRequest_ThenAnArgumentNullExceptionIsThrown()
         {
-            var testInstance = () => new AuthenticatedGraphQlHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), null);
+            var testInstance = () => new AuthenticatedGraphQLHttpRequest(_fixture.Create<string>(), _fixture.Create<Guid>(), null);
 
             testInstance.Should().Throw<ArgumentNullException>();
         }
@@ -56,7 +56,7 @@ namespace RumpoleGateway.Tests.Extensions
         {
             var accessToken = _fixture.Create<string>();
             var correlationId = _fixture.Create<Guid>();
-            var testInstance = new AuthenticatedGraphQlHttpRequest(accessToken, correlationId, _fixture.Create<GraphQLHttpRequest>());
+            var testInstance = new AuthenticatedGraphQLHttpRequest(accessToken, correlationId, _fixture.Create<GraphQLHttpRequest>());
             var testRequestMessage = testInstance.ToHttpRequestMessage(new GraphQLHttpClientOptions(), new NewtonsoftJsonSerializer());
 
             using (new AssertionScope())

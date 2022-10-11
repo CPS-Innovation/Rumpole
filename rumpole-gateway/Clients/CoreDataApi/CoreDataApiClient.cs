@@ -6,6 +6,8 @@ using RumpoleGateway.Domain.CoreDataApi.ResponseTypes;
 using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.Logging;
@@ -16,13 +18,13 @@ namespace RumpoleGateway.Clients.CoreDataApi
     public class CoreDataApiClient : ICoreDataApiClient
     {
         private readonly IGraphQLClient _coreDataApiClient;
-        private readonly IAuthenticatedGraphQlHttpRequestFactory _authenticatedGraphQlHttpRequestFactory;
+        private readonly IAuthenticatedGraphQLHttpRequestFactory _authenticatedGraphQLHttpRequestFactory;
         private readonly ILogger<CoreDataApiClient> _logger;
-        public CoreDataApiClient(IGraphQLClient coreDataApiClient, IAuthenticatedGraphQlHttpRequestFactory authenticatedGraphQlHttpRequestFactory, 
+        public CoreDataApiClient(IGraphQLClient coreDataApiClient, IAuthenticatedGraphQLHttpRequestFactory authenticatedGraphQLHttpRequestFactory, 
             ILogger<CoreDataApiClient> logger)
         {
             _coreDataApiClient = coreDataApiClient;
-            _authenticatedGraphQlHttpRequestFactory = authenticatedGraphQlHttpRequestFactory;
+            _authenticatedGraphQLHttpRequestFactory = authenticatedGraphQLHttpRequestFactory;
             _logger = logger;
         }
          
@@ -40,7 +42,7 @@ namespace RumpoleGateway.Clients.CoreDataApi
                             + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
 
-                var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query, correlationId);
+                var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query, correlationId);
                 
                 _logger.LogMethodFlow(correlationId, nameof(GetCaseDetailsByIdAsync), $"Sending the following query to the Core Data API: {query.ToJson()}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseDetails>(authenticatedRequest);
@@ -74,12 +76,27 @@ namespace RumpoleGateway.Clients.CoreDataApi
                             + " offences { earlyDate lateDate listOrder code shortDescription longDescription }  }}"
                 };
 
-                var authenticatedRequest = _authenticatedGraphQlHttpRequestFactory.Create(accessToken, query, correlationId);
+                var authenticatedRequest = _authenticatedGraphQLHttpRequestFactory.Create(accessToken, query, correlationId);
                 
                 _logger.LogMethodFlow(correlationId, nameof(GetCaseDetailsByIdAsync), $"Sending the following query to the Core Data API: {query.ToJson()}");
                 var response = await _coreDataApiClient.SendQueryAsync<ResponseCaseInformationByUrn>(authenticatedRequest);
 
-                if (response.Data == null || response.Data?.CaseDetails?.Count == 0) return null;
+                if (response.Data == null || response.Data?.CaseDetails?.Count == 0)
+                {
+                    if (response.Errors == null)
+                        return null;
+
+                    var sb = new StringBuilder();
+                    foreach (var error in response.Errors)
+                    {
+                        if (sb.Length > 0)
+                            sb.Append(", ");
+                        
+                        sb.Append(error.Message);
+                    }
+
+                    throw new Exception($"Error response from the Core Data Api. {sb}");
+                }
 
                 if (response.Data != null) caseDetailsCollection = response.Data.CaseDetails;
                 return caseDetailsCollection;

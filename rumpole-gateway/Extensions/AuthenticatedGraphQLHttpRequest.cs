@@ -5,13 +5,13 @@ using System.Net.Http;
 
 namespace RumpoleGateway.Extensions
 {
-	public class AuthenticatedGraphQlHttpRequest : GraphQLHttpRequest
+	public class AuthenticatedGraphQLHttpRequest : GraphQLHttpRequest
 	{
 
 		private readonly string _accessToken;
 		private readonly Guid _correlationId;
 
-		public AuthenticatedGraphQlHttpRequest(string accessToken, Guid correlationId, GraphQLHttpRequest request)
+		public AuthenticatedGraphQLHttpRequest(string accessToken, Guid correlationId, GraphQLHttpRequest request)
 				: base(request)
 		{
 			if (string.IsNullOrWhiteSpace(accessToken))
@@ -37,7 +37,7 @@ namespace RumpoleGateway.Extensions
 		{
 			var message = base.ToHttpRequestMessage(options, serializer);
 			message.Headers.Add(AuthenticationKeys.Authorization, $"{AuthenticationKeys.Bearer} {_accessToken}");
-			message.Headers.Add("CorrelationId", _correlationId.ToString());
+			message.Headers.Add("Correlation-Id", _correlationId.ToString());
 			message.Headers.Add("Request-Ip-Address", "0.0.0.0");
 			return message;
 		}

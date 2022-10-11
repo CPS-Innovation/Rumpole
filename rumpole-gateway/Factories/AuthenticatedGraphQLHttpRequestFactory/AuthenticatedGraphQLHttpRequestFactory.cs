@@ -6,19 +6,20 @@ using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
 {
-    public class AuthenticatedGraphQlHttpRequestFactory : IAuthenticatedGraphQlHttpRequestFactory
+    // ReSharper disable once InconsistentNaming
+    public class AuthenticatedGraphQLHttpRequestFactory : IAuthenticatedGraphQLHttpRequestFactory
     {
-        private readonly ILogger<AuthenticatedGraphQlHttpRequestFactory> _logger;
+        private readonly ILogger<AuthenticatedGraphQLHttpRequestFactory> _logger;
 
-        public AuthenticatedGraphQlHttpRequestFactory(ILogger<AuthenticatedGraphQlHttpRequestFactory> logger)
+        public AuthenticatedGraphQLHttpRequestFactory(ILogger<AuthenticatedGraphQLHttpRequestFactory> logger)
         {
             _logger = logger;
         }
 
-        public AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId)
+        public AuthenticatedGraphQLHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(Create), graphQlHttpRequest.ToJson());
-            var authRequest = new AuthenticatedGraphQlHttpRequest(accessToken, correlationId, graphQlHttpRequest);
+            var authRequest = new AuthenticatedGraphQLHttpRequest(accessToken, correlationId, graphQlHttpRequest);
             _logger.LogMethodExit(correlationId, nameof(Create), string.Empty);
             return authRequest;
         }

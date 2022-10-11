@@ -48,7 +48,7 @@ namespace RumpoleGateway
             
             builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, ConfigurationKeys.CoreDataApiUrl), new NewtonsoftJsonSerializer()));
             builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
-            builder.Services.AddTransient<IAuthenticatedGraphQlHttpRequestFactory, AuthenticatedGraphQlHttpRequestFactory>();
+            builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IAuthorizationValidator, AuthorizationValidator>();

@@ -4,8 +4,8 @@ using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory
 {
-    public interface IAuthenticatedGraphQlHttpRequestFactory
+    public interface IAuthenticatedGraphQLHttpRequestFactory
     {
-        AuthenticatedGraphQlHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId);
+        AuthenticatedGraphQLHttpRequest Create(string accessToken, GraphQLHttpRequest graphQlHttpRequest, Guid correlationId);
     }
 }
