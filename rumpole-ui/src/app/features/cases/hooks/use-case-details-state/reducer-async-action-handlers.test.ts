@@ -61,12 +61,12 @@ describe("reducerAsyncActionHandlers", () => {
   });
 
   describe("REQUEST_OPEN_PDF", () => {
-    it("can open a pdf when auth token is retrieved", async () => {
+    it("can open a pdf when auth token and correlation id are retrieved", async () => {
       // arrange
       jest
-        .spyOn(api, "getCoreHeaders")
+        .spyOn(api, "getCoreHeadersInitObject")
         .mockImplementation(() =>
-          Promise.resolve(new Headers({ Authorization: "baz" }))
+          Promise.resolve({ "Correlation-Id": "foo", Authorization: "bar" })
         );
 
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
@@ -93,7 +93,7 @@ describe("reducerAsyncActionHandlers", () => {
           pdfId: "foo",
           tabSafeId: "bar",
           mode: "read",
-          authToken: "baz",
+          headers: { "Correlation-Id": "foo", Authorization: "bar" },
         },
       });
     });
@@ -101,8 +101,10 @@ describe("reducerAsyncActionHandlers", () => {
     it("can throw when auth token is not retrieved", async () => {
       // arrange
       jest
-        .spyOn(api, "getCoreHeaders")
-        .mockImplementation(() => Promise.resolve(new Headers()));
+        .spyOn(api, "getCoreHeadersInitObject")
+        .mockImplementation(() =>
+          Promise.resolve({ "Correlation-Id": "foo", Authorization: "" })
+        );
 
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
         dispatch: dispatchMock,
@@ -123,6 +125,35 @@ describe("reducerAsyncActionHandlers", () => {
 
       // assert
       await expect(act()).rejects.toThrow("Auth token");
+    });
+
+    it("can throw when correlation id is not retrieved", async () => {
+      // arrange
+      jest
+        .spyOn(api, "getCoreHeadersInitObject")
+        .mockImplementation(() =>
+          Promise.resolve({ "Correlation-Id": "", Authorization: "foo" })
+        );
+
+      const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
+        dispatch: dispatchMock,
+        getState: () => combinedStateMock,
+        signal: new AbortController().signal,
+      });
+
+      // act
+      const act = async () =>
+        await handler({
+          type: "REQUEST_OPEN_PDF",
+          payload: {
+            pdfId: "foo",
+            tabSafeId: "bar",
+            mode: "read",
+          },
+        });
+
+      // assert
+      await expect(act()).rejects.toThrow("Correlation Id");
     });
   });
 

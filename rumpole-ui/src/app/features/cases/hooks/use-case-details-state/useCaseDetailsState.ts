@@ -17,7 +17,7 @@ export const initialState = {
   documentsState: { status: "loading" },
   pipelineState: { status: "initiating", haveData: false },
   accordionState: { status: "loading" },
-  tabsState: { items: [], authToken: undefined },
+  tabsState: { items: [], headers: {} },
   searchTerm: "",
   searchState: {
     isResultsVisible: false,

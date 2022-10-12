@@ -39,15 +39,6 @@ describe("useCaseDetailsState", () => {
           )
       );
 
-    const mockGetHeaders = jest
-      .spyOn(api, "getCoreHeaders")
-      .mockImplementation(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve(new Headers()), 100)
-          )
-      );
-
     const mockSearchCaseWhenAllReady = jest
       .spyOn(searchCaseWhenReady, "searchCaseWhenReady")
       .mockImplementation(
@@ -72,9 +63,6 @@ describe("useCaseDetailsState", () => {
       }
       if (isSameRef(del, mockgetCaseDocumentsList)) {
         return { status: "succeeded", data: "getCaseDocumentsList" };
-      }
-      if (isSameRef(del, mockGetHeaders)) {
-        return { status: "succeeded", data: "getHeaders" };
       }
       if (isSameRef(del, mockSearchCase)) {
         return {

@@ -53,19 +53,23 @@ export const initiateAndPoll = (
   };
 
   const doWork = async () => {
-    let trackerUrl = "";
+    let trackerArgs: Awaited<ReturnType<typeof initiatePipeline>>;
 
     try {
-      trackerUrl = await initiatePipeline(caseId);
+      trackerArgs = await initiatePipeline(caseId);
     } catch (error) {
       handleApiCallError(error);
+      return;
     }
 
     while (keepPolling) {
       try {
         await delay(delayMs);
 
-        const pipelineResult = await getPipelinePdfResults(trackerUrl);
+        const pipelineResult = await getPipelinePdfResults(
+          trackerArgs.trackerUrl,
+          trackerArgs.correlationId
+        );
         handleApiCallSuccess(pipelineResult);
       } catch (error) {
         handleApiCallError(error);

@@ -45,7 +45,7 @@ export const reducer = (
           tabSafeId: string;
           pdfId: string;
           mode: CaseDocumentViewModel["mode"];
-          authToken: string;
+          headers: HeadersInit;
         };
       }
     | {
@@ -202,7 +202,7 @@ export const reducer = (
       };
     }
     case "OPEN_PDF":
-      const { pdfId, tabSafeId, mode, authToken } = action.payload;
+      const { pdfId, tabSafeId, mode, headers } = action.payload;
 
       const coreNewState = {
         ...state,
@@ -212,7 +212,7 @@ export const reducer = (
         },
         tabsState: {
           ...state.tabsState,
-          authToken,
+          headers,
         },
       };
 
