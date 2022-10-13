@@ -6,5 +6,5 @@ namespace RumpoleGateway.Domain.Exceptions;
 public class CpsAuthenticationException: Exception
 {
     public CpsAuthenticationException()
-        : base("Invalid correlationId. A valid GUID is required.") { }
+        : base("Invalid token. No authentication token was supplied.") { }
 }
