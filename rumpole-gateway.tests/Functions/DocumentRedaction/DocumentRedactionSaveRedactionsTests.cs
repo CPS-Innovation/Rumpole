@@ -52,7 +52,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
             _mockTokenValidator = new Mock<IAuthorizationValidator>();
             var mockConfiguration = new Mock<IConfiguration>();
             
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
             mockConfiguration.Setup(config => config[ConfigurationKeys.PipelineRedactPdfScope]).Returns(_scope);
 
             _documentRedactionSaveRedactions = new DocumentRedactionSaveRedactions(mockLogger.Object,
@@ -79,7 +79,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         [Fact]
         public async Task Run_WhenValidationTokenIsInvalid_ReturnsUnauthorized()
         {
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
             var response = await _documentRedactionSaveRedactions.Run(CreateHttpRequest(), _caseId, _documentId, _fileName);
 
             response.Should().BeOfType<UnauthorizedObjectResult>();

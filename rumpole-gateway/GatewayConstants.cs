@@ -30,3 +30,8 @@ public static class AuthenticationKeys
     public const string AzureAuthenticationAssertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
     public const string Bearer = "Bearer";
 }
+
+public static class ValidRoles
+{
+    public const string UserImpersonation = "user_impersonation";
+}

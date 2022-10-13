@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +22,14 @@ namespace RumpoleGateway.Functions
             _tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
-        protected async Task<ValidateRequestResult> ValidateRequest(HttpRequest req, string loggingSource)
+        protected async Task<ValidateRequestResult> ValidateRequest(HttpRequest req, string loggingSource, string validScopes, string validRoles = "")
         {
             var result = new ValidateRequestResult();
 
             try
             {
                 result.CurrentCorrelationId = EstablishCorrelation(req);
-                result.AccessTokenValue = await AuthenticateRequest(req, result.CurrentCorrelationId);
+                result.AccessTokenValue = await AuthenticateRequest(req, result.CurrentCorrelationId, validScopes, validRoles);
             }
             catch (CorrelationException correlationException)
             {
@@ -59,13 +58,13 @@ namespace RumpoleGateway.Functions
             return currentCorrelationId;
         }
 
-        private async Task<StringValues> AuthenticateRequest(HttpRequest req, Guid currentCorrelationId)
+        private async Task<StringValues> AuthenticateRequest(HttpRequest req, Guid currentCorrelationId, string validScopes, string validRoles = "")
         {
             if (!req.Headers.TryGetValue(AuthenticationKeys.Authorization, out var accessTokenValue) ||
                 string.IsNullOrWhiteSpace(accessTokenValue))
                 throw new CpsAuthenticationException();
 
-            var validToken = await _tokenValidator.ValidateTokenAsync(accessTokenValue, currentCorrelationId);
+            var validToken = await _tokenValidator.ValidateTokenAsync(accessTokenValue, currentCorrelationId, validScopes, validRoles);
             if (!validToken)
                 throw new CpsAuthorizationException();
 

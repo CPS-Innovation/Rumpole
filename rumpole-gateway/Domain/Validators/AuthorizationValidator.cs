@@ -27,7 +27,7 @@ namespace RumpoleGateway.Domain.Validators
             _log = log;
         }
 
-        public async Task<bool> ValidateTokenAsync(StringValues token, Guid correlationId)
+        public async Task<bool> ValidateTokenAsync(StringValues token, Guid correlationId, string requiredScopes = null, string requiredRoles = null)
         {
             _log.LogMethodEntry(correlationId, nameof(ValidateTokenAsync), string.Empty);
             if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
@@ -60,9 +60,6 @@ namespace RumpoleGateway.Domain.Validators
                 var tokenValidator = new JwtSecurityTokenHandler(); 
                 var claimsPrincipal = tokenValidator.ValidateToken(token.ToJwtString(), validationParameters, out _);
                 
-                var requiredScopes = Environment.GetEnvironmentVariable(ConfigurationKeys.ValidScopes)?.Replace(" ", string.Empty).Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
-                var requiredRoles = Environment.GetEnvironmentVariable(ConfigurationKeys.ValidRoles)?.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
-                
                 return IsValid(claimsPrincipal, requiredScopes, requiredRoles);
             }
             catch (SecurityTokenValidationException securityException)
@@ -81,7 +78,7 @@ namespace RumpoleGateway.Domain.Validators
             }
         }
 
-        private bool IsValid(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes = null, List<string> requiredRoles = null)
+        private bool IsValid(ClaimsPrincipal claimsPrincipal, string scopes = null, string roles = null)
         {
             _log.LogMethodEntry(_correlationId, nameof(IsValid), string.Empty);
             
@@ -91,8 +88,8 @@ namespace RumpoleGateway.Domain.Validators
                 return false;
             }
 
-            requiredScopes = requiredScopes?.ToList() ?? new List<string>();
-            requiredRoles = requiredRoles?.ToList() ?? new List<string>();
+            var requiredScopes = LoadRequiredItems(scopes);
+            var requiredRoles = LoadRequiredItems(roles);
 
             if (!requiredScopes.Any() && !requiredRoles.Any())
             {
@@ -111,6 +108,13 @@ namespace RumpoleGateway.Domain.Validators
 
             _log.LogMethodExit(_correlationId, nameof(IsValid), $"Outcome role and scope checks - hasAccessToRoles: {hasAccessToRoles}, hasAccessToScopes: {hasAccessToScopes}");
             return hasAccessToRoles && hasAccessToScopes;
+        }
+        
+        private static List<string> LoadRequiredItems(string items)
+        {
+            return string.IsNullOrWhiteSpace(items) 
+                ? new List<string>() 
+                : items.Replace(" ", string.Empty).Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
     }
 }
