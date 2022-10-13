@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Moq;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Domain.DocumentExtraction;
@@ -35,7 +34,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetCaseDocuments>>();
 			_mockTokenValidator = new Mock<IAuthorizationValidator>();
             
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 			_mockDocumentExtractionClient.Setup(client => client.GetCaseDocumentsAsync(_caseId, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_case);
 
@@ -61,7 +60,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
 		{
-			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 			var response = await _documentExtractionGetCaseDocuments.Run(CreateHttpRequest(), _caseId);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();

@@ -11,7 +11,6 @@ using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
@@ -46,7 +45,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
 
             try
             {
-                var validationResult = await ValidateRequest(req, loggingName);
+                var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
 

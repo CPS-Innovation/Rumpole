@@ -36,7 +36,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 			var mockLogger = new Mock<ILogger<DocumentExtractionGetDocument>>();
             _mockTokenValidator = new Mock<IAuthorizationValidator>();
 
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             _mockDocumentExtractionClient.Setup(client => client.GetDocumentAsync(_documentId, _fileName, It.IsAny<string>(), It.IsAny<Guid>()))
 				.ReturnsAsync(_stream);
@@ -63,7 +63,7 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
 		{
-			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 			var response = await _documentExtractionGetDocument.Run(CreateHttpRequest(), _documentId, _fileName);
 			
 			response.Should().BeOfType<UnauthorizedObjectResult>();
