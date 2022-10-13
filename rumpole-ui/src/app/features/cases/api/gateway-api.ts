@@ -7,21 +7,30 @@ import { PipelineResults } from "../domain/PipelineResults";
 import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
 import { RedactionSaveRequest } from "../domain/RedactionSaveRequest";
 import { RedactionSaveResponse } from "../domain/RedactionSaveResponse";
+import { v4 as uuidv4 } from "uuid";
+
+const CORRELATION_ID = "Correlation-Id";
 
 const getFullUrl = (path: string) => {
   return new URL(path, GATEWAY_BASE_URL).toString();
 };
 
-export const getCoreHeaders = async () => {
-  if (!GATEWAY_SCOPE) {
-    // if we are dev test mode with mocked auth we don't want to try to
-    //  get a token
-    return new Headers({
-      Authorization: `Bearer TEST`,
-    });
-  }
+const generateCorrelationId = () => uuidv4();
+
+export const getCoreHeadersInitObject = async () => {
+  return {
+    [CORRELATION_ID]: generateCorrelationId(),
+    Authorization: `Bearer ${
+      GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
+    }`,
+  };
+};
+
+const getCoreHeaders = async (init?: HeadersInit | undefined) => {
   return new Headers({
-    Authorization: `Bearer ${await getAccessToken([GATEWAY_SCOPE])}`,
+    ...(await getCoreHeadersInitObject()),
+    // allow init to override any headers created here
+    ...init,
   });
 };
 
@@ -107,13 +116,19 @@ export const initiatePipeline = async (caseId: string) => {
     throw new ApiError("Initiate pipeline failed", path, response);
   }
 
-  const apiReponse: { trackerUrl: string } = await response.json();
+  const { trackerUrl }: { trackerUrl: string } = await response.json();
 
-  return apiReponse.trackerUrl;
+  return { trackerUrl, correlationId: headers.get(CORRELATION_ID)! };
 };
 
-export const getPipelinePdfResults = async (trackerUrl: string) => {
-  const headers = await getCoreHeaders();
+export const getPipelinePdfResults = async (
+  trackerUrl: string,
+  correlationId: string
+) => {
+  const headers = await getCoreHeaders({
+    [CORRELATION_ID]: correlationId,
+  });
+
   const response = await fetch(trackerUrl, {
     headers,
     method: "GET",

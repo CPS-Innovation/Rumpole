@@ -10,7 +10,7 @@ import { HeaderSearchMode } from "./HeaderSearchMode";
 
 type PdfTabProps = {
   caseDocumentViewModel: CaseDocumentViewModel;
-  authToken: string | undefined;
+  headers: HeadersInit;
   handleLaunchSearchResults: () => void;
   handleAddRedaction: CaseDetailsState["handleAddRedaction"];
   handleRemoveRedaction: CaseDetailsState["handleRemoveRedaction"];
@@ -21,7 +21,7 @@ type PdfTabProps = {
 
 export const PdfTab: React.FC<PdfTabProps> = ({
   caseDocumentViewModel,
-  authToken,
+  headers,
   handleLaunchSearchResults,
   handleAddRedaction,
   handleRemoveRedaction,
@@ -73,10 +73,10 @@ export const PdfTab: React.FC<PdfTabProps> = ({
         />
       )}
 
-      {url && authToken ? (
+      {url ? (
         <PdfViewer
           url={url}
-          authToken={authToken}
+          headers={headers}
           searchHighlights={searchHighlights}
           redactionHighlights={redactionHighlights}
           focussedHighlightIndex={focussedHighlightIndex}

@@ -7,7 +7,7 @@ import { PdfTab } from "./PdfTab";
 type PdfTabsProps = {
   tabsState: {
     items: CaseDocumentViewModel[];
-    authToken: undefined | string;
+    headers: HeadersInit;
   };
   handleClosePdf: (caseDocument: { tabSafeId: string }) => void;
   handleLaunchSearchResults: () => void;
@@ -19,7 +19,7 @@ type PdfTabsProps = {
 };
 
 export const PdfTabs: React.FC<PdfTabsProps> = ({
-  tabsState: { items, authToken },
+  tabsState: { items, headers },
   handleClosePdf,
   handleLaunchSearchResults,
   handleAddRedaction,
@@ -38,7 +38,7 @@ export const PdfTabs: React.FC<PdfTabsProps> = ({
           children: (
             <PdfTab
               caseDocumentViewModel={item}
-              authToken={authToken}
+              headers={headers}
               handleLaunchSearchResults={handleLaunchSearchResults}
               handleAddRedaction={handleAddRedaction}
               handleRemoveRedaction={handleRemoveRedaction}

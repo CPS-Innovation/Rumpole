@@ -47,12 +47,14 @@ describe("initiateAndPoll", () => {
   it("can return failed and stop polling if getPipelinePdfResults errors", async () => {
     jest
       .spyOn(api, "initiatePipeline")
-      .mockImplementation((caseId) => Promise.resolve("foo"));
+      .mockImplementation((caseId) =>
+        Promise.resolve({ trackerUrl: "foo", correlationId: "bar" })
+      );
 
     const expectedError = new ApiError("", "", { status: 100, statusText: "" });
     const spy = jest
       .spyOn(api, "getPipelinePdfResults")
-      .mockImplementation((caseId) => Promise.reject(expectedError));
+      .mockImplementation(() => Promise.reject(expectedError));
 
     let results: AsyncPipelineResult<PipelineResults>;
 
@@ -77,7 +79,9 @@ describe("initiateAndPoll", () => {
   it("can return failed and stop polling if getPipelinePdfResults returns failed", async () => {
     jest
       .spyOn(api, "initiatePipeline")
-      .mockImplementation((caseId) => Promise.resolve("foo"));
+      .mockImplementation((caseId) =>
+        Promise.resolve({ trackerUrl: "foo", correlationId: "bar" })
+      );
 
     const spy = jest
       .spyOn(api, "getPipelinePdfResults")
@@ -112,7 +116,9 @@ describe("initiateAndPoll", () => {
   it("can return an immediately available result", async () => {
     jest
       .spyOn(api, "initiatePipeline")
-      .mockImplementation((caseId) => Promise.resolve("foo"));
+      .mockImplementation((caseId) =>
+        Promise.resolve({ trackerUrl: "foo", correlationId: "bar" })
+      );
 
     const expectedResults = {
       transactionId: "",
@@ -122,7 +128,7 @@ describe("initiateAndPoll", () => {
 
     const spy = jest
       .spyOn(api, "getPipelinePdfResults")
-      .mockImplementation((caseId) => Promise.resolve(expectedResults));
+      .mockImplementation(() => Promise.resolve(expectedResults));
 
     let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
@@ -145,7 +151,9 @@ describe("initiateAndPoll", () => {
   it("can poll to retrieve a result", async () => {
     jest
       .spyOn(api, "initiatePipeline")
-      .mockImplementation((caseId) => Promise.resolve("foo"));
+      .mockImplementation((caseId) =>
+        Promise.resolve({ trackerUrl: "foo", correlationId: "bar" })
+      );
 
     const expectedInterimResults = {
       transactionId: "",
@@ -168,7 +176,7 @@ describe("initiateAndPoll", () => {
     let runIndex = 0;
     const spy = jest
       .spyOn(api, "getPipelinePdfResults")
-      .mockImplementation((caseId) => {
+      .mockImplementation(() => {
         if (runIndex === 0) {
           runIndex += 1;
           return Promise.resolve(expectedInterimResults);
