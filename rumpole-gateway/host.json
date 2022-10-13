@@ -18,10 +18,10 @@
     },
     "fileLoggingMode": "always",
     "logLevel": {
-      "default": "Information",
-      "Host.Results": "Error",
+      "default": "Warning",
+      "Host.Results": "Information",
       "Function": "Information",
-      "Host.Aggregator": "Trace"
+      "Host.Aggregator": "Warning"
     }
   }
 }
