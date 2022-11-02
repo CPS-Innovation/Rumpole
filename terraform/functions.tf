@@ -4,7 +4,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
   name                       = "fa-${local.resource_name}-gateway"
   location                   = azurerm_resource_group.rg_rumpole.location
   resource_group_name        = azurerm_resource_group.rg_rumpole.name
-  service_plan_id            = azurerm_app_service_plan.asp_rumpole.id
+  service_plan_id            = azurerm_service_plan.asp_rumpole.id
   storage_account_name       = azurerm_storage_account.sacpsrumpole.name
   storage_account_access_key = azurerm_storage_account.sacpsrumpole.primary_access_key
   functions_extension_version                    = "~4"
