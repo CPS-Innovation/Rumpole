@@ -11,8 +11,8 @@ resource "azurerm_app_service" "as_web_rumpole" {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = azurerm_application_insights.ai_rumpole.instrumentation_key
     "REACT_APP_CLIENT_ID"             = azuread_application.as_web_rumpole.application_id
     "REACT_APP_TENANT_ID"             = data.azurerm_client_config.current.tenant_id
-    "REACT_APP_GATEWAY_BASE_URL"      = "https://${azurerm_function_app.fa_rumpole.name}.azurewebsites.net"
-    "REACT_APP_GATEWAY_SCOPE"         = "https://CPSGOVUK.onmicrosoft.com/${azurerm_function_app.fa_rumpole.name}/user_impersonation"
+    "REACT_APP_GATEWAY_BASE_URL"      = "https://${azurerm_linux_function_app.fa_rumpole.name}.azurewebsites.net"
+    "REACT_APP_GATEWAY_SCOPE"         = "https://CPSGOVUK.onmicrosoft.com/${azurerm_linux_function_app.fa_rumpole.name}/user_impersonation"
   }
 
   site_config {
