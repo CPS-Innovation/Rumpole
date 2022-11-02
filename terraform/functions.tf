@@ -40,6 +40,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
     "CallingAppValidScopes"                          = var.rumpole_webapp_details.valid_scopes
 	"CallingAppValidRoles"                           = var.rumpole_webapp_details.valid_roles
   }
+	
   site_config {
     always_on        = true
     ip_restriction   = []
@@ -55,6 +56,18 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
 
   identity {
     type = "SystemAssigned"
+  }
+	
+  auth_settings {
+    enabled                       = true
+    issuer                        = "https://sts.windows.net/${data.azurerm_client_config.current.tenant_id}/"
+    unauthenticated_client_action = "RedirectToLoginPage"
+    default_provider              = "AzureActiveDirectory"
+    active_directory {
+      client_id                  = azuread_application.fa_rumpole.application_id
+      client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+      allowed_audiences          = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
+      }
   }
 
   lifecycle {
