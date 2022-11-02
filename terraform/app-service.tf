@@ -4,7 +4,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
   name                = "as-web-${local.resource_name}"
   location            = azurerm_resource_group.rg_rumpole.location
   resource_group_name = azurerm_resource_group.rg_rumpole.name
-  app_service_plan_id = azurerm_app_service_plan.asp_rumpole.id
+  app_service_plan_id = azurerm_service_plan.asp_rumpole.id
   https_only          = true
 
   app_settings = {
