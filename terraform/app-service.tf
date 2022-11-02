@@ -24,7 +24,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
     environment = var.environment_tag
   }
 
-  auth_settings {
+  /*auth_settings {
     enabled                       = true
     issuer                        = "https://sts.windows.net/${data.azurerm_client_config.current.tenant_id}/"
     
@@ -37,9 +37,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
       client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
       allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
     }
-  }
-
-
+  }*/
 }
 
 resource "azuread_application" "as_web_rumpole" {
