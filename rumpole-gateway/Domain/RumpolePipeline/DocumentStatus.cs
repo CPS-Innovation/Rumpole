@@ -8,7 +8,12 @@
 		NotFoundInCDE,
 		UnableToConvertToPdf,
 		UnexpectedFailure,
-		OcrAndIndexFailure
+		OcrAndIndexFailure,
+		DocumentEvaluated,
+		DocumentRemovedFromSearchIndex,
+		UnexpectedSearchIndexRemovalFailure,
+		SearchIndexUpdateFailure,
+		UnableToEvaluateDocument
 	}
 }
 
