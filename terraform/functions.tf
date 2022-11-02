@@ -1,14 +1,13 @@
 #################### Functions ####################
 
-resource "azurerm_function_app" "fa_rumpole" {
+resource "azurerm_linux_function_app" "fa_rumpole" {
   name                       = "fa-${local.resource_name}-gateway"
   location                   = azurerm_resource_group.rg_rumpole.location
   resource_group_name        = azurerm_resource_group.rg_rumpole.name
-  app_service_plan_id        = azurerm_app_service_plan.asp_rumpole.id
+  service_plan_id            = azurerm_app_service_plan.asp_rumpole.id
   storage_account_name       = azurerm_storage_account.sacpsrumpole.name
   storage_account_access_key = azurerm_storage_account.sacpsrumpole.primary_access_key
-  os_type                    = "linux"
-  version                    = "~4"
+  functions_extension_version                    = "~4"
   app_settings = {
     "AzureWebJobsStorage"                            = azurerm_storage_account.sacpsrumpole.primary_connection_string
     "FUNCTIONS_WORKER_RUNTIME"                       = "dotnet"
@@ -65,9 +64,10 @@ resource "azurerm_function_app" "fa_rumpole" {
     unauthenticated_client_action = "RedirectToLoginPage"
     default_provider              = "AzureActiveDirectory"
     active_directory {
-      client_id         = azuread_application.fa_rumpole.application_id
-      client_secret     = azuread_application_password.faap_rumpole_app_service.value
-      allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
+      client_id                  = azuread_application.fa_rumpole.application_id
+      client_secret              = azuread_application_password.faap_rumpole_app_service.value
+      client_secret_setting_name = ""
+      allowed_audiences          = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
       }
   }
   
