@@ -4,7 +4,7 @@ resource "azurerm_app_service_plan" "asp_rumpole" {
   name                = "asp-${local.resource_name}"
   location            = azurerm_resource_group.rg_rumpole.location
   resource_group_name = azurerm_resource_group.rg_rumpole.name
-  kind                = "Linux"
+  os_type             = "Linux"
   reserved            = true
 
   sku {
