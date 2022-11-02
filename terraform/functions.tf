@@ -43,7 +43,6 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
   site_config {
     always_on        = true
     ip_restriction   = []
-    linux_fx_version = "DOTNET|6.0"
     cors {
       allowed_origins     = ["https://as-web-${local.resource_name}.azurewebsites.net", var.env == "dev" ? "http://localhost:3000" : ""]
       support_credentials = true
