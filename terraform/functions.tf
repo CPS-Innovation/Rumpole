@@ -69,8 +69,9 @@ resource "azurerm_function_app" "fa_rumpole" {
       client_secret     = azuread_application_password.faap_rumpole_app_service.value
       client_secret_setting_name = ""
       allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
+      }
   }
-	
+  
   lifecycle {
     ignore_changes = [
       app_settings["WEBSITES_ENABLE_APP_SERVICE_STORAGE"],
