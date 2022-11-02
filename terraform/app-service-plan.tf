@@ -1,16 +1,13 @@
 #################### App Service Plan ####################
 
-resource "azurerm_app_service_plan" "asp_rumpole" {
+resource "azurerm_service_plan" "asp_rumpole" {
   name                = "asp-${local.resource_name}"
   location            = azurerm_resource_group.rg_rumpole.location
   resource_group_name = azurerm_resource_group.rg_rumpole.name
-  kind                = "Linux"
+  os_type             = "Linux"
   reserved            = true
+  sku_name            = var.app_service_plan_sku.size
 
-  sku {
-    tier = var.app_service_plan_sku.tier
-    size = var.app_service_plan_sku.size
-  }
   tags = {
     environment = var.environment_tag
   }
