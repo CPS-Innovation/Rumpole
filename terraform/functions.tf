@@ -58,7 +58,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
     type = "SystemAssigned"
   }
 	
-  auth_settings {
+  /*auth_settings {
     enabled                       = true
     issuer                        = "https://sts.windows.net/${data.azurerm_client_config.current.tenant_id}/"
     unauthenticated_client_action = "RedirectToLoginPage"
@@ -68,7 +68,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
       client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
       allowed_audiences          = ["https://CPSGOVUK.onmicrosoft.com/fa-${local.resource_name}-gateway"]
       }
-  }
+  }*/
 
   lifecycle {
     ignore_changes = [
