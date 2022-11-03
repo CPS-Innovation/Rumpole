@@ -54,7 +54,7 @@ resource "azuread_application" "as_web_rumpole" {
       access_token_issuance_enabled = true
       //id_token_issuance_enabled     = true
     }
-    redirect_uris = var.env == "dev" ? ["https://getpostman.com/oauth2/callback/"] : [""]
+    redirect_uris = var.env == "dev" ? ["https://getpostman.com/oauth2/callback"] : [""]
   }
 
   required_resource_access {
