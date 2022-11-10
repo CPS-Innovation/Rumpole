@@ -186,5 +186,5 @@ resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
 resource "azuread_application_pre_authorized" "fapre_core_data_api" {
   application_object_id = var.core_data_api_details.api_id
   authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
-  permission_ids        = var.core_data_api_details.case_confirm_scope_id
+  permission_ids        = []var.core_data_api_details.case_confirm_scope_id]
 }
