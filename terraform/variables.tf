@@ -23,8 +23,10 @@ variable "app_service_plan_sku" {
 
 variable "core_data_api_details" {
   type = object({
+    api_id = string
     api_url = string
     api_scope = string
+    case_confirm_scope_id = string
   })
 }
 

@@ -20,6 +20,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
     "OnBehalfOfTokenClientSecret"                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.kvs_fa_rumpole_client_secret.id})"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE"            = ""
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                = ""
+    "CoreDataAppId"                                  = var.core_data_api_details.api_id,
     "CoreDataApiUrl"                                 = var.core_data_api_details.api_url
     "CoreDataApiScope"                               = var.core_data_api_details.api_scope
     "RumpolePipelineCoordinatorBaseUrl"              = "https://fa-rumpole-pipeline${local.env_name_suffix}-coordinator.azurewebsites.net/api/"
@@ -180,4 +181,10 @@ resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
   application_object_id = data.azuread_application.fa_pipeline_pdf_generator.object_id
   authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
   permission_ids        = [data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]]
+}
+
+resource "azuread_application_pre_authorized" "fapre_core_data_api" {
+  application_object_id = var.core_data_api_details.api_id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  permission_ids        = var.core_data_api_details.case_confirm_scope_id
 }

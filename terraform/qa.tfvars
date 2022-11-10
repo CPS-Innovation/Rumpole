@@ -15,6 +15,8 @@ rumpole_webapp_details = {
 }
 
 core_data_api_details = {
+    api_id = "5f1f433a-41b3-45d3-895e-927f50232a47"
     api_url = "https://core-data.dev.cpsdigital.co.uk/graphql"
     api_scope = "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm"
+    case_confirm_scope_id = "0b26cc45-00d5-403f-9534-0044267c41de"
 }
