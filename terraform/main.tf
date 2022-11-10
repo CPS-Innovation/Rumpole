@@ -5,7 +5,14 @@ terraform {
     key                  = "__terraform_key__"
     access_key           = "__storage_key__"
   }
-  
+
+  /*backend "azurerm" {
+    resource_group_name  = "rg-terraform"
+    storage_account_name = "cpsdevstorageterraform"
+    container_name       = "terraform-rumpole"
+    key                  = "terraform.tfstate"
+  }*/
+   
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"

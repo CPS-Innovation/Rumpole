@@ -78,6 +78,10 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
   }
 }
 
+resource "azuread_application" "fa_rumpole_gateway" {
+  display_name = "fa-${local.resource_name}-gateway"
+}
+
 module "azurerm_app_reg_fa_rumpole" {
   source  = "./modules/terraform-azurerm-azuread-app-registration"
   display_name = "fa-${local.resource_name}-gateway"
