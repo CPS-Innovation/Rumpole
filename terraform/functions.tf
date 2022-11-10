@@ -154,7 +154,7 @@ resource "azuread_service_principal_password" "sp_rumpole_gateway_pw" {
 }
 
 resource "azuread_app_role_assignment" "azurerm_sp_rumpole_gateway_role" {
-  app_role_id         = azuread_service_principal.sp_rumpole_gateway.oauth2_permission_scope_ids["user_impersonation"]
+  app_role_id         = module.azurerm_service_principal_sp_rumpole_gateway.oauth2_permission_scope_ids["user_impersonation"]
   principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
   resource_object_id  = module.azurerm_service_principal_sp_rumpole_gateway.object_id
 }
