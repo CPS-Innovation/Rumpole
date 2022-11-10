@@ -93,7 +93,7 @@ module "azurerm_app_reg_fa_rumpole" {
       admin_consent_description  = "Allow the calling application to make requests of the ${local.resource_name} Gateway"
       admin_consent_display_name = "Call the ${local.resource_name} Gateway"
       id                         = element(random_uuid.random_id[*].result, 0)
-      type                       = "Admin"
+      type                       = "User"
       user_consent_description   = "Interact with the ${local.resource_name} Gateway on-behalf of the calling user"
       user_consent_display_name  = "Interact with the ${local.resource_name} Gateway"
       value                      = "user_impersonation"
