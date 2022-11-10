@@ -16,7 +16,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
     "StorageConnectionAppSetting"                    = azurerm_storage_account.sacpsrumpole.primary_connection_string
     "APPINSIGHTS_INSTRUMENTATIONKEY"                 = azurerm_application_insights.ai_rumpole.instrumentation_key
     "OnBehalfOfTokenTenantId"                        = data.azurerm_client_config.current.tenant_id
-    "OnBehalfOfTokenClientId"                        = azuread_application.fa_rumpole.application_id
+    "OnBehalfOfTokenClientId"                        = module.azurerm_app_reg_fa_rumpole.client_id
     "OnBehalfOfTokenClientSecret"                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.kvs_fa_rumpole_client_secret.id})"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE"            = ""
     "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                = ""
