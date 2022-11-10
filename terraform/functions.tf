@@ -111,19 +111,19 @@ module "azurerm_app_reg_fa_rumpole" {
     },
     {
       # Coordinator
-      resource_app_id = data.azurerm_linux_function_app.fa_pipeline_coordinator.id
+      resource_app_id = data.azuread_application.fa_pipeline_coordinator.id
       resource_access = [{
         # User Impersonation Scope
-        id   = data.azurerm_linux_function_app.fa_pipeline_coordinator.auth_settings.microsoft.oauth_scopes["user_impersonation"]
+        id   = data.azuread_application.fa_pipeline_coordinator.oauth2_permission_scope_ids["user_impersonation"]
         type = "Scope"
       }]
     },
     {
       # Pdf Generator
-      resource_app_id = data.azurerm_windows_function_app.fa_pipeline_pdf_generator.id
+      resource_app_id = data.azuread_application.fa_pipeline_pdf_generator.id
       resource_access = [{
         # User Impersonation Scope
-        id   = data.azurerm_windows_function_app.fa_pipeline_pdf_generator.auth_settings.microsoft.oauth_scopes["user_impersonation"]
+        id   = data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]
         type = "Scope"
       }]
     }]
