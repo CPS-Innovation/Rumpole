@@ -142,13 +142,20 @@ resource "azuread_application_password" "faap_rumpole_app_service" {
   end_date_relative     = "17520h"
 }
 
-resource "azuread_service_principal" "sp_rumpole_gateway" {
-  application_id               = module.azurerm_app_reg_fa_rumpole.client_id
+module "azurerm_service_principal_sp_rumpole_gateway" {
+  source         = "./modules/terraform-azurerm-azuread_service_principal"
+  application_id = module.azurerm_app_reg_fa_rumpole.client_id
   app_role_assignment_required = false
+  owners         = [data.azurerm_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "sp_rumpole_gateway_pw" {
   service_principal_id = azuread_service_principal.sp_rumpole_gateway.object_id
+}
+
+resource "azuread_app_role_assignment" "sp_rumpole_gate_role" {
+  app_role_id         = azuread_service_principal.sp_rumpole_gateway.oauth2_permission_scope_ids["user_impersonation"]
+  resource_object_id  = azuread_service_principal.sp_rumpole_gateway.object_id
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_coordinator" {
