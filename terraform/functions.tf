@@ -150,12 +150,13 @@ module "azurerm_service_principal_sp_rumpole_gateway" {
 }
 
 resource "azuread_service_principal_password" "sp_rumpole_gateway_pw" {
-  service_principal_id = azuread_service_principal.sp_rumpole_gateway.object_id
+  service_principal_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
 }
 
-resource "azuread_app_role_assignment" "sp_rumpole_gate_role" {
+resource "azuread_app_role_assignment" "azurerm_sp_rumpole_gateway_role" {
   app_role_id         = azuread_service_principal.sp_rumpole_gateway.oauth2_permission_scope_ids["user_impersonation"]
-  resource_object_id  = azuread_service_principal.sp_rumpole_gateway.object_id
+  principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
+  resource_object_id  = module.azurerm_service_principal_sp_rumpole_gateway.object_id
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_coordinator" {
