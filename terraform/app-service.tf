@@ -67,16 +67,13 @@ resource "azuread_application" "as_web_rumpole" {
   }
 
   required_resource_access {
-    resource_app_id = azuread_application.fa_rumpole.application_id
+    resource_app_id = module.azurerm_app_reg_fa_rumpole.client_id
 
     resource_access {
-      id   = azuread_application.fa_rumpole.oauth2_permission_scope_ids["user_impersonation"]
+      id   = module.azurerm_app_reg_fa_rumpole.oauth2_permission_scope_ids["user_impersonation"]
       type = "Scope"
     }
   }
-  depends_on = [
-    azuread_application.fa_rumpole
-  ]
 }
 
 
