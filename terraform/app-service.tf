@@ -76,7 +76,6 @@ resource "azuread_application" "as_web_rumpole" {
   }
 }
 
-
 resource "azuread_application_password" "asap_web_rumpole_app_service" {
   application_object_id = azuread_application.as_web_rumpole.id
   end_date_relative     = "17520h"

@@ -140,3 +140,9 @@ resource "azuread_application_password" "faap_rumpole_app_service" {
   application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
   end_date_relative     = "17520h"
 }
+
+resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
+  application_object_id = data.azuread_application.fa_pipeline_pdf_generator.id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  permission_ids        = [data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]]
+}
