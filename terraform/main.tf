@@ -5,12 +5,22 @@ terraform {
     key                  = "__terraform_key__"
     access_key           = "__storage_key__"
   }
+  
   required_providers {
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 2.15.0"
+    }
     azurerm = {
-      source = "hashicorp/azurerm"
-      version = "~>3.0"
+      source  = "hashicorp/azurerm"
+      version = "~> 3.30.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.1.0"
     }
   }
+  required_version = ">= 0.13"
 }
 
 provider "azurerm" {
@@ -34,4 +44,9 @@ data "azurerm_subscription" "current" {}
 locals {
   env_name_suffix = "${var.env != "prod" ? "-${var.env}" : ""}"
   resource_name = var.env != "prod" ? "${var.resource_name_prefix}-${var.env}" : var.resource_name_prefix
+  pipeline_resource_name = var.env != "prod" ? "${var.resource_name_prefix}-pipeline-${var.env}" : "${var.resource_name_prefix}-pipeline" 
+}
+
+resource "random_uuid" "random_id" {
+  count = 1
 }
