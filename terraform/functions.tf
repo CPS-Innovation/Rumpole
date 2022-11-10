@@ -136,6 +136,11 @@ module "azurerm_app_reg_fa_rumpole" {
   tags = [var.environment_tag, "terraform"]
 }
 
+module "azurerm_service_principal_fa_rumpole_gateway" {
+  source         = "./modules/terraform-azurerm-azuread_service_principal"
+  application_id = module.azurerm_app_reg_fa_rumpole.client_id
+}
+
 resource "azuread_application_password" "faap_rumpole_app_service" {
   application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
   end_date_relative     = "17520h"
