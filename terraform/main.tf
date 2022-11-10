@@ -38,16 +38,6 @@ provider "azurerm" {
   }
 }
 
-data "azurerm_client_config" "current" {}
-
-data "azuread_service_principal" "terraform_service_principal" {
-  application_id = "__terraform_service_principal_app_id__"
-  // application_id = "ab6f55a4-543f-4f76-bf0a-13bdbd6c324b" // Dev 
-  // application_id = "b92f19b6-be30-4292-9763-d4b3340a8a64" // uat
-}
-
-data "azurerm_subscription" "current" {}
-
 locals {
   env_name_suffix = "${var.env != "prod" ? "-${var.env}" : ""}"
   resource_name = var.env != "prod" ? "${var.resource_name_prefix}-${var.env}" : var.resource_name_prefix
@@ -56,4 +46,9 @@ locals {
 
 resource "random_uuid" "random_id" {
   count = 1
+}
+
+resource "azuread_service_principal" "msgraph" {
+  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing   = true
 }

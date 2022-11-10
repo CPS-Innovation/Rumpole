@@ -80,4 +80,21 @@ resource "azuread_application_password" "asap_web_rumpole_app_service" {
   application_object_id = azuread_application.as_web_rumpole.id
   end_date_relative     = "17520h"
 }
+
+module "azurerm_service_principal_sp_rumpole_web" {
+  source         = "./modules/terraform-azurerm-azuread_service_principal"
+  application_id = azuread_application.as_web_rumpole.application_id
+  app_role_assignment_required = false
+  owners         = [data.azurerm_client_config.current.object_id]
+}
+
+resource "azuread_service_principal_password" "sp_rumpole_web_pw" {
+  service_principal_id = module.azurerm_service_principal_sp_rumpole_web.object_id
+}
+
+resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_grant_access_to_rumpole_gateway" {
+  service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_web.object_id
+  resource_service_principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
+  claim_values                         = ["user_impersonation"]
+}
  

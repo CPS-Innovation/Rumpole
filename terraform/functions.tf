@@ -159,13 +159,6 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway
   claim_values                         = ["user_impersonation"]
 }
 
-data "azuread_application_published_app_ids" "well_known" {}
-
-resource "azuread_service_principal" "msgraph" {
-  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
-  use_existing   = true
-}
-
 resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway_grant_access_to_msgraph" {
   service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_gateway.object_id
   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
