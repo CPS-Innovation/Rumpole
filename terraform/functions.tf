@@ -93,7 +93,7 @@ module "azurerm_app_reg_fa_rumpole" {
       admin_consent_description  = "Allow the calling application to make requests of the ${local.resource_name} Gateway"
       admin_consent_display_name = "Call the ${local.resource_name} Gateway"
       id                         = element(random_uuid.random_id[*].result, 0)
-      type                       = "User"
+      type                       = "Admin"
       user_consent_description   = "Interact with the ${local.resource_name} Gateway on-behalf of the calling user"
       user_consent_display_name  = "Interact with the ${local.resource_name} Gateway"
       value                      = "user_impersonation"
@@ -172,13 +172,13 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_coordinator" {
-  application_object_id = data.azuread_application.fa_pipeline_coordinator.id
-  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  application_object_id = module.azurerm_app_reg_fa_rumpole.client_id
+  authorized_app_id     = data.azuread_application.fa_pipeline_coordinator.id
   permission_ids        = [data.azuread_application.fa_pipeline_coordinator.oauth2_permission_scope_ids["user_impersonation"]]
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
-  application_object_id = data.azuread_application.fa_pipeline_pdf_generator.id
-  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  application_object_id = module.azurerm_app_reg_fa_rumpole.client_id
+  authorized_app_id     = data.azuread_application.fa_pipeline_pdf_generator.id
   permission_ids        = [data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]]
 }

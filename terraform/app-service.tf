@@ -92,9 +92,21 @@ resource "azuread_service_principal_password" "sp_rumpole_web_pw" {
   service_principal_id = module.azurerm_service_principal_sp_rumpole_web.object_id
 }
 
+resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_grant_access_to_msgraph" {
+  service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_web.object_id
+  resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
+  claim_values                         = ["User.Read"]
+}
+
 resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_grant_access_to_rumpole_gateway" {
   service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_web.object_id
   resource_service_principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
   claim_values                         = ["user_impersonation"]
+}
+
+resource "azuread_application_pre_authorized" "fapre_rumpole_web" {
+  application_object_id = module.azurerm_service_principal_sp_rumpole_web.object_id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  permission_ids        = [module.azurerm_service_principal_sp_rumpole_web.oauth2_permission_scope_ids["user_impersonation"]]
 }
  
