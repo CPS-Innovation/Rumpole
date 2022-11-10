@@ -9,7 +9,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
 
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"  = azurerm_application_insights.ai_rumpole.instrumentation_key
-    "REACT_APP_CLIENT_ID"             = azuread_application.as_web_rumpole.application_id
+    "REACT_APP_CLIENT_ID"             = module.azurerm_app_reg_as_web_rumpole.client_id
     "REACT_APP_TENANT_ID"             = data.azurerm_client_config.current.tenant_id
     "REACT_APP_GATEWAY_BASE_URL"      = "https://${azurerm_linux_function_app.fa_rumpole.name}.azurewebsites.net"
     "REACT_APP_GATEWAY_SCOPE"         = "https://CPSGOVUK.onmicrosoft.com/${azurerm_linux_function_app.fa_rumpole.name}/user_impersonation"
@@ -40,50 +40,49 @@ resource "azurerm_app_service" "as_web_rumpole" {
   }*/
 }
 
-resource "azuread_application" "as_web_rumpole" {
-  display_name    = "as-web-${local.resource_name}"
+module "azurerm_app_reg_as_web_rumpole" {
+  source  = "./modules/terraform-azurerm-azuread-app-registration"
+  display_name = "as-web-${local.resource_name}"
   identifier_uris = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
   owners          = [data.azuread_service_principal.terraform_service_principal.object_id]
-
-  single_page_application {
+  prevent_duplicate_names = true
+  #use this code for adding api permissions
+  required_resource_access = [{
+      # Microsoft Graph
+      resource_app_id = "00000003-0000-0000-c000-000000000000"
+      resource_access = [{
+        id   = "311a71cc-e848-46a1-bdf8-97ff7156d8e6" # read user
+        type = "Scope"
+      }]
+    },
+    {
+      resource_app_id = module.azurerm_app_reg_fa_rumpole.client_id
+      resource_access = [{
+        id   = module.azurerm_app_reg_fa_rumpole.oauth2_permission_scope_ids["user_impersonation"]
+        type = "Scope"
+      }]
+    }]
+  single_page_application = {
     redirect_uris = var.env == "dev" ? ["https://as-web-${local.resource_name}.azurewebsites.net/", "http://localhost:3000/"] : ["https://as-web-${local.resource_name}.azurewebsites.net/"]
   }
-  web {
+  web = {
     homepage_url  = "https://as-web-${local.resource_name}.azurewebsites.net"
-    implicit_grant {
-      access_token_issuance_enabled = true
-      //id_token_issuance_enabled     = true
-    }
     redirect_uris = var.env == "dev" ? ["https://getpostman.com/oauth2/callback"] : [""]
-  }
-
-  required_resource_access {
-    resource_app_id = "00000002-0000-0000-c000-000000000000" # Azure AD Graph 
-
-    resource_access {
-      id   = "311a71cc-e848-46a1-bdf8-97ff7156d8e6" # read user
-      type = "Scope"
+    implicit_grant = {
+      access_token_issuance_enabled = true
     }
   }
-
-  required_resource_access {
-    resource_app_id = module.azurerm_app_reg_fa_rumpole.client_id
-
-    resource_access {
-      id   = module.azurerm_app_reg_fa_rumpole.oauth2_permission_scope_ids["user_impersonation"]
-      type = "Scope"
-    }
-  }
+  tags = ["fa-${local.resource_name}-pdf-generator", "terraform"]
 }
 
 resource "azuread_application_password" "asap_web_rumpole_app_service" {
-  application_object_id = azuread_application.as_web_rumpole.id
+  application_object_id = module.azurerm_app_reg_as_web_rumpole.object_id
   end_date_relative     = "17520h"
 }
 
 module "azurerm_service_principal_sp_rumpole_web" {
   source         = "./modules/terraform-azurerm-azuread_service_principal"
-  application_id = azuread_application.as_web_rumpole.application_id
+  application_id = module.azurerm_app_reg_as_web_rumpole.client_id
   app_role_assignment_required = false
   owners         = [data.azurerm_client_config.current.object_id]
 }
@@ -105,8 +104,8 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_gra
 }
 
 resource "azuread_application_pre_authorized" "fapre_rumpole_web" {
-  application_object_id = module.azurerm_service_principal_sp_rumpole_web.object_id
+  application_object_id = module.azurerm_app_reg_as_web_rumpole.object_id
   authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
-  permission_ids        = [module.azurerm_service_principal_sp_rumpole_web.oauth2_permission_scope_ids["user_impersonation"]]
+  permission_ids        = [module.azurerm_app_reg_as_web_rumpole.oauth2_permission_scope_ids["user_impersonation"]]
 }
  
