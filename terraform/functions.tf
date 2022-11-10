@@ -153,9 +153,15 @@ resource "azuread_service_principal_password" "sp_rumpole_gateway_pw" {
   service_principal_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
 }
 
-resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway_grant_access" {
-  service_principal_object_id          = module.azurerm_app_reg_fa_rumpole.object_id
-  resource_service_principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
+resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway_grant_access_to_coordinator" {
+  service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_gateway.object_id
+  resource_service_principal_object_id = data.azuread_service_principal.fa_pipeline_coordinator_service_principal.object_id
+  claim_values                         = ["user_impersonation"]
+}
+
+resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway_grant_access_to_pdf_generator" {
+  service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_gateway.object_id
+  resource_service_principal_object_id = data.azuread_service_principal.fa_pdf_generator_service_principal.object_id
   claim_values                         = ["user_impersonation"]
 }
 

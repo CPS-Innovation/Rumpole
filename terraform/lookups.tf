@@ -20,3 +20,11 @@ data "azurerm_search_service" "pipeline_ss" {
   name                = "ss-${local.pipeline_resource_name}"
   resource_group_name = "rg-${local.pipeline_resource_name}"
 }
+
+data "azuread_service_principal" "fa_pipeline_coordinator_service_principal" {
+  application_id = data.azuread_application.fa_pipeline_coordinator.application_id
+}
+
+data "azuread_service_principal" "fa_pdf_generator_service_principal" {
+  application_id = data.azuread_application.fa_pipeline_pdf_generator.application_id
+}
