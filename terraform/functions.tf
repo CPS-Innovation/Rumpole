@@ -93,7 +93,7 @@ module "azurerm_app_reg_fa_rumpole" {
       admin_consent_description  = "Allow the calling application to make requests of the ${local.resource_name} Gateway"
       admin_consent_display_name = "Call the ${local.resource_name} Gateway"
       id                         = element(random_uuid.random_id[*].result, 0)
-      type                       = "User"
+      type                       = "Admin"
       user_consent_description   = "Interact with the ${local.resource_name} Gateway on-behalf of the calling user"
       user_consent_display_name  = "Interact with the ${local.resource_name} Gateway"
       value                      = "user_impersonation"
@@ -130,20 +130,25 @@ module "azurerm_app_reg_fa_rumpole" {
   web = {
     redirect_uris = ["https://fa-${local.resource_name}-gateway.azurewebsites.net/.auth/login/aad/callback"]
     implicit_grant = {
+      access_token_issuance_enabled = true
       id_token_issuance_enabled     = true
     }
   }
   tags = [var.environment_tag, "terraform"]
 }
 
-module "azurerm_service_principal_fa_rumpole_gateway" {
-  source         = "./modules/terraform-azurerm-azuread_service_principal"
-  application_id = module.azurerm_app_reg_fa_rumpole.client_id
-}
-
 resource "azuread_application_password" "faap_rumpole_app_service" {
   application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
   end_date_relative     = "17520h"
+}
+
+resource "azuread_service_principal" "sp_rumpole_gateway" {
+  application_id               = module.azurerm_app_reg_fa_rumpole.client_id
+  app_role_assignment_required = false
+}
+
+resource "azuread_service_principal_password" "sp_rumpole_gateway_pw" {
+  service_principal_id = azuread_service_principal.sp_rumpole_gateway.object_id
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_coordinator" {
