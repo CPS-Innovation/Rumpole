@@ -137,9 +137,6 @@ module "azurerm_app_reg_fa_rumpole" {
 }
 
 resource "azuread_application_password" "faap_rumpole_app_service" {
-  application_object_id = azuread_application.fa_rumpole.id
+  application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
   end_date_relative     = "17520h"
-  depends_on = [
-    azuread_application.fa_rumpole
-  ]
 }
