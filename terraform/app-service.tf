@@ -104,8 +104,8 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_gra
 }
 
 resource "azuread_application_pre_authorized" "fapre_rumpole_web" {
-  application_object_id = module.azurerm_app_reg_as_web_rumpole.object_id
-  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
+  authorized_app_id     = module.azurerm_app_reg_as_web_rumpole.client_id
   permission_ids        = [module.azurerm_app_reg_fa_rumpole.oauth2_permission_scope_ids["user_impersonation"]]
 }
  

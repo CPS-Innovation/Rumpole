@@ -172,13 +172,13 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_gateway
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_coordinator" {
-  application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
-  authorized_app_id     = data.azuread_application.fa_pipeline_coordinator.id
+  application_object_id = data.azuread_application.fa_pipeline_coordinator.object_id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
   permission_ids        = [data.azuread_application.fa_pipeline_coordinator.oauth2_permission_scope_ids["user_impersonation"]]
 }
 
 resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
-  application_object_id = module.azurerm_app_reg_fa_rumpole.object_id
-  authorized_app_id     = data.azuread_application.fa_pipeline_pdf_generator.id
+  application_object_id = data.azuread_application.fa_pipeline_pdf_generator.object_id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
   permission_ids        = [data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]]
 }
