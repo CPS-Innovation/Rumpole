@@ -197,7 +197,7 @@ data "azurerm_storage_container" "pipeline_storage_container" {
 }
 
 resource "azurerm_role_assignment" "ra_blob_data_reader" {
-  scope                = azurerm_storage_container.pipeline_storage_container.resource_manager_id
+  scope                = data.azurerm_storage_container.pipeline_storage_container.resource_manager_id
   role_definition_name = "Storage Blob Data Reader"
   principal_id         = module.azurerm_service_principal_sp_rumpole_gateway.object_id
 }
