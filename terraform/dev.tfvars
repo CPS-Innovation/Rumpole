@@ -18,5 +18,5 @@ core_data_api_details = {
     api_id = "cf7e64d9-928d-4cab-a957-3bb64f5ea733"
     api_url = "https://core-data.dev.cpsdigital.co.uk/graphql"
     api_scope = "api://5f1f433a-41b3-45d3-895e-927f50232a47/case.confirm"
-    case_confirm_scope_id = "0b26cc45-00d5-403f-9534-0044267c41de"
+    case_confirm_user_impersonation_id = "0b26cc45-00d5-403f-9534-0044267c41de"
 }
