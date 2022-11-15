@@ -1,9 +1,9 @@
 data "azuread_application" "fa_pipeline_coordinator" {
-  display_name        = "fa-${local.pipeline_resource_name}-coordinator"
+  display_name        = "fa-${local.pipeline_resource_name}-coordinator-appreg"
 }
 
 data "azuread_application" "fa_pipeline_pdf_generator" {
-  display_name        = "fa-${local.pipeline_resource_name}-pdf-generator"
+  display_name        = "fa-${local.pipeline_resource_name}-pdf-generator-appreg"
 }
 
 data "azurerm_function_app_host_keys" "fa_pipeline_coordinator_host_keys" {
