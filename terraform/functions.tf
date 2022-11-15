@@ -188,16 +188,3 @@ resource "azuread_application_pre_authorized" "fapre_core_data_api" {
   authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
   permission_ids        = [var.core_data_api_details.case_confirm_user_impersonation_id]
 }
-
-#also set the gateway sp as a Storage Blob Data Reader to the Pipeline's Storage Container 
-
-data "azurerm_storage_container" "pipeline_storage_container" {
-  name                  = "documents"
-  storage_account_name  = "sacps${var.env != "prod" ? var.env : ""}rumpolepipeline"
-}
-
-resource "azurerm_role_assignment" "ra_blob_data_reader" {
-  scope                = data.azurerm_storage_container.pipeline_storage_container.resource_manager_id
-  role_definition_name = "Storage Blob Data Reader"
-  principal_id         = module.azurerm_service_principal_sp_rumpole_gateway.object_id
-}
