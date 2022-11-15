@@ -42,7 +42,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
 
 module "azurerm_app_reg_as_web_rumpole" {
   source  = "./modules/terraform-azurerm-azuread-app-registration"
-  display_name = "as-web-${local.resource_name}"
+  display_name = "as-web-${local.resource_name}-appreg"
   identifier_uris = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
   owners          = [data.azuread_service_principal.terraform_service_principal.object_id]
   prevent_duplicate_names = true
