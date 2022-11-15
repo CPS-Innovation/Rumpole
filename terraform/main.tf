@@ -8,7 +8,7 @@ terraform {
 
   /*backend "azurerm" {
     resource_group_name  = "rg-terraform"
-    storage_account_name = "cpsdevstorageterraform"
+    storage_account_name = "cpsdevstorageterraform" //DEV
     container_name       = "terraform-rumpole"
     key                  = "terraform.tfstate"
   }*/
@@ -32,9 +32,14 @@ terraform {
 
 provider "azurerm" {
   features {
-    # key_vault {
-    #   purge_soft_delete_on_destroy = true
-    # }
+    key_vault {
+      recover_soft_deleted_key_vaults = true
+      recover_soft_deleted_keys       = true
+      purge_soft_delete_on_destroy    = false
+    }
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
   }
 }
 
