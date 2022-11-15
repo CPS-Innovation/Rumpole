@@ -72,7 +72,7 @@ module "azurerm_app_reg_as_web_rumpole" {
       access_token_issuance_enabled = true
     }
   }
-  tags = ["fa-${local.resource_name}-pdf-generator", "terraform"]
+  tags = ["as-web-${local.resource_name}-appreg", "terraform"]
 }
 
 resource "azuread_application_password" "asap_web_rumpole_app_service" {
@@ -101,6 +101,7 @@ resource "azuread_service_principal_delegated_permission_grant" "rumpole_web_gra
   service_principal_object_id          = module.azurerm_service_principal_sp_rumpole_web.object_id
   resource_service_principal_object_id = module.azurerm_service_principal_sp_rumpole_gateway.object_id
   claim_values                         = ["user_impersonation"]
+  depends_on = [module.azurerm_service_principal_sp_rumpole_gateway]
 }
 
 resource "azuread_application_pre_authorized" "fapre_rumpole_web" {
