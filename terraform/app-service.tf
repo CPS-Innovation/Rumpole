@@ -63,11 +63,11 @@ module "azurerm_app_reg_as_web_rumpole" {
       }]
     }]
   single_page_application = {
-    redirect_uris = var.env == "dev" ? ["https://as-web-${local.resource_name}.azurewebsites.net/", "http://localhost:3000/"] : ["https://as-web-${local.resource_name}.azurewebsites.net/"]
+    redirect_uris = var.env != "prod" ? ["https://as-web-${local.resource_name}.azurewebsites.net/", "http://localhost:3000/"] : ["https://as-web-${local.resource_name}.azurewebsites.net/"]
   }
   web = {
     homepage_url  = "https://as-web-${local.resource_name}.azurewebsites.net"
-    redirect_uris = var.env == "dev" ? ["https://getpostman.com/oauth2/callback"] : [""]
+    redirect_uris = ["https://getpostman.com/oauth2/callback"]
     implicit_grant = {
       access_token_issuance_enabled = true
     }
