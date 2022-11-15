@@ -12,7 +12,7 @@ terraform {
     //storage_account_name = "cpsqastorageterraform" //QA
     container_name       = "terraform-rumpole"
     key                  = "terraform.tfstate"
-    access_key           = "[Manually find]"
+    access_key           = "[Manually Enter]"
   }*/
    
   required_providers {
