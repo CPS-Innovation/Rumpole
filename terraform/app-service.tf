@@ -32,11 +32,11 @@ resource "azurerm_app_service" "as_web_rumpole" {
     # from unauthed users. Also having web auth switched on means that Cypress automation tests don't work.
     unauthenticated_client_action = "AllowAnonymous"
     token_store_enabled           = true
-    active_directory {
+    /*active_directory {
       client_id         = module.azurerm_app_reg_as_web_rumpole.client_id
       client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
       allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
-    }
+    }*/
   }
 }
 
