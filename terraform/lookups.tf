@@ -28,3 +28,8 @@ data "azuread_service_principal" "fa_pipeline_coordinator_service_principal" {
 data "azuread_service_principal" "fa_pdf_generator_service_principal" {
   application_id = data.azuread_application.fa_pipeline_pdf_generator.application_id
 }
+
+data "azurerm_storage_container" "pipeline_storage_container" {
+  name                  = "documents"
+  storage_account_name  = "sacps${var.env != "prod" ? var.env : ""}rumpolepipeline"
+}
