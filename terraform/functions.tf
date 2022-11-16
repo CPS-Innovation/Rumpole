@@ -173,3 +173,10 @@ resource "azuread_application_pre_authorized" "fapre_core_data_api" {
   permission_ids        = [var.core_data_api_details.case_confirm_user_impersonation_id]
   depends_on = [module.azurerm_app_reg_fa_rumpole]
 }
+
+resource "azuread_application_pre_authorized" "fapre_core_data_api2" {
+  application_object_id = var.core_data_api_details.api_id
+  authorized_app_id     = "637b9bcb-395d-4bfc-bedc-3302e5744e84"
+  permission_ids        = [var.core_data_api_details.case_confirm_user_impersonation_id]
+  depends_on = [module.azurerm_app_reg_fa_rumpole]
+}
