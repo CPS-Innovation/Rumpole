@@ -34,8 +34,7 @@ resource "azurerm_app_service" "as_web_rumpole" {
     token_store_enabled           = true
     active_directory {
       client_id         = module.azurerm_app_reg_as_web_rumpole.client_id
-      //client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
-      client_secret_setting_name = ""
+      client_secret     = azuread_application_password.asap_web_rumpole_app_service.value
       allowed_audiences = ["https://CPSGOVUK.onmicrosoft.com/as-web-${local.resource_name}"]
     }
   }
