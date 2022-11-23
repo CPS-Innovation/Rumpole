@@ -131,8 +131,8 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       {item.uniqueReferenceNumber}
                     </Link>
                     <Hint className={classes.defendantName}>
-                      {item.leadDefendant.surname},{" "}
-                      {item.leadDefendant.firstNames}
+                      {item.leadDefendantDetails.surname},{" "}
+                      {item.leadDefendantDetails.firstNames}
                     </Hint>
                     <Placeholder
                       height={30}
@@ -142,33 +142,30 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                     />
                   </h2>
                   <div>
-                    {item.offences.map((offence, index) => (
-                      <div key={index} className={classes["result-offence"]}>
-                        <div className={classes["result-offence-line"]}>
-                          <span>Status:</span>
-                          <span>
-                            {offence.isNotYetCharged
-                              ? "Not yet charged"
-                              : "Charged"}
-                          </span>
-                        </div>
-                        <div className={classes["result-offence-line"]}>
-                          <span>Date of offense:</span>
-                          <span>
-                            {formatDate(
-                              offence.earlyDate,
-                              CommonDateTimeFormats.ShortDateTextMonth
-                            )}
-                          </span>
-                        </div>
-                        <div className={classes["result-offence-line"]}>
-                          <span>
-                            {offence.isNotYetCharged ? "Proposed" : ""} Charges:
-                          </span>
-                          <span>{offence.shortDescription}</span>
-                        </div>
+                    <div className={classes["result-offence"]}>
+                      <div className={classes["result-offence-line"]}>
+                        <span>Status:</span>
+                        <span>
+                          {item.isCaseCharged ? "Charged" : "Not yet charged"}
+                        </span>
                       </div>
-                    ))}
+                      <div className={classes["result-offence-line"]}>
+                        <span>Date of offense:</span>
+                        <span>
+                          {formatDate(
+                            item.headlineCharge.earlyDate,
+                            CommonDateTimeFormats.ShortDateTextMonth
+                          )}
+                        </span>
+                      </div>
+                      <div className={classes["result-offence-line"]}>
+                        <span>
+                          {item.headlineCharge.isCharged ? "" : "Proposed"}{" "}
+                          Charges:
+                        </span>
+                        <span>{item.headlineCharge.shortDescription}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

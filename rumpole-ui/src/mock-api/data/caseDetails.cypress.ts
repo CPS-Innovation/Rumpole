@@ -8,73 +8,73 @@ const dataSource: CaseDetailsDataSource = (id) =>
 export default dataSource;
 
 const caseDetails: CaseDetails[] = [
-  {
-    id: 13401,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
-      firstNames: "Steve",
-      surname: "Walsh",
-      organisationName: "",
-    },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: false,
-      },
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
-  },
-  {
-    id: 17422,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
-      firstNames: "Steve",
-      surname: "Walsh",
-      organisationName: "",
-    },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
-  },
-  {
-    id: 18443,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
-      firstNames: "Steve",
-      surname: "Walsh",
-      organisationName: "",
-    },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
-  },
+  // {
+  //   id: 13401,
+  //   uniqueReferenceNumber: "",
+  //   leadDefendant: {
+  //     firstNames: "Steve",
+  //     surname: "Walsh",
+  //     organisationName: "",
+  //   },
+  //   offences: [
+  //     {
+  //       earlyDate: "2020-03-01",
+  //       lateDate: "2021-06-30",
+  //       listOrder: 0,
+  //       code: "0",
+  //       shortDescription: faker.lorem.sentence(),
+  //       longDescription: faker.lorem.sentences(),
+  //       isNotYetCharged: false,
+  //     },
+  //     {
+  //       earlyDate: "2020-03-01",
+  //       lateDate: "2021-06-30",
+  //       listOrder: 0,
+  //       code: "0",
+  //       shortDescription: faker.lorem.sentence(),
+  //       longDescription: faker.lorem.sentences(),
+  //       isNotYetCharged: true,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 17422,
+  //   uniqueReferenceNumber: "",
+  //   leadDefendant: {
+  //     firstNames: "Steve",
+  //     surname: "Walsh",
+  //     organisationName: "",
+  //   },
+  //   offences: [
+  //     {
+  //       earlyDate: "2020-03-01",
+  //       lateDate: "2021-06-30",
+  //       listOrder: 0,
+  //       code: "0",
+  //       shortDescription: faker.lorem.sentence(),
+  //       longDescription: faker.lorem.sentences(),
+  //       isNotYetCharged: true,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 18443,
+  //   uniqueReferenceNumber: "",
+  //   leadDefendant: {
+  //     firstNames: "Steve",
+  //     surname: "Walsh",
+  //     organisationName: "",
+  //   },
+  //   offences: [
+  //     {
+  //       earlyDate: "2020-03-01",
+  //       lateDate: "2021-06-30",
+  //       listOrder: 0,
+  //       code: "0",
+  //       shortDescription: faker.lorem.sentence(),
+  //       longDescription: faker.lorem.sentences(),
+  //       isNotYetCharged: true,
+  //     },
+  //   ],
+  // },
 ];

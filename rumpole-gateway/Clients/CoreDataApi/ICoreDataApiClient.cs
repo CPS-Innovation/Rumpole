@@ -10,6 +10,5 @@ namespace RumpoleGateway.Clients.CoreDataApi
         Task<CaseDetails> GetCaseDetailsByIdAsync(string caseId, string accessToken, Guid correlationId);
 
         Task<IList<CaseDetails>> GetCaseInformationByUrnAsync(string urn, string accessToken, Guid correlationId);
-
     }
 }

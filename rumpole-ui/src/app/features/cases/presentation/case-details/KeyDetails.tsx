@@ -11,8 +11,8 @@ export const KeyDetails: React.FC<{ caseDetails: CaseDetails }> = ({
         className={`govuk-heading-m ${classes.defendantName}`}
         data-testid="txt-defendant-name"
       >
-        {caseDetails.leadDefendant.surname},{" "}
-        {caseDetails.leadDefendant.firstNames}
+        {caseDetails.leadDefendantDetails.surname},{" "}
+        {caseDetails.leadDefendantDetails.firstNames}
       </h1>
       <span className="govuk-caption-m" data-testid="txt-case-urn">
         {caseDetails.uniqueReferenceNumber}

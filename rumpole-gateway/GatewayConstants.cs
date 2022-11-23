@@ -29,4 +29,6 @@ public static class AuthenticationKeys
     public const string AzureAuthenticationInstanceUrl = "https://login.microsoftonline.com/";
     public const string AzureAuthenticationAssertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
     public const string Bearer = "Bearer";
+    public const string UpstreamTokenName = "UpstreamToken";
+    public const string FunctioAppApiKey = "FunctioAppApiKey";
 }

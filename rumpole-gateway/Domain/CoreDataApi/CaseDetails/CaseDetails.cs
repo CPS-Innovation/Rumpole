@@ -11,19 +11,14 @@ namespace RumpoleGateway.Domain.CoreDataApi.CaseDetails
         [JsonProperty("uniqueReferenceNumber")]
         public string UniqueReferenceNumber { get; set; }
 
-        [JsonProperty("appealType")]
-        public string AppealType { get; set; }
+        [JsonProperty("isCaseCharged")]
+        public bool IsCaseCharged { get; set; }
 
-        [JsonProperty("caseStatus")]
-        public CaseStatus CaseStatus { get; set; }
+        [JsonProperty("leadDefendantDetails")]
+        public DefendantDetails LeadDefendantDetails { get; set; }
 
-        [JsonProperty("caseType")]
-        public string CaseType { get; set; }
+        [JsonProperty("headlineCharge")]
+        public Charge HeadlineCharge { get; set; }
 
-        [JsonProperty("leadDefendant")]
-        public LeadDefendant LeadDefendant { get; set; }
-
-        [JsonProperty("offences")]
-        public List<Offence> Offences { get; set; }
     }
 }
