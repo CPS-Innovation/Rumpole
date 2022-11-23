@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseDataService;
 using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
 using RumpoleGateway.Factories;
-using RumpoleGateway.Implementations.Tde.Clients;
+using RumpoleGateway.CoreDataImplementations.Tde.Clients;
 using RumpoleGateway.Services;
 
-namespace RumpoleGateway.Implementations.Tde.Services
+namespace RumpoleGateway.CoreDataImplementations.Tde.Services
 {
     public class TdeCaseDataService : ICaseDataService
     {

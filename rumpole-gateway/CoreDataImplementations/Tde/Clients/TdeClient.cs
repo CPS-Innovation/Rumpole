@@ -4,11 +4,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseDataService;
 using RumpoleGateway.Exceptions;
-using RumpoleGateway.Implementations.Tde.Domain;
-using RumpoleGateway.Implementations.Tde.Factories;
+using RumpoleGateway.CoreDataImplementations.Tde.Domain;
+using RumpoleGateway.CoreDataImplementations.Tde.Factories;
 using RumpoleGateway.Wrappers;
 
-namespace RumpoleGateway.Implementations.Tde.Clients
+namespace RumpoleGateway.CoreDataImplementations.Tde.Clients
 {
     public class TdeClient : ITdeClient
     {

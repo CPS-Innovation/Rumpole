@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseDataService;
-using RumpoleGateway.Implementations.Tde.Domain;
+using RumpoleGateway.CoreDataImplementations.Tde.Domain;
 
-namespace RumpoleGateway.Implementations.Tde.Clients
+namespace RumpoleGateway.CoreDataImplementations.Tde.Clients
 {
     public interface ITdeClient
     {

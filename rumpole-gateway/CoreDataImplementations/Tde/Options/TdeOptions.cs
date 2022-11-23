@@ -1,4 +1,4 @@
-namespace RumpoleGateway.Implementations.Tde.Options
+namespace RumpoleGateway.CoreDataImplementations.Tde.Options
 {
     public class TdeOptions
     {

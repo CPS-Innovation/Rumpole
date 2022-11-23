@@ -1,7 +1,7 @@
 using System.Net.Http;
 using RumpoleGateway.Domain.CaseDataService;
 
-namespace RumpoleGateway.Implementations.Tde.Factories
+namespace RumpoleGateway.CoreDataImplementations.Tde.Factories
 {
     public interface ITdeClientRequestFactory
     {

@@ -2,9 +2,9 @@ using System;
 using System.Net.Http;
 using Microsoft.Extensions.Options;
 using RumpoleGateway.Domain.CaseDataService;
-using RumpoleGateway.Implementations.Tde.Options;
+using RumpoleGateway.CoreDataImplementations.Tde.Options;
 
-namespace RumpoleGateway.Implementations.Tde.Factories
+namespace RumpoleGateway.CoreDataImplementations.Tde.Factories
 {
     public class TdeClientRequestFactory : ITdeClientRequestFactory
     {
