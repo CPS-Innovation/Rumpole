@@ -16,7 +16,7 @@ namespace RumpoleGateway.Functions
     {
         private readonly ILogger _logger;
         private readonly IAuthorizationValidator _tokenValidator;
-        
+
         protected BaseRumpoleFunction(ILogger logger, IAuthorizationValidator tokenValidator)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -31,6 +31,8 @@ namespace RumpoleGateway.Functions
             {
                 result.CurrentCorrelationId = EstablishCorrelation(req);
                 result.AccessTokenValue = await AuthenticateRequest(req, result.CurrentCorrelationId);
+                // todo: only TDE-bound requests need to have an upstream token
+                result.UpstreamToken = EstablishUpstreamToken(req);
             }
             catch (CorrelationException correlationException)
             {
@@ -43,6 +45,10 @@ namespace RumpoleGateway.Functions
             catch (CpsAuthorizationException cpsAuthorizationException)
             {
                 result.InvalidResponseResult = AuthorizationErrorResponse(cpsAuthorizationException.Message, result.CurrentCorrelationId, loggingSource);
+            }
+            catch (UpstreamAuthenticationException upstreamAuthenticationException)
+            {
+                result.InvalidResponseResult = UpstreamTokenErrorResponse(upstreamAuthenticationException.Message, result.CurrentCorrelationId, loggingSource);
             }
 
             return result;
@@ -72,6 +78,14 @@ namespace RumpoleGateway.Functions
             return accessTokenValue;
         }
 
+        private static string EstablishUpstreamToken(HttpRequest req)
+        {
+            if (!req.Headers.TryGetValue(AuthenticationKeys.UpstreamTokenName, out var upstreamToken) || string.IsNullOrWhiteSpace(upstreamToken))
+                throw new UpstreamAuthenticationException();
+
+            return upstreamToken;
+        }
+
         private IActionResult AuthenticationErrorResponse(string errorMessage, Guid correlationId, string loggerSource)
         {
             _logger.LogMethodFlow(correlationId, loggerSource, errorMessage);
@@ -82,6 +96,12 @@ namespace RumpoleGateway.Functions
         {
             _logger.LogMethodFlow(correlationId, loggerSource, errorMessage);
             return new UnauthorizedObjectResult(errorMessage);
+        }
+
+        protected IActionResult UpstreamTokenErrorResponse(string errorMessage, Guid correlationId, string loggerSource)
+        {
+            _logger.LogMethodFlow(correlationId, loggerSource, errorMessage);
+            return new BadRequestObjectResult(errorMessage);
         }
 
         protected IActionResult BadRequestErrorResponse(string errorMessage, Guid correlationId, string loggerSource)

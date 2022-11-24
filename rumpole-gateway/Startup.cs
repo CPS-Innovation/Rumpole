@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using RumpoleGateway.Clients.CoreDataApi;
 using RumpoleGateway.Clients.DocumentExtraction;
 using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
@@ -20,13 +19,13 @@ using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Factories;
-using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
-using RumpoleGateway.CoreDataImplementations.Tde.Clients;
-using RumpoleGateway.CoreDataImplementations.Tde.Options;
-using RumpoleGateway.CoreDataImplementations.Tde.Services;
+using RumpoleGateway.CaseDataImplementations.Tde.Clients;
+using RumpoleGateway.CaseDataImplementations.Tde.Options;
+using RumpoleGateway.CaseDataImplementations.Tde.Services;
 using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
 using RumpoleGateway.Wrappers;
+using RumpoleGateway.CaseDataImplementations.Tde.Factories;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 
@@ -37,7 +36,6 @@ namespace RumpoleGateway
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
             var configuration = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
@@ -48,10 +46,7 @@ namespace RumpoleGateway
             {
                 configuration.GetSection("searchClient").Bind(settings);
             });
-
             builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, ConfigurationKeys.CoreDataApiUrl), new NewtonsoftJsonSerializer()));
-            builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
-            builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IAuthorizationValidator, AuthorizationValidator>();
@@ -120,7 +115,7 @@ namespace RumpoleGateway
             builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
             builder.Services.AddTransient<IRedactPdfRequestMapper, RedactPdfRequestMapper>();
 
-            builder.Services.AddTransient<ICaseDataServiceArgFactory, CaseDataServiceArgFactory>();
+            builder.Services.AddTransient<ICaseDataArgFactory, CaseDataArgFactory>();
 
             builder.Services.AddOptions<TdeOptions>().Configure<IConfiguration>((settings, _) =>
             {
@@ -128,14 +123,13 @@ namespace RumpoleGateway
             });
 
             builder.Services.AddTransient<ICaseDataService, TdeCaseDataService>();
-
+            builder.Services.AddTransient<ITdeClientRequestFactory, TdeClientRequestFactory>();
             builder.Services.AddHttpClient<ITdeClient, TdeClient>((client) =>
             {
                 var options = configuration.GetSection("tde").Get<TdeOptions>();
-                client.BaseAddress = new Uri(GetValueFromConfig(configuration, options.BaseUrl));
+                client.BaseAddress = new Uri(options.BaseUrl);
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
-
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)

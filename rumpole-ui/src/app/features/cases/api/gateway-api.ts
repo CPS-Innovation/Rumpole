@@ -23,6 +23,7 @@ export const getCoreHeadersInitObject = async () => {
     Authorization: `Bearer ${
       GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
     }`,
+    "Upstream-Token": "not-implemented-yet", //todo
   };
 };
 
@@ -39,7 +40,7 @@ export const resolvePdfUrl = (blobName: string) =>
 
 export const searchUrn = async (urn: string) => {
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/case-information-by-urn/${urn}`);
+  const path = getFullUrl(`/api/urns/${urn}`);
   const response = await fetch(path, {
     headers,
     method: "GET",

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RumpoleGateway.Domain.CaseDataService;
-using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
+using RumpoleGateway.Domain.CaseData;
+using RumpoleGateway.Domain.CaseData.Args;
 
 namespace RumpoleGateway.Services
 {

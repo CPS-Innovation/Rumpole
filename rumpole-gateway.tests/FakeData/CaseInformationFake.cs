@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using RumpoleGateway.Domain.CoreDataApi.CaseDetails;
+using RumpoleGateway.Domain.CaseData;
 
 namespace RumpoleGateway.Tests.FakeData
 {

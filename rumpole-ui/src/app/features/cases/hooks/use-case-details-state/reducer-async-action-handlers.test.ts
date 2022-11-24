@@ -63,11 +63,13 @@ describe("reducerAsyncActionHandlers", () => {
   describe("REQUEST_OPEN_PDF", () => {
     it("can open a pdf when auth token and correlation id are retrieved", async () => {
       // arrange
-      jest
-        .spyOn(api, "getCoreHeadersInitObject")
-        .mockImplementation(() =>
-          Promise.resolve({ "Correlation-Id": "foo", Authorization: "bar" })
-        );
+      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+        Promise.resolve({
+          "Correlation-Id": "foo",
+          Authorization: "bar",
+          "Upstream-Token": "baz",
+        })
+      );
 
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
         dispatch: dispatchMock,
@@ -100,11 +102,13 @@ describe("reducerAsyncActionHandlers", () => {
 
     it("can throw when auth token is not retrieved", async () => {
       // arrange
-      jest
-        .spyOn(api, "getCoreHeadersInitObject")
-        .mockImplementation(() =>
-          Promise.resolve({ "Correlation-Id": "foo", Authorization: "" })
-        );
+      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+        Promise.resolve({
+          "Correlation-Id": "foo",
+          Authorization: "",
+          "Upstream-Token": "baz",
+        })
+      );
 
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
         dispatch: dispatchMock,
@@ -129,11 +133,13 @@ describe("reducerAsyncActionHandlers", () => {
 
     it("can throw when correlation id is not retrieved", async () => {
       // arrange
-      jest
-        .spyOn(api, "getCoreHeadersInitObject")
-        .mockImplementation(() =>
-          Promise.resolve({ "Correlation-Id": "", Authorization: "foo" })
-        );
+      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+        Promise.resolve({
+          "Correlation-Id": "",
+          Authorization: "foo",
+          "Upstream-Token": "baz",
+        })
+      );
 
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
         dispatch: dispatchMock,
