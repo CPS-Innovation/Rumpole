@@ -6,4 +6,4 @@ export const CommonDateTimeFormats = {
 };
 
 export const formatDate = (isoDateString: string, dateTimeFormat: string) =>
-  format(parseISO(isoDateString), dateTimeFormat);
+  isoDateString && format(parseISO(isoDateString), dateTimeFormat);

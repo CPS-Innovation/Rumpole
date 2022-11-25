@@ -20,7 +20,6 @@ import { PageContentWrapper } from "../../../../common/presentation/components";
 import { WaitPage } from "../../../../common/presentation/components";
 import { useApi } from "../../../../common/hooks/useApi";
 import { searchUrn } from "../../api/gateway-api";
-import { Placeholder } from "../../../../common/presentation/components";
 
 import classes from "./index.module.scss";
 import { SectionBreak } from "../../../../common/presentation/components";
@@ -131,15 +130,16 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       {item.uniqueReferenceNumber}
                     </Link>
                     <Hint className={classes.defendantName}>
-                      {item.leadDefendantDetails.surname},{" "}
-                      {item.leadDefendantDetails.firstNames}
+                      {`${item.leadDefendantDetails.surname}, 
+                        ${item.leadDefendantDetails.firstNames}
+                        ${item.numberOfDefendants > 1 ? "and others" : ""}`}
+                      <br />
+                      Date of birth:{" "}
+                      {formatDate(
+                        item.leadDefendantDetails.dob,
+                        CommonDateTimeFormats.ShortDateTextMonth
+                      )}
                     </Hint>
-                    <Placeholder
-                      height={30}
-                      width={200}
-                      marginTop={-15}
-                      marginBottom={0}
-                    />
                   </h2>
                   <div>
                     <div className={classes["result-offence"]}>
@@ -149,21 +149,32 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                           {item.isCaseCharged ? "Charged" : "Not yet charged"}
                         </span>
                       </div>
+                      {item.isCaseCharged ? (
+                        <div className={classes["result-offence-line"]}>
+                          <span>Court hearing:</span>
+                          <span>
+                            {formatDate(
+                              item.headlineCharge.nextHearingDate,
+                              CommonDateTimeFormats.ShortDateTextMonth
+                            )}
+                          </span>
+                        </div>
+                      ) : null}
+
                       <div className={classes["result-offence-line"]}>
-                        <span>Date of offense:</span>
+                        <span>Date of offence:</span>
                         <span>
                           {formatDate(
-                            item.headlineCharge.earlyDate,
+                            item.headlineCharge.date,
                             CommonDateTimeFormats.ShortDateTextMonth
                           )}
                         </span>
                       </div>
                       <div className={classes["result-offence-line"]}>
                         <span>
-                          {item.headlineCharge.isCharged ? "" : "Proposed"}{" "}
-                          Charges:
+                          {item.isCaseCharged ? "" : "Proposed"} Charges:
                         </span>
-                        <span>{item.headlineCharge.shortDescription}</span>
+                        <span>{item.headlineCharge.charge}</span>
                       </div>
                     </div>
                   </div>

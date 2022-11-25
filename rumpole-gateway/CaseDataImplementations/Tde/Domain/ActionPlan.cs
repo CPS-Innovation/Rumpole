@@ -2,12 +2,6 @@ using System.Collections.Generic;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
 {
-
-    public class ActionPlanResponse
-    {
-        public IEnumerable<ActionPlan> GetActionPlan { get; set; }
-    }
-
     public class ActionPlan
     {
         public int Id { get; set; }

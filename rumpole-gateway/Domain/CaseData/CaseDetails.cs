@@ -13,6 +13,9 @@ namespace RumpoleGateway.Domain.CaseData
         [JsonProperty("isCaseCharged")]
         public bool IsCaseCharged { get; set; }
 
+        [JsonProperty("numberOfDefendants")]
+        public int NumberOfDefendants { get; set; }
+
         [JsonProperty("leadDefendantDetails")]
         public DefendantDetails LeadDefendantDetails { get; set; }
 

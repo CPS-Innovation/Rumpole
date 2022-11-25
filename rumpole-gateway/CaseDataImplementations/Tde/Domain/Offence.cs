@@ -4,7 +4,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
     public class Offence
     {
         public int Id { get; set; }
-        public int ListOrder { get; set; }
+        public int? ListOrder { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
         public string Active { get; set; }

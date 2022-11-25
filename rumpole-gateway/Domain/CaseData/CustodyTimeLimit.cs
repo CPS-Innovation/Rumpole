@@ -8,7 +8,7 @@ namespace RumpoleGateway.Domain.CaseData
         public string ExpiryDate { get; set; }
 
         [JsonProperty("expiryDays")]
-        public int ExpiryDays { get; set; }
+        public int? ExpiryDays { get; set; }
 
         [JsonProperty("expiryIndicator")]
         public string ExpiryIndicator { get; set; }

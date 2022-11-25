@@ -9,5 +9,8 @@ namespace RumpoleGateway.Domain.CaseData
 
         [JsonProperty("date")]
         public string Date { get; set; }
+
+        [JsonProperty("nextHearingDate")]
+        public string NextHearingDate { get; set; }
     }
 }

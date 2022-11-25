@@ -8,7 +8,7 @@ namespace RumpoleGateway.Domain.CaseData
         public int Id { get; set; }
 
         [JsonProperty("listOrder")]
-        public int ListOrder { get; set; }
+        public int? ListOrder { get; set; }
 
         [JsonProperty("isCharged")]
         public bool IsCharged { get; set; }

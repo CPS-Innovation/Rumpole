@@ -2,8 +2,9 @@ export type CaseDetails = {
   id: number;
   uniqueReferenceNumber: string;
   isCaseCharged: boolean;
+  numberOfDefendants: number;
   leadDefendantDetails: DefendantDetails;
-  headlineCharge: Charge;
+  headlineCharge: HeadlineCharge;
   defendants: {
     defendantDetails: DefendantDetails;
     custodyTimeLimit: CustodyTimeLimit;
@@ -19,6 +20,13 @@ type DefendantDetails = {
   organisationName: string;
   dob: string;
   isYouth: boolean;
+  type: string;
+};
+
+type HeadlineCharge = {
+  charge: string;
+  date: string;
+  nextHearingDate: string;
 };
 
 type Charge = {

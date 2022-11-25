@@ -15,11 +15,14 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
             var defendants = MapDefendants(caseDetails);
             var leadDefendant = FindLeadDefendant(defendants, summary);
             var headlineCharge = FindHeadlineCharge(leadDefendant);
+            var isCaseCharged = FindIsCaseCharged(defendants);
 
             return new BusinessDomain.CaseDetailsFull
             {
                 Id = summary.Id,
                 UniqueReferenceNumber = summary.Urn,
+                IsCaseCharged = isCaseCharged,
+                NumberOfDefendants = summary.NumberOfDefendants,
                 LeadDefendantDetails = leadDefendant.DefendantDetails,
                 Defendants = defendants,
                 HeadlineCharge = headlineCharge
@@ -74,20 +77,17 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
         {
             var charges = new List<BusinessDomain.Charge>();
             var nextHearingDate = defendant.NextHearing.Date;
-            foreach (var offence in defendant.Offences)
-            {
-                charges.Append(MapCharge(offence, nextHearingDate));
-            }
 
-            return charges;
+            return defendant.Offences
+                .Select(offence => MapCharge(offence, nextHearingDate));
         }
 
         private IEnumerable<BusinessDomain.ProposedCharge> MapPropsedCharges(ApiDomain.CaseDefendant defendant, IEnumerable<ApiDomain.PreChargeDecisionRequest> pcdRequests)
         {
             return pcdRequests.Where(pcdr => pcdr.Dob == defendant.Dob
                                 && pcdr.FirstNames == defendant.FirstNames
-                                && pcdr.Surname == defendant.Surname
-                            ).SelectMany(pcdr => pcdr.PropsedCharges)
+                                && pcdr.Surname == defendant.Surname)
+                            .SelectMany(pcdr => pcdr.PropsedCharges)
                             .Select(proposedCharge => MapPropsedCharge(proposedCharge));
         }
 
@@ -122,7 +122,8 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
             return new BusinessDomain.HeadlineCharge
             {
                 Charge = charge.LongDescription,
-                Date = charge.EarlyDate
+                Date = charge.EarlyDate,
+                NextHearingDate = charge.NextHearingDate
             };
         }
 
@@ -178,6 +179,11 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
 
             // todo: what to do if we have no charges?
             return new BusinessDomain.HeadlineCharge();
+        }
+
+        private bool FindIsCaseCharged(IEnumerable<BusinessDomain.Defendant> defendants)
+        {
+            return defendants.SelectMany(defendant => defendant.Charges).Any();
         }
 
         private bool areStringsEqual(string a, string b) => (string.IsNullOrEmpty(a)
