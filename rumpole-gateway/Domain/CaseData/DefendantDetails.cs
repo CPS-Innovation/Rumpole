@@ -5,10 +5,10 @@ namespace RumpoleGateway.Domain.CaseData
     public class DefendantDetails
     {
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("listOrder")]
-        public string ListOrder { get; set; }
+        public int ListOrder { get; set; }
 
         [JsonProperty("firstNames")]
         public string FirstNames { get; set; }

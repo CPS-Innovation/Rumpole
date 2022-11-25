@@ -32,3 +32,8 @@ public static class AuthenticationKeys
     public const string UpstreamTokenName = "upstream-token";
     public const string FunctioAppApiKey = "FunctioAppApiKey";
 }
+
+public static class ValidRoles
+{
+    public const string UserImpersonation = "user_impersonation";
+}

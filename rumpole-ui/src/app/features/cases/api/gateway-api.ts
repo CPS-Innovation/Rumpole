@@ -23,7 +23,7 @@ export const getCoreHeadersInitObject = async () => {
     Authorization: `Bearer ${
       GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
     }`,
-    "Upstream-Token": "not-implemented-yet", //todo
+    "Upstream-Token": "not-implemented-yet", //todo: also, does this need to go on all types of call?
   };
 };
 
@@ -39,8 +39,9 @@ export const resolvePdfUrl = (blobName: string) =>
   getFullUrl(`/api/pdfs/${blobName}`);
 
 export const searchUrn = async (urn: string) => {
+  const encodedUrn = encodeURIComponent(urn);
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/urns/${urn}`);
+  const path = getFullUrl(`/api/urns/${encodedUrn}`);
   const response = await fetch(path, {
     headers,
     method: "GET",

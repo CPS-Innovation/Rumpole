@@ -9,7 +9,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
     {
         Task<IEnumerable<CaseIdentifiers>> ListCaseIdsAsync(UrnArg arg);
 
-        Task<Case> GetCaseAsync(CaseArg arg);
+        Task<CaseDetails> GetCaseAsync(CaseArg arg);
 
         Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg);
     }

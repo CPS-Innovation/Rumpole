@@ -2,11 +2,14 @@
 {
 	public enum TrackerStatus
 	{
+		Initialised,
 		NotStarted,
 		Running,
+		// ReSharper disable once InconsistentNaming
 		NoDocumentsFoundInCDE,
 		Completed,
-		Failed
+		Failed,
+		UnableToEvaluateExistingDocuments
 	}
 }
 

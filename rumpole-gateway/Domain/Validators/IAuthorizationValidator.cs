@@ -6,6 +6,6 @@ namespace RumpoleGateway.Domain.Validators
 {
     public interface IAuthorizationValidator
     {
-        Task<bool> ValidateTokenAsync(StringValues token, Guid correlationId);
+        Task<bool> ValidateTokenAsync(StringValues token, Guid correlationId, string requiredScopes = null, string requiredRoles = null);
     }
 }

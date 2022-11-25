@@ -7,6 +7,7 @@ using RumpoleGateway.Domain.CaseData.Args;
 using RumpoleGateway.Factories;
 using RumpoleGateway.CaseDataImplementations.Tde.Clients;
 using RumpoleGateway.Services;
+using RumpoleGateway.CaseDataImplementations.Tde.Mappers;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Services
 {
@@ -14,32 +15,25 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
     {
         private readonly ITdeClient _tdeClient;
         private readonly ICaseDataArgFactory _caseDataServiceArgFactory;
+        private readonly ICaseDetailsMapper _caseDetailsMapper;
 
-        public TdeCaseDataService(ITdeClient tdeClient, ICaseDataArgFactory caseDataServiceArgFactory)
+        public TdeCaseDataService(ITdeClient tdeClient, ICaseDataArgFactory caseDataServiceArgFactory, ICaseDetailsMapper caseDetailsMapper)
         {
             _tdeClient = tdeClient;
             _caseDataServiceArgFactory = caseDataServiceArgFactory;
+            _caseDetailsMapper = caseDetailsMapper;
         }
 
         public async Task<IEnumerable<CaseDetails>> ListCases(UrnArg arg)
         {
             var caseIdentifiers = await _tdeClient.ListCaseIdsAsync(arg);
-            throw new NotImplementedException();
-            //         var calls = caseIdentifiers.Select(async caseIdentifier =>
-            // {
-            //     var @case = await _tdeClient.GetCaseAsync(_caseDataServiceArgFactory.CreateCaseArgFromUrnArg(arg, caseIdentifier.Id));
 
-            //     return new UrnCase
-            //     {
-            //         Summary = summary,
-            //         Defendants = defendants,
-            //         PreChargeDecisionRequests = preChargeDecisionRequests
-            //     };
-            // });
+            var calls = caseIdentifiers.Select(async caseIdentifier =>
+                 await _tdeClient.GetCaseAsync(_caseDataServiceArgFactory.CreateCaseArgFromUrnArg(arg, caseIdentifier.Id)));
 
-            //         var cases = await Task.WhenAll(calls);
+            var cases = await Task.WhenAll(calls);
 
-            //         return cases.Where(item => !isSplitCase || item.Summary.Urn.Split("/")[1] == urnSplitId);
+            return cases.Select(@case => _caseDetailsMapper.MapCaseDetails(@case));
         }
 
         public Task<CaseDetailsFull> GetCase(CaseArg arg)

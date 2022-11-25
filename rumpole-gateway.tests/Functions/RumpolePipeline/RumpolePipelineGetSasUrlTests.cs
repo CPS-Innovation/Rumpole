@@ -35,7 +35,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
             _mockTokenValidator = new Mock<IAuthorizationValidator>();
 			var mockLogger = new Mock<ILogger<RumpolePipelineGetSasUrl>>();
 
-            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(true);
+            _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
             _mockSasGeneratorService.Setup(client => client.GenerateSasUrlAsync(_blobName, It.IsAny<Guid>())).ReturnsAsync(_fakeSasUrl);
 
             _rumpolePipelineGetSasUrl = new RumpolePipelineGetSasUrl(_mockTokenValidator.Object, mockLogger.Object, _mockSasGeneratorService.Object);
@@ -60,7 +60,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
         {
-	        _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>())).ReturnsAsync(false);
+	        _mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
 			var response = await _rumpolePipelineGetSasUrl.Run(CreateHttpRequest(), _blobName);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();

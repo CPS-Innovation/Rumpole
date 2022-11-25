@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoFixture;
-using AutoFixture.Idioms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

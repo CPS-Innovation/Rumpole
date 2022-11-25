@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -27,7 +26,7 @@ namespace RumpoleGateway.Functions.Status
 		{
 			const string loggingName = "Status - Run";
 			
-			var validationResult = await ValidateRequest(req, loggingName);
+			var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
 			if (validationResult.InvalidResponseResult != null)
 				return validationResult.InvalidResponseResult;
 			

@@ -52,7 +52,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
 
             try
             {
-                var validationResult = await ValidateRequest(req, loggingName);
+                var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
 

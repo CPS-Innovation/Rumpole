@@ -26,6 +26,7 @@ using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
 using RumpoleGateway.Wrappers;
 using RumpoleGateway.CaseDataImplementations.Tde.Factories;
+using RumpoleGateway.CaseDataImplementations.Tde.Mappers;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 
@@ -130,6 +131,7 @@ namespace RumpoleGateway
                 client.BaseAddress = new Uri(options.BaseUrl);
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
+            builder.Services.AddTransient<ICaseDetailsMapper, CaseDetailsMapper>();
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)

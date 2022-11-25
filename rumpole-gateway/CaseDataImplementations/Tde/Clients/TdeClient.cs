@@ -30,8 +30,8 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
             );
 
 
-        public async Task<Case> GetCaseAsync(CaseArg arg) =>
-            await CallTde<Case>(
+        public async Task<CaseDetails> GetCaseAsync(CaseArg arg) =>
+            await CallTde<CaseDetails>(
                 () => _tdeClientRequestFactory.CreateGetCaseRequest(arg),
                 arg.CorrelationId
             );
