@@ -24,5 +24,8 @@ namespace RumpoleGateway.Domain.CaseData
 
         [JsonProperty("youth")]
         public bool isYouth { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

@@ -17,6 +17,6 @@ namespace RumpoleGateway.Domain.CaseData
         public DefendantDetails LeadDefendantDetails { get; set; }
 
         [JsonProperty("headlineCharge")]
-        public Charge HeadlineCharge { get; set; }
+        public HeadlineCharge HeadlineCharge { get; set; }
     }
 }

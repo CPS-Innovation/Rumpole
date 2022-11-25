@@ -66,7 +66,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
 
                 var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
-                var onBehalfOfAccessToken = "foo";// await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
+                var onBehalfOfAccessToken = "not-implemented-yet"; //await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case information by Urn '{urn}'");
                 caseInformation = await _caseDataService.ListCases(_caseDataArgFactory.CreateUrnArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn));

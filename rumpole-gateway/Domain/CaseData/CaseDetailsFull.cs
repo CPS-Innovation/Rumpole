@@ -6,6 +6,6 @@ namespace RumpoleGateway.Domain.CaseData
     public class CaseDetailsFull : CaseDetails
     {
         [JsonProperty("defendants")]
-        public IEnumerable<DefendantDetails> Defendants { get; set; }
+        public IEnumerable<Defendant> Defendants { get; set; }
     }
 }

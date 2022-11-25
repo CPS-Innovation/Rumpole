@@ -5,6 +5,6 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
 {
     public interface ICaseDetailsMapper
     {
-        BusinessDomain.CaseDetails MapCaseDetails(ApiDomain.CaseDetails caseDetails);
+        BusinessDomain.CaseDetailsFull MapCaseDetails(ApiDomain.CaseDetails caseDetails);
     }
 }

@@ -25,10 +25,4 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
         public IEnumerable<ProposedCharge> PropsedCharges { get; set; }
 
     }
-
-    public class ProposedCharge
-    {
-        public string Charge { get; set; }
-        public string Date { get; set; }
-    }
 }
