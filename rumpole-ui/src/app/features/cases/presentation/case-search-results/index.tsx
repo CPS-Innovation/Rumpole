@@ -121,7 +121,10 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                   <h2 className="govuk-heading-m ">
                     <Link
                       to={{
-                        pathname: generatePath(casePath, { id: item.id }),
+                        pathname: generatePath(casePath, {
+                          urn: encodeURIComponent(item.uniqueReferenceNumber),
+                          id: item.id,
+                        }),
                         state: search,
                       }}
                       data-testid={`link-${item.uniqueReferenceNumber}`}
@@ -137,7 +140,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       Date of birth:{" "}
                       {formatDate(
                         item.leadDefendantDetails.dob,
-                        CommonDateTimeFormats.ShortDateTextMonth
+                        CommonDateTimeFormats.ShortDateFullTextMonth
                       )}
                     </Hint>
                   </h2>
@@ -149,27 +152,29 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                           {item.isCaseCharged ? "Charged" : "Not yet charged"}
                         </span>
                       </div>
-                      {item.isCaseCharged ? (
+                      {item.isCaseCharged &&
+                      item.headlineCharge.nextHearingDate ? (
                         <div className={classes["result-offence-line"]}>
                           <span>Court hearing:</span>
                           <span>
                             {formatDate(
                               item.headlineCharge.nextHearingDate,
-                              CommonDateTimeFormats.ShortDateTextMonth
+                              CommonDateTimeFormats.ShortDateFullTextMonth
                             )}
                           </span>
                         </div>
                       ) : null}
-
-                      <div className={classes["result-offence-line"]}>
-                        <span>Date of offence:</span>
-                        <span>
-                          {formatDate(
-                            item.headlineCharge.date,
-                            CommonDateTimeFormats.ShortDateTextMonth
-                          )}
-                        </span>
-                      </div>
+                      {item.headlineCharge.date ? (
+                        <div className={classes["result-offence-line"]}>
+                          <span>Date of offence:</span>
+                          <span>
+                            {formatDate(
+                              item.headlineCharge.date,
+                              CommonDateTimeFormats.ShortDateFullTextMonth
+                            )}
+                          </span>
+                        </div>
+                      ) : null}
                       <div className={classes["result-offence-line"]}>
                         <span>
                           {item.isCaseCharged ? "" : "Proposed"} Charges:

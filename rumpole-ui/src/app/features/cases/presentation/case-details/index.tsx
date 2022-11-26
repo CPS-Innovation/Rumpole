@@ -14,12 +14,12 @@ import { PdfTabsEmpty } from "./pdf-tabs/PdfTabsEmpty";
 import { SearchBox } from "./search-box/SearchBox";
 import { ResultsModal } from "./results/ResultsModal";
 
-export const path = "/case-details/:id";
+export const path = "/case-details/:urn/:id";
 
 type Props = BackLinkingPageProps & {};
 
 export const Page: React.FC<Props> = ({ backLinkProps }) => {
-  const { id } = useParams<{ id: string }>();
+  const { id, urn } = useParams<{ id: string; urn: string }>();
 
   const {
     caseState,
@@ -40,7 +40,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     handleRemoveAllRedactions,
     handleSavedRedactions,
     handleOpenPdfInNewTab,
-  } = useCaseDetailsState(id);
+  } = useCaseDetailsState(urn, id);
 
   if (caseState.status === "loading") {
     // if we are waiting on the main case details call, show holding message

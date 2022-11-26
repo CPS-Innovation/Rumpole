@@ -13,6 +13,7 @@ const documents: CaseDocument[] = [
     fileName: "MCLOVEMG3",
     createdDate: "2020-06-01",
     cmsDocType: {
+      id: 1,
       code: "MG11",
       name: "MG11 File",
     },
@@ -22,6 +23,7 @@ const documents: CaseDocument[] = [
     fileName: "CM01",
     createdDate: "2020-06-02",
     cmsDocType: {
+      id: 2,
       code: "MG12",
       name: "MG12 File",
     },
@@ -31,6 +33,7 @@ const documents: CaseDocument[] = [
     fileName: "MG05MCLOVE",
     createdDate: "2020-06-03",
     cmsDocType: {
+      id: 3,
       code: "MG13",
       name: "MG13 File",
     },
@@ -40,6 +43,7 @@ const documents: CaseDocument[] = [
     fileName: "MG06_3June",
     createdDate: "2020-06-04",
     cmsDocType: {
+      id: 4,
       code: "MG14",
       name: "MG14 File",
     },
@@ -49,6 +53,7 @@ const documents: CaseDocument[] = [
     fileName: "MG06_10june",
     createdDate: "2020-06-10",
     cmsDocType: {
+      id: 5,
       code: "MG15",
       name: "MG15 File",
     },

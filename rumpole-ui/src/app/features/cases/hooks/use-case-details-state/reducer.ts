@@ -128,7 +128,8 @@ export const reducer = (
       };
     case "UPDATE_PIPELINE":
       if (action.payload.status === "failed") {
-        throw action.payload.error;
+        return state; // todo: !!!!!!!!!!!!
+        //throw action.payload.error;
       }
 
       if (action.payload.status === "initiating") {

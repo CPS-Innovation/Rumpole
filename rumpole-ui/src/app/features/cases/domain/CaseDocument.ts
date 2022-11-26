@@ -3,6 +3,7 @@ export type CaseDocument = {
   fileName: string;
   createdDate: string;
   cmsDocType: {
+    id: number;
     code: string;
     name: string;
   };

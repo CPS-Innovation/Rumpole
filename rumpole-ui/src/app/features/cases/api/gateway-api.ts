@@ -41,7 +41,7 @@ export const resolvePdfUrl = (blobName: string) =>
 export const searchUrn = async (urn: string) => {
   const encodedUrn = encodeURIComponent(urn);
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/urns/${encodedUrn}`);
+  const path = getFullUrl(`/api/urns/${encodedUrn}/cases`);
   const response = await fetch(path, {
     headers,
     method: "GET",
@@ -59,9 +59,10 @@ export const searchUrn = async (urn: string) => {
   return (await response.json()) as CaseSearchResult[];
 };
 
-export const getCaseDetails = async (caseId: string) => {
+export const getCaseDetails = async (urn: string, caseId: string) => {
+  const encodedUrn = encodeURIComponent(urn); // todo: dry
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/case-details/${caseId}`);
+  const path = getFullUrl(`/api/urns/${encodedUrn}/cases/${caseId}`);
   const response = await fetch(path, {
     headers,
     method: "GET",
@@ -74,9 +75,10 @@ export const getCaseDetails = async (caseId: string) => {
   return (await response.json()) as CaseSearchResult;
 };
 
-export const getCaseDocumentsList = async (caseId: string) => {
+export const getCaseDocumentsList = async (urn: string, caseId: string) => {
+  const encodedUrn = encodeURIComponent(urn); // todo: dry
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/case-documents/${caseId}`);
+  const path = getFullUrl(`/api/urns/${encodedUrn}/cases/${caseId}/documents`);
   const response = await fetch(path, {
     headers,
     method: "GET",
@@ -86,9 +88,9 @@ export const getCaseDocumentsList = async (caseId: string) => {
     throw new ApiError("Get Case Documents failed", path, response);
   }
 
-  const apiReponse: { caseDocuments: CaseDocument[] } = await response.json();
+  const apiReponse: CaseDocument[] = await response.json();
 
-  return apiReponse.caseDocuments;
+  return apiReponse;
 };
 
 export const getPdfSasUrl = async (pdfBlobName: string) => {

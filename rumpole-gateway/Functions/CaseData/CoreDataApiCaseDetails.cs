@@ -57,12 +57,12 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
+                //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
+                //_logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
+                var onBehalfOfAccessToken = "not-implemented-yet"; // await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case details by Id {caseId}");
-                caseDetails = await _caseDataService.GetCase(_caseDataArgFactory.CreateCaseArgArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId));
+                caseDetails = await _caseDataService.GetCase(_caseDataArgFactory.CreateCaseArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId));
 
                 return caseDetails != null
                     ? new OkObjectResult(caseDetails)

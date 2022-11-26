@@ -41,6 +41,7 @@ describe("mapAccordionState", () => {
           fileName: "foo",
           presentationFileName: "foo!",
           cmsDocType: {
+            id: 1,
             code: "MG11",
             name: "MG11 File",
           },
@@ -53,6 +54,7 @@ describe("mapAccordionState", () => {
           fileName: "bar",
           presentationFileName: "bar!",
           cmsDocType: {
+            id: 2,
             code: "MG12",
             name: "MG12 File",
           },

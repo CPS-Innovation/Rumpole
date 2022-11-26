@@ -19,7 +19,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
         [JsonConverter(typeof(StringEnumConverter))]
         public CmsDocCategory CmsDocCateogry { get; set; }
 
-        public string TypeId { get; set; }
+        public int TypeId { get; set; }
 
         public string Type { get; set; }
 

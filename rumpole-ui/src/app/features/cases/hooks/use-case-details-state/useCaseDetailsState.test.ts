@@ -92,7 +92,7 @@ describe("useCaseDetailsState", () => {
 
   describe("initialisation", () => {
     it("initialises to the expected state", () => {
-      const { result } = renderHook(() => useCaseDetailsState("foo"));
+      const { result } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       const {
         handleOpenPdf,
@@ -114,7 +114,7 @@ describe("useCaseDetailsState", () => {
     });
 
     it("can update state according to the api call results", async () => {
-      renderHook(() => useCaseDetailsState("foo"));
+      renderHook(() => useCaseDetailsState("bar", "foo"));
 
       expect(reducerSpy).toBeCalledWith(expect.anything(), {
         type: "UPDATE_CASE_DETAILS",
@@ -147,7 +147,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleClosePdf },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleClosePdf({ tabSafeId: "1" }));
 
@@ -162,7 +162,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleSearchTermChange },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleSearchTermChange("foo"));
 
@@ -179,7 +179,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleLaunchSearchResults },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleLaunchSearchResults());
 
@@ -193,7 +193,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleCloseSearchResults },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleCloseSearchResults());
 
@@ -207,7 +207,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleChangeResultsOrder },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleChangeResultsOrder("byDateDesc"));
 
@@ -222,7 +222,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleUpdateFilter },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() =>
         handleUpdateFilter({ filter: "category", id: "1", isSelected: true })
@@ -246,7 +246,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleOpenPdfInNewTab },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() => handleOpenPdfInNewTab("bar"));
 
@@ -267,7 +267,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleOpenPdf },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       act(() =>
         handleOpenPdf({ tabSafeId: "1", documentId: "2", mode: "read" })
@@ -290,7 +290,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleAddRedaction },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       handleAddRedaction("bar", { type: "redaction" } as NewPdfHighlight);
 
@@ -314,7 +314,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleRemoveRedaction },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       handleRemoveRedaction("bar", "baz");
 
@@ -335,7 +335,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleRemoveAllRedactions },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       handleRemoveAllRedactions("bar");
 
@@ -356,7 +356,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleSavedRedactions },
         },
-      } = renderHook(() => useCaseDetailsState("foo"));
+      } = renderHook(() => useCaseDetailsState("bar", "foo"));
 
       handleSavedRedactions("bar");
 

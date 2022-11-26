@@ -132,6 +132,7 @@ namespace RumpoleGateway
                 client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
             });
             builder.Services.AddTransient<ICaseDetailsMapper, CaseDetailsMapper>();
+            builder.Services.AddTransient<ICaseDocumentsMapper, CaseDocumentsMapper>();
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)

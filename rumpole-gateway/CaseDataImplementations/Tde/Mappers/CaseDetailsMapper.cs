@@ -8,6 +8,8 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
 {
     public class CaseDetailsMapper : ICaseDetailsMapper
     {
+        private const string NotYetChargedCode = "NYC";
+
         public BusinessDomain.CaseDetailsFull MapCaseDetails(ApiDomain.CaseDetails caseDetails)
         {
             var summary = caseDetails.Summary;
@@ -183,7 +185,10 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
 
         private bool FindIsCaseCharged(IEnumerable<BusinessDomain.Defendant> defendants)
         {
-            return defendants.SelectMany(defendant => defendant.Charges).Any();
+            return defendants
+                .SelectMany(defendant => defendant.Charges)
+                .Where(charge => charge.Code != NotYetChargedCode)
+                .Any();
         }
 
         private bool areStringsEqual(string a, string b) => (string.IsNullOrEmpty(a)

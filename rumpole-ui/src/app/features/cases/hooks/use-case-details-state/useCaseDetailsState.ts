@@ -33,9 +33,9 @@ export const initialState = {
   },
 } as Omit<CombinedState, "caseId">;
 
-export const useCaseDetailsState = (id: string) => {
-  const caseState = useApi(getCaseDetails, id);
-  const documentsState = useApi(getCaseDocumentsList, id);
+export const useCaseDetailsState = (urn: string, id: string) => {
+  const caseState = useApi(getCaseDetails, urn, id);
+  const documentsState = useApi(getCaseDocumentsList, urn, id);
   const pipelineState = usePipelineApi(id);
 
   const [combinedState, dispatch] = useReducerAsync(

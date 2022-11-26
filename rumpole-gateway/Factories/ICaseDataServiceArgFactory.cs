@@ -7,7 +7,7 @@ namespace RumpoleGateway.Factories
     {
         UrnArg CreateUrnArg(string onBehalfOfToken, string upstreamToken, Guid correlationId, string urn);
 
-        CaseArg CreateCaseArgArg(string onBehalfOfToken, string upstreamToken, Guid correlationId, string urn, int caseId);
+        CaseArg CreateCaseArg(string onBehalfOfToken, string upstreamToken, Guid correlationId, string urn, int caseId);
 
         CaseArg CreateCaseArgFromUrnArg(UrnArg arg, int caseId);
     }

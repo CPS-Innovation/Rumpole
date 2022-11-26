@@ -18,17 +18,17 @@ using RumpoleGateway.Extensions;
 using RumpoleGateway.Services;
 using RumpoleGateway.Factories;
 
-namespace RumpoleGateway.Functions.CoreDataApi.Case
+namespace RumpoleGateway.Functions.CaseData
 {
-    public class CoreDataApiCaseInformationByUrn : BaseRumpoleFunction
+    public class CoreDataApiCaseDocuments : BaseRumpoleFunction
     {
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICaseDataService _caseDataService;
         private readonly IConfiguration _configuration;
         private readonly ICaseDataArgFactory _caseDataArgFactory;
-        private readonly ILogger<CoreDataApiCaseInformationByUrn> _logger;
+        private readonly ILogger<CoreDataApiCaseDocuments> _logger;
 
-        public CoreDataApiCaseInformationByUrn(ILogger<CoreDataApiCaseInformationByUrn> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICaseDataService caseDataService,
+        public CoreDataApiCaseDocuments(ILogger<CoreDataApiCaseDocuments> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICaseDataService caseDataService,
                                  IConfiguration configuration, IAuthorizationValidator tokenValidator, ICaseDataArgFactory caseDataArgFactory)
         : base(logger, tokenValidator)
         {
@@ -39,15 +39,16 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             _logger = logger;
         }
 
-        [FunctionName("CoreDataApiCaseInformationByUrn")]
+        [FunctionName("CoreDataApiCaseDocuments")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases")] HttpRequest req,
-            string urn)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}/documents")] HttpRequest req,
+            string urn,
+            int? caseId)
         {
             Guid currentCorrelationId = default;
             string upstreamToken = null;
-            const string loggingName = "CoreDataApiCaseInformationByUrn - Run";
-            IEnumerable<CaseDetails> caseInformation = null;
+            const string loggingName = "CoreDataApiCaseDocuments - Run";
+            IEnumerable<DocumentDetails> documents = null;
 
             try
             {
@@ -63,19 +64,22 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                 if (string.IsNullOrEmpty(urn))
                     return BadRequestErrorResponse("Urn is not supplied.", currentCorrelationId, loggingName);
 
+                if (!caseId.HasValue)
+                    return BadRequestErrorResponse("CaseId is not supplied.", currentCorrelationId, loggingName);
+
                 // var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
                 // _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
                 var onBehalfOfAccessToken = "not-implemented-yet"; //await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case information by Urn '{urn}'");
-                caseInformation = await _caseDataService.ListCases(_caseDataArgFactory.CreateUrnArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn));
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case documents by Urn '{urn}' and CaseId '{caseId}'");
+                documents = await _caseDataService.ListDocuments(_caseDataArgFactory.CreateCaseArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId.Value));
 
-                if (caseInformation != null && caseInformation.Any())
+                if (documents != null)
                 {
-                    return new OkObjectResult(caseInformation);
+                    return new OkObjectResult(documents);
                 }
 
-                return NotFoundErrorResponse($"No data found for urn '{urn}'.", currentCorrelationId, loggingName);
+                return NotFoundErrorResponse($"No documents found for Urn '{urn}' and CaseId '{caseId}'.", currentCorrelationId, loggingName);
             }
             catch (Exception exception)
             {
@@ -88,7 +92,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             }
             finally
             {
-                _logger.LogMethodExit(currentCorrelationId, loggingName, caseInformation.ToJson());
+                _logger.LogMethodExit(currentCorrelationId, loggingName, documents.ToJson());
             }
         }
     }

@@ -16,12 +16,18 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
         private readonly ITdeClient _tdeClient;
         private readonly ICaseDataArgFactory _caseDataServiceArgFactory;
         private readonly ICaseDetailsMapper _caseDetailsMapper;
+        private readonly ICaseDocumentsMapper _caseDocumentsMapper;
 
-        public TdeCaseDataService(ITdeClient tdeClient, ICaseDataArgFactory caseDataServiceArgFactory, ICaseDetailsMapper caseDetailsMapper)
+        public TdeCaseDataService(
+            ITdeClient tdeClient,
+            ICaseDataArgFactory caseDataServiceArgFactory,
+            ICaseDetailsMapper caseDetailsMapper,
+            ICaseDocumentsMapper caseDocumentsMapper)
         {
             _tdeClient = tdeClient;
             _caseDataServiceArgFactory = caseDataServiceArgFactory;
             _caseDetailsMapper = caseDetailsMapper;
+            _caseDocumentsMapper = caseDocumentsMapper;
         }
 
         public async Task<IEnumerable<CaseDetails>> ListCases(UrnArg arg)
@@ -36,14 +42,20 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
             return cases.Select(@case => _caseDetailsMapper.MapCaseDetails(@case));
         }
 
-        public Task<CaseDetailsFull> GetCase(CaseArg arg)
+        public async Task<CaseDetailsFull> GetCase(CaseArg arg)
         {
-            throw new System.NotImplementedException();
+            var @case = await _tdeClient.GetCaseAsync(arg);
+            return _caseDetailsMapper.MapCaseDetails(@case);
         }
 
-        public Task<IEnumerable<DocumentDetails>> ListDocuments(CaseArg arg)
+        public async Task<IEnumerable<DocumentDetails>> ListDocuments(CaseArg arg)
         {
-            throw new System.NotImplementedException();
+            var documents = await _tdeClient.ListCaseDocumentsAsync(arg);
+
+            return documents
+                .Select(document => _caseDocumentsMapper.MapDocumentDetails(document))
+                // todo: we get empty filenames coming back from TDE
+                .Where(document => !string.IsNullOrWhiteSpace(document.FileName));
         }
 
     }

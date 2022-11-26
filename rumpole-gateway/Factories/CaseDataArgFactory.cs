@@ -18,7 +18,7 @@ namespace RumpoleGateway.Factories
             };
         }
 
-        public CaseArg CreateCaseArgArg(string onBehalfOfToken, string upstreamToken, Guid correlationId, string urn, int caseId)
+        public CaseArg CreateCaseArg(string onBehalfOfToken, string upstreamToken, Guid correlationId, string urn, int caseId)
         {
             return new CaseArg
             {
