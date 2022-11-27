@@ -95,7 +95,11 @@ describe("reducerAsyncActionHandlers", () => {
           pdfId: "foo",
           tabSafeId: "bar",
           mode: "read",
-          headers: { "Correlation-Id": "foo", Authorization: "bar" },
+          headers: {
+            "Correlation-Id": "foo",
+            Authorization: "bar",
+            "Upstream-Token": "baz",
+          },
         },
       });
     });
