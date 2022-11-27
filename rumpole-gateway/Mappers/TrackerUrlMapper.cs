@@ -27,7 +27,7 @@ namespace RumpoleGateway.Mappers
             }
             builder.Path = $"{request.Path}/tracker";
 
-            _logger.LogMethodExit(correlationId, nameof(Map), $"Tracker Uri generatedd: {builder.Uri}");
+            _logger.LogMethodExit(correlationId, nameof(Map), $"Tracker Uri generated: {builder.Uri}");
             return builder.Uri;
         }
 	}

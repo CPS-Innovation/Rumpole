@@ -10,8 +10,6 @@ public static class ConfigurationKeys
     public const string ClientId = "OnBehalfOfTokenClientId";
     public const string ClientSecret = "OnBehalfOfTokenClientSecret";
     public const string ValidAudience = "CallingAppValidAudience";
-    public const string ValidScopes = "CallingAppValidScopes";
-    public const string ValidRoles = "CallingAppValidRoles";
     public const string CoreDataApiUrl = "CoreDataApiUrl";
     public const string CoreDataApiScope = "CoreDataApiScope";
     public const string StubBlobStorageConnectionString = "StubBlobStorageConnectionString";
@@ -29,11 +27,15 @@ public static class AuthenticationKeys
     public const string AzureAuthenticationInstanceUrl = "https://login.microsoftonline.com/";
     public const string AzureAuthenticationAssertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
     public const string Bearer = "Bearer";
-    public const string UpstreamTokenName = "upstream-token";
-    public const string FunctioAppApiKey = "FunctioAppApiKey";
 }
 
 public static class ValidRoles
 {
     public const string UserImpersonation = "user_impersonation";
+}
+
+public static class HttpHeaderKeys
+{
+    public const string CorrelationId = "Correlation-Id";
+    public const string UpstreamToken = "upstream-token";
 }

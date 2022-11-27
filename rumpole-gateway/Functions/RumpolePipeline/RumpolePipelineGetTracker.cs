@@ -37,7 +37,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineGetTracker")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/tracker")] HttpRequest req, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseUrn}/{caseId}/tracker")] HttpRequest req, string caseUrn, string caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineGetTracker - Run";
@@ -52,6 +52,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
+                if (string.IsNullOrWhiteSpace(caseUrn))
+                    return BadRequestErrorResponse("A case URN was expected", currentCorrelationId, loggingName);
+
                 if (!int.TryParse(caseId, out _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
@@ -60,9 +63,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), coordinatorScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting tracker details for caseId {caseId}");
-                tracker = await _pipelineClient.GetTrackerAsync(caseId, onBehalfOfAccessToken, currentCorrelationId);
+                tracker = await _pipelineClient.GetTrackerAsync(caseUrn, caseId, onBehalfOfAccessToken, currentCorrelationId);
 
-                return tracker == null ? NotFoundErrorResponse($"No tracker found for case id '{caseId}'.", currentCorrelationId, loggingName) : new OkObjectResult(tracker);
+                return tracker == null ? NotFoundErrorResponse($"No tracker found for case Urn '{caseUrn}', case id '{caseId}'.", currentCorrelationId, loggingName) : new OkObjectResult(tracker);
             }
             catch (Exception exception)
             {
