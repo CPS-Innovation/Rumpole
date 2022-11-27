@@ -67,8 +67,6 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
         />
       )}
 
-      <Placeholder height={40} />
-
       <BackLink to={backLinkProps.to}>{backLinkProps.label}</BackLink>
 
       <PageContentWrapper>

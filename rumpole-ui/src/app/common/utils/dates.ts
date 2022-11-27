@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { format, parseISO, differenceInYears } from "date-fns";
 
 export const CommonDateTimeFormats = {
   ShortDate: "dd/MM/yyyy",
@@ -8,3 +8,6 @@ export const CommonDateTimeFormats = {
 
 export const formatDate = (isoDateString: string, dateTimeFormat: string) =>
   isoDateString && format(parseISO(isoDateString), dateTimeFormat);
+
+export const getAgeFromIsoDate = (isoDateString: string) =>
+  isoDateString && differenceInYears(new Date(), parseISO(isoDateString));

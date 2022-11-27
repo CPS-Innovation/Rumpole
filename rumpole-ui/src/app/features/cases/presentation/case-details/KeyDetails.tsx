@@ -1,4 +1,9 @@
 import { Placeholder } from "../../../../common/presentation/components";
+import {
+  CommonDateTimeFormats,
+  formatDate,
+  getAgeFromIsoDate,
+} from "../../../../common/utils/dates";
 import { CaseDetails } from "../../domain/CaseDetails";
 import classes from "./index.module.scss";
 
@@ -8,18 +13,26 @@ export const KeyDetails: React.FC<{ caseDetails: CaseDetails }> = ({
   return (
     <div>
       <h1
-        className={`govuk-heading-m ${classes.defendantName}`}
-        data-testid="txt-defendant-name"
+        className={`govuk-heading-m ${classes.uniqueReferenceNumber}`}
+        data-testid="txt-case-urn"
       >
-        {caseDetails.leadDefendantDetails.surname},{" "}
-        {caseDetails.leadDefendantDetails.firstNames}
-      </h1>
-      <span className="govuk-caption-m" data-testid="txt-case-urn">
         {caseDetails.uniqueReferenceNumber}
-      </span>
-      <span className="govuk-caption-m" data-testid="txt-dob">
-        <Placeholder height={30} marginTop={0} marginBottom={0} />
-      </span>
+      </h1>
+
+      <div className={`govuk-heading-s`} data-testid="txt-defendant-name">
+        <div>
+          {caseDetails.leadDefendantDetails.surname},{" "}
+          {caseDetails.leadDefendantDetails.firstNames}
+        </div>
+        <div className={`${classes.namesub}`}>
+          DOB:
+          {formatDate(
+            caseDetails.leadDefendantDetails.dob,
+            CommonDateTimeFormats.ShortDateTextMonth
+          )}
+          . Age: {getAgeFromIsoDate(caseDetails.leadDefendantDetails.dob)}
+        </div>
+      </div>
     </div>
   );
 };
