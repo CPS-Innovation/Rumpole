@@ -8,6 +8,7 @@ import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
 import { RedactionSaveRequest } from "../domain/RedactionSaveRequest";
 import { RedactionSaveResponse } from "../domain/RedactionSaveResponse";
 import { v4 as uuidv4 } from "uuid";
+import { doc } from "prettier";
 
 const CORRELATION_ID = "Correlation-Id";
 
@@ -90,7 +91,11 @@ export const getCaseDocumentsList = async (urn: string, caseId: string) => {
 
   const apiReponse: CaseDocument[] = await response.json();
 
-  return apiReponse;
+  // todo: id is now a number (int)
+  return apiReponse.map((doc) => ({
+    ...doc,
+    documentId: String(doc.documentId),
+  }));
 };
 
 export const getPdfSasUrl = async (pdfBlobName: string) => {
