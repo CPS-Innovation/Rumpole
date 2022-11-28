@@ -6,7 +6,7 @@
 		NotStarted,
 		Running,
 		// ReSharper disable once InconsistentNaming
-		NoDocumentsFoundInCDE,
+		NoDocumentsFoundInDDEI,
 		Completed,
 		Failed,
 		UnableToEvaluateExistingDocuments
