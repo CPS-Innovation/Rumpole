@@ -79,7 +79,7 @@ namespace RumpoleGateway.Functions
 
         private static string EstablishUpstreamToken(HttpRequest req)
         {
-            if (!req.Headers.TryGetValue(AuthenticationKeys.UpstreamTokenName, out var upstreamToken) || string.IsNullOrWhiteSpace(upstreamToken))
+            if (!req.Headers.TryGetValue(HttpHeaderKeys.UpstreamToken, out var upstreamToken) || string.IsNullOrWhiteSpace(upstreamToken))
                 throw new UpstreamAuthenticationException();
 
             return upstreamToken;

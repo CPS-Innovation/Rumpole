@@ -5,10 +5,12 @@
 		None,
 		PdfUploadedToBlob,
 		Indexed,
-		NotFoundInCDE,
+		// ReSharper disable once InconsistentNaming
+		NotFoundInDDEI,
 		UnableToConvertToPdf,
 		UnexpectedFailure,
 		OcrAndIndexFailure,
+		DocumentAlreadyProcessed,
 		DocumentEvaluated,
 		DocumentRemovedFromSearchIndex,
 		UnexpectedSearchIndexRemovalFailure,

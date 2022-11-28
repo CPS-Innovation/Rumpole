@@ -42,7 +42,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
         private void AddAuthHeaders(HttpRequestMessage request, BaseCaseDataArg arg)
         {
             request.Headers.Add(AuthenticationKeys.Authorization, $"{AuthenticationKeys.Bearer} {arg.OnBehalfOfToken}");
-            request.Headers.Add(AuthenticationKeys.UpstreamTokenName, arg.UpstreamToken);
+            request.Headers.Add(HttpHeaderKeys.UpstreamToken, arg.UpstreamToken);
             if (!string.IsNullOrEmpty(_options.AccessKey))
             {
                 request.Headers.Add(_functionKey, _options.AccessKey);
