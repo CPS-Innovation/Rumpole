@@ -1,4 +1,3 @@
-import { Placeholder } from "../../../../common/presentation/components";
 import {
   CommonDateTimeFormats,
   formatDate,

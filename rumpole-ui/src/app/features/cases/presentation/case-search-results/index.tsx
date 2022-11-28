@@ -177,7 +177,7 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       ) : null}
                       <div className={classes["result-offence-line"]}>
                         <span>
-                          {item.isCaseCharged ? "" : "Proposed"} Charges:
+                          {item.isCaseCharged ? "Charges:" : "Proposed:"}
                         </span>
                         <span>{item.headlineCharge.charge}</span>
                       </div>

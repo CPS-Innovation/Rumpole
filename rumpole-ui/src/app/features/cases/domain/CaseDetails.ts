@@ -9,7 +9,7 @@ export type CaseDetails = {
     defendantDetails: DefendantDetails;
     custodyTimeLimit: CustodyTimeLimit;
     charges: Charge[];
-  };
+  }[];
 };
 
 type DefendantDetails = {

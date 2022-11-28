@@ -13,12 +13,13 @@ using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Functions.DocumentExtraction
 {
+    // todo: get rid of this, endpoint serviced in CaseData now
     public class DocumentExtractionGetCaseDocuments : BaseRumpoleFunction
     {
         private readonly IDocumentExtractionClient _documentExtractionClient;
         private readonly ILogger<DocumentExtractionGetCaseDocuments> _logger;
 
-        public DocumentExtractionGetCaseDocuments(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger, 
+        public DocumentExtractionGetCaseDocuments(IDocumentExtractionClient documentExtractionClient, ILogger<DocumentExtractionGetCaseDocuments> logger,
             IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
@@ -39,7 +40,7 @@ namespace RumpoleGateway.Functions.DocumentExtraction
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 

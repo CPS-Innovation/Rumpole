@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { BackLink } from "../../../../common/presentation/components";
 import { PageContentWrapper } from "../../../../common/presentation/components";
-import { Placeholder } from "../../../../common/presentation/components";
 import { WaitPage } from "../../../../common/presentation/components";
 import { Wait as AccordionWait } from "./accordion/Wait";
 import { BackLinkingPageProps } from "../../../../common/presentation/types/BackLinkingPageProps";
@@ -13,6 +12,7 @@ import { useCaseDetailsState } from "../../hooks/use-case-details-state/useCaseD
 import { PdfTabsEmpty } from "./pdf-tabs/PdfTabsEmpty";
 import { SearchBox } from "./search-box/SearchBox";
 import { ResultsModal } from "./results/ResultsModal";
+import { Charges } from "./Charges";
 
 export const path = "/case-details/:urn/:id";
 
@@ -77,11 +77,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
             <div>
               <KeyDetails caseDetails={caseState.data} />
 
-              <Placeholder
-                height={200}
-                marginTop={20}
-                backgroundColor={"#1d70b8"}
-              />
+              <Charges caseDetails={caseState.data} />
 
               <SearchBox
                 data-testid="search-case"
