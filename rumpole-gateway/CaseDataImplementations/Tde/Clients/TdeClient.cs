@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -36,16 +37,30 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
                 arg.CorrelationId
             );
 
+        public async Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg)
+        {
+            try
+            {
+                return await CallTde<IEnumerable<DocumentDetails>>(
+                                () => _tdeClientRequestFactory.CreateListCaseDocumentsRequest(arg),
+                                 arg.CorrelationId
+                            );
+            }
+            catch (HttpException httpException)
+            {
+                if (httpException.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return Enumerable.Empty<DocumentDetails>();
+                }
+                throw;
+            }
 
-        public async Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg) =>
-            await CallTde<IEnumerable<DocumentDetails>>(
-                () => _tdeClientRequestFactory.CreateListCaseDocumentsRequest(arg),
-                 arg.CorrelationId
-            );
+        }
 
         private async Task<T> CallTde<T>(Func<HttpRequestMessage> requestFactory, Guid correlationId)
         {
-            using var response = await _httpClient.SendAsync(requestFactory());
+            var request = requestFactory();
+            using var response = await _httpClient.SendAsync(request);
             try
             {
                 response.EnsureSuccessStatusCode();

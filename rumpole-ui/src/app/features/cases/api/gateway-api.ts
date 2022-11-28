@@ -108,9 +108,11 @@ export const getPdfSasUrl = async (pdfBlobName: string) => {
   return await response.text();
 };
 
-export const initiatePipeline = async (caseId: string) => {
+export const initiatePipeline = async (urn: string, caseId: string) => {
+  const encodedUrn = encodeURIComponent(urn); // todo: dry
   const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/cases/${caseId}?force=true`);
+
+  const path = getFullUrl(`/api/cases/${encodedUrn}/${caseId}?force=true`);
   const response = await fetch(path, {
     headers,
     method: "POST",

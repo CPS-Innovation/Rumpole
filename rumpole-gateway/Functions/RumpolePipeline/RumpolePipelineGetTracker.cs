@@ -15,6 +15,7 @@ using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Extensions;
+using System.Net;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -45,10 +46,11 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
             try
             {
+                caseUrn = WebUtility.UrlDecode(caseUrn); // todo: inject or move to validator
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 

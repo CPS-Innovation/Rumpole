@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
+using System.Net;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -46,23 +47,24 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
             try
             {
+                caseUrn = WebUtility.UrlDecode(caseUrn); // todo: inject or move to validator
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
                 if (string.IsNullOrWhiteSpace(caseUrn))
                     return BadRequestErrorResponse("An empty case URN was received - please correct.", currentCorrelationId, loggingName);
-                
+
                 if (!int.TryParse(caseId, out var _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 var force = false;
                 if (req.Query.ContainsKey("force") && !bool.TryParse(req.Query["force"], out force))
                     return BadRequestErrorResponse("Invalid query string. Force value must be a boolean.", currentCorrelationId, loggingName);
-                
+
                 var scopes = _configuration[ConfigurationKeys.PipelineCoordinatorScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);

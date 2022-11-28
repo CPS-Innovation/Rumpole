@@ -10,14 +10,16 @@ describe("usePipelineApi", () => {
 
     jest
       .spyOn(polling, "initiateAndPoll")
-      .mockImplementation((caseId, pollingDelay, del) => {
+      .mockImplementation((urn, caseId, pollingDelay, del) => {
         new Promise((resolve) => setTimeout(resolve, 50)).then(() =>
           del(expectedResults)
         );
         return () => {};
       });
 
-    const { result, waitForNextUpdate } = renderHook(() => usePipelineApi("1"));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      usePipelineApi("0", "1")
+    );
 
     expect(result.current).toEqual({ status: "initiating", haveData: false });
 

@@ -20,7 +20,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly ISearchIndexClient _searchIndexClient;
         private readonly ILogger<RumpolePipelineQuerySearchIndex> _logger;
 
-        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IAuthorizationValidator tokenValidator) 
+        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
             _searchIndexClient = searchIndexClient;
@@ -40,7 +40,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
