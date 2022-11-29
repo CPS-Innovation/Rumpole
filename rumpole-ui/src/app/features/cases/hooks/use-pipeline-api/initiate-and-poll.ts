@@ -8,7 +8,7 @@ const delay = (delayMs: number) =>
   new Promise((resolve) => setTimeout(resolve, delayMs));
 
 export const initiateAndPoll = (
-  // todo: wrap up in to an object arg
+  // todo: _ wrap up in to an object arg
   urn: string,
   caseId: string,
   delayMs: number,

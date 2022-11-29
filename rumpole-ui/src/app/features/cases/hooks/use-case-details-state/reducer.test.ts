@@ -103,19 +103,19 @@ describe("useCaseDetailsState reducer", () => {
   });
 
   describe("UPDATE_PIPELINE", () => {
-    // it("throws if update pipelineState fails", () => {
-    //   expect(() =>
-    //     reducer({} as CombinedState, {
-    //       type: "UPDATE_PIPELINE",
-    //       payload: {
-    //         status: "failed",
-    //         error: ERROR,
-    //         httpStatusCode: undefined,
-    //         haveData: false,
-    //       },
-    //     })
-    //   ).toThrowError(ERROR);
-    // });
+    it("throws if update pipelineState fails", () => {
+      expect(() =>
+        reducer({} as CombinedState, {
+          type: "UPDATE_PIPELINE",
+          payload: {
+            status: "failed",
+            error: ERROR,
+            httpStatusCode: undefined,
+            haveData: false,
+          },
+        })
+      ).toThrowError(ERROR);
+    });
 
     it("can update from pipeline if initiating", () => {
       const existingPipelineState = {

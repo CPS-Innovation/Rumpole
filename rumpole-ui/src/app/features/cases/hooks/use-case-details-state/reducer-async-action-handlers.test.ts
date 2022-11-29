@@ -63,7 +63,7 @@ describe("reducerAsyncActionHandlers", () => {
   describe("REQUEST_OPEN_PDF", () => {
     it("can open a pdf when auth token and correlation id are retrieved", async () => {
       // arrange
-      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+      jest.spyOn(api, "getBaseCoreHeaders").mockImplementation(() =>
         Promise.resolve({
           "Correlation-Id": "foo",
           Authorization: "bar",
@@ -106,7 +106,7 @@ describe("reducerAsyncActionHandlers", () => {
 
     it("can throw when auth token is not retrieved", async () => {
       // arrange
-      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+      jest.spyOn(api, "getBaseCoreHeaders").mockImplementation(() =>
         Promise.resolve({
           "Correlation-Id": "foo",
           Authorization: "",
@@ -137,7 +137,7 @@ describe("reducerAsyncActionHandlers", () => {
 
     it("can throw when correlation id is not retrieved", async () => {
       // arrange
-      jest.spyOn(api, "getCoreHeadersInitObject").mockImplementation(() =>
+      jest.spyOn(api, "getBaseCoreHeaders").mockImplementation(() =>
         Promise.resolve({
           "Correlation-Id": "",
           Authorization: "foo",

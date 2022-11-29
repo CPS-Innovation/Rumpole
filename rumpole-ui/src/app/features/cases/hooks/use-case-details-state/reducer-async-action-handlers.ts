@@ -3,7 +3,7 @@ import { AsyncActionHandlers } from "use-reducer-async";
 import {
   checkinDocument,
   checkoutDocument,
-  getCoreHeadersInitObject,
+  getBaseCoreHeaders,
   getPdfSasUrl,
   saveRedactions,
 } from "../../api/gateway-api";
@@ -87,7 +87,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     async (action) => {
       const { payload } = action;
 
-      const headers = await getCoreHeadersInitObject();
+      const headers = await getBaseCoreHeaders();
 
       if (!headers.Authorization) {
         throw new Error("Auth token not found when opening pdf.");

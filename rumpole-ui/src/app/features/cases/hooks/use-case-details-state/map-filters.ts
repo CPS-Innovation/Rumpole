@@ -21,7 +21,7 @@ export const mapFilters = (
 
   const orderedDocumentResults = mappedTextSearchResult.documentResults.sort(
     (a, b) =>
-      // todo: get rid of hack
+      // todo: _ get rid of hack
       (a.cmsDocType && a.cmsDocType.name) < (b.cmsDocType && b.cmsDocType.name)
         ? -1
         : (a.cmsDocType && a.cmsDocType.name) >

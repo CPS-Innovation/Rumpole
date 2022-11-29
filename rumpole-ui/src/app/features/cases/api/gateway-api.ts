@@ -8,7 +8,6 @@ import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
 import { RedactionSaveRequest } from "../domain/RedactionSaveRequest";
 import { RedactionSaveResponse } from "../domain/RedactionSaveResponse";
 import { v4 as uuidv4 } from "uuid";
-import { doc } from "prettier";
 
 const CORRELATION_ID = "Correlation-Id";
 
@@ -18,22 +17,26 @@ const getFullUrl = (path: string) => {
 
 const generateCorrelationId = () => uuidv4();
 
-export const getCoreHeadersInitObject = async () => {
+const getCoreHeaders = async (init?: HeadersInit | undefined) => {
+  return new Headers({
+    ...(await getBaseCoreHeaders()),
+    // allow init to override any headers created here
+    ...init,
+  });
+};
+
+const getUpstreamToken = async () => {
+  return Promise.resolve({ "Upstream-Token": "not-implemented-yet" });
+};
+
+export const getBaseCoreHeaders = async () => {
   return {
     [CORRELATION_ID]: generateCorrelationId(),
     Authorization: `Bearer ${
       GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
     }`,
-    "Upstream-Token": "not-implemented-yet", //todo: also, does this need to go on all types of call?
+    "Upstream-Token": "not-implemented-yet", // todo: _ also, does this need to go on all types of call?
   };
-};
-
-const getCoreHeaders = async (init?: HeadersInit | undefined) => {
-  return new Headers({
-    ...(await getCoreHeadersInitObject()),
-    // allow init to override any headers created here
-    ...init,
-  });
 };
 
 export const resolvePdfUrl = (blobName: string) =>
@@ -91,7 +94,7 @@ export const getCaseDocumentsList = async (urn: string, caseId: string) => {
 
   const apiReponse: CaseDocument[] = await response.json();
 
-  // todo: id is now a number (int)
+  // todo: documentId is now a number (int)
   return apiReponse.map((doc) => ({
     ...doc,
     documentId: String(doc.documentId),
@@ -114,7 +117,7 @@ export const getPdfSasUrl = async (pdfBlobName: string) => {
 };
 
 export const initiatePipeline = async (urn: string, caseId: string) => {
-  const encodedUrn = encodeURIComponent(urn); // todo: dry
+  const encodedUrn = encodeURIComponent(urn); // todo: _ dry
   const headers = await getCoreHeaders();
 
   const path = getFullUrl(`/api/cases/${encodedUrn}/${caseId}?force=true`);
@@ -181,6 +184,7 @@ export const checkoutDocument = async (caseId: string, docId: string) => {
 export const checkinDocument = async (caseId: string, docId: string) => {
   const headers = await getCoreHeaders();
   const path = getFullUrl(`/api/documents/checkin/${caseId}/${docId}`);
+
   const response = await fetch(path, {
     headers,
     method: "PUT",
