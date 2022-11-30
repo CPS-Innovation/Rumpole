@@ -1,7 +1,7 @@
 import { searchCase } from "../../api/gateway-api";
 
 export const searchCaseWhenReady = async (
-  id: string,
+  id: number,
   searchTerm: string,
   isPipelineComplete: boolean,
   isDocumentCallComplete: boolean

@@ -10,7 +10,7 @@ const delay = (delayMs: number) =>
 export const initiateAndPoll = (
   // todo: _ wrap up in to an object arg
   urn: string,
-  caseId: string,
+  caseId: number,
   delayMs: number,
   del: (pipelineResults: AsyncPipelineResult<PipelineResults>) => void
 ) => {

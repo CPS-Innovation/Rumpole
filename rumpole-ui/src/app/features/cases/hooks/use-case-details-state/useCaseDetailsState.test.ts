@@ -92,7 +92,7 @@ describe("useCaseDetailsState", () => {
 
   describe("initialisation", () => {
     it("initialises to the expected state", () => {
-      const { result } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      const { result } = renderHook(() => useCaseDetailsState("bar", 1));
 
       const {
         handleOpenPdf,
@@ -114,7 +114,7 @@ describe("useCaseDetailsState", () => {
     });
 
     it("can update state according to the api call results", async () => {
-      renderHook(() => useCaseDetailsState("bar", "foo"));
+      renderHook(() => useCaseDetailsState("bar", 1));
 
       expect(reducerSpy).toBeCalledWith(expect.anything(), {
         type: "UPDATE_CASE_DETAILS",
@@ -147,7 +147,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleClosePdf },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() => handleClosePdf({ tabSafeId: "1" }));
 
@@ -162,7 +162,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleSearchTermChange },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() => handleSearchTermChange("foo"));
 
@@ -179,7 +179,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleLaunchSearchResults },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() => handleLaunchSearchResults());
 
@@ -193,7 +193,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleCloseSearchResults },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() => handleCloseSearchResults());
 
@@ -207,7 +207,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleChangeResultsOrder },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() => handleChangeResultsOrder("byDateDesc"));
 
@@ -222,7 +222,7 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleUpdateFilter },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
       act(() =>
         handleUpdateFilter({ filter: "category", id: "1", isSelected: true })
@@ -246,13 +246,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleOpenPdfInNewTab },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      act(() => handleOpenPdfInNewTab("bar"));
+      act(() => handleOpenPdfInNewTab(2));
 
       expect(mockHandler).toBeCalledWith({
         type: "REQUEST_OPEN_PDF_IN_NEW_TAB",
-        payload: { pdfId: "bar" },
+        payload: { pdfId: 2 },
       });
     });
 
@@ -267,15 +267,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleOpenPdf },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      act(() =>
-        handleOpenPdf({ tabSafeId: "1", documentId: "2", mode: "read" })
-      );
+      act(() => handleOpenPdf({ tabSafeId: "1", documentId: 2, mode: "read" }));
 
       expect(mockHandler).toBeCalledWith({
         type: "REQUEST_OPEN_PDF",
-        payload: { tabSafeId: "1", pdfId: "2", mode: "read" },
+        payload: { tabSafeId: "1", pdfId: 2, mode: "read" },
       });
     });
 
@@ -290,13 +288,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleAddRedaction },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      handleAddRedaction("bar", { type: "redaction" } as NewPdfHighlight);
+      handleAddRedaction(2, { type: "redaction" } as NewPdfHighlight);
 
       expect(mockHandler).toBeCalledWith({
         type: "ADD_REDACTION_AND_POTENTIALLY_LOCK",
-        payload: { pdfId: "bar", redaction: { type: "redaction" } },
+        payload: { pdfId: 2, redaction: { type: "redaction" } },
       });
     });
 
@@ -314,13 +312,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleRemoveRedaction },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      handleRemoveRedaction("bar", "baz");
+      handleRemoveRedaction(2, "baz");
 
       expect(mockHandler).toBeCalledWith({
         type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK",
-        payload: { pdfId: "bar", redactionId: "baz" },
+        payload: { pdfId: 2, redactionId: "baz" },
       });
     });
 
@@ -335,13 +333,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleRemoveAllRedactions },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      handleRemoveAllRedactions("bar");
+      handleRemoveAllRedactions(2);
 
       expect(mockHandler).toBeCalledWith({
         type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK",
-        payload: { pdfId: "bar" },
+        payload: { pdfId: 2 },
       });
     });
 
@@ -356,13 +354,13 @@ describe("useCaseDetailsState", () => {
         result: {
           current: { handleSavedRedactions },
         },
-      } = renderHook(() => useCaseDetailsState("bar", "foo"));
+      } = renderHook(() => useCaseDetailsState("bar", 1));
 
-      handleSavedRedactions("bar");
+      handleSavedRedactions(2);
 
       expect(mockHandler).toBeCalledWith({
         type: "SAVE_REDACTIONS",
-        payload: { pdfId: "bar" },
+        payload: { pdfId: 2 },
       });
     });
   });

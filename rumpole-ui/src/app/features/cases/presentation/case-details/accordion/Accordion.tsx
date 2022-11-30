@@ -9,7 +9,7 @@ type Props = {
   accordionState: AccordionDocumentSection[];
   handleOpenPdf: (caseDocument: {
     tabSafeId: string;
-    documentId: string;
+    documentId: number;
   }) => void;
 };
 

@@ -35,7 +35,7 @@ describe("mapAccordionState", () => {
       status: "succeeded",
       data: [
         {
-          documentId: "1",
+          documentId: 1,
           tabSafeId: "d0",
           category: "category-a",
           fileName: "foo",
@@ -48,7 +48,7 @@ describe("mapAccordionState", () => {
           createdDate: "2020-01-01",
         },
         {
-          documentId: "2",
+          documentId: 2,
           tabSafeId: "d1",
           category: "category-b",
           fileName: "bar",
@@ -73,7 +73,7 @@ describe("mapAccordionState", () => {
           sectionLabel: "category-a",
           docs: [
             {
-              documentId: "1",
+              documentId: 1,
               tabSafeId: "d0",
               category: "category-a",
               fileName: "foo",
@@ -92,7 +92,7 @@ describe("mapAccordionState", () => {
           sectionLabel: "category-b",
           docs: [
             {
-              documentId: "2",
+              documentId: 2,
               tabSafeId: "d1",
               category: "category-b",
               fileName: "bar",

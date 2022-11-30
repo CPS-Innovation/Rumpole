@@ -18,7 +18,7 @@ describe("usePipelineApi", () => {
       });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      usePipelineApi("0", "1")
+      usePipelineApi("0", 1)
     );
 
     expect(result.current).toEqual({ status: "initiating", haveData: false });

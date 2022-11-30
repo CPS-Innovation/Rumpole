@@ -1,5 +1,5 @@
 export type PdfDocument = {
-  documentId: string;
+  documentId: number;
   pdfBlobName: string;
   status:
     | "None"

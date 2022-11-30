@@ -25,8 +25,8 @@ describe("mapDocumentsState", () => {
   });
 
   it("can map CaseDocuments to MappedCaseDocuments", () => {
-    const doc1 = { documentId: "0", fileName: "foo" } as CaseDocument;
-    const doc2 = { documentId: "1", fileName: "bar" } as CaseDocument;
+    const doc1 = { documentId: 0, fileName: "foo" } as CaseDocument;
+    const doc2 = { documentId: 1, fileName: "bar" } as CaseDocument;
 
     const input = {
       status: "succeeded",

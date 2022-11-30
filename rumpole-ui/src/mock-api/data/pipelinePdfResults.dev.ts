@@ -10,52 +10,52 @@ const pipelinePdfResults: PipelineResults = {
   status: "Completed",
   documents: [
     {
-      documentId: "d1",
+      documentId: 1,
       pdfBlobName: "MCLOVEMG3",
       status: "Indexed",
     },
     {
-      documentId: "d2",
+      documentId: 2,
       pdfBlobName: "CM01",
       status: "Indexed",
     },
     {
-      documentId: "d3",
+      documentId: 3,
       pdfBlobName: "MG05MCLOVE",
       status: "Indexed",
     },
     {
-      documentId: "d4",
+      documentId: 4,
       pdfBlobName: "MG06_3June",
       status: "Indexed",
     },
     {
-      documentId: "d5",
+      documentId: 5,
       pdfBlobName: "MG06_10june",
       status: "Indexed",
     },
     {
-      documentId: "d6",
+      documentId: 6,
       pdfBlobName: "MCLOVEMG3",
       status: "Indexed",
     },
     {
-      documentId: "d7",
+      documentId: 7,
       pdfBlobName: "CM01",
       status: "Indexed",
     },
     {
-      documentId: "d8",
+      documentId: 8,
       pdfBlobName: "MG05MCLOVE",
       status: "Indexed",
     },
     {
-      documentId: "d9",
+      documentId: 9,
       pdfBlobName: "MG06_3June",
       status: "Indexed",
     },
     {
-      documentId: "d10",
+      documentId: 10,
       pdfBlobName: "MG06_10june",
       status: "Indexed",
     },

@@ -9,7 +9,7 @@ export default dataSource;
 
 const documents: CaseDocument[] = [
   {
-    documentId: "d1",
+    documentId: 1,
     fileName: "MCLOVEMG3  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -19,7 +19,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d2",
+    documentId: 2,
     fileName: "CM01  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -29,7 +29,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d3",
+    documentId: 3,
     fileName: "MG05MCLOVE very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -39,7 +39,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d4",
+    documentId: 4,
     fileName: "MG06_3June  very long .docx",
     createdDate: "2020-06-03",
     cmsDocType: {
@@ -49,7 +49,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d5",
+    documentId: 5,
     fileName: "MG06_10june  very long .docx",
     createdDate: "2020-06-10",
     cmsDocType: {
@@ -59,7 +59,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d6",
+    documentId: 6,
     fileName: "MCLOVEMG3  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -69,7 +69,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d7",
+    documentId: 7,
     fileName: "CM01  very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -79,7 +79,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d8",
+    documentId: 8,
     fileName: "MG05MCLOVE very long .docx",
     createdDate: "2020-06-02",
     cmsDocType: {
@@ -89,7 +89,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d9",
+    documentId: 9,
     fileName: "MG06_3June  very long .docx",
     createdDate: "2020-06-03",
     cmsDocType: {
@@ -99,7 +99,7 @@ const documents: CaseDocument[] = [
     },
   },
   {
-    documentId: "d10",
+    documentId: 10,
     fileName: "MG06_10june  very long .docx",
     createdDate: "2020-06-10",
     cmsDocType: {

@@ -1,5 +1,5 @@
 export type CaseDocument = {
-  documentId: string;
+  documentId: number;
   fileName: string;
   createdDate: string;
   cmsDocType: {

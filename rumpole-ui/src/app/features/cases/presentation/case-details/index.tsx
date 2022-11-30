@@ -40,7 +40,7 @@ export const Page: React.FC<Props> = ({ backLinkProps }) => {
     handleRemoveAllRedactions,
     handleSavedRedactions,
     handleOpenPdfInNewTab,
-  } = useCaseDetailsState(urn, id);
+  } = useCaseDetailsState(urn, +id);
 
   if (caseState.status === "loading") {
     // if we are waiting on the main case details call, show holding message

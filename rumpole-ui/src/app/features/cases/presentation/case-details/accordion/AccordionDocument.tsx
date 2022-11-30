@@ -10,7 +10,7 @@ type Props = {
   caseDocument: MappedCaseDocument;
   handleOpenPdf: (caseDocument: {
     tabSafeId: string;
-    documentId: string;
+    documentId: number;
   }) => void;
 };
 

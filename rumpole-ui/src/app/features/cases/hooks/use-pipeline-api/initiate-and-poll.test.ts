@@ -28,7 +28,7 @@ describe("initiateAndPoll", () => {
     let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
       "0",
-      "1",
+      1,
       POLLING_INTERVAL_MS,
       (res) => (results = res)
     );
@@ -61,7 +61,7 @@ describe("initiateAndPoll", () => {
 
     const quitFn = initiateAndPoll(
       "0",
-      "1",
+      1,
       POLLING_INTERVAL_MS,
       (res) => (results = res)
     );
@@ -99,7 +99,7 @@ describe("initiateAndPoll", () => {
 
     const quitFn = initiateAndPoll(
       "0",
-      "1",
+      1,
       POLLING_INTERVAL_MS,
       (res) => (results = res)
     );
@@ -136,7 +136,7 @@ describe("initiateAndPoll", () => {
     let results: AsyncPipelineResult<PipelineResults>;
     const quitFn = initiateAndPoll(
       "0",
-      "1",
+      1,
       POLLING_INTERVAL_MS,
       (res) => (results = res)
     );
@@ -190,7 +190,7 @@ describe("initiateAndPoll", () => {
       });
 
     let results: AsyncPipelineResult<PipelineResults>;
-    const quitFn = initiateAndPoll("0", "1", POLLING_INTERVAL_MS, (res) => {
+    const quitFn = initiateAndPoll("0", 1, POLLING_INTERVAL_MS, (res) => {
       results = res;
     });
 

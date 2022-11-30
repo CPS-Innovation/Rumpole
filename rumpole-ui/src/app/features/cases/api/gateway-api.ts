@@ -1,54 +1,43 @@
-import { getAccessToken } from "../../../auth";
 import { ApiError } from "../../../common/errors/ApiError";
-import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../../../config";
+
 import { CaseDocument } from "../domain/CaseDocument";
 import { CaseSearchResult } from "../domain/CaseSearchResult";
 import { PipelineResults } from "../domain/PipelineResults";
 import { ApiTextSearchResult } from "../domain/ApiTextSearchResult";
 import { RedactionSaveRequest } from "../domain/RedactionSaveRequest";
 import { RedactionSaveResponse } from "../domain/RedactionSaveResponse";
-import { v4 as uuidv4 } from "uuid";
+import * as HEADERS from "./header-factory";
+import {
+  buildFullUrl as buildEncodedUrl,
+  fullUrl as buildUnencodedUrl,
+} from "./url-helpers";
 
-const CORRELATION_ID = "Correlation-Id";
-
-const getFullUrl = (path: string) => {
-  return new URL(path, GATEWAY_BASE_URL).toString();
+const buildHeaders = async (
+  ...args: (
+    | Record<string, string>
+    | (() => Record<string, string>)
+    | (() => Promise<Record<string, string>>)
+  )[]
+) => {
+  const headers = [] as Record<string, string>[];
+  for (const arg of args) {
+    const header = typeof arg === "function" ? await arg() : arg; // unwrap if a promise. otherwise all good
+    headers.push(header);
+  }
+  return new Headers(...headers);
 };
 
-const generateCorrelationId = () => uuidv4();
-
-const getCoreHeaders = async (init?: HeadersInit | undefined) => {
-  return new Headers({
-    ...(await getBaseCoreHeaders()),
-    // allow init to override any headers created here
-    ...init,
-  });
-};
-
-const getUpstreamToken = async () => {
-  return Promise.resolve({ "Upstream-Token": "not-implemented-yet" });
-};
-
-export const getBaseCoreHeaders = async () => {
-  return {
-    [CORRELATION_ID]: generateCorrelationId(),
-    Authorization: `Bearer ${
-      GATEWAY_SCOPE ? await getAccessToken([GATEWAY_SCOPE]) : "TEST"
-    }`,
-    "Upstream-Token": "not-implemented-yet", // todo: _ also, does this need to go on all types of call?
-  };
-};
-
-export const resolvePdfUrl = (blobName: string) =>
-  getFullUrl(`/api/pdfs/${blobName}`);
+export const resolvePdfUrl = (blobNameUrlFragment: string) =>
+  buildUnencodedUrl(`/api/pdfs/${blobNameUrlFragment}`);
 
 export const searchUrn = async (urn: string) => {
-  const encodedUrn = encodeURIComponent(urn);
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/urns/${encodedUrn}/cases`);
-  const response = await fetch(path, {
-    headers,
-    method: "GET",
+  const url = buildEncodedUrl({ urn }, ({ urn }) => `/api/urns/${urn}/cases`);
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
   });
 
   if (!response.ok) {
@@ -57,72 +46,81 @@ export const searchUrn = async (urn: string) => {
     if (response.status === 404) {
       return [];
     }
-    throw new ApiError("Search URN failed", path, response);
+    throw new ApiError("Search URN failed", url, response);
   }
 
   return (await response.json()) as CaseSearchResult[];
 };
 
-export const getCaseDetails = async (urn: string, caseId: string) => {
-  const encodedUrn = encodeURIComponent(urn); // todo: dry
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/urns/${encodedUrn}/cases/${caseId}`);
-  const response = await fetch(path, {
-    headers,
-    method: "GET",
+export const getCaseDetails = async (urn: string, caseId: number) => {
+  const url = buildEncodedUrl(
+    { urn, caseId },
+    ({ urn, caseId }) => `/api/urns/${urn}/cases/${caseId}`
+  );
+
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
   });
 
   if (!response.ok) {
-    throw new ApiError("Get Case Details failed", path, response);
+    throw new ApiError("Get Case Details failed", url, response);
   }
 
   return (await response.json()) as CaseSearchResult;
 };
 
-export const getCaseDocumentsList = async (urn: string, caseId: string) => {
-  const encodedUrn = encodeURIComponent(urn); // todo: dry
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/urns/${encodedUrn}/cases/${caseId}/documents`);
-  const response = await fetch(path, {
-    headers,
-    method: "GET",
+export const getCaseDocumentsList = async (urn: string, caseId: number) => {
+  const url = buildEncodedUrl(
+    { urn, caseId },
+    ({ urn, caseId }) => `/api/urns/${urn}/cases/${caseId}/documents`
+  );
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
   });
 
   if (!response.ok) {
-    throw new ApiError("Get Case Documents failed", path, response);
+    throw new ApiError("Get Case Documents failed", url, response);
   }
 
   const apiReponse: CaseDocument[] = await response.json();
 
-  // todo: documentId is now a number (int)
-  return apiReponse.map((doc) => ({
-    ...doc,
-    documentId: String(doc.documentId),
-  }));
+  return apiReponse;
 };
 
 export const getPdfSasUrl = async (pdfBlobName: string) => {
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/pdf/sasUrl/${pdfBlobName}`);
-  const response = await fetch(path, {
-    headers,
-    method: "GET",
+  const url = buildUnencodedUrl(`/api/pdf/sasUrl/${pdfBlobName}`);
+  const response = await fetch(url, {
+    headers: await buildHeaders(HEADERS.correlationId, HEADERS.auth),
   });
 
   if (!response.ok) {
-    throw new ApiError("Get Pdf SasUrl failed", path, response);
+    throw new ApiError("Get Pdf SasUrl failed", url, response);
   }
 
   return await response.text();
 };
 
-export const initiatePipeline = async (urn: string, caseId: string) => {
-  const encodedUrn = encodeURIComponent(urn); // todo: _ dry
-  const headers = await getCoreHeaders();
+export const initiatePipeline = async (urn: string, caseId: number) => {
+  const path = buildEncodedUrl(
+    { urn, caseId },
+    ({ urn, caseId }) => `/api/cases/${urn}/${caseId}?force=true`
+  );
 
-  const path = getFullUrl(`/api/cases/${encodedUrn}/${caseId}?force=true`);
+  const correlationIdHeader = HEADERS.correlationId();
   const response = await fetch(path, {
-    headers,
+    headers: await buildHeaders(
+      correlationIdHeader,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
     method: "POST",
   });
 
@@ -132,31 +130,36 @@ export const initiatePipeline = async (urn: string, caseId: string) => {
 
   const { trackerUrl }: { trackerUrl: string } = await response.json();
 
-  return { trackerUrl, correlationId: headers.get(CORRELATION_ID)! };
+  return { trackerUrl, correlationId: Object.values(correlationIdHeader)[0] };
 };
 
 export const getPipelinePdfResults = async (
   trackerUrl: string,
-  correlationId: string
+  existingCorrelationId: string
 ) => {
-  const headers = await getCoreHeaders({
-    [CORRELATION_ID]: correlationId,
-  });
+  const headers = await buildHeaders(
+    HEADERS.correlationId(existingCorrelationId),
+    HEADERS.auth
+  );
 
   const response = await fetch(trackerUrl, {
     headers,
-    method: "GET",
   });
 
   return (await response.json()) as PipelineResults;
 };
 
-export const searchCase = async (caseId: string, searchTerm: string) => {
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/cases/${caseId}/query/${searchTerm}`);
+export const searchCase = async (caseId: number, searchTerm: string) => {
+  const path = buildEncodedUrl(
+    { caseId, searchTerm },
+    ({ caseId, searchTerm }) => `/api/cases/${caseId}/query/${searchTerm}`
+  );
   const response = await fetch(path, {
-    headers,
-    method: "GET",
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
   });
 
   if (!response.ok) {
@@ -166,56 +169,74 @@ export const searchCase = async (caseId: string, searchTerm: string) => {
   return (await response.json()) as ApiTextSearchResult[];
 };
 
-export const checkoutDocument = async (caseId: string, docId: string) => {
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/documents/checkout/${caseId}/${docId}`);
-  const response = await fetch(path, {
-    headers,
+export const checkoutDocument = async (caseId: number, docId: number) => {
+  const url = buildEncodedUrl(
+    { caseId, docId },
+    ({ caseId, docId }) => `/api/documents/checkout/${caseId}/${docId}`
+  );
+
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
     method: "PUT",
   });
 
   if (!response.ok) {
-    throw new ApiError("Checkout document failed", path, response);
+    throw new ApiError("Checkout document failed", url, response);
   }
 
   return true; // unhappy path not known yet
 };
 
-export const checkinDocument = async (caseId: string, docId: string) => {
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(`/api/documents/checkin/${caseId}/${docId}`);
+export const checkinDocument = async (caseId: number, docId: number) => {
+  const url = buildEncodedUrl(
+    { caseId, docId },
+    ({ caseId, docId }) => `/api/documents/checkout/${caseId}/${docId}`
+  );
 
-  const response = await fetch(path, {
-    headers,
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
     method: "PUT",
   });
 
   if (!response.ok) {
-    throw new ApiError("Checkin document failed", path, response);
+    throw new ApiError("Checkin document failed", url, response);
   }
 
   return true; // unhappy path not known yet
 };
 
 export const saveRedactions = async (
-  caseId: string,
-  docId: string,
+  caseId: number,
+  docId: number,
   fileName: string,
   redactionSaveRequest: RedactionSaveRequest
 ) => {
-  const headers = await getCoreHeaders();
-  const path = getFullUrl(
-    `/api/documents/saveRedactions/${caseId}/${docId}/${fileName}`
+  const url = buildEncodedUrl(
+    { caseId, docId, fileName },
+    ({ caseId, docId, fileName }) =>
+      `/api/documents/saveRedactions/${caseId}/${docId}/${fileName}`
   );
 
-  const response = await fetch(path, {
-    headers,
+  const response = await fetch(url, {
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
     method: "PUT",
     body: JSON.stringify(redactionSaveRequest),
   });
 
   if (!response.ok) {
-    throw new ApiError("Save redactions failed", path, response);
+    throw new ApiError("Save redactions failed", url, response);
   }
 
   return (await response.json()) as RedactionSaveResponse;

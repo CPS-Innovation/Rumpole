@@ -3,7 +3,6 @@ import { AsyncActionHandlers } from "use-reducer-async";
 import {
   checkinDocument,
   checkoutDocument,
-  getBaseCoreHeaders,
   getPdfSasUrl,
   saveRedactions,
 } from "../../api/gateway-api";
@@ -11,6 +10,7 @@ import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 import { mapRedactionSaveRequest } from "./map-redaction-save-request";
 import { reducer } from "./reducer";
+import * as HEADERS from "../../api/header-factory";
 
 const LOCKED_STATES_REQUIRING_UNLOCK: CaseDocumentViewModel["clientLockedState"][] =
   ["locked", "locking"];
@@ -24,39 +24,39 @@ type Action = Parameters<typeof reducer>[1];
 type AsyncActions =
   | {
       type: "ADD_REDACTION_AND_POTENTIALLY_LOCK";
-      payload: { pdfId: string; redaction: NewPdfHighlight };
+      payload: { pdfId: number; redaction: NewPdfHighlight };
     }
   | {
       type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK";
       payload: {
-        pdfId: string;
+        pdfId: number;
         redactionId: string;
       };
     }
   | {
       type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     }
   | {
       type: "SAVE_REDACTIONS";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     }
   | {
       type: "REQUEST_OPEN_PDF";
       payload: {
         tabSafeId: string;
-        pdfId: string;
+        pdfId: number;
         mode: CaseDocumentViewModel["mode"];
       };
     }
   | {
       type: "REQUEST_OPEN_PDF_IN_NEW_TAB";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     };
 
@@ -87,15 +87,10 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     async (action) => {
       const { payload } = action;
 
-      const headers = await getBaseCoreHeaders();
-
-      if (!headers.Authorization) {
-        throw new Error("Auth token not found when opening pdf.");
-      }
-
-      if (!headers["Correlation-Id"]) {
-        throw new Error("Correlation Id not found when opening pdf.");
-      }
+      const headers = new Headers({
+        ...HEADERS.correlationId(),
+        ...(await HEADERS.auth()),
+      });
 
       dispatch({
         type: "OPEN_PDF",
