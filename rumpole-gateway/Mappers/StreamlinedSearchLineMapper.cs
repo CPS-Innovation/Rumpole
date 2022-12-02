@@ -18,7 +18,7 @@ namespace RumpoleGateway.Mappers
         
         public StreamlinedSearchLine Map(SearchLine searchLine, Guid correlationId)
         {
-            _logger.LogMethodEntry(correlationId, nameof(Map), searchLine.ToJson());
+            _logger.LogMethodEntry(correlationId, nameof(Map), string.Empty);
             
             var streamlinedSearchLine = new StreamlinedSearchLine
             {
@@ -30,10 +30,12 @@ namespace RumpoleGateway.Mappers
                 PageIndex = searchLine.PageIndex,
                 PageHeight = searchLine.PageHeight,
                 PageWidth = searchLine.PageWidth,
+                FileName = searchLine.FileName,
+                VersionId = searchLine.VersionId,
                 Words = new List<StreamlinedWord>()
             };
 
-            _logger.LogMethodExit(correlationId, nameof(Map), streamlinedSearchLine.ToJson());
+            _logger.LogMethodExit(correlationId, nameof(Map), string.Empty);
             return streamlinedSearchLine;
         }
     }
