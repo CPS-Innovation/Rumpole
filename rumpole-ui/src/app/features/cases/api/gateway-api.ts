@@ -19,12 +19,13 @@ const buildHeaders = async (
     | (() => Promise<Record<string, string>>)
   )[]
 ) => {
-  const headers = [] as Record<string, string>[];
+  let headers = {} as Record<string, string>;
   for (const arg of args) {
     const header = typeof arg === "function" ? await arg() : arg; // unwrap if a promise. otherwise all good
-    headers.push(header);
+    headers = { ...headers, ...header };
   }
-  return new Headers(...headers);
+  console.log(headers);
+  return headers;
 };
 
 export const resolvePdfUrl = (blobNameUrlFragment: string) =>
@@ -32,12 +33,13 @@ export const resolvePdfUrl = (blobNameUrlFragment: string) =>
 
 export const searchUrn = async (urn: string) => {
   const url = buildEncodedUrl({ urn }, ({ urn }) => `/api/urns/${urn}/cases`);
+  const headers = await buildHeaders(
+    HEADERS.correlationId,
+    HEADERS.auth,
+    HEADERS.upstreamHeader
+  );
   const response = await fetch(url, {
-    headers: await buildHeaders(
-      HEADERS.correlationId,
-      HEADERS.auth,
-      HEADERS.upstreamHeader
-    ),
+    headers,
   });
 
   if (!response.ok) {

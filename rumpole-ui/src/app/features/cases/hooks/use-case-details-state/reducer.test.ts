@@ -649,7 +649,7 @@ describe("useCaseDetailsState reducer", () => {
               "Correlation-Id": "bar1",
             } as HeadersInit,
             items: [
-              { documentId: "d0", mode: "read" },
+              { documentId: 0, mode: "read" },
               {
                 documentId: 1,
                 mode: "search",
@@ -1506,16 +1506,16 @@ describe("useCaseDetailsState reducer", () => {
             data: {
               documentResults: [
                 {
-                  documentId: "1",
+                  documentId: 1,
                   isVisible: true,
                   occurrencesInDocumentCount: 2,
                 },
                 {
-                  documentId: "2",
+                  documentId: 2,
                   isVisible: false,
                   occurrencesInDocumentCount: 3,
                 },
-                { documentId: "3", occurrencesInDocumentCount: 7 },
+                { documentId: 3, occurrencesInDocumentCount: 7 },
               ],
               filteredDocumentCount: 1,
               filteredOccurrencesCount: 2,

@@ -79,27 +79,27 @@ describe("sortMappedTextSearchResult", () => {
       documentResults: [
         {
           createdDate: "2022-01-09",
-          documentId: "3",
+          documentId: 3,
           occurrencesInDocumentCount: 13,
         },
         {
           createdDate: "2022-01-08",
-          documentId: "4",
+          documentId: 4,
           occurrencesInDocumentCount: 2,
         },
         {
           createdDate: "2022-01-10",
-          documentId: "5",
+          documentId: 5,
           occurrencesInDocumentCount: 1,
         },
         {
           createdDate: "2022-01-07",
-          documentId: "2",
+          documentId: 2,
           occurrencesInDocumentCount: 1,
         },
         {
           createdDate: "2022-01-07",
-          documentId: "1",
+          documentId: 1,
           occurrencesInDocumentCount: 1,
         },
       ],

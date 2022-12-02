@@ -7,29 +7,27 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
-using RumpoleGateway.Domain.CoreDataApi;
-using RumpoleGateway.Helpers.Extension;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 using RumpoleGateway.Domain.CaseData;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Extensions;
 using RumpoleGateway.Services;
 using RumpoleGateway.Factories;
+using RumpoleGateway.Domain.Exceptions;
 
-namespace RumpoleGateway.Functions.CoreDataApi.Case
+namespace RumpoleGateway.Functions.CaseDataApi.Case
 {
-    public class CoreDataApiCaseDetails : BaseRumpoleFunction
+    public class CaseDataApiCaseDetails : BaseRumpoleFunction
     {
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICaseDataService _caseDataService;
         private readonly IConfiguration _configuration;
         private readonly ICaseDataArgFactory _caseDataArgFactory;
-        private readonly ILogger<CoreDataApiCaseDetails> _logger;
+        private readonly ILogger<CaseDataApiCaseDetails> _logger;
 
-        public CoreDataApiCaseDetails(ILogger<CoreDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICaseDataService caseDataService,
+        public CaseDataApiCaseDetails(ILogger<CaseDataApiCaseDetails> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICaseDataService caseDataService,
                                  IConfiguration configuration, IAuthorizationValidator tokenValidator, ICaseDataArgFactory caseDataArgFactory)
         : base(logger, tokenValidator)
         {
@@ -40,13 +38,13 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
             _logger = logger;
         }
 
-        [FunctionName("CoreDataApiCaseDetails")]
+        [FunctionName("CaseDataApiCaseDetails")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}")] HttpRequest req, string urn, int caseId)
         {
             Guid currentCorrelationId = default;
             string upstreamToken = null;
-            const string loggingName = "CoreDataApiCaseDetails - Run";
+            const string loggingName = "CaseDataApiCaseDetails - Run";
             CaseDetails caseDetails = null;
 
             try
@@ -75,7 +73,7 @@ namespace RumpoleGateway.Functions.CoreDataApi.Case
                 return exception switch
                 {
                     MsalException => InternalServerErrorResponse(exception, "An MSAL exception occurred.", currentCorrelationId, loggingName),
-                    CoreDataApiException => InternalServerErrorResponse(exception, "A core data api exception occurred.", currentCorrelationId, loggingName),
+                    CaseDataServiceException => InternalServerErrorResponse(exception, "A case data api exception occurred.", currentCorrelationId, loggingName),
                     _ => InternalServerErrorResponse(exception, "An unhandled exception occurred.", currentCorrelationId, loggingName)
                 };
             }

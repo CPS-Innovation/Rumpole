@@ -10,7 +10,6 @@ public static class ConfigurationKeys
     public const string ClientId = "OnBehalfOfTokenClientId";
     public const string ClientSecret = "OnBehalfOfTokenClientSecret";
     public const string ValidAudience = "CallingAppValidAudience";
-    public const string CoreDataApiUrl = "CoreDataApiUrl";
     public const string CoreDataApiScope = "CoreDataApiScope";
     public const string StubBlobStorageConnectionString = "StubBlobStorageConnectionString";
     public const string PipelineCoordinatorBaseUrl = "RumpolePipelineCoordinatorBaseUrl";
@@ -37,5 +36,5 @@ public static class ValidRoles
 public static class HttpHeaderKeys
 {
     public const string CorrelationId = "Correlation-Id";
-    public const string UpstreamToken = "upstream-token";
+    public const string UpstreamToken = "Upstream-Token";
 }

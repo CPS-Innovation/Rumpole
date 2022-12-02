@@ -110,7 +110,7 @@ describe("useCaseDetailsState", () => {
         ...stateProperties
       } = result.current;
 
-      expect(stateProperties).toEqual({ caseId: "foo", ...initialState });
+      expect(stateProperties).toEqual({ caseId: 1, ...initialState });
     });
 
     it("can update state according to the api call results", async () => {

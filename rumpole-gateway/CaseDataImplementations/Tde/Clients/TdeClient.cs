@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseData.Args;
-using RumpoleGateway.Exceptions;
+using RumpoleGateway.Domain.Exceptions;
 using RumpoleGateway.CaseDataImplementations.Tde.Domain;
 using RumpoleGateway.CaseDataImplementations.Tde.Factories;
 using RumpoleGateway.Wrappers;
+using RumpoleGateway.CaseDataImplementations.Tde.Domain.Exceptions;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
 {
@@ -46,7 +47,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
                                  arg.CorrelationId
                             );
             }
-            catch (HttpException httpException)
+            catch (TdeClientException httpException)
             {
                 if (httpException.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -67,7 +68,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
             }
             catch (HttpRequestException exception)
             {
-                throw new HttpException(response.StatusCode, exception);
+                throw new TdeClientException(response.StatusCode, exception);
             }
 
             var content = await response.Content.ReadAsStringAsync();

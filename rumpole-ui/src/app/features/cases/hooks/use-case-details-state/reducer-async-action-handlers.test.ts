@@ -332,7 +332,7 @@ describe("reducerAsyncActionHandlers", () => {
         expect(dispatchMock.mock.calls.length).toBe(1);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
           type: "REMOVE_REDACTION",
-          payload: { pdfId: "foo", redactionId: "bar" },
+          payload: { pdfId: 1, redactionId: "bar" },
         });
       }
     );
@@ -610,12 +610,7 @@ describe("reducerAsyncActionHandlers", () => {
       });
 
       // assert
-      expect(saveSpy).toBeCalledWith(
-        "bar",
-        "foo",
-        "baz",
-        mockRedactionSaveRequest
-      );
+      expect(saveSpy).toBeCalledWith(2, 1, "baz", mockRedactionSaveRequest);
       expect(checkInSpy).toBeCalledWith(2, 1);
     });
   });

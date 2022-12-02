@@ -1,6 +1,5 @@
 ﻿using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
-using RumpoleGateway.Domain.CoreDataApi;
 using RumpoleGateway.CaseDataImplementations.Cda.Domain.ResponseTypes;
 using RumpoleGateway.CaseDataImplementations.Cda.Domain.CaseDetails;
 using System;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Extensions;
 using RumpoleGateway.CaseDataImplementations.Cda.Factories;
+using RumpoleGateway.CaseDataImplementations.Cda.Exceptions;
 
 namespace RumpoleGateway.CaseDataImplementations.Cda.Clients
 {

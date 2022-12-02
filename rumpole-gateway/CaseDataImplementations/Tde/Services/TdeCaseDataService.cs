@@ -8,6 +8,7 @@ using RumpoleGateway.Factories;
 using RumpoleGateway.CaseDataImplementations.Tde.Clients;
 using RumpoleGateway.Services;
 using RumpoleGateway.CaseDataImplementations.Tde.Mappers;
+using RumpoleGateway.Domain.Exceptions;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Services
 {
@@ -32,31 +33,52 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
 
         public async Task<IEnumerable<CaseDetails>> ListCases(UrnArg arg)
         {
-            var caseIdentifiers = await _tdeClient.ListCaseIdsAsync(arg);
+            try
+            {
+                var caseIdentifiers = await _tdeClient.ListCaseIdsAsync(arg);
 
-            var calls = caseIdentifiers.Select(async caseIdentifier =>
-                 await _tdeClient.GetCaseAsync(_caseDataServiceArgFactory.CreateCaseArgFromUrnArg(arg, caseIdentifier.Id)));
+                var calls = caseIdentifiers.Select(async caseIdentifier =>
+                     await _tdeClient.GetCaseAsync(_caseDataServiceArgFactory.CreateCaseArgFromUrnArg(arg, caseIdentifier.Id)));
 
-            var cases = await Task.WhenAll(calls);
+                var cases = await Task.WhenAll(calls);
 
-            return cases.Select(@case => _caseDetailsMapper.MapCaseDetails(@case));
+                return cases.Select(@case => _caseDetailsMapper.MapCaseDetails(@case));
+            }
+            catch (Exception exception)
+            {
+                throw new CaseDataServiceException("Exception in ListCases", exception);
+            }
         }
 
         public async Task<CaseDetailsFull> GetCase(CaseArg arg)
         {
-            var @case = await _tdeClient.GetCaseAsync(arg);
-            return _caseDetailsMapper.MapCaseDetails(@case);
+            try
+            {
+                var @case = await _tdeClient.GetCaseAsync(arg);
+                return _caseDetailsMapper.MapCaseDetails(@case);
+            }
+            catch (Exception exception)
+            {
+                throw new CaseDataServiceException("Exception in GetCase", exception);
+            }
         }
 
         public async Task<IEnumerable<DocumentDetails>> ListDocuments(CaseArg arg)
         {
-            var documents = await _tdeClient.ListCaseDocumentsAsync(arg);
+            try
+            {
+                var documents = await _tdeClient.ListCaseDocumentsAsync(arg);
 
-            return documents
-                .Select(document => _caseDocumentsMapper.MapDocumentDetails(document))
-                // todo: we get empty filenames coming back from TDE
-                .Where(document => !string.IsNullOrWhiteSpace(document.FileName));
+                return documents
+                    .Select(document => _caseDocumentsMapper.MapDocumentDetails(document))
+                    // todo: we get empty filenames coming back from TDE
+                    .Where(document => !string.IsNullOrWhiteSpace(document.FileName));
+            }
+
+            catch (Exception exception)
+            {
+                throw new CaseDataServiceException("Exception in ListDocuments", exception);
+            }
         }
-
     }
 }
