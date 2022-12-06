@@ -40,7 +40,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseUrn}/{caseId}")] HttpRequest req, string caseUrn, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/{caseUrn}/cases/{caseId}")] HttpRequest req, string caseUrn, string caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineTriggerCoordinator - Run";

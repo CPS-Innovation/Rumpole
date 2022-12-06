@@ -87,10 +87,11 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     async (action) => {
       const { payload } = action;
 
-      const headers = new Headers({
+      const headers = {
         ...HEADERS.correlationId(),
         ...(await HEADERS.auth()),
-      });
+        ...(await HEADERS.upstreamHeader()),
+      };
 
       dispatch({
         type: "OPEN_PDF",

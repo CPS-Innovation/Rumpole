@@ -5,4 +5,4 @@ import { CaseDetails } from "./CaseDetails";
 //  so lets at least give search results their own type name, but base it
 //  off the CaseDetails model.
 
-export type CaseSearchResult = CaseDetails;
+export type CaseSearchResult = Omit<CaseDetails, "defendants">;

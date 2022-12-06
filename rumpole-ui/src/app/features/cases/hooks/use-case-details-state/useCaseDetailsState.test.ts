@@ -13,6 +13,7 @@ import * as reducer from "./reducer";
 import { act } from "react-dom/test-utils";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 import { reducerAsyncActionHandlers } from "./reducer-async-action-handlers";
+import { CaseDetails } from "../../domain/CaseDetails";
 
 type ReducerParams = Parameters<typeof reducer.reducer>;
 let reducerSpy: jest.SpyInstance<ReducerParams[0]>;
@@ -26,7 +27,7 @@ describe("useCaseDetailsState", () => {
       .mockImplementation(
         () =>
           new Promise((resolve) =>
-            setTimeout(() => resolve({} as CaseSearchResult), 100)
+            setTimeout(() => resolve({} as CaseDetails), 100)
           )
       );
 

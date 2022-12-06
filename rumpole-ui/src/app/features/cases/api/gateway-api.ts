@@ -11,6 +11,7 @@ import {
   buildFullUrl as buildEncodedUrl,
   fullUrl as buildUnencodedUrl,
 } from "./url-helpers";
+import { CaseDetails } from "../domain/CaseDetails";
 
 const buildHeaders = async (
   ...args: (
@@ -24,7 +25,7 @@ const buildHeaders = async (
     const header = typeof arg === "function" ? await arg() : arg; // unwrap if a promise. otherwise all good
     headers = { ...headers, ...header };
   }
-  console.log(headers);
+
   return headers;
 };
 
@@ -72,7 +73,7 @@ export const getCaseDetails = async (urn: string, caseId: number) => {
     throw new ApiError("Get Case Details failed", url, response);
   }
 
-  return (await response.json()) as CaseSearchResult;
+  return (await response.json()) as CaseDetails;
 };
 
 export const getCaseDocumentsList = async (urn: string, caseId: number) => {
@@ -100,7 +101,11 @@ export const getCaseDocumentsList = async (urn: string, caseId: number) => {
 export const getPdfSasUrl = async (pdfBlobName: string) => {
   const url = buildUnencodedUrl(`/api/pdf/sasUrl/${pdfBlobName}`);
   const response = await fetch(url, {
-    headers: await buildHeaders(HEADERS.correlationId, HEADERS.auth),
+    headers: await buildHeaders(
+      HEADERS.correlationId,
+      HEADERS.auth,
+      HEADERS.upstreamHeader
+    ),
   });
 
   if (!response.ok) {
@@ -113,7 +118,7 @@ export const getPdfSasUrl = async (pdfBlobName: string) => {
 export const initiatePipeline = async (urn: string, caseId: number) => {
   const path = buildEncodedUrl(
     { urn, caseId },
-    ({ urn, caseId }) => `/api/cases/${urn}/${caseId}?force=true`
+    ({ urn, caseId }) => `/api/urns/${urn}/cases/${caseId}?force=true`
   );
 
   const correlationIdHeader = HEADERS.correlationId();
@@ -141,7 +146,8 @@ export const getPipelinePdfResults = async (
 ) => {
   const headers = await buildHeaders(
     HEADERS.correlationId(existingCorrelationId),
-    HEADERS.auth
+    HEADERS.auth,
+    HEADERS.upstreamHeader
   );
 
   const response = await fetch(trackerUrl, {
