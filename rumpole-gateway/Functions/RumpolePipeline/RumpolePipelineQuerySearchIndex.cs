@@ -64,7 +64,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             }
             finally
             {
-                _logger.LogMethodExit(currentCorrelationId, loggingName, searchResults.ToJson());
+                _logger.LogMethodExit(currentCorrelationId, loggingName, string.Empty);
             }
         }
     }

@@ -9,11 +9,17 @@ namespace RumpoleGateway.Domain.RumpolePipeline
         public string Id { get; set; }
 
         [JsonProperty("caseId")]
-        public int CaseId { get; set; }
+        public long CaseId { get; set; }
 
         [JsonProperty("documentId")]
         public string DocumentId { get; set; }
+    
+        [JsonProperty("versionId")]
+        public long VersionId { get; set; }
 
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+    
         [JsonProperty("pageIndex")]
         public int PageIndex { get; set; }
 

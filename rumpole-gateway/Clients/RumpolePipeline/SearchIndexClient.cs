@@ -45,7 +45,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
 
 			_logger.LogMethodFlow(correlationId, nameof(Query), $"Found {searchLines.Count} results, building streamlined search results");
             var results = BuildStreamlinedResults(searchLines, searchTerm, correlationId);
-            _logger.LogMethodExit(correlationId, nameof(Query), results.ToJson());
+            _logger.LogMethodExit(correlationId, nameof(Query), string.Empty);
             return results;
 		}
 

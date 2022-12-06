@@ -29,7 +29,7 @@ namespace RumpoleGateway.Factories
                 streamlinedSearchLine.Words.Add(_streamlinedSearchWordMapper.Map(word, searchTerm, correlationId));
             }
 
-            _logger.LogMethodExit(correlationId, nameof(Create), streamlinedSearchLine.ToJson());
+            _logger.LogMethodExit(correlationId, nameof(Create), string.Empty);
             return streamlinedSearchLine;
         }
     }
