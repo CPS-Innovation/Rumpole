@@ -1,9 +1,7 @@
 import { CaseDocument } from "../../app/features/cases/domain/CaseDocument";
 import { DocumentsDataSource } from "./types/DocumentsDataSource";
 
-const dataSource: DocumentsDataSource = (id: string) => ({
-  caseDocuments: documents,
-});
+const dataSource: DocumentsDataSource = (id: number) => documents;
 
 export default dataSource;
 

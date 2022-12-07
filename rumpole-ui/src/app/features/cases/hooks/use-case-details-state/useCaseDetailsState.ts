@@ -43,7 +43,6 @@ export const useCaseDetailsState = (urn: string, id: number) => {
     { ...initialState, caseId: id },
     reducerAsyncActionHandlers
   );
-  console.log(combinedState);
 
   useEffect(
     () => dispatch({ type: "UPDATE_CASE_DETAILS", payload: caseState }),

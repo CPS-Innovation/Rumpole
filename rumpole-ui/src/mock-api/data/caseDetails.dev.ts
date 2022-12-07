@@ -3,7 +3,7 @@ import { CaseDetails } from "../../app/features/cases/domain/CaseDetails";
 import { CaseDetailsDataSource } from "./types/CaseDetailsDataSource";
 
 const dataSource: CaseDetailsDataSource = (id) =>
-  caseDetails.find((item) => String(item.id) === id);
+  caseDetails.find((item) => item.id === id);
 
 export default dataSource;
 

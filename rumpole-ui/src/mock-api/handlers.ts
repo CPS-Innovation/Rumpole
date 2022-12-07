@@ -80,7 +80,7 @@ export const setupHandlers = ({
       const { caseId } = req.params;
 
       const result = {
-        ...caseDetailsDataSources[sourceName](caseId),
+        ...caseDetailsDataSources[sourceName](+caseId),
         uniqueReferenceNumber: lastRequestedUrnCache.urn || "99ZZ9999999",
       };
 
@@ -90,16 +90,18 @@ export const setupHandlers = ({
     rest.get(makeApiPath(routes.DOCUMENTS_ROUTE), (req, res, ctx) => {
       const { caseId } = req.params;
 
-      const result = documentsDataSources[sourceName](caseId);
+      const result = documentsDataSources[sourceName](+caseId);
 
       return res(delay(ctx), ctx.json(result));
     }),
 
     rest.post(makeApiPath(routes.INITIATE_PIPELINE_ROUTE), (req, res, ctx) => {
-      const { caseId } = req.params;
+      const { caseId, urn } = req.params;
       return res(
         delay(ctx),
-        ctx.json({ trackerUrl: makeApiPath(`api/cases/${caseId}/tracker`) })
+        ctx.json({
+          trackerUrl: makeApiPath(`api/urns/${urn}/cases/${caseId}/tracker`),
+        })
       );
     }),
 
