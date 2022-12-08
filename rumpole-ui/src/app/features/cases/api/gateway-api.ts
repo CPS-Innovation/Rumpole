@@ -157,10 +157,15 @@ export const getPipelinePdfResults = async (
   return (await response.json()) as PipelineResults;
 };
 
-export const searchCase = async (caseId: number, searchTerm: string) => {
+export const searchCase = async (
+  urn: string,
+  caseId: number,
+  searchTerm: string
+) => {
   const path = buildEncodedUrl(
-    { caseId, searchTerm },
-    ({ caseId, searchTerm }) => `/api/cases/${caseId}/query/${searchTerm}`
+    { caseId, searchTerm, urn },
+    ({ caseId, searchTerm, urn }) =>
+      `/api/urns/${urn}cases/${caseId}/query/${searchTerm}`
   );
   const response = await fetch(path, {
     headers: await buildHeaders(

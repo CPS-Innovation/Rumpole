@@ -38,7 +38,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineGetTracker")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{caseUrn}/cases/{caseId}/tracker")] HttpRequest req, string caseUrn, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}/tracker")] HttpRequest req, string urn, string caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineGetTracker - Run";
@@ -46,7 +46,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
             try
             {
-                caseUrn = WebUtility.UrlDecode(caseUrn); // todo: inject or move to validator
+                urn = WebUtility.UrlDecode(urn); // todo: inject or move to validator
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
@@ -54,7 +54,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                if (string.IsNullOrWhiteSpace(caseUrn))
+                if (string.IsNullOrWhiteSpace(urn))
                     return BadRequestErrorResponse("A case URN was expected", currentCorrelationId, loggingName);
 
                 if (!int.TryParse(caseId, out _))
@@ -65,9 +65,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), coordinatorScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting tracker details for caseId {caseId}");
-                tracker = await _pipelineClient.GetTrackerAsync(caseUrn, caseId, onBehalfOfAccessToken, currentCorrelationId);
+                tracker = await _pipelineClient.GetTrackerAsync(urn, caseId, onBehalfOfAccessToken, currentCorrelationId);
 
-                return tracker == null ? NotFoundErrorResponse($"No tracker found for case Urn '{caseUrn}', case id '{caseId}'.", currentCorrelationId, loggingName) : new OkObjectResult(tracker);
+                return tracker == null ? NotFoundErrorResponse($"No tracker found for case Urn '{urn}', case id '{caseId}'.", currentCorrelationId, loggingName) : new OkObjectResult(tracker);
             }
             catch (Exception exception)
             {

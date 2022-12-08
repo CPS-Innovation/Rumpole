@@ -61,6 +61,7 @@ export const useCaseDetailsState = (urn: string, id: number) => {
 
   const searchResults = useApi(
     searchCaseWhenReady,
+    urn,
     id,
     combinedState.searchState.submittedSearchTerm,
     //  Note: we let the user trigger a search without the pipeline being ready.
