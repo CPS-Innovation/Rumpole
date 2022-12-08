@@ -12,14 +12,14 @@ using RumpoleGateway.Domain.Exceptions;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Services
 {
-    public class TdeCaseDataService : ICaseDataService
+    public class TdeService : ICaseDataService, IDocumentService
     {
         private readonly ITdeClient _tdeClient;
         private readonly ICaseDataArgFactory _caseDataServiceArgFactory;
         private readonly ICaseDetailsMapper _caseDetailsMapper;
         private readonly ICaseDocumentsMapper _caseDocumentsMapper;
 
-        public TdeCaseDataService(
+        public TdeService(
             ITdeClient tdeClient,
             ICaseDataArgFactory caseDataServiceArgFactory,
             ICaseDetailsMapper caseDetailsMapper,
@@ -78,6 +78,30 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
             catch (Exception exception)
             {
                 throw new CaseDataServiceException("Exception in ListDocuments", exception);
+            }
+        }
+
+        public async Task CheckoutDocument(DocumentArg arg)
+        {
+            try
+            {
+                await _tdeClient.CheckoutDocument(arg);
+            }
+            catch (Exception exception)
+            {
+                throw new DocumentServiceException("Exception in CheckoutDocument", exception);
+            }
+        }
+
+        public async Task CancelCheckoutDocument(DocumentArg arg)
+        {
+            try
+            {
+                await _tdeClient.CancelCheckoutDocument(arg);
+            }
+            catch (Exception exception)
+            {
+                throw new DocumentServiceException("Exception in CheckoutDocument", exception);
             }
         }
     }

@@ -31,16 +31,16 @@ export const initialState = {
     missingDocs: [],
     results: { status: "loading" },
   },
-} as Omit<CombinedState, "caseId">;
+} as Omit<CombinedState, "caseId" | "urn">;
 
-export const useCaseDetailsState = (urn: string, id: number) => {
-  const caseState = useApi(getCaseDetails, urn, id);
-  const documentsState = useApi(getCaseDocumentsList, urn, id);
-  const pipelineState = usePipelineApi(urn, id);
+export const useCaseDetailsState = (urn: string, caseId: number) => {
+  const caseState = useApi(getCaseDetails, urn, caseId);
+  const documentsState = useApi(getCaseDocumentsList, urn, caseId);
+  const pipelineState = usePipelineApi(urn, caseId);
 
   const [combinedState, dispatch] = useReducerAsync(
     reducer,
-    { ...initialState, caseId: id },
+    { ...initialState, caseId, urn },
     reducerAsyncActionHandlers
   );
 
@@ -62,7 +62,7 @@ export const useCaseDetailsState = (urn: string, id: number) => {
   const searchResults = useApi(
     searchCaseWhenReady,
     urn,
-    id,
+    caseId,
     combinedState.searchState.submittedSearchTerm,
     //  Note: we let the user trigger a search without the pipeline being ready.
     //  If we additionally observe the complete-state of the pipeline here, we can ensure that a search

@@ -182,10 +182,15 @@ export const searchCase = async (
   return (await response.json()) as ApiTextSearchResult[];
 };
 
-export const checkoutDocument = async (caseId: number, docId: number) => {
+export const checkoutDocument = async (
+  urn: string,
+  caseId: number,
+  docId: number
+) => {
   const url = buildEncodedUrl(
     { caseId, docId },
-    ({ caseId, docId }) => `/api/documents/checkout/${caseId}/${docId}`
+    ({ caseId, docId }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/checkout`
   );
 
   const response = await fetch(url, {
@@ -194,7 +199,7 @@ export const checkoutDocument = async (caseId: number, docId: number) => {
       HEADERS.auth,
       HEADERS.upstreamHeader
     ),
-    method: "PUT",
+    method: "POST",
   });
 
   if (!response.ok) {
@@ -204,10 +209,15 @@ export const checkoutDocument = async (caseId: number, docId: number) => {
   return true; // unhappy path not known yet
 };
 
-export const checkinDocument = async (caseId: number, docId: number) => {
+export const checkinDocument = async (
+  urn: string,
+  caseId: number,
+  docId: number
+) => {
   const url = buildEncodedUrl(
     { caseId, docId },
-    ({ caseId, docId }) => `/api/documents/checkout/${caseId}/${docId}`
+    ({ caseId, docId }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/checkout`
   );
 
   const response = await fetch(url, {
@@ -216,7 +226,7 @@ export const checkinDocument = async (caseId: number, docId: number) => {
       HEADERS.auth,
       HEADERS.upstreamHeader
     ),
-    method: "PUT",
+    method: "DELETE",
   });
 
   if (!response.ok) {

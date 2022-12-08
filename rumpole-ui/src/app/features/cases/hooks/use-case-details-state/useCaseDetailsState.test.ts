@@ -2,7 +2,6 @@ import { useCaseDetailsState, initialState } from "./useCaseDetailsState";
 import * as searchCaseWhenReady from "./search-case-when-ready";
 import * as api from "../../api/gateway-api";
 import * as pipelineApi from "../use-pipeline-api/usePipelineApi";
-import { CaseSearchResult } from "../../domain/CaseSearchResult";
 import { CaseDocument } from "../../domain/CaseDocument";
 import { ApiTextSearchResult } from "../../domain/ApiTextSearchResult";
 import { PipelineResults } from "../../domain/PipelineResults";
@@ -111,7 +110,11 @@ describe("useCaseDetailsState", () => {
         ...stateProperties
       } = result.current;
 
-      expect(stateProperties).toEqual({ caseId: 1, ...initialState });
+      expect(stateProperties).toEqual({
+        caseId: 1,
+        urn: "bar",
+        ...initialState,
+      });
     });
 
     it("can update state according to the api call results", async () => {

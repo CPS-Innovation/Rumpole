@@ -39,6 +39,20 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
             return request;
         }
 
+        public HttpRequestMessage CreateCheckoutDocumentRequest(DocumentArg arg)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.DocumentId}/checkout");
+            AddAuthHeaders(request, arg);
+            return request;
+        }
+
+        public HttpRequestMessage CreateCancelCheckoutDocumentRequest(DocumentArg arg)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.DocumentId}/checkout");
+            AddAuthHeaders(request, arg);
+            return request;
+        }
+
         private void AddAuthHeaders(HttpRequestMessage request, BaseCaseDataArg arg)
         {
             request.Headers.Add(AuthenticationKeys.Authorization, $"{AuthenticationKeys.Bearer} {arg.OnBehalfOfToken}");

@@ -108,6 +108,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const { clientLockedState } = items.find(
@@ -128,7 +129,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "locking" },
       });
 
-      const isLockSuccessful = await checkoutDocument(caseId, pdfId);
+      const isLockSuccessful = await checkoutDocument(urn, caseId, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -148,6 +149,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const document = items.find((item) => item.documentId === pdfId)!;
@@ -170,7 +172,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(caseId, pdfId);
+      await checkinDocument(urn, caseId, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -190,6 +192,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const document = items.find((item) => item.documentId === pdfId)!;
@@ -210,7 +213,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(caseId, pdfId);
+      await checkinDocument(urn, caseId, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -230,6 +233,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const { redactionHighlights, pdfBlobName } = items.find(
@@ -253,7 +257,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       window.open(response.redactedDocumentUrl);
 
       // todo: does a save IN THE CGI API check a document in automatically?
-      await checkinDocument(caseId, pdfId);
+      await checkinDocument(urn, caseId, pdfId);
 
       // todo: make sure UI knows we are saved
     },

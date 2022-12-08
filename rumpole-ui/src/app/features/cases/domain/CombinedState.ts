@@ -10,6 +10,7 @@ import { MappedCaseDocument } from "./MappedCaseDocument";
 import { FilterOption } from "./FilterOption";
 
 export type CombinedState = {
+  urn: string;
   caseId: number;
   caseState: AsyncResult<CaseDetails>;
   documentsState: AsyncResult<MappedCaseDocument[]>;

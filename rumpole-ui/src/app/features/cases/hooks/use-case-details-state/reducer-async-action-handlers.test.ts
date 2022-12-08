@@ -194,6 +194,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkoutSpy = jest
@@ -217,7 +218,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkoutSpy).toBeCalledWith(2, 1);
+        expect(checkoutSpy).toBeCalledWith("foo", 2, 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
@@ -305,6 +306,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkInSpy = jest
@@ -357,6 +359,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkInSpy = jest
@@ -405,6 +408,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkInSpy = jest
@@ -428,7 +432,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkInSpy).toBeCalledWith(2, 1);
+        expect(checkInSpy).toBeCalledWith("foo", 2, 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
@@ -467,6 +471,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkInSpy = jest
@@ -514,6 +519,7 @@ describe("reducerAsyncActionHandlers", () => {
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
+          urn: "foo",
         } as CombinedState;
 
         const checkInSpy = jest
@@ -536,7 +542,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkInSpy).toBeCalledWith(2, 1);
+        expect(checkInSpy).toBeCalledWith("foo", 2, 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
@@ -556,7 +562,7 @@ describe("reducerAsyncActionHandlers", () => {
   });
 
   describe("SAVE_REDACTIONS", () => {
-    it("CAN SAVE ALL REDACTIONS", async () => {
+    it("can save all redactions", async () => {
       // arrange
       const redactionHighlights = [{ id: "bar" }];
 
@@ -571,6 +577,7 @@ describe("reducerAsyncActionHandlers", () => {
           ] as CaseDocumentViewModel[],
         },
         caseId: 2,
+        urn: "foo",
       } as CombinedState;
 
       const saveSpy = jest
@@ -612,7 +619,7 @@ describe("reducerAsyncActionHandlers", () => {
 
       // assert
       expect(saveSpy).toBeCalledWith(2, 1, "baz", mockRedactionSaveRequest);
-      expect(checkInSpy).toBeCalledWith(2, 1);
+      expect(checkInSpy).toBeCalledWith("foo", 2, 1);
     });
   });
 });

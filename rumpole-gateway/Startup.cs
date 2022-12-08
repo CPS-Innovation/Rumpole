@@ -119,7 +119,7 @@ namespace RumpoleGateway
                 configuration.GetSection("tde").Bind(settings);
             });
 
-            builder.Services.AddTransient<ICaseDataService, TdeCaseDataService>();
+            builder.Services.AddTransient<ICaseDataService, TdeService>();
             builder.Services.AddTransient<ITdeClientRequestFactory, TdeClientRequestFactory>();
             builder.Services.AddHttpClient<ITdeClient, TdeClient>((client) =>
             {

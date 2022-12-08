@@ -12,5 +12,9 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
         Task<CaseDetails> GetCaseAsync(CaseArg arg);
 
         Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg);
+
+        Task CheckoutDocument(DocumentArg arg);
+
+        Task CancelCheckoutDocument(DocumentArg arg);
     }
 }

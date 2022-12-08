@@ -25,27 +25,31 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
             _jsonConvertWrapper = jsonConvertWrapper;
         }
 
-        public async Task<IEnumerable<CaseIdentifiers>> ListCaseIdsAsync(UrnArg arg) =>
-            await CallTde<IEnumerable<CaseIdentifiers>>(
+        public async Task<IEnumerable<CaseIdentifiers>> ListCaseIdsAsync(UrnArg arg)
+        {
+            return await CallTde<IEnumerable<CaseIdentifiers>>(
                 () => _tdeClientRequestFactory.CreateListCasesRequest(arg),
                  arg.CorrelationId
             );
+        }
 
-
-        public async Task<CaseDetails> GetCaseAsync(CaseArg arg) =>
-            await CallTde<CaseDetails>(
+        public async Task<CaseDetails> GetCaseAsync(CaseArg arg)
+        {
+            return await CallTde<CaseDetails>(
                 () => _tdeClientRequestFactory.CreateGetCaseRequest(arg),
                 arg.CorrelationId
             );
+        }
+
 
         public async Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg)
         {
             try
             {
                 return await CallTde<IEnumerable<DocumentDetails>>(
-                                () => _tdeClientRequestFactory.CreateListCaseDocumentsRequest(arg),
-                                 arg.CorrelationId
-                            );
+                    () => _tdeClientRequestFactory.CreateListCaseDocumentsRequest(arg),
+                     arg.CorrelationId
+                );
             }
             catch (TdeClientException httpException)
             {
@@ -58,22 +62,43 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
 
         }
 
+        public async Task CheckoutDocument(DocumentArg arg)
+        {
+            await CallTde(
+               () => _tdeClientRequestFactory.CreateCheckoutDocumentRequest(arg),
+                arg.CorrelationId
+           );
+        }
+
+        public async Task CancelCheckoutDocument(DocumentArg arg)
+        {
+            await CallTde(
+               () => _tdeClientRequestFactory.CreateCancelCheckoutDocumentRequest(arg),
+                arg.CorrelationId
+           );
+        }
+
         private async Task<T> CallTde<T>(Func<HttpRequestMessage> requestFactory, Guid correlationId)
+        {
+            var response = await CallTde(requestFactory, correlationId);
+
+            var content = await response.Content.ReadAsStringAsync();
+            return _jsonConvertWrapper.DeserializeObject<T>(content, correlationId);
+        }
+
+        private async Task<HttpResponseMessage> CallTde(Func<HttpRequestMessage> requestFactory, Guid correlationId)
         {
             var request = requestFactory();
             using var response = await _httpClient.SendAsync(request);
             try
             {
                 response.EnsureSuccessStatusCode();
+                return response;
             }
             catch (HttpRequestException exception)
             {
                 throw new TdeClientException(response.StatusCode, exception);
             }
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return _jsonConvertWrapper.DeserializeObject<T>(content, correlationId);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
         [FunctionName("DocumentRedactionCheckOutDocument")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "documents/checkout/{caseId}/{documentId}")] HttpRequest req, string caseId, string documentId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/${urn}/cases/{caseId}/documents/{documentId}/checkout")] HttpRequest req, string caseId, string documentId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "DocumentRedactionCheckOutDocument - Run";
@@ -39,7 +39,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 

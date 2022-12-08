@@ -10,5 +10,9 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
         HttpRequestMessage CreateGetCaseRequest(CaseArg arg);
 
         HttpRequestMessage CreateListCaseDocumentsRequest(CaseArg arg);
+
+        HttpRequestMessage CreateCheckoutDocumentRequest(DocumentArg arg);
+
+        HttpRequestMessage CreateCancelCheckoutDocumentRequest(DocumentArg arg);
     }
 }
