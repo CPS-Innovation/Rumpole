@@ -310,7 +310,7 @@ describe("reducerAsyncActionHandlers", () => {
         } as CombinedState;
 
         const checkInSpy = jest
-          .spyOn(api, "checkinDocument")
+          .spyOn(api, "cancelCheckoutDocument")
           .mockImplementation(() => Promise.resolve(true));
 
         const handler =
@@ -363,7 +363,7 @@ describe("reducerAsyncActionHandlers", () => {
         } as CombinedState;
 
         const checkInSpy = jest
-          .spyOn(api, "checkinDocument")
+          .spyOn(api, "cancelCheckoutDocument")
           .mockImplementation(() => Promise.resolve(true));
 
         const handler =
@@ -412,7 +412,7 @@ describe("reducerAsyncActionHandlers", () => {
         } as CombinedState;
 
         const checkInSpy = jest
-          .spyOn(api, "checkinDocument")
+          .spyOn(api, "cancelCheckoutDocument")
           .mockImplementation(() => Promise.resolve(true));
 
         const handler =
@@ -475,7 +475,7 @@ describe("reducerAsyncActionHandlers", () => {
         } as CombinedState;
 
         const checkInSpy = jest
-          .spyOn(api, "checkinDocument")
+          .spyOn(api, "cancelCheckoutDocument")
           .mockImplementation(() => Promise.resolve(true));
 
         const handler =
@@ -523,7 +523,7 @@ describe("reducerAsyncActionHandlers", () => {
         } as CombinedState;
 
         const checkInSpy = jest
-          .spyOn(api, "checkinDocument")
+          .spyOn(api, "cancelCheckoutDocument")
           .mockImplementation(() => Promise.resolve(true));
 
         const handler =
@@ -585,7 +585,7 @@ describe("reducerAsyncActionHandlers", () => {
         .mockImplementation(() => Promise.resolve({} as RedactionSaveResponse));
 
       const checkInSpy = jest
-        .spyOn(api, "checkinDocument")
+        .spyOn(api, "cancelCheckoutDocument")
         .mockImplementation(() => Promise.resolve(true));
 
       const mockRedactionSaveRequest = {} as RedactionSaveRequest;
@@ -618,7 +618,13 @@ describe("reducerAsyncActionHandlers", () => {
       });
 
       // assert
-      expect(saveSpy).toBeCalledWith(2, 1, "baz", mockRedactionSaveRequest);
+      expect(saveSpy).toBeCalledWith(
+        "foo",
+        2,
+        1,
+        "baz",
+        mockRedactionSaveRequest
+      );
       expect(checkInSpy).toBeCalledWith("foo", 2, 1);
     });
   });

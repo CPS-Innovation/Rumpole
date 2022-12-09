@@ -16,5 +16,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
         Task CheckoutDocument(DocumentArg arg);
 
         Task CancelCheckoutDocument(DocumentArg arg);
+
+        Task UploadPdf(DocumentArg arg);
     }
 }

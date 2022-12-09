@@ -14,12 +14,12 @@ using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
-    public class DocumentRedactionCheckOutDocument : BaseRumpoleFunction
+    public class DocumentRedactionCheckoutDocument : BaseRumpoleFunction
     {
         private readonly IDocumentRedactionClient _documentRedactionClient;
-        private readonly ILogger<DocumentRedactionCheckOutDocument> _logger;
+        private readonly ILogger<DocumentRedactionCheckoutDocument> _logger;
 
-        public DocumentRedactionCheckOutDocument(ILogger<DocumentRedactionCheckOutDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
+        public DocumentRedactionCheckoutDocument(ILogger<DocumentRedactionCheckoutDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));

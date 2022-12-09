@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseData;
 using RumpoleGateway.Domain.CaseData.Args;
@@ -10,5 +11,7 @@ namespace RumpoleGateway.Services
         Task CheckoutDocument(DocumentArg arg);
 
         Task CancelCheckoutDocument(DocumentArg arg);
+
+        Task UploadPdf(DocumentArg arg, Stream stream, string fileName);
     }
 }

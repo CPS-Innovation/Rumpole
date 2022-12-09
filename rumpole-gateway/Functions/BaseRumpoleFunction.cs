@@ -109,6 +109,15 @@ namespace RumpoleGateway.Functions
             return new BadRequestObjectResult(errorMessage);
         }
 
+        protected IActionResult BadGatewayErrorResponse(string errorMessage, Guid correlationId, string loggerSource)
+        {
+            _logger.LogMethodFlow(correlationId, loggerSource, errorMessage);
+            return new ObjectResult(errorMessage)
+            {
+                StatusCode = 502
+            };
+        }
+
         protected IActionResult NotFoundErrorResponse(string errorMessage, Guid correlationId, string loggerSource)
         {
             _logger.LogMethodFlow(correlationId, loggerSource, errorMessage);

@@ -9,6 +9,7 @@ using RumpoleGateway.CaseDataImplementations.Tde.Domain;
 using RumpoleGateway.CaseDataImplementations.Tde.Factories;
 using RumpoleGateway.Wrappers;
 using RumpoleGateway.CaseDataImplementations.Tde.Domain.Exceptions;
+using System.IO;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
 {
@@ -40,7 +41,6 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
                 arg.CorrelationId
             );
         }
-
 
         public async Task<IEnumerable<DocumentDetails>> ListCaseDocumentsAsync(CaseArg arg)
         {
@@ -76,6 +76,14 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
                () => _tdeClientRequestFactory.CreateCancelCheckoutDocumentRequest(arg),
                 arg.CorrelationId
            );
+        }
+
+        public async Task UploadPdf(DocumentArg arg, Stream stream, string filename)
+        {
+            await CallTde(
+           () => _tdeClientRequestFactory.CreateUploadPdfRequest(arg, stream, filename),
+            arg.CorrelationId
+       );
         }
 
         private async Task<T> CallTde<T>(Func<HttpRequestMessage> requestFactory, Guid correlationId)

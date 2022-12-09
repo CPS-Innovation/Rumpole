@@ -104,5 +104,17 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
                 throw new DocumentServiceException("Exception in CheckoutDocument", exception);
             }
         }
+
+        public async Task UploadPdf(DocumentArg arg)
+        {
+            try
+            {
+                await _tdeClient.UploadPdf(arg);
+            }
+            catch (Exception exception)
+            {
+                throw new DocumentServiceException("Exception in UploadPdf", exception);
+            }
+        }
     }
 }

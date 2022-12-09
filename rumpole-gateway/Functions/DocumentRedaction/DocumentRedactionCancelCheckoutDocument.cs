@@ -14,19 +14,19 @@ using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
-    public class DocumentRedactionCheckInDocument : BaseRumpoleFunction
+    public class DocumentRedactionCancelCheckoutDocument : BaseRumpoleFunction
     {
         private readonly IDocumentRedactionClient _documentRedactionClient;
-        private readonly ILogger<DocumentRedactionCheckInDocument> _logger;
+        private readonly ILogger<DocumentRedactionCancelCheckoutDocument> _logger;
 
-        public DocumentRedactionCheckInDocument(ILogger<DocumentRedactionCheckInDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
+        public DocumentRedactionCancelCheckoutDocument(ILogger<DocumentRedactionCancelCheckoutDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
             _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
             _logger = logger;
         }
 
-        [FunctionName("DocumentRedactionCheckInDocument")]
+        [FunctionName("DocumentRedactionCancelCheckoutDocument")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "urns/${urn}/cases/{caseId}/documents/{documentId}/checkout")] HttpRequest req, string caseId, string documentId)
         {

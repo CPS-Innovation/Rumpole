@@ -209,7 +209,7 @@ export const checkoutDocument = async (
   return true; // unhappy path not known yet
 };
 
-export const checkinDocument = async (
+export const cancelCheckoutDocument = async (
   urn: string,
   caseId: number,
   docId: number
@@ -237,15 +237,16 @@ export const checkinDocument = async (
 };
 
 export const saveRedactions = async (
+  urn: string,
   caseId: number,
   docId: number,
   fileName: string,
   redactionSaveRequest: RedactionSaveRequest
 ) => {
   const url = buildEncodedUrl(
-    { caseId, docId, fileName },
-    ({ caseId, docId, fileName }) =>
-      `/api/documents/saveRedactions/${caseId}/${docId}/${fileName}`
+    { urn, caseId, docId, fileName },
+    ({ urn, caseId, docId, fileName }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/${fileName}`
   );
 
   const response = await fetch(url, {

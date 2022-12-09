@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net.Http;
 using RumpoleGateway.Domain.CaseData.Args;
 
@@ -14,5 +15,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
         HttpRequestMessage CreateCheckoutDocumentRequest(DocumentArg arg);
 
         HttpRequestMessage CreateCancelCheckoutDocumentRequest(DocumentArg arg);
+
+        HttpRequestMessage CreateUploadPdfRequest(DocumentArg arg, Stream stream, string filename);
     }
 }

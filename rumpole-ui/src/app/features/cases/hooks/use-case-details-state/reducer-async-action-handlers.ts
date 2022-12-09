@@ -1,7 +1,7 @@
 import { Reducer } from "react";
 import { AsyncActionHandlers } from "use-reducer-async";
 import {
-  checkinDocument,
+  cancelCheckoutDocument,
   checkoutDocument,
   getPdfSasUrl,
   saveRedactions,
@@ -172,7 +172,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(urn, caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -213,7 +213,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(urn, caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -248,6 +248,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       // todo: make sure UI knows we are saving
 
       const response = await saveRedactions(
+        urn,
         caseId,
         pdfId,
         pdfBlobName!, // todo: better typing, but we're guaranteed to have a pdfBlobName anyhow
@@ -257,7 +258,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       window.open(response.redactedDocumentUrl);
 
       // todo: does a save IN THE CGI API check a document in automatically?
-      await checkinDocument(urn, caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, pdfId);
 
       // todo: make sure UI knows we are saved
     },
