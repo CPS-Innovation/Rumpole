@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -17,6 +18,8 @@ using RumpoleGateway.Extensions;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
+using RumpoleGateway.Domain.CaseData;
+using System.IO;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -56,8 +59,12 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
         [FunctionName("DocumentRedactionSaveRedactions")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "urns/${urn}/cases/{caseId}/documents/{documentId}/{fileName}")] HttpRequest req,
-                string urn, int caseId, int documentId, string fileName)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "urns/{urn}/cases/{caseId}/documents/{documentCategory}/{documentId}/{*fileName}")] HttpRequest req,
+            string urn,
+            int caseId,
+            string documentCategory,
+            int documentId,
+            string fileName)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "DocumentRedactionSaveRedactions - Run";
@@ -65,6 +72,9 @@ namespace RumpoleGateway.Functions.DocumentRedaction
 
             try
             {
+                Enum.TryParse(documentCategory, out CmsDocCategory cmsDocCategory);
+
+
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
@@ -95,6 +105,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 //exchange access token via on behalf of for ultimate Cde access?
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Saving redaction details to the document for {caseId}, documentId {documentId}, fileName {fileName}");
 
+
                 var redactPdfRequest = _redactPdfRequestMapper.Map(redactions.Value, caseId, documentId, fileName, currentCorrelationId);
                 var redactionResult = await _redactionClient.RedactPdfAsync(redactPdfRequest, onBehalfOfAccessToken, currentCorrelationId);
                 if (!redactionResult.Succeeded)
@@ -103,11 +114,16 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                     return BadGatewayErrorResponse("Error Saving redaction details", currentCorrelationId, loggingName);
                 }
 
-                var pdfStream = await _blobStorageClient.GetDocumentAsync(fileName, currentCorrelationId);
+                // todo: trapping when blob retrieval hasn't worked
+                var pdfStream = await _blobStorageClient.GetDocumentAsync(redactionResult.RedactedDocumentName, currentCorrelationId);
+
+                WriteToFile(pdfStream);
+
                 await _documentService.UploadPdf(new Domain.CaseData.Args.DocumentArg
                 {
                     Urn = urn,
                     CaseId = caseId,
+                    CmsDocCategory = cmsDocCategory,
                     DocumentId = documentId,
                 }, pdfStream, fileName);
 
@@ -137,5 +153,18 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 _logger.LogMethodExit(currentCorrelationId, loggingName, saveRedactionResult.ToJson());
             }
         }
+
+        public void WriteToFile(Stream stream)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            using (var fs = new FileStream("pdf.pdf", FileMode.OpenOrCreate))
+            {
+                stream.CopyTo(fs);
+            }
+            stream.Position = 0;
+        }
+
+
     }
 }

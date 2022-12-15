@@ -14,19 +14,19 @@ describe("mapFilters", () => {
       documentResults: [
         {
           cmsDocType: { code: "code-c", name: "doc-type-c" },
-          category: "category-3",
+          presentationCategory: "category-3",
         },
         {
           cmsDocType: { code: "code-c", name: "doc-type-b" },
-          category: "category-1",
+          presentationCategory: "category-1",
         },
         {
           cmsDocType: { code: "code-b", name: "doc-type-c" },
-          category: "category-2",
+          presentationCategory: "category-2",
         },
         {
           cmsDocType: { code: "code-a", name: "doc-type-a" },
-          category: "category-1",
+          presentationCategory: "category-1",
         },
       ],
     } as MappedTextSearchResult;

@@ -9,6 +9,7 @@ using RumpoleGateway.CaseDataImplementations.Tde.Clients;
 using RumpoleGateway.Services;
 using RumpoleGateway.CaseDataImplementations.Tde.Mappers;
 using RumpoleGateway.Domain.Exceptions;
+using System.IO;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Services
 {
@@ -105,11 +106,11 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Services
             }
         }
 
-        public async Task UploadPdf(DocumentArg arg)
+        public async Task UploadPdf(DocumentArg arg, Stream stream, string fileName)
         {
             try
             {
-                await _tdeClient.UploadPdf(arg);
+                await _tdeClient.UploadPdf(arg, stream, fileName);
             }
             catch (Exception exception)
             {

@@ -12,6 +12,7 @@ import {
   fullUrl as buildUnencodedUrl,
 } from "./url-helpers";
 import { CaseDetails } from "../domain/CaseDetails";
+import { CmsDocCategory } from "../domain/CmsDocCategory";
 
 const buildHeaders = async (
   ...args: (
@@ -185,12 +186,13 @@ export const searchCase = async (
 export const checkoutDocument = async (
   urn: string,
   caseId: number,
+  cmsDocCategory: CmsDocCategory,
   docId: number
 ) => {
   const url = buildEncodedUrl(
-    { caseId, docId },
-    ({ caseId, docId }) =>
-      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/checkout`
+    { caseId, docId, cmsDocCategory },
+    ({ caseId, docId, cmsDocCategory }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${cmsDocCategory}/${docId}/checkout`
   );
 
   const response = await fetch(url, {
@@ -212,12 +214,13 @@ export const checkoutDocument = async (
 export const cancelCheckoutDocument = async (
   urn: string,
   caseId: number,
+  cmsDocCategory: CmsDocCategory,
   docId: number
 ) => {
   const url = buildEncodedUrl(
-    { caseId, docId },
-    ({ caseId, docId }) =>
-      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/checkout`
+    { caseId, docId, cmsDocCategory },
+    ({ caseId, docId, cmsDocCategory }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${cmsDocCategory}/${docId}/checkout`
   );
 
   const response = await fetch(url, {
@@ -239,14 +242,15 @@ export const cancelCheckoutDocument = async (
 export const saveRedactions = async (
   urn: string,
   caseId: number,
+  cmsDocCategory: CmsDocCategory,
   docId: number,
   fileName: string,
   redactionSaveRequest: RedactionSaveRequest
 ) => {
   const url = buildEncodedUrl(
-    { urn, caseId, docId, fileName },
-    ({ urn, caseId, docId, fileName }) =>
-      `/api/urns/${urn}/cases/${caseId}/documents/${docId}/${fileName}`
+    { urn, caseId, docId, fileName, cmsDocCategory },
+    ({ urn, caseId, docId, cmsDocCategory }) =>
+      `/api/urns/${urn}/cases/${caseId}/documents/${cmsDocCategory}/${docId}/${fileName}`
   );
 
   const response = await fetch(url, {

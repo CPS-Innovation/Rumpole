@@ -4,7 +4,7 @@ import { MappedDocumentResult } from "../../domain/MappedDocumentResult";
 export const isDocumentVisible = (
   {
     cmsDocType: { code },
-    category: docCategory,
+    presentationCategory: docCategory,
     isVisible: existingIsVisible,
   }: MappedDocumentResult,
   { docType, category }: CombinedState["searchState"]["filterOptions"]

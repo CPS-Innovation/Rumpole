@@ -402,6 +402,7 @@ describe("reducerAsyncActionHandlers", () => {
             items: [
               {
                 documentId: 1,
+                cmsDocCategory: "MGForm",
                 clientLockedState,
                 redactionHighlights: [{ id: "bar" }],
               },
@@ -432,7 +433,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkInSpy).toBeCalledWith("foo", 2, 1);
+        expect(checkInSpy).toBeCalledWith("foo", 2, "MGForm", 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
@@ -465,6 +466,7 @@ describe("reducerAsyncActionHandlers", () => {
             items: [
               {
                 documentId: 1,
+                cmsDocCategory: "MGForm",
                 clientLockedState,
                 redactionHighlights: [{ id: "bar" }],
               },
@@ -513,6 +515,7 @@ describe("reducerAsyncActionHandlers", () => {
             items: [
               {
                 documentId: 1,
+                cmsDocCategory: "MGForm",
                 clientLockedState,
                 redactionHighlights: [{ id: "bar" }],
               },
@@ -542,7 +545,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkInSpy).toBeCalledWith("foo", 2, 1);
+        expect(checkInSpy).toBeCalledWith("foo", 2, "MGForm", 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({
@@ -571,6 +574,7 @@ describe("reducerAsyncActionHandlers", () => {
           items: [
             {
               documentId: 1,
+              cmsDocCategory: "MGForm",
               redactionHighlights,
               pdfBlobName: "baz",
             },
@@ -584,9 +588,9 @@ describe("reducerAsyncActionHandlers", () => {
         .spyOn(api, "saveRedactions")
         .mockImplementation(() => Promise.resolve({} as RedactionSaveResponse));
 
-      const checkInSpy = jest
-        .spyOn(api, "cancelCheckoutDocument")
-        .mockImplementation(() => Promise.resolve(true));
+      // const checkInSpy = jest
+      //   .spyOn(api, "cancelCheckoutDocument")
+      //   .mockImplementation(() => Promise.resolve(true));
 
       const mockRedactionSaveRequest = {} as RedactionSaveRequest;
 
@@ -621,11 +625,12 @@ describe("reducerAsyncActionHandlers", () => {
       expect(saveSpy).toBeCalledWith(
         "foo",
         2,
+        "MGForm",
         1,
         "baz",
         mockRedactionSaveRequest
       );
-      expect(checkInSpy).toBeCalledWith("foo", 2, 1);
+      //expect(checkInSpy).toBeCalledWith("foo", 2, 1);
     });
   });
 });

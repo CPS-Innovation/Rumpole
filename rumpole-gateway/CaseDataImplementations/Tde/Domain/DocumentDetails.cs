@@ -17,7 +17,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
         public string MimeType { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public CmsDocCategory CmsDocCateogry { get; set; }
+        public CmsDocCategory CmsDocCategory { get; set; }
 
         public int TypeId { get; set; }
 

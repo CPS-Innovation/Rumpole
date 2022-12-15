@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using RumpoleGateway.Clients.DocumentExtraction;
-using RumpoleGateway.Clients.DocumentRedaction;
+// using RumpoleGateway.Clients.DocumentExtraction;
+// using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
@@ -100,16 +100,16 @@ namespace RumpoleGateway
                     GetValueFromConfig(configuration, ConfigurationKeys.BlobContainerName), logger);
             });
 
-            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
-            {
-                var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
-                return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
-            });
+            // builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
+            // {
+            //     var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
+            //     return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
+            // });
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
             builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
-            builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
+            // builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
             builder.Services.AddTransient<IRedactPdfRequestMapper, RedactPdfRequestMapper>();
 
             builder.Services.AddTransient<ICaseDataArgFactory, CaseDataArgFactory>();
@@ -120,6 +120,7 @@ namespace RumpoleGateway
             });
 
             builder.Services.AddTransient<ICaseDataService, TdeService>();
+            builder.Services.AddTransient<IDocumentService, TdeService>();
             builder.Services.AddTransient<ITdeClientRequestFactory, TdeClientRequestFactory>();
             builder.Services.AddHttpClient<ITdeClient, TdeClient>((client) =>
             {

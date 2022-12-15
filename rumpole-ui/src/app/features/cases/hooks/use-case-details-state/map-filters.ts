@@ -43,7 +43,7 @@ export const mapFilters = (
     }
 
     docType[doc.cmsDocType.code].count += 1;
-    category[doc.category].count += 1;
+    category[doc.presentationCategory].count += 1;
   }
 
   return {

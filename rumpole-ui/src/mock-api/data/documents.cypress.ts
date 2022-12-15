@@ -10,6 +10,7 @@ const documents: CaseDocument[] = [
     documentId: 1,
     fileName: "MCLOVEMG3",
     createdDate: "2020-06-01",
+    cmsDocCategory: "MGForm",
     cmsDocType: {
       id: 1,
       code: "MG11",
@@ -20,6 +21,7 @@ const documents: CaseDocument[] = [
     documentId: 2,
     fileName: "CM01",
     createdDate: "2020-06-02",
+    cmsDocCategory: "MGForm",
     cmsDocType: {
       id: 2,
       code: "MG12",
@@ -30,6 +32,7 @@ const documents: CaseDocument[] = [
     documentId: 3,
     fileName: "MG05MCLOVE",
     createdDate: "2020-06-03",
+    cmsDocCategory: "MGForm",
     cmsDocType: {
       id: 3,
       code: "MG13",
@@ -40,6 +43,7 @@ const documents: CaseDocument[] = [
     documentId: 4,
     fileName: "MG06_3June",
     createdDate: "2020-06-04",
+    cmsDocCategory: "MGForm",
     cmsDocType: {
       id: 4,
       code: "MG14",
@@ -50,6 +54,7 @@ const documents: CaseDocument[] = [
     documentId: 5,
     fileName: "MG06_10june",
     createdDate: "2020-06-10",
+    cmsDocCategory: "MGForm",
     cmsDocType: {
       id: 5,
       code: "MG15",

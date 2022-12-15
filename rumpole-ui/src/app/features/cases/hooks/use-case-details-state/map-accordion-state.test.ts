@@ -37,9 +37,10 @@ describe("mapAccordionState", () => {
         {
           documentId: 1,
           tabSafeId: "d0",
-          category: "category-a",
+          presentationCategory: "category-a",
           fileName: "foo",
           presentationFileName: "foo!",
+          cmsDocCategory: "MGForm",
           cmsDocType: {
             id: 1,
             code: "MG11",
@@ -50,9 +51,10 @@ describe("mapAccordionState", () => {
         {
           documentId: 2,
           tabSafeId: "d1",
-          category: "category-b",
+          presentationCategory: "category-b",
           fileName: "bar",
           presentationFileName: "bar!",
+          cmsDocCategory: "MGForm",
           cmsDocType: {
             id: 2,
             code: "MG12",
@@ -75,9 +77,10 @@ describe("mapAccordionState", () => {
             {
               documentId: 1,
               tabSafeId: "d0",
-              category: "category-a",
+              presentationCategory: "category-a",
               fileName: "foo",
               presentationFileName: "foo!",
+              cmsDocCategory: "MGForm",
               cmsDocType: {
                 id: 1,
                 code: "MG11",
@@ -94,9 +97,10 @@ describe("mapAccordionState", () => {
             {
               documentId: 2,
               tabSafeId: "d1",
-              category: "category-b",
+              presentationCategory: "category-b",
               fileName: "bar",
               presentationFileName: "bar!",
+              cmsDocCategory: "MGForm",
               cmsDocType: {
                 id: 2,
                 code: "MG12",

@@ -81,23 +81,31 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
         public async Task UploadPdf(DocumentArg arg, Stream stream, string filename)
         {
             await CallTde(
-           () => _tdeClientRequestFactory.CreateUploadPdfRequest(arg, stream, filename),
-            arg.CorrelationId
-       );
+               () => _tdeClientRequestFactory.CreateUploadPdfRequest(arg, stream, filename),
+                arg.CorrelationId
+            );
         }
 
         private async Task<T> CallTde<T>(Func<HttpRequestMessage> requestFactory, Guid correlationId)
         {
-            var response = await CallTde(requestFactory, correlationId);
+            using var response = await CallTdeInternal(requestFactory, correlationId);
 
             var content = await response.Content.ReadAsStringAsync();
             return _jsonConvertWrapper.DeserializeObject<T>(content, correlationId);
         }
 
+
         private async Task<HttpResponseMessage> CallTde(Func<HttpRequestMessage> requestFactory, Guid correlationId)
         {
+            using var response = await CallTdeInternal(requestFactory, correlationId);
+
+            return response;
+        }
+
+        private async Task<HttpResponseMessage> CallTdeInternal(Func<HttpRequestMessage> requestFactory, Guid correlationId)
+        {
             var request = requestFactory();
-            using var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             try
             {
                 response.EnsureSuccessStatusCode();

@@ -21,7 +21,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Mappers
                 FileName = documentDetails.OriginalFileName,
                 MimeType = documentDetails.MimeType,
                 CreatedDate = documentDetails.Date,
-                CmsDocCateogry = MapCmsDocCategory(documentDetails.CmsDocCateogry),
+                CmsDocCategory = MapCmsDocCategory(documentDetails.CmsDocCategory),
                 CmsDocType = documentCmsType
             };
         }

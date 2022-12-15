@@ -42,21 +42,21 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
 
         public HttpRequestMessage CreateCheckoutDocumentRequest(DocumentArg arg)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.DocumentId}/checkout");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.CmsDocCategory}/{arg.DocumentId}/checkout");
             AddAuthHeaders(request, arg);
             return request;
         }
 
         public HttpRequestMessage CreateCancelCheckoutDocumentRequest(DocumentArg arg)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.DocumentId}/checkout");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.CmsDocCategory}/{arg.DocumentId}/checkout");
             AddAuthHeaders(request, arg);
             return request;
         }
 
         public HttpRequestMessage CreateUploadPdfRequest(DocumentArg arg, Stream stream, string filename)
         {
-            var request = new HttpRequestMessage(HttpMethod.Put, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.DocumentId}/{filename}");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.CmsDocCategory}/{arg.DocumentId}/{filename}");
             AddAuthHeaders(request, arg);
             request.Content = new StreamContent(stream);
             return request;

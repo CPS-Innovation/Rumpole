@@ -111,7 +111,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         urn,
       } = getState();
 
-      const { clientLockedState } = items.find(
+      const { clientLockedState, cmsDocCategory } = items.find(
         (item) => item.documentId === pdfId
       )!;
 
@@ -129,7 +129,12 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "locking" },
       });
 
-      const isLockSuccessful = await checkoutDocument(urn, caseId, pdfId);
+      const isLockSuccessful = await checkoutDocument(
+        urn,
+        caseId,
+        cmsDocCategory,
+        pdfId
+      );
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -154,7 +159,11 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { redactionHighlights, clientLockedState: lockedState } = document;
+      const {
+        redactionHighlights,
+        clientLockedState: lockedState,
+        cmsDocCategory,
+      } = document;
 
       dispatch({ type: "REMOVE_REDACTION", payload });
 
@@ -172,7 +181,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await cancelCheckoutDocument(urn, caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, cmsDocCategory, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -197,7 +206,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { clientLockedState: lockedState } = document;
+      const { clientLockedState: lockedState, cmsDocCategory } = document;
 
       const requiresCheckIn =
         LOCKED_STATES_REQUIRING_UNLOCK.includes(lockedState);
@@ -213,7 +222,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await cancelCheckoutDocument(urn, caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, cmsDocCategory, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -236,7 +245,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         urn,
       } = getState();
 
-      const { redactionHighlights, pdfBlobName } = items.find(
+      const { redactionHighlights, pdfBlobName, cmsDocCategory } = items.find(
         (item) => item.documentId === pdfId
       )!;
 
@@ -250,6 +259,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const response = await saveRedactions(
         urn,
         caseId,
+        cmsDocCategory,
         pdfId,
         pdfBlobName!, // todo: better typing, but we're guaranteed to have a pdfBlobName anyhow
         redactionSaveRequest
@@ -258,7 +268,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       window.open(response.redactedDocumentUrl);
 
       // todo: does a save IN THE CGI API check a document in automatically?
-      await cancelCheckoutDocument(urn, caseId, pdfId);
+      //await cancelCheckoutDocument(urn, caseId, pdfId);
 
       // todo: make sure UI knows we are saved
     },
