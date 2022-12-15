@@ -190,7 +190,7 @@ describe("reducerAsyncActionHandlers", () => {
         combinedStateMock = {
           tabsState: {
             items: [
-              { documentId: 1, clientLockedState },
+              { documentId: 1, clientLockedState, cmsDocCategory: "MGForm" },
             ] as CaseDocumentViewModel[],
           },
           caseId: 2,
@@ -218,7 +218,7 @@ describe("reducerAsyncActionHandlers", () => {
         });
 
         //assert
-        expect(checkoutSpy).toBeCalledWith("foo", 2, 1);
+        expect(checkoutSpy).toBeCalledWith("foo", 2, "MGForm", 1);
 
         expect(dispatchMock.mock.calls.length).toBe(3);
         expect(dispatchMock.mock.calls[0][0]).toEqual({

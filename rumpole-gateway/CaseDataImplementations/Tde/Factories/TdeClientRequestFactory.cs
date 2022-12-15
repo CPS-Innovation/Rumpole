@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using RumpoleGateway.Domain.CaseData.Args;
 using RumpoleGateway.CaseDataImplementations.Tde.Options;
 using System.IO;
+using System.Net.Http.Headers;
 
 namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
 {
@@ -59,6 +60,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Factories
             var request = new HttpRequestMessage(HttpMethod.Put, $"api/urns/{arg.Urn}/cases/{arg.CaseId}/documents/{arg.CmsDocCategory}/{arg.DocumentId}/{filename}");
             AddAuthHeaders(request, arg);
             request.Content = new StreamContent(stream);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
             return request;
         }
 

@@ -20,6 +20,7 @@ using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
 using RumpoleGateway.Domain.CaseData;
 using System.IO;
+using RumpoleGateway.Domain.CaseData.Args;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -82,12 +83,6 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                // if (string.IsNullOrWhiteSpace(documentId))
-                //     return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);
-
-                // if (!int.TryParse(caseId, out _))
-                //     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
-
                 if (string.IsNullOrWhiteSpace(fileName))
                     return BadRequestErrorResponse("Invalid filename - not details received", currentCorrelationId, loggingName);
 
@@ -117,9 +112,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 // todo: trapping when blob retrieval hasn't worked
                 var pdfStream = await _blobStorageClient.GetDocumentAsync(redactionResult.RedactedDocumentName, currentCorrelationId);
 
-                WriteToFile(pdfStream);
-
-                await _documentService.UploadPdf(new Domain.CaseData.Args.DocumentArg
+                await _documentService.UploadPdf(new DocumentArg
                 {
                     Urn = urn,
                     CaseId = caseId,
@@ -128,16 +121,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 }, pdfStream, fileName);
 
                 return new OkResult();
-                // saveRedactionResult = await _documentRedactionClient.SaveRedactionsAsync(caseId, HttpUtility.UrlDecode(documentId), HttpUtility.UrlDecode(fileName),
-                //     redactions.Value, onBehalfOfAccessToken, currentCorrelationId);
 
-
-
-                // return saveRedactionResult is {Succeeded: true}
-                //     ? new OkObjectResult(saveRedactionResult)
-                //     : string.IsNullOrWhiteSpace(saveRedactionResult.Message)
-                //         ? BadRequestErrorResponse($"The redaction request could not be processed for file name '{fileName}'.", currentCorrelationId, loggingName)
-                //         : BadRequestErrorResponse(saveRedactionResult.Message, currentCorrelationId, loggingName);
             }
             catch (Exception exception)
             {
@@ -153,18 +137,5 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 _logger.LogMethodExit(currentCorrelationId, loggingName, saveRedactionResult.ToJson());
             }
         }
-
-        public void WriteToFile(Stream stream)
-        {
-            stream.Seek(0, SeekOrigin.Begin);
-
-            using (var fs = new FileStream("pdf.pdf", FileMode.OpenOrCreate))
-            {
-                stream.CopyTo(fs);
-            }
-            stream.Position = 0;
-        }
-
-
     }
 }

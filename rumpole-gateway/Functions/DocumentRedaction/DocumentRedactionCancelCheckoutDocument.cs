@@ -14,6 +14,7 @@ using RumpoleGateway.Helpers.Extension;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Services;
 using RumpoleGateway.Domain.CaseData;
+using RumpoleGateway.Domain.CaseData.Args;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
@@ -52,7 +53,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
                 //exchange access token via on behalf of?
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Cancel checkout document for caseId: {caseId}, documentId: {documentId}");
 
-                await _documentService.CancelCheckoutDocument(new Domain.CaseData.Args.DocumentArg
+                await _documentService.CancelCheckoutDocument(new DocumentArg
                 {
                     Urn = urn,
                     CaseId = caseId,

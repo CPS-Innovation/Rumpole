@@ -166,7 +166,7 @@ export const searchCase = async (
   const path = buildEncodedUrl(
     { caseId, searchTerm, urn },
     ({ caseId, searchTerm, urn }) =>
-      `/api/urns/${urn}cases/${caseId}/query/${searchTerm}`
+      `/api/urns/${urn}/cases/${caseId}/query/${searchTerm}`
   );
   const response = await fetch(path, {
     headers: await buildHeaders(

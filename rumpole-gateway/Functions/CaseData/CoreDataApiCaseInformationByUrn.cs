@@ -70,7 +70,8 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
                 var onBehalfOfAccessToken = "not-implemented-yet"; //await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case information by Urn '{urn}'");
-                caseInformation = await _caseDataService.ListCases(_caseDataArgFactory.CreateUrnArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn));
+                var urnArg = _caseDataArgFactory.CreateUrnArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn);
+                caseInformation = await _caseDataService.ListCases(urnArg);
 
                 if (caseInformation != null && caseInformation.Any())
                 {
