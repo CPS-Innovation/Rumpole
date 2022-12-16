@@ -40,7 +40,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/{urn}/cases/{caseId}")] HttpRequest req, string urn, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/{urn}/cases/{caseId}")] HttpRequest req, string urn, int caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineTriggerCoordinator - Run";
@@ -58,8 +58,8 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 if (string.IsNullOrWhiteSpace(urn))
                     return BadRequestErrorResponse("An empty case URN was received - please correct.", currentCorrelationId, loggingName);
 
-                if (!int.TryParse(caseId, out var _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
+                // if (!int.TryParse(caseId, out var _))
+                //     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 var force = false;
                 if (req.Query.ContainsKey("force") && !bool.TryParse(req.Query["force"], out force))

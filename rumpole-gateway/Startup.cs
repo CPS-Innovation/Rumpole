@@ -100,16 +100,10 @@ namespace RumpoleGateway
                     GetValueFromConfig(configuration, ConfigurationKeys.BlobContainerName), logger);
             });
 
-            // builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
-            // {
-            //     var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
-            //     return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
-            // });
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
             builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
-            // builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
             builder.Services.AddTransient<IRedactPdfRequestMapper, RedactPdfRequestMapper>();
 
             builder.Services.AddTransient<ICaseDataArgFactory, CaseDataArgFactory>();

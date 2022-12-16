@@ -71,6 +71,10 @@ describe("reducerAsyncActionHandlers", () => {
         .spyOn(headerFactory, "auth")
         .mockImplementation(() => Promise.resolve({ Authorization: "bar" }));
 
+      jest
+        .spyOn(headerFactory, "upstreamHeader")
+        .mockImplementation(() => Promise.resolve({ "Upstream-Token": "baz" }));
+
       const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
         dispatch: dispatchMock,
         getState: () => combinedStateMock,
@@ -98,73 +102,11 @@ describe("reducerAsyncActionHandlers", () => {
           headers: {
             "Correlation-Id": "foo",
             Authorization: "bar",
-            "Upstream-Token": "not-implemented-yet",
+            "Upstream-Token": "baz",
           },
         },
       });
     });
-
-    // it("can throw when auth token is not retrieved", async () => {
-    //   // arrange
-    //   jest.spyOn(api, "getBaseCoreHeaders").mockImplementation(() =>
-    //     Promise.resolve({
-    //       "Correlation-Id": "foo",
-    //       Authorization: "",
-    //       "Upstream-Token": "baz",
-    //     })
-    //   );
-
-    //   const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
-    //     dispatch: dispatchMock,
-    //     getState: () => combinedStateMock,
-    //     signal: new AbortController().signal,
-    //   });
-
-    //   // act
-    //   const act = async () =>
-    //     await handler({
-    //       type: "REQUEST_OPEN_PDF",
-    //       payload: {
-    //         pdfId: "foo",
-    //         tabSafeId: "bar",
-    //         mode: "read",
-    //       },
-    //     });
-
-    //   // assert
-    //   await expect(act()).rejects.toThrow("Auth token");
-    // });
-
-    // it("can throw when correlation id is not retrieved", async () => {
-    //   // arrange
-    //   jest.spyOn(api, "getBaseCoreHeaders").mockImplementation(() =>
-    //     Promise.resolve({
-    //       "Correlation-Id": "",
-    //       Authorization: "foo",
-    //       "Upstream-Token": "baz",
-    //     })
-    //   );
-
-    //   const handler = reducerAsyncActionHandlers.REQUEST_OPEN_PDF({
-    //     dispatch: dispatchMock,
-    //     getState: () => combinedStateMock,
-    //     signal: new AbortController().signal,
-    //   });
-
-    //   // act
-    //   const act = async () =>
-    //     await handler({
-    //       type: "REQUEST_OPEN_PDF",
-    //       payload: {
-    //         pdfId: "foo",
-    //         tabSafeId: "bar",
-    //         mode: "read",
-    //       },
-    //     });
-
-    //   // assert
-    //   await expect(act()).rejects.toThrow("Correlation Id");
-    // });
   });
 
   describe("ADD_REDACTION_AND_POTENTIALLY_LOCK", () => {
