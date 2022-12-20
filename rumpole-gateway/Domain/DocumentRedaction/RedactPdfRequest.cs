@@ -4,9 +4,9 @@ namespace RumpoleGateway.Domain.DocumentRedaction
 {
     public class RedactPdfRequest
     {
-        public string CaseId { get; set; }
+        public int CaseId { get; set; }
 
-        public string DocumentId { get; set; }
+        public int DocumentId { get; set; }
 
         public string FileName { get; set; }
 

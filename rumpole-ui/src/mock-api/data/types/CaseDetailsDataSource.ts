@@ -4,4 +4,4 @@ export const lastRequestedUrnCache = {
   urn: "",
 };
 
-export type CaseDetailsDataSource = (id: string) => CaseDetails | undefined;
+export type CaseDetailsDataSource = (id: number) => CaseDetails | undefined;

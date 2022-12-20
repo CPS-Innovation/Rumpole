@@ -16,11 +16,11 @@ namespace RumpoleGateway.Mappers
         {
             _logger = logger;
         }
-        
-        public RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, string caseId, string documentId, string fileName, Guid correlationId)
+
+        public RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, int caseId, int documentId, string fileName, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(Map), $"SaveRequest: '{saveRequest.ToJson()}', CaseId: {caseId}, DocumentId: {documentId}, FileName: {fileName}");
-            
+
             if (saveRequest == null) throw new ArgumentNullException(nameof(saveRequest));
 
             var result = new RedactPdfRequest
@@ -42,12 +42,12 @@ namespace RumpoleGateway.Mappers
                     RedactionCoordinates = new List<RedactionCoordinates>()
                 };
                 foreach (var redactionCoordinates in item.RedactionCoordinates.Select(coordinates => new RedactionCoordinates
-                         {
-                             X1 = coordinates.X1,
-                             Y1 = coordinates.Y1,
-                             X2 = coordinates.X2,
-                             Y2 = coordinates.Y2
-                         }))
+                {
+                    X1 = coordinates.X1,
+                    Y1 = coordinates.Y1,
+                    X2 = coordinates.X2,
+                    Y2 = coordinates.Y2
+                }))
                 {
                     redactionDefinition.RedactionCoordinates.Add(redactionCoordinates);
                 }

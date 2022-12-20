@@ -15,6 +15,6 @@ export const mapDocumentsState = (
           ...item,
           tabSafeId: `d${index}`,
           presentationFileName: getFileNameWithoutExtension(item.fileName),
-          category: getCategory(item),
+          presentationCategory: getCategory(item),
         })),
       };

@@ -3,78 +3,31 @@ import { CaseDetails } from "../../app/features/cases/domain/CaseDetails";
 import { CaseDetailsDataSource } from "./types/CaseDetailsDataSource";
 
 const dataSource: CaseDetailsDataSource = (id) =>
-  caseDetails.find((item) => String(item.id) === id);
+  caseDetails.find((item) => item.id === id);
 
 export default dataSource;
 
 const caseDetails: CaseDetails[] = [
   {
     id: 13401,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
+    uniqueReferenceNumber: "12AB1111111",
+    isCaseCharged: true,
+    numberOfDefendants: 1,
+    leadDefendantDetails: {
+      id: 901,
+      listOrder: 0,
       firstNames: "Steve",
       surname: "Walsh",
       organisationName: "",
+      dob: "1977-11-28",
+      isYouth: false,
+      type: "SOME_TYPE",
     },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: false,
-      },
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
-  },
-  {
-    id: 17422,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
-      firstNames: "Steve",
-      surname: "Walsh",
-      organisationName: "",
+    headlineCharge: {
+      charge: faker.lorem.sentence(),
+      date: "2022-02-01",
+      nextHearingDate: "2023-01-02",
     },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
-  },
-  {
-    id: 18443,
-    uniqueReferenceNumber: "",
-    leadDefendant: {
-      firstNames: "Steve",
-      surname: "Walsh",
-      organisationName: "",
-    },
-    offences: [
-      {
-        earlyDate: "2020-03-01",
-        lateDate: "2021-06-30",
-        listOrder: 0,
-        code: "0",
-        shortDescription: faker.lorem.sentence(),
-        longDescription: faker.lorem.sentences(),
-        isNotYetCharged: true,
-      },
-    ],
+    defendants: [],
   },
 ];

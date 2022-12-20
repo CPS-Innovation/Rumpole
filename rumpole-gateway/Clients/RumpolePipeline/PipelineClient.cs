@@ -33,22 +33,22 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _logger = logger;
         }
 
-        public async Task TriggerCoordinatorAsync(string caseId, string accessToken, bool force, Guid correlationId)
+        public async Task TriggerCoordinatorAsync(string caseUrn, string caseId, string accessToken, string upstreamToken, bool force, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(TriggerCoordinatorAsync), $"CaseId: {caseId}, Force?: {force}");
             var forceQuery = force ? "&&force=true" : string.Empty;
             _logger.LogMethodExit(correlationId, nameof(TriggerCoordinatorAsync), string.Empty);
-            await SendGetRequestAsync($"cases/{caseId}?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}{forceQuery}", accessToken, correlationId);
+            await SendGetRequestAsync($"cases/{caseUrn}/{caseId}?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}{forceQuery}", accessToken, upstreamToken, correlationId);
         }
 
-        public async Task<Tracker> GetTrackerAsync(string caseId, string accessToken, Guid correlationId)
+        public async Task<Tracker> GetTrackerAsync(string caseUrn, string caseId, string accessToken, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(GetTrackerAsync), $"Acquiring the tracker for caseId {caseId}");
             
             HttpResponseMessage response;
             try
             {
-                response = await SendGetRequestAsync($"cases/{caseId}/tracker?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}", accessToken, correlationId);
+                response = await SendGetRequestAsync($"cases/{caseUrn}/{caseId}/tracker?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}", accessToken, correlationId);
             }
             catch (HttpRequestException exception)
             {
@@ -71,6 +71,19 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _logger.LogMethodEntry(correlationId, nameof(SendGetRequestAsync), requestUri);
             
             var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken, correlationId);
+            var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            _logger.LogMethodExit(correlationId, nameof(SendGetRequestAsync), string.Empty);
+            return response;
+        }
+        
+        private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken, string upstreamToken, Guid correlationId)
+        {
+            _logger.LogMethodEntry(correlationId, nameof(SendGetRequestAsync), requestUri);
+            
+            var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken, upstreamToken, correlationId);
             var response = await _httpClient.SendAsync(request);
 
             response.EnsureSuccessStatusCode();

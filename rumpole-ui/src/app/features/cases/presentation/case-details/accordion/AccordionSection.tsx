@@ -11,7 +11,7 @@ type Props = {
   handleToggleOpenSection: (id: string) => void;
   handleOpenPdf: (caseDocument: {
     tabSafeId: string;
-    documentId: string;
+    documentId: number;
   }) => void;
 };
 

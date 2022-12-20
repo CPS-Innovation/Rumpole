@@ -1,9 +1,8 @@
 import { Reducer } from "react";
 import { AsyncActionHandlers } from "use-reducer-async";
 import {
-  checkinDocument,
+  cancelCheckoutDocument,
   checkoutDocument,
-  getCoreHeadersInitObject,
   getPdfSasUrl,
   saveRedactions,
 } from "../../api/gateway-api";
@@ -11,6 +10,7 @@ import { CaseDocumentViewModel } from "../../domain/CaseDocumentViewModel";
 import { NewPdfHighlight } from "../../domain/NewPdfHighlight";
 import { mapRedactionSaveRequest } from "./map-redaction-save-request";
 import { reducer } from "./reducer";
+import * as HEADERS from "../../api/header-factory";
 
 const LOCKED_STATES_REQUIRING_UNLOCK: CaseDocumentViewModel["clientLockedState"][] =
   ["locked", "locking"];
@@ -24,39 +24,39 @@ type Action = Parameters<typeof reducer>[1];
 type AsyncActions =
   | {
       type: "ADD_REDACTION_AND_POTENTIALLY_LOCK";
-      payload: { pdfId: string; redaction: NewPdfHighlight };
+      payload: { pdfId: number; redaction: NewPdfHighlight };
     }
   | {
       type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK";
       payload: {
-        pdfId: string;
+        pdfId: number;
         redactionId: string;
       };
     }
   | {
       type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     }
   | {
       type: "SAVE_REDACTIONS";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     }
   | {
       type: "REQUEST_OPEN_PDF";
       payload: {
         tabSafeId: string;
-        pdfId: string;
+        pdfId: number;
         mode: CaseDocumentViewModel["mode"];
       };
     }
   | {
       type: "REQUEST_OPEN_PDF_IN_NEW_TAB";
       payload: {
-        pdfId: string;
+        pdfId: number;
       };
     };
 
@@ -87,15 +87,11 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
     async (action) => {
       const { payload } = action;
 
-      const headers = await getCoreHeadersInitObject();
-
-      if (!headers.Authorization) {
-        throw new Error("Auth token not found when opening pdf.");
-      }
-
-      if (!headers["Correlation-Id"]) {
-        throw new Error("Correlation Id not found when opening pdf.");
-      }
+      const headers = {
+        ...HEADERS.correlationId(),
+        ...(await HEADERS.auth()),
+        ...(await HEADERS.upstreamHeader()),
+      };
 
       dispatch({
         type: "OPEN_PDF",
@@ -112,9 +108,10 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
-      const { clientLockedState } = items.find(
+      const { clientLockedState, cmsDocCategory } = items.find(
         (item) => item.documentId === pdfId
       )!;
 
@@ -132,7 +129,12 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "locking" },
       });
 
-      const isLockSuccessful = await checkoutDocument(caseId, pdfId);
+      const isLockSuccessful = await checkoutDocument(
+        urn,
+        caseId,
+        cmsDocCategory,
+        pdfId
+      );
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -152,11 +154,16 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { redactionHighlights, clientLockedState: lockedState } = document;
+      const {
+        redactionHighlights,
+        clientLockedState: lockedState,
+        cmsDocCategory,
+      } = document;
 
       dispatch({ type: "REMOVE_REDACTION", payload });
 
@@ -174,7 +181,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, cmsDocCategory, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -194,11 +201,12 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
       const document = items.find((item) => item.documentId === pdfId)!;
 
-      const { clientLockedState: lockedState } = document;
+      const { clientLockedState: lockedState, cmsDocCategory } = document;
 
       const requiresCheckIn =
         LOCKED_STATES_REQUIRING_UNLOCK.includes(lockedState);
@@ -214,7 +222,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
         payload: { pdfId, lockedState: "unlocking" },
       });
 
-      await checkinDocument(caseId, pdfId);
+      await cancelCheckoutDocument(urn, caseId, cmsDocCategory, pdfId);
 
       dispatch({
         type: "UPDATE_DOCUMENT_LOCK_STATE",
@@ -234,9 +242,10 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       const {
         tabsState: { items },
         caseId,
+        urn,
       } = getState();
 
-      const { redactionHighlights, pdfBlobName } = items.find(
+      const { redactionHighlights, pdfBlobName, cmsDocCategory } = items.find(
         (item) => item.documentId === pdfId
       )!;
 
@@ -248,7 +257,9 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       // todo: make sure UI knows we are saving
 
       const response = await saveRedactions(
+        urn,
         caseId,
+        cmsDocCategory,
         pdfId,
         pdfBlobName!, // todo: better typing, but we're guaranteed to have a pdfBlobName anyhow
         redactionSaveRequest
@@ -257,7 +268,7 @@ export const reducerAsyncActionHandlers: AsyncActionHandlers<
       window.open(response.redactedDocumentUrl);
 
       // todo: does a save IN THE CGI API check a document in automatically?
-      await checkinDocument(caseId, pdfId);
+      //await cancelCheckoutDocument(urn, caseId, pdfId);
 
       // todo: make sure UI knows we are saved
     },

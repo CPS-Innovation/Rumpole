@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
+using System.Net;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -39,19 +40,23 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineTriggerCoordinator")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "cases/{caseId}")] HttpRequest req, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/{urn}/cases/{caseId}")] HttpRequest req, string urn, string caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineTriggerCoordinator - Run";
 
             try
             {
+                urn = WebUtility.UrlDecode(urn); // todo: inject or move to validator
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
+
+                if (string.IsNullOrWhiteSpace(urn))
+                    return BadRequestErrorResponse("An empty case URN was received - please correct.", currentCorrelationId, loggingName);
 
                 if (!int.TryParse(caseId, out var _))
                     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
@@ -65,7 +70,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Triggering the pipeline for caseId: {caseId}, forceRefresh: {force}");
-                await _pipelineClient.TriggerCoordinatorAsync(caseId, onBehalfOfAccessToken, force, currentCorrelationId);
+                await _pipelineClient.TriggerCoordinatorAsync(urn, caseId, onBehalfOfAccessToken, "sample-token", force, currentCorrelationId);
 
                 return new OkObjectResult(_triggerCoordinatorResponseFactory.Create(req, currentCorrelationId));
             }

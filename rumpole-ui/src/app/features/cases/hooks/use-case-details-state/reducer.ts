@@ -35,7 +35,7 @@ export const reducer = (
     | {
         type: "OPEN_PDF_IN_NEW_TAB";
         payload: {
-          pdfId: string;
+          pdfId: number;
           sasUrl: string;
         };
       }
@@ -43,7 +43,7 @@ export const reducer = (
         type: "OPEN_PDF";
         payload: {
           tabSafeId: string;
-          pdfId: string;
+          pdfId: number;
           mode: CaseDocumentViewModel["mode"];
           headers: HeadersInit;
         };
@@ -81,27 +81,27 @@ export const reducer = (
     | {
         type: "ADD_REDACTION";
         payload: {
-          pdfId: string;
+          pdfId: number;
           redaction: NewPdfHighlight;
         };
       }
     | {
         type: "REMOVE_REDACTION";
         payload: {
-          pdfId: string;
+          pdfId: number;
           redactionId: string;
         };
       }
     | {
         type: "REMOVE_ALL_REDACTIONS";
         payload: {
-          pdfId: string;
+          pdfId: number;
         };
       }
     | {
         type: "UPDATE_DOCUMENT_LOCK_STATE";
         payload: {
-          pdfId: string;
+          pdfId: number;
           lockedState: CaseDocumentViewModel["clientLockedState"];
         };
       }

@@ -1,5 +1,14 @@
 import { CaseDocument } from "../../domain/CaseDocument";
 
+const docTypeTest = (caseDocument: CaseDocument, codes: string[]) =>
+  !!caseDocument.cmsDocType.code &&
+  codes.some(
+    (code) =>
+      !!code &&
+      code.replace(/\s+/g, "") ===
+        caseDocument.cmsDocType.code.replace(/\s+/g, "")
+  );
+
 const documentCategoryDefinitions: {
   category: string;
   showIfEmpty: boolean;
@@ -9,34 +18,33 @@ const documentCategoryDefinitions: {
   {
     category: "Reviews",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) => ["MG3", "MG3A"].includes(code),
+    test: (doc) => docTypeTest(doc, ["MG3", "MG3A"]),
   },
   {
     category: "Case overview",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) => ["MG4", "MG5", "MG6"].includes(code),
+    test: (doc) => docTypeTest(doc, ["MG4", "MG5", "MG6"]),
   },
   {
     category: "Statements",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) => ["MG9", "MG11", "PE1"].includes(code),
+    test: (doc) => docTypeTest(doc, ["MG9", "MG11", "PE1"]),
   },
   {
     category: "Exhibits",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) =>
-      ["MG12", "Other Exhibit"].includes(code),
+    test: (doc) => docTypeTest(doc, ["MG12", "Other Exhibit"]),
   },
   {
     category: "Forensics",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) => ["MG22 SFR"].includes(code),
+    test: (doc) => docTypeTest(doc, ["MG22 SFR"]),
   },
   {
     category: "Unused material",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) =>
-      [
+    test: (doc) =>
+      docTypeTest(doc, [
         "MG1",
         "MG6A",
         "MG6B",
@@ -48,13 +56,13 @@ const documentCategoryDefinitions: {
         "MG21A",
         "PCN3",
         "MG11(R)",
-      ].includes(code),
+      ]),
   },
   {
     category: "Defendant",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) =>
-      [
+    test: (doc) =>
+      docTypeTest(doc, [
         "MG15(ROTI)",
         "MG15(SDN)",
         "MG15(ROVI)",
@@ -67,18 +75,18 @@ const documentCategoryDefinitions: {
         "DREP",
         "PCN1",
         "PCN2",
-      ].includes(code),
+      ]),
   },
   {
     category: "Court preparation",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) =>
-      ["MG2", "MG4B", "MG7", "MG8", "MG10", "MG13", "MG19"].includes(code),
+    test: (doc) =>
+      docTypeTest(doc, ["MG2", "MG4B", "MG7", "MG8", "MG10", "MG13", "MG19"]),
   },
   {
     category: "Communications",
     showIfEmpty: true,
-    test: ({ cmsDocType: { code } }) => ["Other Comm (In)"].includes(code),
+    test: (doc) => docTypeTest(doc, ["Other Comm (In)"]),
   },
   // have unknown last so it can scoop up any unmatched documents
   {

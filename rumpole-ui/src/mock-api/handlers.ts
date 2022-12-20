@@ -68,7 +68,7 @@ export const setupHandlers = ({
 
   return [
     rest.get(makeApiPath(routes.CASE_SEARCH_ROUTE), (req, res, ctx) => {
-      const urn = req.url.pathname.split("/").pop()!;
+      const { urn } = req.params;
       lastRequestedUrnCache.urn = urn;
 
       const results = searchDataSources[sourceName](urn);
@@ -77,10 +77,10 @@ export const setupHandlers = ({
     }),
 
     rest.get(makeApiPath(routes.CASE_ROUTE), (req, res, ctx) => {
-      const { id } = req.params;
+      const { caseId } = req.params;
 
       const result = {
-        ...caseDetailsDataSources[sourceName](id),
+        ...caseDetailsDataSources[sourceName](+caseId),
         uniqueReferenceNumber: lastRequestedUrnCache.urn || "99ZZ9999999",
       };
 
@@ -88,18 +88,20 @@ export const setupHandlers = ({
     }),
 
     rest.get(makeApiPath(routes.DOCUMENTS_ROUTE), (req, res, ctx) => {
-      const { id } = req.params;
+      const { caseId } = req.params;
 
-      const result = documentsDataSources[sourceName](id);
+      const result = documentsDataSources[sourceName](+caseId);
 
       return res(delay(ctx), ctx.json(result));
     }),
 
     rest.post(makeApiPath(routes.INITIATE_PIPELINE_ROUTE), (req, res, ctx) => {
-      const { caseId } = req.params;
+      const { caseId, urn } = req.params;
       return res(
         delay(ctx),
-        ctx.json({ trackerUrl: makeApiPath(`api/cases/${caseId}/tracker`) })
+        ctx.json({
+          trackerUrl: makeApiPath(`api/urns/${urn}/cases/${caseId}/tracker`),
+        })
       );
     }),
 

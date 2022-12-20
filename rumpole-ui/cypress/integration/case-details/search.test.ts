@@ -7,7 +7,7 @@ import { TEXT_SEARCH_ROUTE, TRACKER_ROUTE } from "../../../src/mock-api/routes";
 describe("Case Details Search", () => {
   describe("Search box", () => {
     it("can search with an empty search term", () => {
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
 
       cy.findByTestId("btn-search-case").should("not.be.disabled");
       cy.findByTestId("div-search-results").should("not.exist");
@@ -18,7 +18,7 @@ describe("Case Details Search", () => {
     });
 
     it("can search if there is text in the box", () => {
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
 
       cy.findByTestId("input-search-case").type("a");
       cy.findByTestId("btn-search-case").click();
@@ -27,7 +27,7 @@ describe("Case Details Search", () => {
     });
 
     it("can search via the enter button", () => {
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
 
       cy.findByTestId("input-search-case").type("{enter}");
 
@@ -38,29 +38,29 @@ describe("Case Details Search", () => {
   describe("Search results", () => {
     describe("Searching from the results modal", () => {
       it("can search if the user has opened the results modal with an empty search term", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("btn-search-case").click();
 
-        cy.findByTestId("div-search-result-d2").should("not.exist");
+        cy.findByTestId("div-search-result-2").should("not.exist");
         cy.findByTestId("input-results-search-case").type("drink{enter}");
-        cy.findByTestId("div-search-result-d2").should("exist");
+        cy.findByTestId("div-search-result-2").should("exist");
       });
 
       it("can trigger a search from the results modal by clicking the search button", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("btn-search-case").click();
 
-        cy.findByTestId("div-search-result-d2").should("not.exist");
+        cy.findByTestId("div-search-result-2").should("not.exist");
         cy.findByTestId("input-results-search-case").type("drink");
         cy.findByTestId("btn-results-search-case").click();
 
-        cy.findByTestId("div-search-result-d2").should("exist");
+        cy.findByTestId("div-search-result-2").should("exist");
       });
     });
 
     describe("Results information", () => {
       it("can display header information when there are results", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("div-results-header").contains(
@@ -71,14 +71,14 @@ describe("Case Details Search", () => {
       });
 
       it("can display header information when there are no results", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("DOES-NOT-EXIST{enter}");
 
         cy.contains("No documents found matching 'DOES-NOT-EXIST'");
       });
 
       it("can display header warning if user has attempted to use multiple wards", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink drive{enter}");
 
         cy.findByTestId("div-results-header").contains(
@@ -89,36 +89,32 @@ describe("Case Details Search", () => {
       });
 
       it("can display results context line and meta data", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
-        cy.findByTestId("div-search-result-d2").contains(
+        cy.findByTestId("div-search-result-2").contains(
           "drink and has left in her car."
         );
-        cy.findByTestId("div-search-result-d2").contains(
-          "Uploaded:02 Jun 2020"
-        );
-        cy.findByTestId("div-search-result-d2").contains("Type:MG12 File");
+        cy.findByTestId("div-search-result-2").contains("Uploaded:02 Jun 2020");
+        cy.findByTestId("div-search-result-2").contains("Type:MG12 File");
 
-        cy.findByTestId("div-search-result-d2")
+        cy.findByTestId("div-search-result-2")
           .findByTestId("details-expand-search-results")
           .should("not.exist");
 
         // if there are multiple occurrences of the word in the line
-        cy.findByTestId("div-search-result-d3").contains(
+        cy.findByTestId("div-search-result-3").contains(
           "DRINK THE SCENE IN HER CAR IN DRINK"
         );
-        cy.findByTestId("div-search-result-d3").contains(
-          "Uploaded:03 Jun 2020"
-        );
-        cy.findByTestId("div-search-result-d3").contains("Type:MG13 File");
+        cy.findByTestId("div-search-result-3").contains("Uploaded:03 Jun 2020");
+        cy.findByTestId("div-search-result-3").contains("Type:MG13 File");
       });
 
       it("can display results that have multiple occurrences across several lines", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
-        cy.findByTestId("div-search-result-d1")
+        cy.findByTestId("div-search-result-1")
           .findByTestId("details-expand-search-results")
           .should("exist")
           .contains("View 3 more")
@@ -131,12 +127,12 @@ describe("Case Details Search", () => {
             "Drink drink zorms zoadside / hospital / station"
           );
 
-        cy.findByTestId("div-search-result-d1")
+        cy.findByTestId("div-search-result-1")
           .findByTestId("details-expand-search-results")
           .find("summary")
           .click();
 
-        cy.findByTestId("div-search-result-d1")
+        cy.findByTestId("div-search-result-1")
           .findByTestId("details-expand-search-results")
           .should("contain", "Drink xrive xorms xoadside / hospital / station")
           .should("contain", "Drink drink zorms zoadside / hospital / station");
@@ -155,19 +151,19 @@ describe("Case Details Search", () => {
           .should("deep.eq", idsInExpectedOrder);
       };
       it("can display search results in default date descending order", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
 
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         assertResultsOrderHelper([
-          "div-search-result-d3",
-          "div-search-result-d2",
-          "div-search-result-d1",
+          "div-search-result-3",
+          "div-search-result-2",
+          "div-search-result-1",
         ]);
       });
 
       it("can change results ordering to number of occurrences descending then back to date descending", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
 
         cy.findByTestId("input-search-case").type("drink{enter}");
 
@@ -176,22 +172,22 @@ describe("Case Details Search", () => {
         );
 
         assertResultsOrderHelper([
-          "div-search-result-d1",
-          "div-search-result-d3",
-          "div-search-result-d2",
+          "div-search-result-1",
+          "div-search-result-3",
+          "div-search-result-2",
         ]);
 
         cy.findByTestId("select-result-order").select("byDateDesc");
 
         assertResultsOrderHelper([
-          "div-search-result-d3",
-          "div-search-result-d2",
-          "div-search-result-d1",
+          "div-search-result-3",
+          "div-search-result-2",
+          "div-search-result-1",
         ]);
       });
 
       it("can not display the sort option dropdown if there are no results", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
 
         cy.findByTestId("input-search-case").type("DOES-NOT-EXIST{enter}");
         // make sure we have our results UI...
@@ -205,72 +201,72 @@ describe("Case Details Search", () => {
 
     describe("Filtering", () => {
       it("can filter results using one of the filters", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2");
+        cy.findByTestId("div-search-result-3");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").check();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2").should("not.exist");
+        cy.findByTestId("div-search-result-3").should("not.exist");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG12").check();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2");
+        cy.findByTestId("div-search-result-3").should("not.exist");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG13").check();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2");
+        cy.findByTestId("div-search-result-3");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").uncheck();
 
-        cy.findByTestId("div-search-result-d1").should("not.exist");
-        cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3");
+        cy.findByTestId("div-search-result-1").should("not.exist");
+        cy.findByTestId("div-search-result-2");
+        cy.findByTestId("div-search-result-3");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG12").uncheck();
 
-        cy.findByTestId("div-search-result-d1").should("not.exist");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3");
+        cy.findByTestId("div-search-result-1").should("not.exist");
+        cy.findByTestId("div-search-result-2").should("not.exist");
+        cy.findByTestId("div-search-result-3");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG13").uncheck();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2");
-        cy.findByTestId("div-search-result-d3");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2");
+        cy.findByTestId("div-search-result-3");
       });
 
       it("can combine filters across both filter types and show results that match any filter", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").check();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2").should("not.exist");
 
         cy.findByTestId("checkboxes-category").get("#Exhibits").check();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2");
 
         cy.findByTestId("checkboxes-category").get("#Exhibits").uncheck();
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2").should("not.exist");
       });
 
       it("can hide filters if there are no results", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("checkboxes-doc-type").should("exist");
@@ -288,7 +284,7 @@ describe("Case Details Search", () => {
 
     describe("Filtering lifecycle", () => {
       it("retains filter options when changing sort order", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").check();
@@ -303,7 +299,7 @@ describe("Case Details Search", () => {
       });
 
       it("resets filter options when searching for another term", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").check();
@@ -322,7 +318,7 @@ describe("Case Details Search", () => {
       });
 
       it("can close results modal and reopen in the same state", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("checkboxes-doc-type").get("#MG11").check();
@@ -331,9 +327,9 @@ describe("Case Details Search", () => {
           "byOccurancesPerDocumentDesc"
         );
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2").should("not.exist");
+        cy.findByTestId("div-search-result-3").should("not.exist");
 
         cy.findByTestId("btn-modal-close").click();
         cy.findByTestId("btn-search-case").click();
@@ -352,9 +348,9 @@ describe("Case Details Search", () => {
           "byOccurancesPerDocumentDesc"
         );
 
-        cy.findByTestId("div-search-result-d1");
-        cy.findByTestId("div-search-result-d2").should("not.exist");
-        cy.findByTestId("div-search-result-d3").should("not.exist");
+        cy.findByTestId("div-search-result-1");
+        cy.findByTestId("div-search-result-2").should("not.exist");
+        cy.findByTestId("div-search-result-3").should("not.exist");
       });
     });
 
@@ -364,11 +360,11 @@ describe("Case Details Search", () => {
           body: missingDocsPipelinePdfResults,
         });
 
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
-        cy.findByTestId("txt-missing-doc-d4");
-        cy.findByTestId("txt-missing-doc-d5");
+        cy.findByTestId("txt-missing-doc-4");
+        cy.findByTestId("txt-missing-doc-5");
 
         cy.findByTestId("details-expand-missing-docs").should("not.exist");
       });
@@ -378,26 +374,26 @@ describe("Case Details Search", () => {
           body: allMissingDocsPipelinePdfResults,
         });
 
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
-        cy.findByTestId("txt-missing-doc-d1");
-        cy.findByTestId("txt-missing-doc-d2");
-        cy.findByTestId("txt-missing-doc-d3");
-        cy.findByTestId("txt-missing-doc-d4");
+        cy.findByTestId("txt-missing-doc-1");
+        cy.findByTestId("txt-missing-doc-2");
+        cy.findByTestId("txt-missing-doc-3");
+        cy.findByTestId("txt-missing-doc-4");
 
         cy.findByTestId("details-expand-missing-docs").should("exist");
 
         cy.findByTestId("details-expand-missing-docs")
           .should("exist")
           .contains("View 1 more")
-          .findByTestId("txt-missing-doc-d5")
+          .findByTestId("txt-missing-doc-5")
           .should("not.exist");
 
         cy.findByTestId("details-expand-missing-docs").find("summary").click();
 
         cy.findByTestId("details-expand-missing-docs")
-          .findByTestId("txt-missing-doc-d5")
+          .findByTestId("txt-missing-doc-5")
           .should("exist");
       });
     });
@@ -405,7 +401,7 @@ describe("Case Details Search", () => {
     describe("Loading... (long running calls)", () => {
       it("can show the user the 'Loading...' content for a long running search call", () => {
         cy.overrideRoute(TEXT_SEARCH_ROUTE, { type: "delay", timeMs: 1500 });
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("div-please-wait");
@@ -413,7 +409,7 @@ describe("Case Details Search", () => {
 
       it("can show the user the 'Loading...' content for a long running pipeline call", () => {
         cy.overrideRoute(TRACKER_ROUTE, { type: "delay", timeMs: 1500 });
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
 
         cy.findByTestId("div-please-wait");
@@ -422,9 +418,9 @@ describe("Case Details Search", () => {
 
     describe("Viewing search results", () => {
       it("Can use the previous/next buttons to focus on highlights", () => {
-        cy.visit("/case-details/13401");
+        cy.visit("/case-details/12AB1111111/13401");
         cy.findByTestId("input-search-case").type("drink{enter}");
-        cy.findByTestId("link-result-document-d3").click();
+        cy.findByTestId("link-result-document-3").click();
 
         // first highlight is focussed
         cy.findByTestId("btn-focus-highlight-previous").should("not.exist");

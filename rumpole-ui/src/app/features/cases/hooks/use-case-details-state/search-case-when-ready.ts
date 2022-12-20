@@ -1,12 +1,13 @@
 import { searchCase } from "../../api/gateway-api";
 
 export const searchCaseWhenReady = async (
-  id: string,
+  urn: string,
+  id: number,
   searchTerm: string,
   isPipelineComplete: boolean,
   isDocumentCallComplete: boolean
 ) => {
   return searchTerm && isPipelineComplete && isDocumentCallComplete
-    ? await searchCase(id, searchTerm)
+    ? await searchCase(urn, id, searchTerm)
     : undefined;
 };

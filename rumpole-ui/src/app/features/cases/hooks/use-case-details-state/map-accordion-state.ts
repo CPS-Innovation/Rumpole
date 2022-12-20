@@ -27,7 +27,7 @@ export const mapAccordionState = (
   // cycle through each doc from the api
   for (const caseDocument of documentsState.data) {
     const resultItem = results.find(
-      (item) => item.sectionId === caseDocument.category
+      (item) => item.sectionId === caseDocument.presentationCategory
     )!;
 
     // ... add to the section results ...

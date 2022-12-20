@@ -5,7 +5,8 @@ import { initiateAndPoll } from "./initiate-and-poll";
 import { PIPELINE_POLLING_DELAY } from "../../../../config";
 
 export const usePipelineApi = (
-  caseId: string
+  urn: string,
+  caseId: number
 ): AsyncPipelineResult<PipelineResults> => {
   const [pipelineResults, setPipelineResults] = useState<
     AsyncPipelineResult<PipelineResults>
@@ -15,7 +16,7 @@ export const usePipelineApi = (
   });
 
   useEffect(() => {
-    return initiateAndPoll(caseId, PIPELINE_POLLING_DELAY, (results) =>
+    return initiateAndPoll(urn, caseId, PIPELINE_POLLING_DELAY, (results) =>
       setPipelineResults(results)
     );
   }, [caseId]);

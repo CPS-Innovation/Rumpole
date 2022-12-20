@@ -31,16 +31,16 @@ export const initialState = {
     missingDocs: [],
     results: { status: "loading" },
   },
-} as Omit<CombinedState, "caseId">;
+} as Omit<CombinedState, "caseId" | "urn">;
 
-export const useCaseDetailsState = (id: string) => {
-  const caseState = useApi(getCaseDetails, id);
-  const documentsState = useApi(getCaseDocumentsList, id);
-  const pipelineState = usePipelineApi(id);
+export const useCaseDetailsState = (urn: string, caseId: number) => {
+  const caseState = useApi(getCaseDetails, urn, caseId);
+  const documentsState = useApi(getCaseDocumentsList, urn, caseId);
+  const pipelineState = usePipelineApi(urn, caseId);
 
   const [combinedState, dispatch] = useReducerAsync(
     reducer,
-    { ...initialState, caseId: id },
+    { ...initialState, caseId, urn },
     reducerAsyncActionHandlers
   );
 
@@ -61,7 +61,8 @@ export const useCaseDetailsState = (id: string) => {
 
   const searchResults = useApi(
     searchCaseWhenReady,
-    id,
+    urn,
+    caseId,
     combinedState.searchState.submittedSearchTerm,
     //  Note: we let the user trigger a search without the pipeline being ready.
     //  If we additionally observe the complete-state of the pipeline here, we can ensure that a search
@@ -88,7 +89,7 @@ export const useCaseDetailsState = (id: string) => {
   const handleOpenPdf = useCallback(
     (caseDocument: {
       tabSafeId: string;
-      documentId: string;
+      documentId: number;
       mode: CaseDocumentViewModel["mode"];
     }) => {
       dispatch({
@@ -162,7 +163,7 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleAddRedaction = useCallback(
-    (pdfId: string, redaction: NewPdfHighlight) =>
+    (pdfId: number, redaction: NewPdfHighlight) =>
       dispatch({
         type: "ADD_REDACTION_AND_POTENTIALLY_LOCK",
         payload: { pdfId, redaction },
@@ -171,7 +172,7 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleRemoveRedaction = useCallback(
-    (pdfId: string, redactionId: string) =>
+    (pdfId: number, redactionId: string) =>
       dispatch({
         type: "REMOVE_REDACTION_AND_POTENTIALLY_UNLOCK",
         payload: { pdfId, redactionId },
@@ -180,7 +181,7 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleRemoveAllRedactions = useCallback(
-    (pdfId: string) =>
+    (pdfId: number) =>
       dispatch({
         type: "REMOVE_ALL_REDACTIONS_AND_UNLOCK",
         payload: { pdfId },
@@ -189,13 +190,13 @@ export const useCaseDetailsState = (id: string) => {
   );
 
   const handleSavedRedactions = useCallback(
-    (pdfId: string) =>
+    (pdfId: number) =>
       dispatch({ type: "SAVE_REDACTIONS", payload: { pdfId } }),
     [dispatch]
   );
 
   const handleOpenPdfInNewTab = useCallback(
-    (pdfId: string) =>
+    (pdfId: number) =>
       dispatch({ type: "REQUEST_OPEN_PDF_IN_NEW_TAB", payload: { pdfId } }),
     [dispatch]
   );

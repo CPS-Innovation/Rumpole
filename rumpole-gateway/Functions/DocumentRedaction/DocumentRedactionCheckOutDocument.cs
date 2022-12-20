@@ -1,65 +1,68 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using RumpoleGateway.Clients.DocumentRedaction;
+
 using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Extensions;
 using RumpoleGateway.Helpers.Extension;
+using RumpoleGateway.Clients.RumpolePipeline;
+using RumpoleGateway.Services;
+using RumpoleGateway.Domain.CaseData;
+using RumpoleGateway.Domain.CaseData.Args;
 
 namespace RumpoleGateway.Functions.DocumentRedaction
 {
-    public class DocumentRedactionCheckOutDocument : BaseRumpoleFunction
+    public class DocumentRedactionCheckoutDocument : BaseRumpoleFunction
     {
-        private readonly IDocumentRedactionClient _documentRedactionClient;
-        private readonly ILogger<DocumentRedactionCheckOutDocument> _logger;
+        private readonly IDocumentService _documentService;
+        private readonly ILogger<DocumentRedactionCheckoutDocument> _logger;
 
-        public DocumentRedactionCheckOutDocument(ILogger<DocumentRedactionCheckOutDocument> logger, IDocumentRedactionClient documentRedactionClient, IAuthorizationValidator tokenValidator)
+        public DocumentRedactionCheckoutDocument(ILogger<DocumentRedactionCheckoutDocument> logger, IDocumentService documentService, IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
-            _documentRedactionClient = documentRedactionClient ?? throw new ArgumentNullException(nameof(documentRedactionClient));
+            _documentService = documentService ?? throw new ArgumentNullException(nameof(documentService));
             _logger = logger;
         }
 
-        [FunctionName("DocumentRedactionCheckOutDocument")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "documents/checkout/{caseId}/{documentId}")] HttpRequest req, string caseId, string documentId)
+        [FunctionName("DocumentRedactionCheckoutDocument")]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "urns/{urn}/cases/{caseId}/documents/{documentCategory}/{documentId}/checkout")] HttpRequest req,
+            string urn,
+            int caseId,
+            string documentCategory,
+            int documentId)
         {
             Guid currentCorrelationId = default;
-            const string loggingName = "DocumentRedactionCheckOutDocument - Run";
-            var checkoutResult = DocumentRedactionStatus.NotFound;
+            const string loggingName = "DocumentRedactionCheckInDocument - Run";
 
             try
             {
+                Enum.TryParse(documentCategory, out CmsDocCategory cmsDocCategory);
+
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                if (string.IsNullOrWhiteSpace(documentId))
-                    return BadRequestErrorResponse("Document id is not supplied.", currentCorrelationId, loggingName);
-
-                if (!int.TryParse(caseId, out _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
-
                 //exchange access token via on behalf of?
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Checking out document for caseId: {caseId}, documentId: {documentId}");
-                checkoutResult = await _documentRedactionClient.CheckOutDocumentAsync(caseId, documentId, validationResult.AccessTokenValue.ToJwtString(), currentCorrelationId);
-                return checkoutResult switch
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $" checkout document for caseId: {caseId}, documentId: {documentId}");
+
+                await _documentService.CheckoutDocument(new DocumentArg
                 {
-                    DocumentRedactionStatus.CheckedOut => new OkObjectResult(new DocumentStatusChangeResult(true, checkoutResult)),
-                    DocumentRedactionStatus.AlreadyCheckedOut => new OkObjectResult(new DocumentStatusChangeResult(false, checkoutResult)),
-                    DocumentRedactionStatus.NotFound => NotFoundErrorResponse($"No document found for caseId '{caseId}' and documentId '{documentId}'.", currentCorrelationId,
-                        loggingName),
-                    _ => throw new ArgumentOutOfRangeException($"Invalid document checkout status returned: {checkoutResult}")
-                };
+                    Urn = urn,
+                    CaseId = caseId,
+                    CmsDocCategory = cmsDocCategory,
+                    DocumentId = documentId,
+                });
+
+                return new OkResult();
             }
             catch (Exception exception)
             {
@@ -70,7 +73,7 @@ namespace RumpoleGateway.Functions.DocumentRedaction
             }
             finally
             {
-                _logger.LogMethodExit(currentCorrelationId, loggingName, checkoutResult.ToJson());
+                _logger.LogMethodExit(currentCorrelationId, loggingName, null);
             }
         }
     }

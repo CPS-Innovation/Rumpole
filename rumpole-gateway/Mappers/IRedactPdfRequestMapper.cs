@@ -5,6 +5,6 @@ namespace RumpoleGateway.Mappers
 {
     public interface IRedactPdfRequestMapper
     {
-        RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, string caseId, string documentId, string fileName, Guid correlationId);
+        RedactPdfRequest Map(DocumentRedactionSaveRequest saveRequest, int caseId, int documentId, string fileName, Guid correlationId);
     }
 }

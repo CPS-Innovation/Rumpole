@@ -20,7 +20,6 @@ import { PageContentWrapper } from "../../../../common/presentation/components";
 import { WaitPage } from "../../../../common/presentation/components";
 import { useApi } from "../../../../common/hooks/useApi";
 import { searchUrn } from "../../api/gateway-api";
-import { Placeholder } from "../../../../common/presentation/components";
 
 import classes from "./index.module.scss";
 import { SectionBreak } from "../../../../common/presentation/components";
@@ -122,7 +121,10 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                   <h2 className="govuk-heading-m ">
                     <Link
                       to={{
-                        pathname: generatePath(casePath, { id: item.id }),
+                        pathname: generatePath(casePath, {
+                          urn: encodeURIComponent(item.uniqueReferenceNumber),
+                          id: item.id,
+                        }),
                         state: search,
                       }}
                       data-testid={`link-${item.uniqueReferenceNumber}`}
@@ -131,44 +133,55 @@ const Page: React.FC<Props> = ({ backLinkProps }) => {
                       {item.uniqueReferenceNumber}
                     </Link>
                     <Hint className={classes.defendantName}>
-                      {item.leadDefendant.surname},{" "}
-                      {item.leadDefendant.firstNames}
+                      {`${item.leadDefendantDetails.surname}, 
+                        ${item.leadDefendantDetails.firstNames}
+                        ${item.numberOfDefendants > 1 ? "and others" : ""}`}
+                      <br />
+                      Date of birth:{" "}
+                      {formatDate(
+                        item.leadDefendantDetails.dob,
+                        CommonDateTimeFormats.ShortDateFullTextMonth
+                      )}
                     </Hint>
-                    <Placeholder
-                      height={30}
-                      width={200}
-                      marginTop={-15}
-                      marginBottom={0}
-                    />
                   </h2>
                   <div>
-                    {item.offences.map((offence, index) => (
-                      <div key={index} className={classes["result-offence"]}>
+                    <div className={classes["result-offence"]}>
+                      <div className={classes["result-offence-line"]}>
+                        <span>Status:</span>
+                        <span>
+                          {item.isCaseCharged ? "Charged" : "Not yet charged"}
+                        </span>
+                      </div>
+                      {item.isCaseCharged &&
+                      item.headlineCharge.nextHearingDate ? (
                         <div className={classes["result-offence-line"]}>
-                          <span>Status:</span>
-                          <span>
-                            {offence.isNotYetCharged
-                              ? "Not yet charged"
-                              : "Charged"}
-                          </span>
-                        </div>
-                        <div className={classes["result-offence-line"]}>
-                          <span>Date of offense:</span>
+                          <span>Court hearing:</span>
                           <span>
                             {formatDate(
-                              offence.earlyDate,
-                              CommonDateTimeFormats.ShortDateTextMonth
+                              item.headlineCharge.nextHearingDate,
+                              CommonDateTimeFormats.ShortDateFullTextMonth
                             )}
                           </span>
                         </div>
+                      ) : null}
+                      {item.headlineCharge.date ? (
                         <div className={classes["result-offence-line"]}>
+                          <span>Date of offence:</span>
                           <span>
-                            {offence.isNotYetCharged ? "Proposed" : ""} Charges:
+                            {formatDate(
+                              item.headlineCharge.date,
+                              CommonDateTimeFormats.ShortDateFullTextMonth
+                            )}
                           </span>
-                          <span>{offence.shortDescription}</span>
                         </div>
+                      ) : null}
+                      <div className={classes["result-offence-line"]}>
+                        <span>
+                          {item.isCaseCharged ? "Charges:" : "Proposed:"}
+                        </span>
+                        <span>{item.headlineCharge.charge}</span>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
               ))}

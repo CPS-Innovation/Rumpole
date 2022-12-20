@@ -3,27 +3,27 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using Azure.Identity;
 using Azure.Storage.Blobs;
-using GraphQL.Client.Abstractions;
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using RumpoleGateway.Clients.CoreDataApi;
-using RumpoleGateway.Clients.DocumentExtraction;
-using RumpoleGateway.Clients.DocumentRedaction;
+// using RumpoleGateway.Clients.DocumentExtraction;
+// using RumpoleGateway.Clients.DocumentRedaction;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
 using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Domain.Validators;
 using RumpoleGateway.Factories;
-using RumpoleGateway.Factories.AuthenticatedGraphQLHttpRequestFactory;
+using RumpoleGateway.CaseDataImplementations.Tde.Clients;
+using RumpoleGateway.CaseDataImplementations.Tde.Options;
+using RumpoleGateway.CaseDataImplementations.Tde.Services;
 using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
 using RumpoleGateway.Wrappers;
+using RumpoleGateway.CaseDataImplementations.Tde.Factories;
+using RumpoleGateway.CaseDataImplementations.Tde.Mappers;
 
 [assembly: FunctionsStartup(typeof(RumpoleGateway.Startup))]
 
@@ -34,7 +34,6 @@ namespace RumpoleGateway
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            
             var configuration = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
@@ -45,10 +44,6 @@ namespace RumpoleGateway
             {
                 configuration.GetSection("searchClient").Bind(settings);
             });
-            
-            builder.Services.AddScoped<IGraphQLClient>(_ => new GraphQLHttpClient(GetValueFromConfig(configuration, ConfigurationKeys.CoreDataApiUrl), new NewtonsoftJsonSerializer()));
-            builder.Services.AddScoped<ICoreDataApiClient, CoreDataApiClient>();
-            builder.Services.AddTransient<IAuthenticatedGraphQLHttpRequestFactory, AuthenticatedGraphQLHttpRequestFactory>();
             builder.Services.AddTransient<IOnBehalfOfTokenClient, OnBehalfOfTokenClient>();
             builder.Services.AddTransient<IPipelineClientRequestFactory, PipelineClientRequestFactory>();
             builder.Services.AddTransient<IAuthorizationValidator, AuthorizationValidator>();
@@ -75,7 +70,7 @@ namespace RumpoleGateway
 
             builder.Services.AddSingleton(_ =>
             {
-                const string instance = AuthenticationKeys.AzureAuthenticationInstanceUrl; 
+                const string instance = AuthenticationKeys.AzureAuthenticationInstanceUrl;
                 var onBehalfOfTokenTenantId = GetValueFromConfig(configuration, ConfigurationKeys.TenantId);
                 var onBehalfOfTokenClientId = GetValueFromConfig(configuration, ConfigurationKeys.ClientId);
                 var onBehalfOfTokenClientSecret = GetValueFromConfig(configuration, ConfigurationKeys.ClientSecret);
@@ -105,17 +100,36 @@ namespace RumpoleGateway
                     GetValueFromConfig(configuration, ConfigurationKeys.BlobContainerName), logger);
             });
 
-            builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
-            {
-                var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
-                return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
-            });
+            // builder.Services.AddTransient<IDocumentExtractionClient>(serviceProvider =>
+            // {
+            //     var logger = serviceProvider.GetService<ILogger<DocumentExtractionClientStub>>();
+            //     return new DocumentExtractionClientStub(GetValueFromConfig(configuration, ConfigurationKeys.StubBlobStorageConnectionString), logger);
+            // });
             builder.Services.AddTransient<ISasGeneratorService, SasGeneratorService>();
             builder.Services.AddTransient<IBlobSasBuilderWrapper, BlobSasBuilderWrapper>();
             builder.Services.AddTransient<IBlobSasBuilderFactory, BlobSasBuilderFactory>();
             builder.Services.AddTransient<IBlobSasBuilderWrapperFactory, BlobSasBuilderWrapperFactory>();
-            builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
+            // builder.Services.AddTransient<IDocumentRedactionClient, DocumentRedactionClientStub>();
             builder.Services.AddTransient<IRedactPdfRequestMapper, RedactPdfRequestMapper>();
+
+            builder.Services.AddTransient<ICaseDataArgFactory, CaseDataArgFactory>();
+
+            builder.Services.AddOptions<TdeOptions>().Configure<IConfiguration>((settings, _) =>
+            {
+                configuration.GetSection("tde").Bind(settings);
+            });
+
+            builder.Services.AddTransient<ICaseDataService, TdeService>();
+            builder.Services.AddTransient<IDocumentService, TdeService>();
+            builder.Services.AddTransient<ITdeClientRequestFactory, TdeClientRequestFactory>();
+            builder.Services.AddHttpClient<ITdeClient, TdeClient>((client) =>
+            {
+                var options = configuration.GetSection("tde").Get<TdeOptions>();
+                client.BaseAddress = new Uri(options.BaseUrl);
+                client.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            });
+            builder.Services.AddTransient<ICaseDetailsMapper, CaseDetailsMapper>();
+            builder.Services.AddTransient<ICaseDocumentsMapper, CaseDocumentsMapper>();
         }
 
         private static string GetValueFromConfig(IConfiguration configuration, string secretName)

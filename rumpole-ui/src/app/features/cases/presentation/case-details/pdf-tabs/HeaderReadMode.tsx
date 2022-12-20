@@ -5,7 +5,7 @@ import classes from "./HeaderReadMode.module.scss";
 
 type Props = {
   caseDocumentViewModel: Extract<CaseDocumentViewModel, { mode: "read" }>;
-  handleOpenPdfInNewTab: (pdfId: string) => void;
+  handleOpenPdfInNewTab: (pdfId: number) => void;
 };
 
 export const HeaderReadMode: React.FC<Props> = ({

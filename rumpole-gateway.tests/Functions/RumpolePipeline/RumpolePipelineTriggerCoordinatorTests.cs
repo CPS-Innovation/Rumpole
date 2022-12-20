@@ -24,10 +24,11 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 	public class RumpolePipelineTriggerCoordinatorTests : SharedMethods.SharedMethods
 	{
         private readonly HttpRequest _request;
+        private readonly string _caseUrn;
 		private readonly string _caseId;
 		private readonly string _onBehalfOfAccessToken;
+		private readonly string _upstreamToken;
 		private readonly string _rumpolePipelineCoordinatorScope;
-		private readonly Guid _correlationId;
 		private readonly TriggerCoordinatorResponse _triggerCoordinatorResponse;
 
         private readonly Mock<IOnBehalfOfTokenClient> _mockOnBehalfOfTokenClient;
@@ -39,11 +40,12 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		public RumpolePipelineTriggerCoordinatorTests()
 		{
             var fixture = new Fixture();
+            _caseUrn = fixture.Create<string>();
 			_caseId = fixture.Create<int>().ToString();
 			_onBehalfOfAccessToken = fixture.Create<string>();
 			_rumpolePipelineCoordinatorScope = fixture.Create<string>();
+			_upstreamToken = "sample-token";
 			_request = CreateHttpRequest();
-			_correlationId = fixture.Create<Guid>();
 			_triggerCoordinatorResponse = fixture.Create<TriggerCoordinatorResponse>();
 
 			var mockLogger = new Mock<ILogger<RumpolePipelineTriggerCoordinator>>();
@@ -68,7 +70,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenAccessCorrelationIdIsMissing()
 		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutCorrelationId(), _caseId);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutCorrelationId(), _caseUrn, _caseId);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -76,7 +78,15 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenAccessTokenIsMissing()
 		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutToken(), _caseId);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutToken(), _caseUrn, _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenUpstreamTokenIsMissing()
+		{
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequestWithoutUpstreamToken(), _caseUrn, _caseId);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -85,15 +95,23 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		public async Task Run_ReturnsUnauthorizedWhenAccessTokenIsInvalid()
 		{
 			_mockTokenValidator.Setup(x => x.ValidateTokenAsync(It.IsAny<StringValues>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
-			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseId);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(CreateHttpRequest(), _caseUrn, _caseId);
 
 			response.Should().BeOfType<UnauthorizedObjectResult>();
+		}
+		
+		[Fact]
+		public async Task Run_ReturnsBadRequestWhenCaseUrnIsNotSupplied()
+		{
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, string.Empty, _caseId);
+
+			response.Should().BeOfType<BadRequestObjectResult>();
 		}
 
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
 		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, "Not an integer");
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, "Not an integer");
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -102,7 +120,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		public async Task Run_ReturnsBadRequestWhenForceIsNotABool()
 		{
 			_request.Query = new QueryCollection(new Dictionary<string, StringValues> { { "force", new StringValues("not a bool") } });
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -110,15 +128,15 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_TriggersCoordinator()
         {
-			await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId);
+			await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId);
 
-			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()));
+			_mockPipelineClient.Verify(client => client.TriggerCoordinatorAsync(_caseUrn, _caseId, _onBehalfOfAccessToken, _upstreamToken, false, It.IsAny<Guid>()));
 		}
 
 		[Fact]
 		public async Task Run_ReturnsOk()
 		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId);
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId);
 
 			response.Should().BeOfType<OkObjectResult>();
 		}
@@ -126,7 +144,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsTriggerCoordinatorResponse()
 		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as OkObjectResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId) as OkObjectResult;
 
 			response?.Value.Should().Be(_triggerCoordinatorResponse);
 		
@@ -138,7 +156,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			_mockOnBehalfOfTokenClient.Setup(client => client.GetAccessTokenAsync(It.IsAny<string>(), _rumpolePipelineCoordinatorScope, It.IsAny<Guid>()))
 				.ThrowsAsync(new MsalException());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId) as ObjectResult;
 
 			response?.StatusCode.Should().Be(500);
 		}
@@ -146,10 +164,10 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenHttpExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseUrn, _caseId, _onBehalfOfAccessToken, _upstreamToken, false, It.IsAny<Guid>()))
 				.ThrowsAsync(new HttpRequestException());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId) as ObjectResult;
 
 			response?.StatusCode.Should().Be(500);
 		}
@@ -157,10 +175,10 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseId, _onBehalfOfAccessToken, false, It.IsAny<Guid>()))
+			_mockPipelineClient.Setup(client => client.TriggerCoordinatorAsync(_caseUrn, _caseId, _onBehalfOfAccessToken, _upstreamToken, false, It.IsAny<Guid>()))
 				.ThrowsAsync(new Exception());
 
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseId) as ObjectResult;
+			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, _caseId) as ObjectResult;
 
 			response?.StatusCode.Should().Be(500);
 		}

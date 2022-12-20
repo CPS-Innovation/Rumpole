@@ -8,7 +8,9 @@ const delay = (delayMs: number) =>
   new Promise((resolve) => setTimeout(resolve, delayMs));
 
 export const initiateAndPoll = (
-  caseId: string,
+  // todo: _ wrap up in to an object arg
+  urn: string,
+  caseId: number,
   delayMs: number,
   del: (pipelineResults: AsyncPipelineResult<PipelineResults>) => void
 ) => {
@@ -56,7 +58,7 @@ export const initiateAndPoll = (
     let trackerArgs: Awaited<ReturnType<typeof initiatePipeline>>;
 
     try {
-      trackerArgs = await initiatePipeline(caseId);
+      trackerArgs = await initiatePipeline(urn, caseId);
     } catch (error) {
       handleApiCallError(error);
       return;

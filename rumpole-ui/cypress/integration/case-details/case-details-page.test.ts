@@ -3,7 +3,7 @@ import { CASE_ROUTE } from "../../../src/mock-api/routes";
 describe("case details page", () => {
   describe("case page navigation", () => {
     it("can navigate back from case page, having not previously visited results page, and land on search page", () => {
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
 
       cy.findAllByTestId("link-back-link").should("have.attr", "href", "/");
 
@@ -44,21 +44,21 @@ describe("case details page", () => {
   describe("case details", () => {
     it("can show case details", () => {
       cy.visit("/case-search-results?urn=12AB1111111");
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
       cy.findByTestId("txt-defendant-name").contains("Walsh, Steve");
       cy.findByTestId("txt-case-urn").contains("12AB1111111");
     });
   });
 
   describe("pdf viewing", () => {
-    it("can open a pdf", () => {
+    it.only("can open a pdf", () => {
       cy.visit("/case-search-results?urn=12AB1111111");
-      cy.visit("/case-details/13401");
+      cy.visit("/case-details/12AB1111111/13401");
       cy.findByTestId("btn-accordion-open-close-all").click();
 
       cy.findByTestId("div-pdfviewer").should("not.exist");
 
-      cy.findByTestId("link-document-d1").click();
+      cy.findByTestId("link-document-1").click();
 
       cy.findByTestId("div-pdfviewer")
         .should("exist")
@@ -66,7 +66,7 @@ describe("case details page", () => {
     });
 
     it("can open a pdf in a new tab", () => {
-      cy.visit("/case-details/13401", {
+      cy.visit("/case-details/12AB1111111/13401", {
         onBeforeLoad(window) {
           cy.stub(window, "open");
         },
@@ -74,7 +74,7 @@ describe("case details page", () => {
 
       cy.findByTestId("btn-accordion-open-close-all").click();
 
-      cy.findByTestId("link-document-d1").click();
+      cy.findByTestId("link-document-1").click();
 
       cy.findByTestId("btn-open-pdf").click();
 

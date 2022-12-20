@@ -10,7 +10,8 @@ import { MappedCaseDocument } from "./MappedCaseDocument";
 import { FilterOption } from "./FilterOption";
 
 export type CombinedState = {
-  caseId: string;
+  urn: string;
+  caseId: number;
   caseState: AsyncResult<CaseDetails>;
   documentsState: AsyncResult<MappedCaseDocument[]>;
   pipelineState: AsyncPipelineResult<PipelineResults>;
@@ -32,7 +33,7 @@ export type CombinedState = {
       docType: { [key: string]: FilterOption };
       category: { [key: string]: FilterOption };
     };
-    missingDocs: { documentId: string; fileName: string }[];
+    missingDocs: { documentId: number; fileName: string }[];
     results: AsyncResult<MappedTextSearchResult>;
   };
 };

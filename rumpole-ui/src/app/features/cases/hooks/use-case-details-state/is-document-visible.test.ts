@@ -42,7 +42,7 @@ describe("isDocumentVisible", () => {
     const result = isDocumentVisible(
       {
         cmsDocType: { code: "foo" },
-        category: "bar",
+        presentationCategory: "bar",
         isVisible: true,
       } as MappedDocumentResult,
       {
@@ -58,7 +58,7 @@ describe("isDocumentVisible", () => {
     const result = isDocumentVisible(
       {
         cmsDocType: { code: "foo" },
-        category: "bar",
+        presentationCategory: "bar",
         isVisible: false,
       } as MappedDocumentResult,
       {
@@ -74,7 +74,7 @@ describe("isDocumentVisible", () => {
     const result = isDocumentVisible(
       {
         cmsDocType: { code: "foo" },
-        category: "bar",
+        presentationCategory: "bar",
         isVisible: true,
       } as MappedDocumentResult,
       {

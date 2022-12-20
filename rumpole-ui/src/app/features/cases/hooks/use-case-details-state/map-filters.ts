@@ -21,9 +21,11 @@ export const mapFilters = (
 
   const orderedDocumentResults = mappedTextSearchResult.documentResults.sort(
     (a, b) =>
-      a.cmsDocType.name < b.cmsDocType.name
+      // todo: _ get rid of hack
+      (a.cmsDocType && a.cmsDocType.name) < (b.cmsDocType && b.cmsDocType.name)
         ? -1
-        : a.cmsDocType.name > b.cmsDocType.name
+        : (a.cmsDocType && a.cmsDocType.name) >
+          (b.cmsDocType && b.cmsDocType.name)
         ? 1
         : 0
   );
@@ -41,7 +43,7 @@ export const mapFilters = (
     }
 
     docType[doc.cmsDocType.code].count += 1;
-    category[doc.category].count += 1;
+    category[doc.presentationCategory].count += 1;
   }
 
   return {

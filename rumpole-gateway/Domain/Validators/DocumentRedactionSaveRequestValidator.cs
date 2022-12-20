@@ -8,7 +8,7 @@ namespace RumpoleGateway.Domain.Validators
         public DocumentRedactionSaveRequestValidator()
         {
             RuleFor(x => x.Redactions).NotEmpty().WithMessage("At least one redaction must be provided");
-            RuleFor(x => x.Redactions).NotEmpty().WithMessage("At least one redaction must be provided");
+
             RuleForEach(c => c.Redactions).SetValidator(new RedactionValidator());
         }
     }

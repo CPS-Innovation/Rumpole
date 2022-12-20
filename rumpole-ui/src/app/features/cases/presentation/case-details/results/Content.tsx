@@ -22,7 +22,7 @@ const MemoizedResults = React.memo(Results);
 export const Content: React.FC<Props> = ({
   caseState: {
     data: {
-      leadDefendant: { surname },
+      leadDefendantDetails: { surname },
       uniqueReferenceNumber,
     },
   },

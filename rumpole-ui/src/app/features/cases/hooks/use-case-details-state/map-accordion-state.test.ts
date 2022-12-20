@@ -35,24 +35,28 @@ describe("mapAccordionState", () => {
       status: "succeeded",
       data: [
         {
-          documentId: "1",
+          documentId: 1,
           tabSafeId: "d0",
-          category: "category-a",
+          presentationCategory: "category-a",
           fileName: "foo",
           presentationFileName: "foo!",
+          cmsDocCategory: "MGForm",
           cmsDocType: {
+            id: 1,
             code: "MG11",
             name: "MG11 File",
           },
           createdDate: "2020-01-01",
         },
         {
-          documentId: "2",
+          documentId: 2,
           tabSafeId: "d1",
-          category: "category-b",
+          presentationCategory: "category-b",
           fileName: "bar",
           presentationFileName: "bar!",
+          cmsDocCategory: "MGForm",
           cmsDocType: {
+            id: 2,
             code: "MG12",
             name: "MG12 File",
           },
@@ -71,12 +75,14 @@ describe("mapAccordionState", () => {
           sectionLabel: "category-a",
           docs: [
             {
-              documentId: "1",
+              documentId: 1,
               tabSafeId: "d0",
-              category: "category-a",
+              presentationCategory: "category-a",
               fileName: "foo",
               presentationFileName: "foo!",
+              cmsDocCategory: "MGForm",
               cmsDocType: {
+                id: 1,
                 code: "MG11",
                 name: "MG11 File",
               },
@@ -89,12 +95,14 @@ describe("mapAccordionState", () => {
           sectionLabel: "category-b",
           docs: [
             {
-              documentId: "2",
+              documentId: 2,
               tabSafeId: "d1",
-              category: "category-b",
+              presentationCategory: "category-b",
               fileName: "bar",
               presentationFileName: "bar!",
+              cmsDocCategory: "MGForm",
               cmsDocType: {
+                id: 2,
                 code: "MG12",
                 name: "MG12 File",
               },

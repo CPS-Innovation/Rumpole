@@ -20,7 +20,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
         private readonly ISearchIndexClient _searchIndexClient;
         private readonly ILogger<RumpolePipelineQuerySearchIndex> _logger;
 
-        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IAuthorizationValidator tokenValidator) 
+        public RumpolePipelineQuerySearchIndex(ILogger<RumpolePipelineQuerySearchIndex> logger, ISearchIndexClient searchIndexClient, IAuthorizationValidator tokenValidator)
             : base(logger, tokenValidator)
         {
             _searchIndexClient = searchIndexClient;
@@ -29,7 +29,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineQuerySearchIndex")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "cases/{caseId}/query/{*searchTerm}")] HttpRequest req, string caseId, string searchTerm)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}/query/{*searchTerm}")] HttpRequest req, int caseId, string searchTerm)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineQuerySearchIndex - Run";
@@ -40,17 +40,14 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 var validationResult = await ValidateRequest(req, loggingName, ValidRoles.UserImpersonation);
                 if (validationResult.InvalidResponseResult != null)
                     return validationResult.InvalidResponseResult;
-                
+
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
-
-                if (!int.TryParse(caseId, out var caseIdInt))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(searchTerm))
                     return BadRequestErrorResponse("Search term is not supplied.", currentCorrelationId, loggingName);
 
-                searchResults = await _searchIndexClient.Query(caseIdInt, searchTerm, currentCorrelationId);
+                searchResults = await _searchIndexClient.Query(caseId, searchTerm, currentCorrelationId);
 
                 return new OkObjectResult(searchResults);
             }
@@ -64,7 +61,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
             }
             finally
             {
-                _logger.LogMethodExit(currentCorrelationId, loggingName, searchResults.ToJson());
+                _logger.LogMethodExit(currentCorrelationId, loggingName, string.Empty);
             }
         }
     }

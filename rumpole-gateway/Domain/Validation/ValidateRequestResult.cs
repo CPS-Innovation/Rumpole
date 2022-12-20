@@ -11,4 +11,6 @@ public class ValidateRequestResult
     public Guid CurrentCorrelationId { get; set; }
 
     public StringValues AccessTokenValue { get; set; }
+
+    public string UpstreamToken { get; set; }
 }
