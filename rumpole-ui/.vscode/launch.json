@@ -25,6 +25,12 @@
         "CI": "true"
       },
       "disableOptimisticBPs": true
+    },
+    {
+      "type": "chrome",
+      "name": "http://localhost:3000/case-details/45CV2911222/2149310#d0",
+      "request": "launch",
+      "url": "http://localhost:3000/case-details/45CV2911222/2149310#d0"
     }
   ]
 }
