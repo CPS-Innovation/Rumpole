@@ -45,7 +45,7 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
             Guid currentCorrelationId = default;
             string upstreamToken = null;
             const string loggingName = "CaseDataApiCaseDetails - Run";
-            CaseDetails caseDetails = null;
+            CaseDetailsFull caseDetails = null;
 
             try
             {
