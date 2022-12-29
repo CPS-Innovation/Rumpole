@@ -55,6 +55,8 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
                     return validationResult.InvalidResponseResult;
 
                 currentCorrelationId = validationResult.CurrentCorrelationId;
+                upstreamToken = validationResult.UpstreamToken;
+
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
                 //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
