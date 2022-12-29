@@ -33,7 +33,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _logger = logger;
         }
 
-        public async Task TriggerCoordinatorAsync(string caseUrn, string caseId, string accessToken, string upstreamToken, bool force, Guid correlationId)
+        public async Task TriggerCoordinatorAsync(string caseUrn, int caseId, string accessToken, string upstreamToken, bool force, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(TriggerCoordinatorAsync), $"CaseId: {caseId}, Force?: {force}");
             var forceQuery = force ? "&&force=true" : string.Empty;
@@ -41,10 +41,10 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             await SendGetRequestAsync($"cases/{caseUrn}/{caseId}?code={_configuration[ConfigurationKeys.PipelineCoordinatorFunctionAppKey]}{forceQuery}", accessToken, upstreamToken, correlationId);
         }
 
-        public async Task<Tracker> GetTrackerAsync(string caseUrn, string caseId, string accessToken, Guid correlationId)
+        public async Task<Tracker> GetTrackerAsync(string caseUrn, int caseId, string accessToken, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(GetTrackerAsync), $"Acquiring the tracker for caseId {caseId}");
-            
+
             HttpResponseMessage response;
             try
             {
@@ -52,7 +52,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             }
             catch (HttpRequestException exception)
             {
-                if(exception.StatusCode == HttpStatusCode.NotFound)
+                if (exception.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
                 }
@@ -61,7 +61,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             }
 
             var stringContent = await response.Content.ReadAsStringAsync();
-            
+
             _logger.LogMethodExit(correlationId, nameof(GetTrackerAsync), $"Tracker details: {stringContent}");
             return _jsonConvertWrapper.DeserializeObject<Tracker>(stringContent, correlationId);
         }
@@ -69,7 +69,7 @@ namespace RumpoleGateway.Clients.RumpolePipeline
         private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(SendGetRequestAsync), requestUri);
-            
+
             var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken, correlationId);
             var response = await _httpClient.SendAsync(request);
 
@@ -78,11 +78,11 @@ namespace RumpoleGateway.Clients.RumpolePipeline
             _logger.LogMethodExit(correlationId, nameof(SendGetRequestAsync), string.Empty);
             return response;
         }
-        
+
         private async Task<HttpResponseMessage> SendGetRequestAsync(string requestUri, string accessToken, string upstreamToken, Guid correlationId)
         {
             _logger.LogMethodEntry(correlationId, nameof(SendGetRequestAsync), requestUri);
-            
+
             var request = _pipelineClientRequestFactory.CreateGet(requestUri, accessToken, upstreamToken, correlationId);
             var response = await _httpClient.SendAsync(request);
 

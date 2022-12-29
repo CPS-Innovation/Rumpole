@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using RumpoleGateway.Domain.CaseData.Args;
-using RumpoleGateway.Domain.Exceptions;
 using RumpoleGateway.CaseDataImplementations.Tde.Domain;
 using RumpoleGateway.CaseDataImplementations.Tde.Factories;
 using RumpoleGateway.Wrappers;
@@ -97,9 +96,7 @@ namespace RumpoleGateway.CaseDataImplementations.Tde.Clients
 
         private async Task<HttpResponseMessage> CallTde(Func<HttpRequestMessage> requestFactory, Guid correlationId)
         {
-            using var response = await CallTdeInternal(requestFactory, correlationId);
-
-            return response;
+            return await CallTdeInternal(requestFactory, correlationId);
         }
 
         private async Task<HttpResponseMessage> CallTdeInternal(Func<HttpRequestMessage> requestFactory, Guid correlationId)

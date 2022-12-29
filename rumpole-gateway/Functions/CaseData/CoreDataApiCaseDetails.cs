@@ -45,7 +45,7 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
             Guid currentCorrelationId = default;
             string upstreamToken = null;
             const string loggingName = "CaseDataApiCaseDetails - Run";
-            CaseDetails caseDetails = null;
+            CaseDetailsFull caseDetails = null;
 
             try
             {
@@ -55,6 +55,8 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
                     return validationResult.InvalidResponseResult;
 
                 currentCorrelationId = validationResult.CurrentCorrelationId;
+                upstreamToken = validationResult.UpstreamToken;
+
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
                 //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];

@@ -38,7 +38,7 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
         [FunctionName("RumpolePipelineGetTracker")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}/tracker")] HttpRequest req, string urn, string caseId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "urns/{urn}/cases/{caseId}/tracker")] HttpRequest req, string urn, int caseId)
         {
             Guid currentCorrelationId = default;
             const string loggingName = "RumpolePipelineGetTracker - Run";
@@ -57,8 +57,8 @@ namespace RumpoleGateway.Functions.RumpolePipeline
                 if (string.IsNullOrWhiteSpace(urn))
                     return BadRequestErrorResponse("A case URN was expected", currentCorrelationId, loggingName);
 
-                if (!int.TryParse(caseId, out _))
-                    return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
+                // if (!int.TryParse(caseId, out _))
+                //     return BadRequestErrorResponse("Invalid case id. A 32-bit integer is required.", currentCorrelationId, loggingName);
 
                 var coordinatorScope = _configuration[ConfigurationKeys.PipelineCoordinatorScope];
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {coordinatorScope}");
