@@ -5,6 +5,11 @@ variable "resource_name_prefix" {
   default = "rumpole"
 }
 
+variable "polaris_resource_name_prefix" {
+  type = string
+  default = "polaris"
+}
+
 variable "env" {
   type = string 
 }
