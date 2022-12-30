@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -19,7 +18,6 @@ using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Mappers;
 using RumpoleGateway.Services;
 using RumpoleGateway.Domain.CaseData;
-using System.IO;
 using RumpoleGateway.Domain.CaseData.Args;
 
 namespace RumpoleGateway.Functions.DocumentRedaction

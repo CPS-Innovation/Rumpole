@@ -25,7 +25,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 	{
         private readonly HttpRequest _request;
         private readonly string _caseUrn;
-		private readonly string _caseId;
+		private readonly int _caseId;
 		private readonly string _onBehalfOfAccessToken;
 		private readonly string _upstreamToken;
 		private readonly string _rumpolePipelineCoordinatorScope;
@@ -41,7 +41,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		{
             var fixture = new Fixture();
             _caseUrn = fixture.Create<string>();
-			_caseId = fixture.Create<int>().ToString();
+			_caseId = fixture.Create<int>();
 			_onBehalfOfAccessToken = fixture.Create<string>();
 			_rumpolePipelineCoordinatorScope = fixture.Create<string>();
 			_upstreamToken = "sample-token";
@@ -107,15 +107,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
-
-		[Fact]
-		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
-		{
-			var response = await _rumpolePipelineTriggerCoordinator.Run(_request, _caseUrn, "Not an integer");
-
-			response.Should().BeOfType<BadRequestObjectResult>();
-		}
-
+		
 		[Fact]
 		public async Task Run_ReturnsBadRequestWhenForceIsNotABool()
 		{

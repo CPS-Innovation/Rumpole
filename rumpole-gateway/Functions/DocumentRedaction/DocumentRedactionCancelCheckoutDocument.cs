@@ -5,13 +5,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-
-using RumpoleGateway.Domain.DocumentRedaction;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.Validators;
-using RumpoleGateway.Extensions;
-using RumpoleGateway.Helpers.Extension;
-using RumpoleGateway.Clients.RumpolePipeline;
 using RumpoleGateway.Services;
 using RumpoleGateway.Domain.CaseData;
 using RumpoleGateway.Domain.CaseData.Args;

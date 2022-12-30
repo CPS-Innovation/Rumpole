@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -111,3 +112,4 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         }
     }
 }
+*/

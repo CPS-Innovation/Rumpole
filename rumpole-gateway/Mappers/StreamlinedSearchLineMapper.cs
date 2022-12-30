@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
-using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Mappers
 {

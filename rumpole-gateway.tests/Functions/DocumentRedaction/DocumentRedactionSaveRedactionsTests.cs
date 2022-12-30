@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿/*
+using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
@@ -242,3 +243,4 @@ namespace RumpoleGateway.Tests.Functions.DocumentRedaction
         }
     }
 }
+*/

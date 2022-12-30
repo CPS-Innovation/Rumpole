@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
 using RumpoleGateway.Domain.Validators;
-using RumpoleGateway.Extensions;
 
 namespace RumpoleGateway.Functions.RumpolePipeline
 {
@@ -43,6 +42,9 @@ namespace RumpoleGateway.Functions.RumpolePipeline
 
                 currentCorrelationId = validationResult.CurrentCorrelationId;
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
+
+                if (caseId <= 0)
+                    return BadRequestErrorResponse("A valid caseId must be supplied, one that is greater than zero", currentCorrelationId, loggingName);
 
                 if (string.IsNullOrWhiteSpace(searchTerm))
                     return BadRequestErrorResponse("Search term is not supplied.", currentCorrelationId, loggingName);

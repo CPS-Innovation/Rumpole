@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace RumpoleGateway.CaseDataImplementations.Tde.Domain
 {
     public class NextHearing

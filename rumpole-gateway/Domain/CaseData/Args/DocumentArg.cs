@@ -1,5 +1,3 @@
-using RumpoleGateway.Domain.CaseData;
-
 namespace RumpoleGateway.Domain.CaseData.Args
 {
     public class DocumentArg : CaseArg

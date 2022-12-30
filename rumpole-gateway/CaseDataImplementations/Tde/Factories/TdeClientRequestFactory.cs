@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using Microsoft.Extensions.Options;
 using RumpoleGateway.Domain.CaseData.Args;

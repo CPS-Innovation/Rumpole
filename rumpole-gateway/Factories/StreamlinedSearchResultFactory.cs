@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
-using RumpoleGateway.Extensions;
 using RumpoleGateway.Mappers;
 
 namespace RumpoleGateway.Factories

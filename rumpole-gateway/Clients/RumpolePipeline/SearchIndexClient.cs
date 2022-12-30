@@ -6,7 +6,6 @@ using Azure.Search.Documents;
 using Microsoft.Extensions.Logging;
 using RumpoleGateway.Domain.Logging;
 using RumpoleGateway.Domain.RumpolePipeline;
-using RumpoleGateway.Extensions;
 using RumpoleGateway.Factories;
 
 namespace RumpoleGateway.Clients.RumpolePipeline

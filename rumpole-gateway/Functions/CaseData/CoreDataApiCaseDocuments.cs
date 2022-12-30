@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using RumpoleGateway.Clients.OnBehalfOfTokenClient;
@@ -17,7 +15,10 @@ using RumpoleGateway.Extensions;
 using RumpoleGateway.Services;
 using RumpoleGateway.Factories;
 using System.Net;
+using Microsoft.Extensions.Options;
+using RumpoleGateway.CaseDataImplementations.Tde.Options;
 using RumpoleGateway.Domain.Exceptions;
+using RumpoleGateway.Helpers.Extension;
 
 namespace RumpoleGateway.Functions.CaseData
 {
@@ -25,19 +26,19 @@ namespace RumpoleGateway.Functions.CaseData
     {
         private readonly IOnBehalfOfTokenClient _onBehalfOfTokenClient;
         private readonly ICaseDataService _caseDataService;
-        private readonly IConfiguration _configuration;
         private readonly ICaseDataArgFactory _caseDataArgFactory;
         private readonly ILogger<CaseDataApiCaseDocuments> _logger;
+        private readonly TdeOptions _tdeOptions;
 
         public CaseDataApiCaseDocuments(ILogger<CaseDataApiCaseDocuments> logger, IOnBehalfOfTokenClient onBehalfOfTokenClient, ICaseDataService caseDataService,
-                                 IConfiguration configuration, IAuthorizationValidator tokenValidator, ICaseDataArgFactory caseDataArgFactory)
+                                 IAuthorizationValidator tokenValidator, ICaseDataArgFactory caseDataArgFactory, IOptions<TdeOptions> options)
         : base(logger, tokenValidator)
         {
             _onBehalfOfTokenClient = onBehalfOfTokenClient;
             _caseDataService = caseDataService;
-            _configuration = configuration;
             _caseDataArgFactory = caseDataArgFactory;
             _logger = logger;
+            _tdeOptions = options.Value;
         }
 
         [FunctionName("CaseDataApiCaseDocuments")]
@@ -47,7 +48,6 @@ namespace RumpoleGateway.Functions.CaseData
             int? caseId)
         {
             Guid currentCorrelationId = default;
-            string upstreamToken = null;
             const string loggingName = "CaseDataApiCaseDocuments - Run";
             IEnumerable<DocumentDetails> documents = null;
 
@@ -59,7 +59,7 @@ namespace RumpoleGateway.Functions.CaseData
                     return validationResult.InvalidResponseResult;
 
                 currentCorrelationId = validationResult.CurrentCorrelationId;
-                upstreamToken = validationResult.UpstreamToken;
+                var upstreamToken = validationResult.UpstreamToken;
 
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
@@ -69,9 +69,9 @@ namespace RumpoleGateway.Functions.CaseData
                 if (!caseId.HasValue)
                     return BadRequestErrorResponse("CaseId is not supplied.", currentCorrelationId, loggingName);
 
-                // var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
-                // _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
-                var onBehalfOfAccessToken = "not-implemented-yet"; //await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
+                var scopes = _tdeOptions.DefaultScope;
+                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
+                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case documents by Urn '{urn}' and CaseId '{caseId}'");
                 documents = await _caseDataService.ListDocuments(_caseDataArgFactory.CreateCaseArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId.Value));

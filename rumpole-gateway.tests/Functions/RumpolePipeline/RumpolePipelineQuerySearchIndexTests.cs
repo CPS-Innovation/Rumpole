@@ -18,8 +18,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 {
 	public class RumpolePipelineQuerySearchIndexTests : SharedMethods.SharedMethods
 	{
-        private readonly int _caseIdInt;
-		private readonly string _caseId;
+        private readonly int _caseId;
 		private readonly string _searchTerm;
 		private readonly Guid _correlationId;
 		private readonly IList<StreamlinedSearchLine> _searchResults;
@@ -32,8 +31,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		public RumpolePipelineQuerySearchIndexTests()
 		{
             var fixture = new Fixture();
-			_caseIdInt = fixture.Create<int>();
-			_caseId = _caseIdInt.ToString();
+			_caseId = fixture.Create<int>();
 			_searchTerm = fixture.Create<string>();
 			_searchResults = fixture.Create<IList<StreamlinedSearchLine>>();
 			_correlationId = fixture.Create<Guid>();
@@ -76,10 +74,12 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 			response.Should().BeOfType<UnauthorizedObjectResult>();
 		}
 		
-		[Fact]
-		public async Task Run_ReturnsBadRequestWhenCaseIdIsNotAnInteger()
+		[Theory]
+		[InlineData(-1)]
+		[InlineData(0)]
+		public async Task Run_ReturnsBadRequestWhenCaseId_IsNotAValidValue(int caseId)
 		{
-			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), "Not an integer", _searchTerm);
+			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), caseId, _searchTerm);
 
 			response.Should().BeOfType<BadRequestObjectResult>();
 		}
@@ -114,7 +114,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenRequestFailedExceptionOccurs()
         {
-			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm, _correlationId))
+			_searchIndexClient.Setup(client => client.Query(_caseId, _searchTerm, _correlationId))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
 			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;
@@ -126,7 +126,7 @@ namespace RumpoleGateway.Tests.Functions.RumpolePipeline
 		[Fact]
 		public async Task Run_ReturnsInternalServerErrorWhenUnhandledExceptionOccurs()
 		{
-			_searchIndexClient.Setup(client => client.Query(_caseIdInt, _searchTerm, _correlationId))
+			_searchIndexClient.Setup(client => client.Query(_caseId, _searchTerm, _correlationId))
 				.ThrowsAsync(new RequestFailedException("Test"));
 
 			var response = await _rumpolePipelineQuerySearchIndex.Run(CreateHttpRequest(), _caseId, _searchTerm) as StatusCodeResult;

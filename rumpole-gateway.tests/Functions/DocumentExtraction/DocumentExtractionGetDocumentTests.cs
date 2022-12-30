@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -119,4 +120,5 @@ namespace RumpoleGateway.Tests.Functions.DocumentExtraction
 		}
 	}
 }
+*/
 

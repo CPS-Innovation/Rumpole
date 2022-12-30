@@ -21,7 +21,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 	public class PipelineClientTests
 	{
 		private readonly string _caseUrn;
-        private readonly string _caseId;
+        private readonly int _caseId;
 		private readonly string _accessToken;
 		private readonly string _upstreamToken;
 		private readonly HttpRequestMessage _httpRequestMessage;
@@ -39,7 +39,7 @@ namespace RumpoleGateway.Tests.Clients.RumpolePipeline
 		{
             var fixture = new Fixture();
             _caseUrn = fixture.Create<string>();
-			_caseId = fixture.Create<string>();
+			_caseId = fixture.Create<int>();
 			_accessToken = fixture.Create<string>();
 			_upstreamToken = "sample-token";
 			_httpRequestMessage = new HttpRequestMessage();

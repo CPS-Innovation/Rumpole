@@ -40,6 +40,9 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
     "CallingAppValidAudience"                        = var.rumpole_webapp_details.valid_audience
     "CallingAppValidScopes"                          = var.rumpole_webapp_details.valid_scopes
 	"CallingAppValidRoles"                           = var.rumpole_webapp_details.valid_roles
+    "Tde__BaseUrl"                                   = "https://fa-polaris${local.env_name_suffix}-ddei.azurewebsites.net"
+    "Tde__AccessKey"                                  = data.azurerm_function_app_host_keys.fa_ddei_host_keys.default_function_key,
+    "Tde__DefaultScope"                               = "api://fa-polaris${local.env_name_suffix}-ddei/user_impersonation"
   }
 	
   site_config {
@@ -127,6 +130,15 @@ module "azurerm_app_reg_fa_rumpole" {
         id   = data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]
         type = "Scope"
       }]
+    },
+    {
+      # DDEI
+      resource_app_id = data.azuread_application.fa_ddei.id
+      resource_access = [{
+        # User Impersonation Scope
+        id   = data.azuread_application.fa_ddei.oauth2_permission_scope_ids["user_impersonation"]
+        type = "Scope"
+      }]
     }]
   web = {
     redirect_uris = ["https://fa-${local.resource_name}-gateway.azurewebsites.net/.auth/login/aad/callback"]
@@ -164,5 +176,12 @@ resource "azuread_application_pre_authorized" "fapre_fa_pdf-generator" {
   application_object_id = data.azuread_application.fa_pipeline_pdf_generator.object_id
   authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
   permission_ids        = [data.azuread_application.fa_pipeline_pdf_generator.oauth2_permission_scope_ids["user_impersonation"]]
+  depends_on = [module.azurerm_app_reg_fa_rumpole]
+}
+
+resource "azuread_application_pre_authorized" "fapre_fa_ddei" {
+  application_object_id = data.azuread_application.fa_ddei.object_id
+  authorized_app_id     = module.azurerm_app_reg_fa_rumpole.client_id
+  permission_ids        = [data.azuread_application.fa_ddei.oauth2_permission_scope_ids["user_impersonation"]]
   depends_on = [module.azurerm_app_reg_fa_rumpole]
 }

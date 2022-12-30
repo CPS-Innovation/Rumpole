@@ -69,7 +69,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Clients\DocumentExtraction\" />
     <Folder Include="Domain\DocumentExtraction\" />
   </ItemGroup>
 </Project>

@@ -29,8 +29,8 @@ namespace RumpoleGateway.Tests.Mappers
         {
             var testRequest = _fixture.Create<DocumentRedactionSaveRequest>();
             testRequest.Redactions = _fixture.CreateMany<RedactionDefinition>(5).ToList();
-            var testCaseId = _fixture.Create<string>();
-            var testDocumentId = _fixture.Create<string>();
+            var testCaseId = _fixture.Create<int>();
+            var testDocumentId = _fixture.Create<int>();
             var testFileName = _fixture.Create<string>();
 
             IRedactPdfRequestMapper mapper = new RedactPdfRequestMapper(_loggerMock.Object);
