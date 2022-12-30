@@ -67,9 +67,9 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
                 if (string.IsNullOrEmpty(urn))
                     return BadRequestErrorResponse("Urn is not supplied.", currentCorrelationId, loggingName);
 
-                var scopes = _tdeOptions.DefaultScope;
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
+                //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
+                //_logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
+                var onBehalfOfAccessToken = "not-implemented-yet"; // await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case information by Urn '{urn}'");
                 var urnArg = _caseDataArgFactory.CreateUrnArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn);

@@ -60,9 +60,9 @@ namespace RumpoleGateway.Functions.CaseDataApi.Case
 
                 _logger.LogMethodEntry(currentCorrelationId, loggingName, string.Empty);
 
-                var scopes = _tdeOptions.DefaultScope;
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
+                //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
+                //_logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
+                var onBehalfOfAccessToken = "not-implemented-yet"; // await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
                 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case details by Id {caseId}");
                 caseDetails = await _caseDataService.GetCase(_caseDataArgFactory.CreateCaseArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId));

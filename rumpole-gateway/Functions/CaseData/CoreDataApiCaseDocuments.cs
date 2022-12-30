@@ -69,9 +69,9 @@ namespace RumpoleGateway.Functions.CaseData
                 if (!caseId.HasValue)
                     return BadRequestErrorResponse("CaseId is not supplied.", currentCorrelationId, loggingName);
 
-                var scopes = _tdeOptions.DefaultScope;
-                _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {scopes}");
-                var onBehalfOfAccessToken = await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), scopes, currentCorrelationId);
+                //var cdaScope = _configuration[ConfigurationKeys.CoreDataApiScope];
+                //_logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting an access token as part of OBO for the following scope {cdaScope}");
+                var onBehalfOfAccessToken = "not-implemented-yet"; // await _onBehalfOfTokenClient.GetAccessTokenAsync(validationResult.AccessTokenValue.ToJwtString(), cdaScope, currentCorrelationId);
 
                 _logger.LogMethodFlow(currentCorrelationId, loggingName, $"Getting case documents by Urn '{urn}' and CaseId '{caseId}'");
                 documents = await _caseDataService.ListDocuments(_caseDataArgFactory.CreateCaseArg(onBehalfOfAccessToken, upstreamToken, currentCorrelationId, urn, caseId.Value));
