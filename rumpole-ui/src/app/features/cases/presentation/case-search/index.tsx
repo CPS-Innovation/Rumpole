@@ -42,7 +42,7 @@ const Page: React.FC = () => {
           <h1 className="govuk-heading-xl">
             Find a case
             <Hint className={classes.hint}>
-              Search and review a CPS case in England
+              Search and review a CPS case in England and Wales
             </Hint>
           </h1>
 
