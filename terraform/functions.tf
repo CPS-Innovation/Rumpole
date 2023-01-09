@@ -42,7 +42,7 @@ resource "azurerm_linux_function_app" "fa_rumpole" {
 	"CallingAppValidRoles"                           = var.rumpole_webapp_details.valid_roles
     "Tde__BaseUrl"                                   = "https://fa-rumpole-tde-temp.azurewebsites.net"
     "Tde__AccessKey"                                  = "T3z9lnFUcPI2DtZ9SSRWdY-rKtaQVCBOqvMe8G4r_hHgAzFu_eBz2g==",
-    "Tde__DefaultScope"                               = "api://fa-polaris${local.env_name_suffix}-ddei/user_impersonation"
+    "Tde__DefaultScope"                               = "api://fa-polaris-ddei-${local.env_name_suffix}/user_impersonation"
   }
 	
   site_config {
