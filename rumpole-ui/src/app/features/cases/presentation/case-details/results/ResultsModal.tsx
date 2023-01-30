@@ -42,8 +42,12 @@ export const ResultsModal: React.FC<Props> = ({
 
   if (waitStatus === "wait" && searchState.submittedSearchTerm) {
     return (
-      <Modal isVisible={searchState.isResultsVisible}>
-        <PleaseWait handleClose={handleCloseSearchResults} />
+      <Modal
+        isVisible={searchState.isResultsVisible}
+        handleClose={handleCloseSearchResults}
+        type={"alert"}
+      >
+        <PleaseWait />
       </Modal>
     );
   } else {
