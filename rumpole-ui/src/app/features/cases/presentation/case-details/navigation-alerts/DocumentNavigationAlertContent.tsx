@@ -16,8 +16,12 @@ export const DocumentNavigationAlertContent: React.FC<Props> = ({
       <h1 className="govuk-heading-l">You have unsaved redactions</h1>
       <p>If you do not save the redactions the file will not be changed.</p>
       <div className={classes.actionButtonsWrapper}>
-        <Button onClick={handleCancelAction}>Return to case file</Button>
-        <LinkButton onClick={handleContinueAction}>Ignore</LinkButton>
+        <Button onClick={handleCancelAction} data-testid="btn-nav-return">
+          Return to case file
+        </Button>
+        <LinkButton onClick={handleContinueAction} data-testid="btn-nav-ignore">
+          Ignore
+        </LinkButton>
       </div>
     </div>
   );

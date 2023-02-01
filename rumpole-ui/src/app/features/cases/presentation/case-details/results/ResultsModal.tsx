@@ -45,7 +45,6 @@ export const ResultsModal: React.FC<Props> = ({
       <Modal
         isVisible={searchState.isResultsVisible}
         handleClose={handleCloseSearchResults}
-        type={"alert"}
       >
         <PleaseWait />
       </Modal>
