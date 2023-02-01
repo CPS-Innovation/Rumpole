@@ -68,9 +68,9 @@ export const Tabs: React.FC<TabsProps> = ({
     ev.preventDefault();
   };
 
-  const handleCloseTab = (id: string) => {
-    const { redactionHighlights } = items[activeTabIndex];
-    if (redactionHighlights.length > 0) {
+  const handleCloseTab = () => {
+    const { isDirty } = items[activeTabIndex];
+    if (isDirty) {
       setShowDocumentNavAlert(true);
       return;
     }
@@ -155,10 +155,7 @@ export const Tabs: React.FC<TabsProps> = ({
           {label}
         </a>
         <span>
-          <button
-            onClick={() => handleCloseTab(item.id)}
-            data-testid="tab-remove"
-          >
+          <button onClick={handleCloseTab} data-testid="tab-remove">
             {closeIcon}
           </button>
         </span>

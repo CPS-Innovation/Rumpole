@@ -1,5 +1,3 @@
-import { IPdfHighlight } from "../../../../features/cases/domain/IPdfHighlight";
-
 type PanelProps = React.DetailedHTMLProps<
   React.LabelHTMLAttributes<HTMLDivElement>,
   HTMLDivElement
@@ -12,7 +10,7 @@ type ItemProps = React.DetailedHTMLProps<
   id: string;
   label: string;
   panel: PanelProps;
-  redactionHighlights: IPdfHighlight[];
+  isDirty: boolean;
 };
 
 export type CommonTabsProps = React.DetailedHTMLProps<
