@@ -8,3 +8,4 @@
 /.vs
 /RumpoleGateway.Domain/obj
 /RumpoleGateway.Domain/bin/Debug/netcoreapp3.1
+/.vscode
