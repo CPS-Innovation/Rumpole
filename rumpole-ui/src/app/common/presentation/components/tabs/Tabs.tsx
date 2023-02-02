@@ -126,7 +126,7 @@ export const Tabs: React.FC<TabsProps> = ({
   );
 
   const tabContent = items.map((item, index) => {
-    const { id: itemId, label, panel, ...itemAttributes } = item;
+    const { id: itemId, label, panel, isDirty, ...itemAttributes } = item;
     const tabId = itemId;
 
     const coreHyperlinkProps = {
